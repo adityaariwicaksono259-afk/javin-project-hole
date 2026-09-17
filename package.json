@@ -1,0 +1,12 @@
+{
+  "name": "javin-project-hole",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "echo Cloudflare Pages build"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "description": "Javin Project Hole - Cloudflare Pages"
+}

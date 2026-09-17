@@ -1,0 +1,2832 @@
+[
+  {
+    "id": "custom_1785294130_4213",
+    "name": "c.ai",
+    "m": "GET",
+    "path": "/ai/cai",
+    "desc": "API untuk melakukan pencarian karakter AI di platform Character.AI berdasarkan kata kunci (query), mengembalikan daftar bot/karakter lengkap beserta Character ID, avatar, dan deskripsi profilnya.",
+    "folder": "AI",
+    "subfolder": "cai",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/ai/cai/?q=sukuna",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "sukuna"
+      }
+    ],
+    "updated_at": "2026-07-29T03:02:54+00:00",
+    "created_at": "2026-07-29T03:02:54+00:00",
+    "catalogId": "ep001"
+  },
+  {
+    "name": "chat Gpt3",
+    "m": "GET",
+    "path": "/ai/chatgptpro",
+    "desc": "Ai Endpoint Chat Gpt3",
+    "folder": "AI",
+    "subfolder": "",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/ai/chatgptpro/?q=apa%20itu%20axios",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "apa itu axios"
+      }
+    ],
+    "id": "custom_1784539626_3839",
+    "updated_at": "2026-07-20T09:27:06+00:00",
+    "created_at": "2026-07-20T09:27:06+00:00",
+    "catalogId": "ep002"
+  },
+  {
+    "name": "chat gpt4",
+    "m": "GET",
+    "path": "/ai/gpt4",
+    "desc": "Endpoint API untuk interaksi tanya-jawab dan pemrosesan teks menggunakan model AI GPT-4.",
+    "folder": "AI",
+    "subfolder": "gpt4",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/ai/gpt4/?q=apa%20itu%20php",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "apa itu php"
+      }
+    ],
+    "id": "custom_1784540073_8363",
+    "updated_at": "2026-07-20T09:34:33+00:00",
+    "created_at": "2026-07-20T09:34:33+00:00",
+    "catalogId": "ep003"
+  },
+  {
+    "name": "Claude Haiku",
+    "m": "GET",
+    "path": "/ai/claude",
+    "desc": "Ini api Endpoint Ai Claude Haiku ",
+    "folder": "AI",
+    "subfolder": "claude",
+    "outputType": "",
+    "ex": "api.nexadev.my.id/ai/claude/?text=hallo",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 0,
+        "d": "hallo"
+      }
+    ],
+    "id": "custom_1784539384_8015",
+    "updated_at": "2026-07-20T09:23:04+00:00",
+    "created_at": "2026-07-20T09:23:04+00:00",
+    "catalogId": "ep004"
+  },
+  {
+    "name": "deepsek ai",
+    "m": "GET",
+    "path": "/ai/deepsek",
+    "desc": "AI berbasis DeepSeek dengan reasoning mendalam. Selalu menampilkan proses berpikir (think) dan jawaban akhir.",
+    "folder": "AI",
+    "subfolder": "deepsek",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/ai/deepsek/?text=apa+nodejs",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 0,
+        "d": "apa itu node.js"
+      }
+    ],
+    "id": "custom_1784547842_6557",
+    "updated_at": "2026-07-20T11:44:02+00:00",
+    "created_at": "2026-07-20T11:44:02+00:00",
+    "catalogId": "ep005"
+  },
+  {
+    "name": "felo ai",
+    "m": "GET",
+    "path": "/ai/felo",
+    "desc": "Endpoint pencarian cerdas berbasis Felo AI untuk memberikan jawaban terstruktur beserta referensi informasi dari internet.",
+    "folder": "AI",
+    "subfolder": "felo",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/ai/felo/?q=apa%20itu%20javascript",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "apa itu javascript "
+      }
+    ],
+    "id": "custom_1784541516_2391",
+    "updated_at": "2026-07-20T09:58:36+00:00",
+    "created_at": "2026-07-20T09:58:36+00:00",
+    "catalogId": "ep006"
+  },
+  {
+    "id": "custom_1785331388_5108",
+    "name": "IMG to promt",
+    "m": "GET",
+    "path": "/ai/imgtopromt",
+    "desc": "API untuk menganalisis gambar dari URL dan mengonversinya secara otomatis menjadi kalimat deskripsi/prompt teks AI bergaya Midjourney/Stable Diffusion.",
+    "folder": "AI",
+    "subfolder": "imgtopromt",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/ai/imgtopromt/?url=https://clooud.my.id/uploder/uploads/tpRbqq.jpg",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url foto"
+      }
+    ],
+    "updated_at": "2026-07-29T18:42:29+00:00",
+    "created_at": "2026-07-29T18:42:29+00:00",
+    "catalogId": "ep007"
+  },
+  {
+    "name": "Meta Llama 7.1",
+    "m": "GET",
+    "path": "/ai/llama",
+    "desc": "Endpoint kecerdasan buatan berbasis Llama untuk menjawab pertanyaan, pemrosesan teks, dan tugas percakapan umum.",
+    "folder": "AI",
+    "subfolder": "Llama",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/ai/llama/?q=apa%20itu%20php",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "apa itu php"
+      }
+    ],
+    "id": "custom_1784542772_1778",
+    "updated_at": "2026-07-20T10:19:32+00:00",
+    "created_at": "2026-07-20T10:19:32+00:00",
+    "catalogId": "ep008"
+  },
+  {
+    "id": "custom_1786276860_3663",
+    "name": "github stalker",
+    "m": "GET",
+    "path": "/api/githubstalker",
+    "desc": "API untuk memverifikasi dan mengekstrak informasi detail profil pengguna GitHub (User ID, avatar HD, nama lengkap, bio, jumlah repositori publik, gists, followers, following, lokasi, email, tautan blog, hingga tanggal akun dibuat) secara otomatis berdasarkan username.",
+    "folder": "Tools",
+    "subfolder": "ghstalker",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/githubstalker/?username=skayhayato-cmyk",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "username ",
+        "t": "string",
+        "r": 0,
+        "d": "masukan username github"
+      }
+    ],
+    "updated_at": "2026-08-09T12:01:44+00:00",
+    "created_at": "2026-08-09T12:01:44+00:00",
+    "catalogId": "ep009"
+  },
+  {
+    "id": "tl4",
+    "name": "HD Gambar",
+    "m": "GET",
+    "path": "/tools/hd/",
+    "folder": "Tools",
+    "desc": "Tingkatkan resolusi dan kualitas gambar secara otomatis menggunakan AI upscaling.",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 1,
+        "d": "URL gambar yang ingin ditingkatkan kualitasnya."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/tools/hd/?image=https://images.unsplash.com/photo-1541963463532-d68292c34b19",
+    "catalogId": "ep010",
+    "subfolder": ""
+  },
+  {
+    "id": "tl2",
+    "name": "Image to Pixel Art",
+    "m": "GET",
+    "path": "/pixel",
+    "folder": "Tools",
+    "outputType": "image",
+    "desc": "Konversi gambar apa saja menjadi visual bergaya retro pixel art.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "URL gambar sumber."
+      },
+      {
+        "n": "pixel",
+        "t": "number",
+        "r": 0,
+        "d": "Ukuran pixelation (default: 5, semakin besar semakin bergaya retro)."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/pixel?url=https://api.nexadev.my.id/uploder/uploads/WjqDwO.jpg&pixel=5",
+    "catalogId": "ep011",
+    "subfolder": ""
+  },
+  {
+    "id": "tl3",
+    "name": "NGL Spam",
+    "m": "GET",
+    "path": "/tools/nglspam/",
+    "folder": "Tools",
+    "desc": "Kirim pesan bertubi-tubi (spam) ke akun NGL berdasarkan link profil.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "Link URL profil NGL tujuan."
+      },
+      {
+        "n": "pesan",
+        "t": "string",
+        "r": 1,
+        "d": "Isi pesan yang dikirim."
+      },
+      {
+        "n": "jumlah",
+        "t": "number",
+        "r": 1,
+        "d": "Jumlah pesan yang dikirim."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/tools/nglspam/?url=https://ngl.link/username&pesan=hallo&jumlah=2",
+    "catalogId": "ep012",
+    "subfolder": ""
+  },
+  {
+    "id": "custom_1785331641_2320",
+    "name": "remini",
+    "m": "GET",
+    "path": "/api/remini",
+    "desc": "API untuk meningkatkan kualitas visual gambar (upscale/HD) dan memperjelas detail foto buram secara otomatis menggunakan teknologi AI Remini",
+    "folder": "Tools",
+    "subfolder": "remini",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/remini?url=https://clooud.my.id/uploder/uploads/tpRbqq.jpg",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url foto"
+      }
+    ],
+    "updated_at": "2026-07-29T13:41:33+00:00",
+    "created_at": "2026-07-29T13:41:33+00:00",
+    "catalogId": "ep013"
+  },
+  {
+    "id": "tl1",
+    "name": "Remove Background",
+    "m": "GET",
+    "path": "/tools/remove/",
+    "folder": "Tools",
+    "outputType": "binary-png",
+    "desc": "Hapus background gambar secara otomatis dengan deteksi AI tingkat tinggi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "URL gambar JPG/PNG/WEBP yang ingin dihapus latarnya."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/tools/remove/?url=https://images.unsplash.com/photo-1541963463532-d68292c34b19",
+    "catalogId": "ep014",
+    "subfolder": ""
+  },
+  {
+    "id": "custom_1785330922_6030",
+    "name": "Roblox Stalker ",
+    "m": "GET",
+    "path": "/api/roblox",
+    "desc": "API untuk memverifikasi dan mengambil informasi lengkap profil pengguna Roblox (User ID, status, tanggal bergabung, avatar, bio, dll) berdasarkan username secara otomatis.",
+    "folder": "Tools",
+    "subfolder": "roblox",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/roblox/?username=Linkmon99",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "masukan username mu wok"
+      }
+    ],
+    "updated_at": "2026-07-29T18:38:43+00:00",
+    "created_at": "2026-07-29T18:38:43+00:00",
+    "catalogId": "ep015"
+  },
+  {
+    "id": "custom_1785332443_8094",
+    "name": "ss desktop ",
+    "m": "GET",
+    "path": "/api/ss",
+    "desc": "API untuk menangkap tampilan (screenshot) dari halaman situs web secara otomatis dalam bentuk gambar dengan opsi tampilan desktop maupun mobile.",
+    "folder": "Tools",
+    "subfolder": "ssdesktop",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=desktop",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url website "
+      },
+      {
+        "n": "device",
+        "t": "string",
+        "r": 0,
+        "d": "desktop"
+      }
+    ],
+    "updated_at": "2026-07-29T13:41:05+00:00",
+    "created_at": "2026-07-29T13:41:05+00:00",
+    "catalogId": "ep016"
+  },
+  {
+    "id": "custom_1785332339_6470",
+    "name": "ss phone",
+    "m": "GET",
+    "path": "/api/ss",
+    "desc": "API untuk menangkap tampilan (screenshot) dari halaman situs web secara otomatis dalam bentuk gambar dengan opsi tampilan desktop maupun mobile.",
+    "folder": "Tools",
+    "subfolder": "ssphone",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=phone",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url website"
+      },
+      {
+        "n": "device",
+        "t": "string",
+        "r": 0,
+        "d": "phone"
+      }
+    ],
+    "updated_at": "2026-07-29T13:41:15+00:00",
+    "created_at": "2026-07-29T13:41:15+00:00",
+    "catalogId": "ep017"
+  },
+  {
+    "name": "ss tablet ",
+    "m": "GET",
+    "path": "/api/ss",
+    "desc": "API untuk menangkap tampilan (screenshot) dari halaman situs web secara otomatis dalam bentuk gambar dengan opsi tampilan desktop maupun mobile.",
+    "folder": "Tools",
+    "subfolder": "sstablet",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=tablet",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url website nya"
+      },
+      {
+        "n": "device",
+        "t": "string",
+        "r": 0,
+        "d": "tablet"
+      }
+    ],
+    "id": "custom_1785332203_1108",
+    "updated_at": "2026-07-29T13:36:43+00:00",
+    "created_at": "2026-07-29T13:36:43+00:00",
+    "catalogId": "ep018"
+  },
+  {
+    "name": "stalker ff",
+    "m": "GET",
+    "path": "/api/ff",
+    "desc": "API untuk memverifikasi dan mengambil Nickname/In-Game Name (IGN) akun Free Fire berdasarkan User ID secara otomatis.",
+    "folder": "Tools",
+    "subfolder": "stalkerff",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ff/?id=7606762852",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "id",
+        "t": "string",
+        "r": 0,
+        "d": "masukan id ff"
+      }
+    ],
+    "id": "custom_1785329516_6185",
+    "updated_at": "2026-07-29T12:51:56+00:00",
+    "created_at": "2026-07-29T12:51:56+00:00",
+    "catalogId": "ep019"
+  },
+  {
+    "id": "custom_1786270010_9211",
+    "name": "stalker Instagram",
+    "m": "GET",
+    "path": "/api/instagramstalker",
+    "desc": "API untuk memverifikasi dan mengekstrak informasi detail profil akun Instagram (User ID, foto profil HD, nama lengkap, jumlah postingan, followers, following, bio, status verifikasi, hingga status privat) secara otomatis berdasarkan username.",
+    "folder": "Tools",
+    "subfolder": "Instagramstalker",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/instagramstalker/?username=Kyzeee48",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "masukan username Instagram "
+      }
+    ],
+    "updated_at": "2026-08-09T10:07:24+00:00",
+    "created_at": "2026-08-09T10:07:24+00:00",
+    "catalogId": "ep020"
+  },
+  {
+    "id": "custom_1785330076_3438",
+    "name": "stalker ml",
+    "m": "GET",
+    "path": "/api/ml",
+    "desc": "API untuk memverifikasi serta mengekstrak Nickname/In-Game Name (IGN) akun Mobile Legends: Bang Bang berdasarkan User ID dan Server/Zone ID secara otomatis.",
+    "folder": "Tools",
+    "subfolder": "stalkerml",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ml/?id=134972929&zone=2687",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "id",
+        "t": "string",
+        "r": 0,
+        "d": "masukan id"
+      },
+      {
+        "n": "zone",
+        "t": "string",
+        "r": 0,
+        "d": "masukan zone"
+      }
+    ],
+    "updated_at": "2026-07-29T13:01:36+00:00",
+    "created_at": "2026-07-29T13:01:36+00:00",
+    "catalogId": "ep021"
+  },
+  {
+    "name": "stalker pubg",
+    "m": "GET",
+    "path": "/api/pubg",
+    "desc": "API untuk memverifikasi serta mengambil Nickname/In-Game Name (IGN) akun PUBG Mobile berdasarkan Character ID/User ID secara otomatis.",
+    "folder": "Tools",
+    "subfolder": "pubg",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/pubg/?id=5119961143",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "id",
+        "t": "string",
+        "r": 0,
+        "d": "masukan id PUBG mu wok"
+      }
+    ],
+    "id": "custom_1785330594_5348",
+    "updated_at": "2026-07-29T13:09:54+00:00",
+    "created_at": "2026-07-29T13:09:54+00:00",
+    "catalogId": "ep022"
+  },
+  {
+    "name": "stalker Twitter ",
+    "m": "GET",
+    "path": "/api/stalkertwiter",
+    "desc": "API untuk memverifikasi dan mengekstrak informasi profil pengguna Twitter/X (User ID, foto profil, header banner, nama lengkap, jumlah tweet, followers, following, lokasi, bio, hingga tanggal bergabung) berdasarkan username secara otomatis.",
+    "folder": "Tools",
+    "subfolder": "stalkertwiter ",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/stalkertwiter/?username=",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "masukan username Twitter "
+      }
+    ],
+    "id": "custom_1786272545_9597",
+    "updated_at": "2026-08-09T10:49:05+00:00",
+    "created_at": "2026-08-09T10:49:05+00:00",
+    "catalogId": "ep023"
+  },
+  {
+    "name": "tiktok stalker",
+    "m": "GET",
+    "path": "/api/tiktokstalker",
+    "desc": "API untuk mengekstrak dan memverifikasi detail profil akun TikTok (User ID, foto profil, statistik followers, following, total suka, status verifikasi, hingga bio) berdasarkan username secara otomatis.",
+    "folder": "Tools",
+    "subfolder": "tiktokstalker",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/tiktokstalker/?username=nexadevv",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "masukan username tiktok"
+      }
+    ],
+    "id": "custom_1786268773_4934",
+    "updated_at": "2026-08-09T09:46:13+00:00",
+    "created_at": "2026-08-09T09:46:13+00:00",
+    "catalogId": "ep024"
+  },
+  {
+    "name": "toqr",
+    "m": "GET",
+    "path": "/tools/toqr",
+    "desc": "buat url jadi QR",
+    "folder": "Tools",
+    "subfolder": "toqr",
+    "outputType": "image",
+    "ex": "https://api.nexadev.my.id/tools/toqr/?url=https://clooud.my.id/uploder/uploads/ISsVGW.jpg",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url foto dll bebas"
+      }
+    ],
+    "id": "custom_1784788119_6741",
+    "updated_at": "2026-07-23T06:28:39+00:00",
+    "created_at": "2026-07-23T06:28:39+00:00",
+    "catalogId": "ep025"
+  },
+  {
+    "name": "upscale ",
+    "m": "GET",
+    "path": "/api/upscale",
+    "desc": "API untuk memperjelas, menjernihkan, dan meningkatkan resolusi gambar (HD Image Upscaling) secara otomatis dari URL gambar.",
+    "folder": "Tools",
+    "subfolder": "upscale",
+    "outputType": "image",
+    "ex": "https://api.nexadev.my.id/api/upscale/?url=https://clooud.my.id/uploder/uploads/QdhzJe.jpg",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "kasih gambar nya pakai url uploder.nexadev.my.id"
+      }
+    ],
+    "id": "custom_1785129748_6180",
+    "updated_at": "2026-07-27T05:22:28+00:00",
+    "created_at": "2026-07-27T05:22:28+00:00",
+    "catalogId": "ep026"
+  },
+  {
+    "name": "upscale v1",
+    "m": "GET",
+    "path": "/api/upscale1",
+    "desc": "API generasi terbaru untuk meng-upscale dan memperjelas resolusi gambar secara instan dengan kustomisasi tingkat perbesaran (resolusi), langsung mengembalikan raw binary image.",
+    "folder": "Tools",
+    "subfolder": "upscalev1",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/upscale1/?url=https://clooud.my.id/uploder/uploads/QdhzJe.jpg&resolusi=4",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "https://clooud.my.id/uploder/uploads/QdhzJe.jpg"
+      },
+      {
+        "n": "resolusi",
+        "t": "string",
+        "r": 0,
+        "d": "2/4"
+      }
+    ],
+    "id": "custom_1785133957_8366",
+    "updated_at": "2026-07-27T06:32:37+00:00",
+    "created_at": "2026-07-27T06:32:37+00:00",
+    "catalogId": "ep027"
+  },
+  {
+    "name": "wink",
+    "m": "GET",
+    "path": "/api/wink",
+    "desc": "API berbasis AI untuk menganimasi foto wajah statis dengan (wink) dan memperjelas detail wajah secara otomatis dari URL gambar.",
+    "folder": "Tools",
+    "subfolder": "wink",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/wink/?url=https://clooud.my.id/uploder/uploads/XIxbPP.jpg",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url gambar"
+      }
+    ],
+    "id": "custom_1785291454_6894",
+    "updated_at": "2026-07-29T02:17:34+00:00",
+    "created_at": "2026-07-29T02:17:34+00:00",
+    "catalogId": "ep028"
+  },
+  {
+    "id": "dl1",
+    "name": "AIO Downloader",
+    "m": "GET",
+    "path": "/api/aio",
+    "folder": "Downloader",
+    "desc": "Unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dll.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "URL media video/reels dari platform sosial media."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/api/aio?url=https://vt.tiktok.com/ZS2x9a9d",
+    "catalogId": "ep029",
+    "subfolder": ""
+  },
+  {
+    "name": "apple music",
+    "m": "GET",
+    "path": "/api/applemusic",
+    "desc": "Endpoint pengunduh lagu Apple Music untuk mengunduh audio MP3 dan mengambil metadata lagu secara instan.",
+    "folder": "Downloader",
+    "subfolder": "apple music",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/applemusic/?url=https://music.apple.com/us/song/unholy-confessions/898356745",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "https://music.apple.com/us/song/unholy-confessions/898356745"
+      }
+    ],
+    "id": "custom_1784551346_6446",
+    "updated_at": "2026-07-20T12:42:26+00:00",
+    "created_at": "2026-07-20T12:42:26+00:00",
+    "catalogId": "ep030"
+  },
+  {
+    "name": "capcut downloader ",
+    "m": "GET",
+    "path": "/api/capcut",
+    "desc": "Endpoint pengunduh video dan template CapCut tanpa watermark secara instan.",
+    "folder": "Downloader",
+    "subfolder": "capcut",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/capcut/?url=https://www.capcut.com/tv2/ZSXXSAX2q/",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "https://www.capcut.com/tv2/ZSXXSAX2q/"
+      }
+    ],
+    "id": "custom_1784577622_9870",
+    "updated_at": "2026-07-20T20:00:22+00:00",
+    "created_at": "2026-07-20T20:00:22+00:00",
+    "catalogId": "ep031"
+  },
+  {
+    "name": "Facebook downloader ",
+    "m": "GET",
+    "path": "/api/fb",
+    "desc": "Endpoint pengunduh video Facebook untuk mengunduh video publik dalam kualitas SD/HD secara instan.",
+    "folder": "Downloader",
+    "subfolder": "Facebook ",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/fb/?url=https://www.facebook.com/share/r/176Gd2Y3F5/",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "https://api.nexadev.my.id/api/fb/?url=https://www.facebook.com/share/r/176Gd2Y3F5/"
+      }
+    ],
+    "id": "custom_1784577180_6296",
+    "updated_at": "2026-07-20T19:53:00+00:00",
+    "created_at": "2026-07-20T19:53:00+00:00",
+    "catalogId": "ep032"
+  },
+  {
+    "name": "Instagram download  (All post types) ",
+    "m": "GET",
+    "path": "/api/ig",
+    "desc": "Endpoint pengunduh konten Instagram untuk mengunduh foto, video, Reels, atau Carousel secara instan.",
+    "folder": "Downloader",
+    "subfolder": "Instagram ",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ig/?url=https://www.instagram.com/reel/Da_eH4pva9C/?igsh=MWpzNXdhbjE1cjZmOA==",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "https://www.instagram.com/reel/Da_eH4pva9C/?igsh=MWpzNXdhbjE1cjZmOA=="
+      }
+    ],
+    "id": "custom_1784576901_1889",
+    "updated_at": "2026-07-20T19:48:21+00:00",
+    "created_at": "2026-07-20T19:48:21+00:00",
+    "catalogId": "ep033"
+  },
+  {
+    "name": "Instagram Stories ",
+    "m": "GET",
+    "path": "/api/igstories/",
+    "desc": "API untuk mengambil seluruh media Instagram Story aktif (foto/video) dari username tertentu dalam bentuk array media JSON.",
+    "folder": "Downloader",
+    "subfolder": "igstories ",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/igstories/?username=",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "masukan username Ig nya"
+      }
+    ],
+    "id": "custom_1785073255_3082",
+    "updated_at": "2026-07-26T13:40:55+00:00",
+    "created_at": "2026-07-26T13:40:55+00:00",
+    "catalogId": "ep034"
+  },
+  {
+    "id": "custom_1785127663_2096",
+    "name": "mediafire ",
+    "m": "GET",
+    "path": "/api/mediafire",
+    "desc": "API untuk melakukan bypass dan meng-extrak direct download link dari URL Mediafire beserta informasi file nama file, ukuran, tipe MIME",
+    "folder": "Downloader",
+    "subfolder": "alok",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/mediafire/?url=https://www.mediafire.com/file/v7rlj8ngxj1621f/Nexa_Bot_v1.0.0.zip/file",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url nya "
+      }
+    ],
+    "updated_at": "2026-07-27T04:48:21+00:00",
+    "created_at": "2026-07-27T04:48:21+00:00",
+    "catalogId": "ep035"
+  },
+  {
+    "name": "pinterest ",
+    "m": "GET",
+    "path": "/api/pin",
+    "desc": "API untuk mengunduh media dari link Pinterest (berupa gambar kualitas tinggi atau video MP3/MP4) beserta detail metadata postingan.",
+    "folder": "Downloader",
+    "subfolder": "pinv2",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/pin/?url=https://pin.it/5TJ3CCrNF",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url kamu"
+      }
+    ],
+    "id": "custom_1785134286_4890",
+    "updated_at": "2026-07-27T06:38:06+00:00",
+    "created_at": "2026-07-27T06:38:06+00:00",
+    "catalogId": "ep036"
+  },
+  {
+    "id": "custom_1787368331_3795",
+    "name": "snapsave ig",
+    "m": "GET",
+    "path": "/api/sanapsave",
+    "desc": "api ini untuk mengambil meta data dari snapsave",
+    "folder": "Downloader",
+    "subfolder": "snapsave",
+    "outputType": "",
+    "ex": "https://api.nexaadev.my.id/api/sanapsave?url=https://www.instagram.com/reel/Dbzp_KGTxOI/?igsi=OXdiMmlpMjIyeDc5",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url instagram"
+      }
+    ],
+    "updated_at": "2026-08-28T21:08:22+00:00",
+    "created_at": "2026-08-28T21:08:22+00:00",
+    "catalogId": "ep037"
+  },
+  {
+    "id": "custom_1784578651_4610",
+    "name": "snaptik",
+    "m": "GET",
+    "path": "/api/snaptik/",
+    "desc": "Endpoint pengunduh video TikTok tanpa watermark untuk mengunduh media dan audio secara instan.",
+    "folder": "Downloader",
+    "subfolder": "snaptik",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/snaptik/?url=https://vt.tiktok.com/ZSXXAnbkc/",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url link vidio tiktok"
+      }
+    ],
+    "updated_at": "2026-07-20T20:19:36+00:00",
+    "created_at": "2026-07-20T20:19:36+00:00",
+    "catalogId": "ep038"
+  },
+  {
+    "name": "Spotify ",
+    "m": "GET",
+    "path": "/api/spotify",
+    "desc": "Mengambil metadata lengkap lagu Spotify beserta direct link unduhan MP3 dalam format JSON.",
+    "folder": "Downloader",
+    "subfolder": "spotify",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/spotify/?url=https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=jEdF4DG3R2ShotykgqJE4A&utm_source=copy-link",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=jEdF4DG3R2ShotykgqJE4A&utm_source=copy-link"
+      }
+    ],
+    "id": "custom_1785072413_9881",
+    "updated_at": "2026-07-26T13:26:53+00:00",
+    "created_at": "2026-07-26T13:26:53+00:00",
+    "catalogId": "ep039"
+  },
+  {
+    "name": "Spotify download v2",
+    "m": "GET",
+    "path": "/api/spotify",
+    "desc": "Api ini untuk mendownload Atau untuk mengambil meta data mp3",
+    "folder": "Downloader",
+    "subfolder": "Spotifydl",
+    "outputType": "",
+    "ex": "https://api.nexaadev.my.id/api/spotify?url=https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=XtbNv3PmQ4Gtbz8Ts1tIAQ&utm_source=copy-link&sci=spotify%3Acard-config%3A4RqxR7Vh1ZgcevwExir9GJ",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url spotify"
+      }
+    ],
+    "id": "custom_1787366506_6675",
+    "updated_at": "2026-08-22T02:41:46+00:00",
+    "created_at": "2026-08-22T02:41:46+00:00",
+    "catalogId": "ep040"
+  },
+  {
+    "name": "spotify play",
+    "m": "GET",
+    "path": "/api/spotifyplay",
+    "desc": "Endpoint pencarian dan pemutar lagu Spotify untuk mengunduh audio serta mengambil metadata musik secara instan.",
+    "folder": "Downloader",
+    "subfolder": "spotifyplay",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/spotifyplay/?q=karna+kamu",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "karna kamu"
+      }
+    ],
+    "id": "custom_1784549869_3234",
+    "updated_at": "2026-07-20T12:17:49+00:00",
+    "created_at": "2026-07-20T12:17:49+00:00",
+    "catalogId": "ep041"
+  },
+  {
+    "name": "Spotify playlist",
+    "m": "GET",
+    "path": "/api/spotifypl",
+    "desc": "API untuk mengambil detail metadata lagu Spotify (judul, artis, thumbnail, durasi, preview audio) beserta direct link unduhan MP3 secara otomatis.",
+    "folder": "Downloader",
+    "subfolder": "Spotifyplaylist",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/spotifypl/?url=https://open.spotify.com/playlist/6Tp1XghEcLfAsZfwHZA6dK?si=FtE2Y1DsSKiy5csMSmrYXw&utm_source=copy-link&pi=TXUyK1-lRRKQC",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url playlist"
+      }
+    ],
+    "id": "custom_1785292774_7205",
+    "updated_at": "2026-07-29T02:39:34+00:00",
+    "created_at": "2026-07-29T02:39:34+00:00",
+    "catalogId": "ep042"
+  },
+  {
+    "name": "YouTube playlist ",
+    "m": "GET",
+    "path": "/api/ytplaylist",
+    "desc": "API untuk mengamankan daftar seluruh video dari playlist YouTube secara sekaligus, lengkap dengan informasi channel, total durasi, daftar item, serta link unduhan.",
+    "folder": "Downloader",
+    "subfolder": "YouTube playlist",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ytplaylist/?url=https://youtube.com/playlist?list=PLnQvfeVegcJbjCnML6FdusK-rl-oDRMXJ&si=5Y98HQ_qMhovarVr",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url playlist"
+      }
+    ],
+    "id": "custom_1785293294_3057",
+    "updated_at": "2026-07-29T02:48:14+00:00",
+    "created_at": "2026-07-29T02:48:14+00:00",
+    "catalogId": "ep043"
+  },
+  {
+    "id": "custom_1784550694_2828",
+    "name": "yt play",
+    "m": "GET",
+    "path": "/api/ytplay",
+    "desc": "Endpoint pencarian dan pemutar media YouTube untuk mengunduh audio serta mengambil metadata secara instan.",
+    "folder": "Downloader",
+    "subfolder": "ytplay",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ytplay/?q=alone",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "cocomelon"
+      }
+    ],
+    "updated_at": "2026-09-08T01:54:17+00:00",
+    "created_at": "2026-09-08T01:54:17+00:00",
+    "catalogId": "ep044"
+  },
+  {
+    "id": "custom_1785293718_6414",
+    "name": "yt video",
+    "m": "GET",
+    "path": "/api/ytvideo",
+    "desc": "API untuk melakukan pencarian video berdasarkan kata kunci (query) beserta informasi detail video dan direct link unduhan secara otomatis",
+    "folder": "Downloader",
+    "subfolder": "ytvideo",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ytvideo/?q=cacamelon",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "masukan judul video "
+      }
+    ],
+    "updated_at": "2026-07-29T02:55:41+00:00",
+    "created_at": "2026-07-29T02:55:41+00:00",
+    "catalogId": "ep045"
+  },
+  {
+    "name": "ytmp4",
+    "m": "GET",
+    "path": "/api/ytmp4",
+    "desc": "API untuk mengunduh video atau audio dari YouTube dengan kustomisasi tipe media (video/audio) dan pilihan kualitas resolusi (360p, 720p, 1080p) beserta metadata lengkap video.",
+    "folder": "Downloader",
+    "subfolder": "ytmp4",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/ytmp4/?url=https://youtu.be/gQmLrZw5Jlg?si=LZWsf2kY90HG9nEo&type=video&quality=720p",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "masukan link yt"
+      },
+      {
+        "n": "type",
+        "t": "string",
+        "r": 0,
+        "d": "video/audio"
+      },
+      {
+        "n": "quality",
+        "t": "string",
+        "r": 0,
+        "d": "720p"
+      }
+    ],
+    "id": "custom_1785292336_2504",
+    "updated_at": "2026-07-29T02:32:16+00:00",
+    "created_at": "2026-07-29T02:32:16+00:00",
+    "catalogId": "ep046"
+  },
+  {
+    "id": "as5",
+    "name": "Animasu Completed",
+    "m": "GET",
+    "path": "/animasu",
+    "folder": "Anime",
+    "subfolder": "Animasu",
+    "desc": "Lihat daftar anime yang sudah tamat/selesai tayang dari Animasu.",
+    "params": [
+      {
+        "n": "completed",
+        "t": "number",
+        "r": 1,
+        "d": "Nilai 1."
+      },
+      {
+        "n": "page",
+        "t": "number",
+        "r": 1,
+        "d": "Nomor halaman."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/animasu?completed=1&page=1",
+    "catalogId": "ep047"
+  },
+  {
+    "id": "as2",
+    "name": "Animasu Details",
+    "m": "GET",
+    "path": "/animasu",
+    "folder": "Anime",
+    "subfolder": "Animasu",
+    "desc": "Dapatkan info detail genre, skor, episode dan sinopsis anime Animasu.",
+    "params": [
+      {
+        "n": "details",
+        "t": "string",
+        "r": 1,
+        "d": "URL detail anime."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/animasu?details=https://v1.animasu.work/anime/jujutsu-kaisen-subtitle-indo/",
+    "catalogId": "ep048"
+  },
+  {
+    "id": "as4",
+    "name": "Animasu Ongoing",
+    "m": "GET",
+    "path": "/animasu",
+    "folder": "Anime",
+    "subfolder": "Animasu",
+    "desc": "Lihat anime-anime ongoing yang sedang rilis setiap minggunya.",
+    "params": [
+      {
+        "n": "ongoing",
+        "t": "number",
+        "r": 1,
+        "d": "Nilai 1."
+      },
+      {
+        "n": "page",
+        "t": "number",
+        "r": 1,
+        "d": "Halaman list."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/animasu?ongoing=1&page=1",
+    "catalogId": "ep049"
+  },
+  {
+    "id": "as6",
+    "name": "Animasu Popular",
+    "m": "GET",
+    "path": "/animasu",
+    "folder": "Anime",
+    "subfolder": "Animasu",
+    "desc": "Lihat daftar anime terpopuler versi Animasu.",
+    "params": [
+      {
+        "n": "popular",
+        "t": "number",
+        "r": 1,
+        "d": "Nilai 1."
+      },
+      {
+        "n": "page",
+        "t": "number",
+        "r": 1,
+        "d": "Nomor halaman."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/animasu?popular=1&page=1",
+    "catalogId": "ep050"
+  },
+  {
+    "id": "as7",
+    "name": "Animasu Schedule",
+    "m": "GET",
+    "path": "/animasu",
+    "folder": "Anime",
+    "subfolder": "Animasu",
+    "desc": "Lihat jadwal tayang mingguan anime dari Animasu.",
+    "params": [
+      {
+        "n": "schedule",
+        "t": "number",
+        "r": 1,
+        "d": "Nilai 1."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/animasu?schedule=1",
+    "catalogId": "ep051"
+  },
+  {
+    "id": "as1",
+    "name": "Animasu Search",
+    "m": "GET",
+    "path": "/animasu",
+    "folder": "Anime",
+    "subfolder": "Animasu",
+    "desc": "Mencari list anime sub-indo melalaui database Animasu.",
+    "params": [
+      {
+        "n": "search",
+        "t": "string",
+        "r": 1,
+        "d": "Judul anime."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/animasu?search=jujutsu+kaisen",
+    "catalogId": "ep052"
+  },
+  {
+    "id": "as3",
+    "name": "Animasu Stream",
+    "m": "GET",
+    "path": "/animasu",
+    "folder": "Anime",
+    "subfolder": "Animasu",
+    "desc": "Ambil link sreaming video Animasu resolusi 360p-720p.",
+    "params": [
+      {
+        "n": "stream",
+        "t": "string",
+        "r": 1,
+        "d": "URL episode streaming."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/animasu?stream=https://v1.animasu.work/nonton-jujutsu-kaisen-tv-episode-10-indo/",
+    "catalogId": "ep053"
+  },
+  {
+    "id": "a5",
+    "name": "Animekuindo Completed",
+    "m": "GET",
+    "path": "/anime",
+    "folder": "Anime",
+    "subfolder": "Animekuindo",
+    "desc": "Menampilkan daftar anime tamat terbaru.",
+    "params": [
+      {
+        "n": "completed",
+        "t": "number",
+        "r": 1,
+        "d": "Selalu diisi nilai 1."
+      },
+      {
+        "n": "page",
+        "t": "number",
+        "r": 1,
+        "d": "Nomor halaman."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/anime?completed=1&page=1",
+    "catalogId": "ep054"
+  },
+  {
+    "id": "a2",
+    "name": "Animekuindo Details",
+    "m": "GET",
+    "path": "/anime",
+    "folder": "Anime",
+    "subfolder": "Animekuindo",
+    "desc": "Dapatkan informasi lengkap, synopsis, genre, dan daftar episode dari Animekuindo.",
+    "params": [
+      {
+        "n": "details",
+        "t": "string",
+        "r": 1,
+        "d": "URL detail anime dari hasil pencarian."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/anime?details=https://s2.animekuindo.life/anime/oshi-no-ko-season-3-subtitle-indonesia/",
+    "catalogId": "ep055"
+  },
+  {
+    "id": "a4",
+    "name": "Animekuindo Recent",
+    "m": "GET",
+    "path": "/anime",
+    "folder": "Anime",
+    "subfolder": "Animekuindo",
+    "desc": "Menampilkan daftar update episode anime subtitle Indonesia terbaru.",
+    "params": [
+      {
+        "n": "recent",
+        "t": "number",
+        "r": 1,
+        "d": "Selalu diisi nilai 1."
+      },
+      {
+        "n": "page",
+        "t": "number",
+        "r": 1,
+        "d": "Nomor halaman pencarian."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/anime?recent=1&page=1",
+    "catalogId": "ep056"
+  },
+  {
+    "id": "a1",
+    "name": "Animekuindo Search",
+    "m": "GET",
+    "path": "/anime",
+    "folder": "Anime",
+    "subfolder": "Animekuindo",
+    "desc": "Mencari judul anime subtitle Indonesia melalui database Animekuindo.",
+    "params": [
+      {
+        "n": "search",
+        "t": "string",
+        "r": 1,
+        "d": "Kata kunci judul anime."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/anime?search=one+piece",
+    "catalogId": "ep057"
+  },
+  {
+    "id": "a3",
+    "name": "Animekuindo Stream",
+    "m": "GET",
+    "path": "/anime",
+    "folder": "Anime",
+    "subfolder": "Animekuindo",
+    "desc": "Dapatkan link streaming server video untuk episode tertentu.",
+    "params": [
+      {
+        "n": "stream",
+        "t": "string",
+        "r": 1,
+        "d": "URL streaming episode anime."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/anime?stream=https://s2.animekuindo.life/oshi-no-ko-season-3-episode-7-subtitle-indonesia/",
+    "catalogId": "ep058"
+  },
+  {
+    "id": "db3",
+    "name": "Dramabox Browse",
+    "m": "GET",
+    "path": "/api/dramabox/browse",
+    "folder": "Anime",
+    "subfolder": "Dramabox",
+    "desc": "Menampilkan daftar drama yang difilter berdasarkan kategori beserta paginasi.",
+    "params": [
+      {
+        "n": "typeId",
+        "t": "string",
+        "r": 1,
+        "d": "ID Kategori/Genre."
+      },
+      {
+        "n": "page",
+        "t": "number",
+        "r": 1,
+        "d": "Nomor halaman pencarian."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/dramabox/browse?typeId=1&page=1",
+    "catalogId": "ep059"
+  },
+  {
+    "id": "db2",
+    "name": "Dramabox Categories",
+    "m": "GET",
+    "path": "/api/dramabox/categories",
+    "folder": "Anime",
+    "subfolder": "Dramabox",
+    "desc": "Mengambil daftar lengkap kategori atau genre yang tersedia di sistem.",
+    "params": [],
+    "ex": "https://api.nexaadev.my.id/api/dramabox/categories",
+    "catalogId": "ep060"
+  },
+  {
+    "id": "db5",
+    "name": "Dramabox Details",
+    "m": "GET",
+    "path": "/api/dramabox/detail",
+    "folder": "Anime",
+    "subfolder": "Dramabox",
+    "desc": "Mengambil informasi lengkap drama seperti sinopsis, rating, pemeran, dan daftar episode.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "Link URL halaman drama."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/dramabox/detail?url=https://www.dramaboxapp.com/detail/...",
+    "catalogId": "ep061"
+  },
+  {
+    "id": "db1",
+    "name": "Dramabox Home",
+    "m": "GET",
+    "path": "/api/dramabox/home",
+    "folder": "Anime",
+    "subfolder": "Dramabox",
+    "desc": "Menyajikan data beranda seperti slider banner utama, Trending Now, dan New Releases.",
+    "params": [],
+    "ex": "https://api.nexaadev.my.id/api/dramabox/home",
+    "catalogId": "ep062"
+  },
+  {
+    "id": "db4",
+    "name": "Dramabox Search",
+    "m": "GET",
+    "path": "/api/dramabox/search",
+    "folder": "Anime",
+    "subfolder": "Dramabox",
+    "desc": "Mencari judul drama, film, atau series berdasarkan kata kunci.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 1,
+        "d": "Kata kunci pencarian."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/dramabox/search?q=ceo",
+    "catalogId": "ep063"
+  },
+  {
+    "id": "db6",
+    "name": "Dramabox Video",
+    "m": "GET",
+    "path": "/api/dramabox/video",
+    "folder": "Anime",
+    "subfolder": "Dramabox",
+    "desc": "Mengekstrak dan mengambil direct link pemutaran video (streaming) atau format m3u8/mp4.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "Link URL episode spesifik."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/dramabox/video?url=https://www.dramaboxapp.com/episode/...",
+    "catalogId": "ep064"
+  },
+  {
+    "name": "komik indo daftar ",
+    "m": "GET",
+    "path": "/komik/daftar",
+    "desc": "ambil daftar komik indo",
+    "folder": "Anime",
+    "subfolder": "komikindo",
+    "outputType": "",
+    "ex": "https://apii.nexadev.my.id/komik/daftar?page=1",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "page",
+        "t": "string",
+        "r": 0,
+        "d": "1"
+      }
+    ],
+    "id": "custom_1784240037_6387",
+    "updated_at": "2026-07-16T22:13:57+00:00",
+    "created_at": "2026-07-16T22:13:57+00:00",
+    "catalogId": "ep065"
+  },
+  {
+    "name": "komik indo details",
+    "m": "GET",
+    "path": "/komik/detail",
+    "desc": "Dapatkan info detail genre, skor, episode dan sinopsis komik indo.",
+    "folder": "Anime",
+    "subfolder": "komik indo",
+    "outputType": "",
+    "ex": "https://apii.nexadev.my.id/komik/detail?slug=the-great-ruler",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "slug",
+        "t": "string",
+        "r": 0,
+        "d": "the-great-ruler"
+      }
+    ],
+    "id": "custom_1784240149_8544",
+    "updated_at": "2026-07-16T22:15:49+00:00",
+    "created_at": "2026-07-16T22:15:49+00:00",
+    "catalogId": "ep066"
+  },
+  {
+    "name": "komik indo page",
+    "m": "GET",
+    "path": "/komik",
+    "desc": "ambil page dari komik indo",
+    "folder": "Anime",
+    "subfolder": "komikindo",
+    "outputType": "",
+    "ex": "https://apii.nexadev.my.id/komik?page=2",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "page",
+        "t": "string",
+        "r": 0,
+        "d": "2"
+      }
+    ],
+    "id": "custom_1784240212_3024",
+    "updated_at": "2026-07-16T22:16:52+00:00",
+    "created_at": "2026-07-16T22:16:52+00:00",
+    "catalogId": "ep067"
+  },
+  {
+    "id": "custom_1784239677_7529",
+    "name": "Komik indo search",
+    "m": "GET",
+    "path": "/komik",
+    "desc": "Mencari judul komik subtitle Indonesia melalui database komik indo",
+    "folder": "Anime",
+    "subfolder": "komikindo",
+    "outputType": "",
+    "ex": "https://apii.nexadev.my.id/komik?q=nano",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "nano machine"
+      }
+    ],
+    "updated_at": "2026-07-16T22:08:57+00:00",
+    "created_at": "2026-07-16T22:08:57+00:00",
+    "catalogId": "ep068"
+  },
+  {
+    "name": "komik indo stream ",
+    "m": "GET",
+    "path": "/komik/stream",
+    "desc": "Dapatkan link streaming server gambar untuk episode tertentu",
+    "folder": "Anime",
+    "subfolder": "komikindo",
+    "outputType": "",
+    "ex": "https://apii.nexadev.my.id/komik/stream?slug=the-great-ruler-chapter-304",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "slug",
+        "t": "string",
+        "r": 0,
+        "d": "the-great-ruler-chapter-304"
+      }
+    ],
+    "id": "custom_1784239874_7804",
+    "updated_at": "2026-07-16T22:11:14+00:00",
+    "created_at": "2026-07-16T22:11:14+00:00",
+    "catalogId": "ep069"
+  },
+  {
+    "id": "custom_1784239968_5596",
+    "name": "komik indo update ",
+    "m": "GET",
+    "path": "/komik/update",
+    "desc": "dapatkan update komik indo ",
+    "folder": "Anime",
+    "subfolder": "komikindo",
+    "outputType": "",
+    "ex": "https://apii.nexadev.my.id/komik/update?page=1",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "page",
+        "t": "string",
+        "r": 0,
+        "d": "1"
+      }
+    ],
+    "updated_at": "2026-07-16T22:12:57+00:00",
+    "created_at": "2026-07-16T22:12:57+00:00",
+    "catalogId": "ep070"
+  },
+  {
+    "id": "rs3",
+    "name": "Reelshort Browse",
+    "m": "GET",
+    "path": "/api/reelshort/browse",
+    "folder": "Anime",
+    "subfolder": "Reelshort",
+    "desc": "Menampilkan daftar konten Reelshort berdasarkan kategori/tagId tertentu beserta paginasi.",
+    "params": [
+      {
+        "n": "tagId",
+        "t": "string",
+        "r": 1,
+        "d": "ID Kategori atau Tag dari Reelshort."
+      },
+      {
+        "n": "page",
+        "t": "number",
+        "r": 1,
+        "d": "Nomor halaman pencarian."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/reelshort/browse?tagId=1&page=1",
+    "catalogId": "ep071"
+  },
+  {
+    "id": "rs2",
+    "name": "Reelshort Categories",
+    "m": "GET",
+    "path": "/api/reelshort/categories",
+    "folder": "Anime",
+    "subfolder": "Reelshort",
+    "desc": "Mengambil daftar lengkap kategori atau genre (tagId) dari Reelshort.",
+    "params": [],
+    "ex": "https://api.nexaadev.my.id/api/reelshort/categories",
+    "catalogId": "ep072"
+  },
+  {
+    "id": "rs5",
+    "name": "Reelshort Details",
+    "m": "GET",
+    "path": "/api/reelshort/detail",
+    "folder": "Anime",
+    "subfolder": "Reelshort",
+    "desc": "Mengambil informasi lengkap konten Reelshort (sinopsis, daftar episode, dll).",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "Book ID atau link URL drama Reelshort."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/reelshort/detail?url=12345",
+    "catalogId": "ep073"
+  },
+  {
+    "id": "rs1",
+    "name": "Reelshort Home",
+    "m": "GET",
+    "path": "/api/reelshort/home",
+    "folder": "Anime",
+    "subfolder": "Reelshort",
+    "desc": "Menyajikan data beranda Reelshort seperti trending, rekomendasi, dan rilisan terbaru.",
+    "params": [],
+    "ex": "https://api.nexaadev.my.id/api/reelshort/home",
+    "catalogId": "ep074"
+  },
+  {
+    "id": "rs4",
+    "name": "Reelshort Search",
+    "m": "GET",
+    "path": "/api/reelshort/search",
+    "folder": "Anime",
+    "subfolder": "Reelshort",
+    "desc": "Mencari judul series atau film Reelshort berdasarkan kata kunci.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 1,
+        "d": "Kata kunci pencarian."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/reelshort/search?q=ceo",
+    "catalogId": "ep075"
+  },
+  {
+    "id": "rs6",
+    "name": "Reelshort Video",
+    "m": "GET",
+    "path": "/api/reelshort/video",
+    "folder": "Anime",
+    "subfolder": "Reelshort",
+    "desc": "Mengekstrak direct link pemutaran video (streaming) untuk episode Reelshort.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "Link URL episode Reelshort spesifik."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/reelshort/video?url=https://api.nexaadev.my.id/api/reelshort/video?url=...",
+    "catalogId": "ep076"
+  },
+  {
+    "id": "cv1",
+    "name": "Brat Canvas",
+    "m": "GET",
+    "path": "/api/canvas/brat",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Ubah teks menjadi format stiker/gambar bergaya tren minimalis Brat.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Kata-kata atau kalimat teks."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/api/canvas/brat?text=halo%20nexa",
+    "catalogId": "ep077",
+    "subfolder": ""
+  },
+  {
+    "id": "cv6",
+    "name": "Brat Patrick",
+    "m": "GET",
+    "path": "/bratpatrick",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Gambar stiker Brat bergaya meme merah muda Patrick Star.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi teks stiker."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/bratpatrick?text=hallo+gua+nexa",
+    "catalogId": "ep078",
+    "subfolder": ""
+  },
+  {
+    "id": "cv2",
+    "name": "Bratvid Canvas",
+    "m": "GET",
+    "path": "/api/canvas/bratvid",
+    "folder": "Canvas",
+    "outputType": "video",
+    "desc": "Ubah teks menjadi video klip animasi minimalis berlatar belakang neon hijau Brat.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi teks sticker."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/api/canvas/bratvid?text=halo%20nexa",
+    "catalogId": "ep079",
+    "subfolder": ""
+  },
+  {
+    "id": "cv7",
+    "name": "Bratvid Patrick",
+    "m": "GET",
+    "path": "/bratpatrick/video",
+    "folder": "Canvas",
+    "outputType": "video",
+    "desc": "Video loop neon hijau Brat berisikan animasi Patrick Star.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Kalimat teks."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/bratpatrick/video?text=hallo+gua+nexa",
+    "catalogId": "ep080",
+    "subfolder": ""
+  },
+  {
+    "name": "bratvid2",
+    "m": "GET",
+    "path": "/bratvid2",
+    "desc": "generate bratvide versi 2",
+    "folder": "Canvas",
+    "subfolder": "bratvid2",
+    "outputType": "mp4",
+    "ex": "https://apii.nexadev.my.id/bratvid2?text=nexa+nich😱",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 0,
+        "d": ""
+      }
+    ],
+    "id": "custom_1788025066_5178",
+    "updated_at": "2026-08-29T17:37:46+00:00",
+    "created_at": "2026-08-29T17:37:46+00:00",
+    "catalogId": "ep081"
+  },
+  {
+    "id": "cv13",
+    "name": "Fake Call",
+    "m": "GET",
+    "path": "/fakecall",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Mockup tampilan layar panggilan masuk (fake incoming call) dengan foto profil dan durasi kustom.",
+    "params": [
+      {
+        "n": "ppurl",
+        "t": "string",
+        "r": 1,
+        "d": "URL foto profil penelepon."
+      },
+      {
+        "n": "name",
+        "t": "string",
+        "r": 1,
+        "d": "Nama penelepon yang ditampilkan."
+      },
+      {
+        "n": "duration",
+        "t": "string",
+        "r": 1,
+        "d": "Durasi panggilan (Format: MM.SS)."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/fakecall?ppurl=https://clooud.my.id/uploder/uploads/SggiMA.jpeg&name=NexaDev&duration=19.45",
+    "catalogId": "ep082",
+    "subfolder": ""
+  },
+  {
+    "name": "Fake ff duo",
+    "m": "GET",
+    "path": "/fakeffduo",
+    "desc": "buat Fake ff duo mu sekarang 🔥",
+    "folder": "Canvas",
+    "subfolder": "Fakeffduo",
+    "outputType": "",
+    "ex": "https://apii.nexadev.my.id/fakeffduo?nickname1=Nexa%20%F0%9F%98%A0&nickname2=Xy%20Pemula",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "nickname1",
+        "t": "string",
+        "r": 0,
+        "d": "NexaDev"
+      },
+      {
+        "n": "nickname2",
+        "t": "string",
+        "r": 0,
+        "d": "Xy Pemula"
+      }
+    ],
+    "id": "custom_1784291589_6194",
+    "updated_at": "2026-07-17T12:33:09+00:00",
+    "created_at": "2026-07-17T12:33:09+00:00",
+    "catalogId": "ep083"
+  },
+  {
+    "id": "cv10",
+    "name": "Fake FF Profile v2",
+    "m": "GET",
+    "path": "/fakeff",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Mockup profil game Free Fire versi 2 dengan dukungan karakter unicode pada nickname.",
+    "params": [
+      {
+        "n": "usn",
+        "t": "string",
+        "r": 1,
+        "d": "Nickname/username yang ditampilkan pada profil."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/fakeff?usn=NexaDev",
+    "catalogId": "ep084",
+    "subfolder": ""
+  },
+  {
+    "id": "custom_1784532944_6384",
+    "name": "fake profile ig",
+    "m": "GET",
+    "path": "/fakeigprofile",
+    "desc": "buat Fake Ig Profile mu Sekarang juga",
+    "folder": "Canvas",
+    "subfolder": "fakeig",
+    "outputType": "binary-png",
+    "ex": "https://apii.nexadev.my.id/fakeigprofile?ppurl=&username=&postingan=&mengikuti=&pengikut=&bio=",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "ppurl",
+        "t": "string",
+        "r": 0,
+        "d": "https://clooud.my.id/uploder/uploads/Lpwzuc.jpg"
+      },
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "Nexa"
+      },
+      {
+        "n": "postingan",
+        "t": "string",
+        "r": 0,
+        "d": "2"
+      },
+      {
+        "n": "mengikuti",
+        "t": "string",
+        "r": 0,
+        "d": "0"
+      },
+      {
+        "n": "pengikut",
+        "t": "string",
+        "r": 0,
+        "d": "1.222"
+      },
+      {
+        "n": "bio",
+        "t": "string",
+        "r": 0,
+        "d": "Hello, I'm Nexa"
+      }
+    ],
+    "updated_at": "2026-07-20T08:03:20+00:00",
+    "created_at": "2026-07-20T08:03:20+00:00",
+    "catalogId": "ep085"
+  },
+  {
+    "id": "cv12",
+    "name": "Instagram Story Image",
+    "m": "GET",
+    "path": "/igstory-img",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Mockup tampilan Instagram Story lengkap dengan foto, avatar, dan nama pengguna.",
+    "params": [
+      {
+        "n": "photo",
+        "t": "string",
+        "r": 1,
+        "d": "URL foto utama story."
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 1,
+        "d": "URL foto profil/avatar pengguna."
+      },
+      {
+        "n": "usn",
+        "t": "string",
+        "r": 1,
+        "d": "Username pengguna."
+      },
+      {
+        "n": "name",
+        "t": "string",
+        "r": 1,
+        "d": "Nama tampilan (display name) pengguna."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/igstory-img?photo=https://clooud.my.id/uploder/uploads/jaoCqc.jpeg&avatar=https://clooud.my.id/uploder/uploads/Mbasnl.jpeg&usn=nexadev&name=Nexa",
+    "catalogId": "ep086",
+    "subfolder": ""
+  },
+  {
+    "id": "cv8",
+    "name": "IQC (Islamic Quote Card)",
+    "m": "GET",
+    "path": "/api/canvas/iqc",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Buat quote card islami dari teks menjadi gambar siap bagikan.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi teks quote."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/api/canvas/iqc?text=hasbunallah+wa+nikmal+wakil",
+    "catalogId": "ep087",
+    "subfolder": ""
+  },
+  {
+    "id": "cv11",
+    "name": "IQC Dark",
+    "m": "GET",
+    "path": "/iqc-dark",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Quote card bergaya chat pertanyaan dengan tema gelap (dark mode), lengkap dengan gambar dan waktu.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi teks pertanyaan/quote."
+      },
+      {
+        "n": "time",
+        "t": "string",
+        "r": 0,
+        "d": "Waktu yang ditampilkan (Format: HH.MM)."
+      },
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "URL gambar pendukung yang ditampilkan pada card."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/iqc-dark?text=aku+lucu+gak%3F&time=01.27&url=https://clooud.my.id/uploder/uploads/fRkHHO.jpeg",
+    "catalogId": "ep088",
+    "subfolder": ""
+  },
+  {
+    "id": "cv5",
+    "name": "Nokia Canvas",
+    "m": "GET",
+    "path": "/nokia",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Mockup layar ponsel legendaris Nokia jadul berisikan sms kustom.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi SMS teks yang masuk."
+      },
+      {
+        "n": "from",
+        "t": "string",
+        "r": 1,
+        "d": "Pengirim pesan SMS."
+      },
+      {
+        "n": "date",
+        "t": "string",
+        "r": 0,
+        "d": "Tanggal opsional (Format: DD/MM/YYYY)."
+      },
+      {
+        "n": "time",
+        "t": "string",
+        "r": 0,
+        "d": "Waktu opsional (Format: HH:MM)."
+      },
+      {
+        "n": "title",
+        "t": "string",
+        "r": 0,
+        "d": "Judul header layar."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/nokia?text=kata-kata+hari+ini&from=nexa&date=08/06/2026&time=12:00&title=nexa",
+    "catalogId": "ep089",
+    "subfolder": ""
+  },
+  {
+    "id": "cv15",
+    "name": "QCWA (Quote Card WhatsApp)",
+    "m": "GET",
+    "path": "/qcwa",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Quote card bergaya chat WhatsApp tanpa lampiran gambar, mendukung mode terang/gelap.",
+    "params": [
+      {
+        "n": "usn",
+        "t": "string",
+        "r": 1,
+        "d": "Nama kontak pengirim pesan."
+      },
+      {
+        "n": "phone",
+        "t": "string",
+        "r": 1,
+        "d": "Nomor telepon kontak (format internasional)."
+      },
+      {
+        "n": "pp",
+        "t": "string",
+        "r": 1,
+        "d": "URL foto profil kontak."
+      },
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi teks pesan chat."
+      },
+      {
+        "n": "mode",
+        "t": "string",
+        "r": 0,
+        "d": "Tema tampilan: light atau dark (default: light)."
+      },
+      {
+        "n": "tag",
+        "t": "string",
+        "r": 0,
+        "d": "Label/tag tambahan pada gambar."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/qcwa?usn=raja+iblis&phone=6287876034799&pp=https://clooud.my.id/uploder/uploads/BJLnsy.png&text=btw+ini+my+bini+gw&mode=light&tag=ara-ara",
+    "catalogId": "ep090",
+    "subfolder": ""
+  },
+  {
+    "id": "cv14",
+    "name": "QCWA (Quote Card WhatsApp) + Gambar",
+    "m": "GET",
+    "path": "/qcwa",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Quote card bergaya chat WhatsApp lengkap dengan lampiran gambar, mendukung mode terang/gelap.",
+    "params": [
+      {
+        "n": "usn",
+        "t": "string",
+        "r": 1,
+        "d": "Nama kontak pengirim pesan."
+      },
+      {
+        "n": "phone",
+        "t": "string",
+        "r": 1,
+        "d": "Nomor telepon kontak (format internasional)."
+      },
+      {
+        "n": "pp",
+        "t": "string",
+        "r": 1,
+        "d": "URL foto profil kontak."
+      },
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi teks pesan chat."
+      },
+      {
+        "n": "mode",
+        "t": "string",
+        "r": 0,
+        "d": "Tema tampilan: light atau dark (default: light)."
+      },
+      {
+        "n": "tag",
+        "t": "string",
+        "r": 0,
+        "d": "Label/tag tambahan pada gambar."
+      },
+      {
+        "n": "img",
+        "t": "string",
+        "r": 1,
+        "d": "URL gambar lampiran yang disertakan dalam chat."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/qcwa?usn=raja+iblis&phone=6287876034799&pp=https://clooud.my.id/uploder/uploads/BJLnsy.png&text=btw+ini+my+bini+gw&mode=light&tag=ara-ara&img=https://clooud.my.id/uploder/uploads/MRzOni.jpg",
+    "catalogId": "ep091",
+    "subfolder": ""
+  },
+  {
+    "id": "cv9",
+    "name": "TTQC (TikTok Quote Card)",
+    "m": "GET",
+    "path": "/ttqc",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Buat quote card bergaya tangkapan layar komentar/chat TikTok.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "URL foto profil pengguna."
+      },
+      {
+        "n": "name",
+        "t": "string",
+        "r": 1,
+        "d": "Nama pengguna yang ditampilkan."
+      },
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Isi teks quote/komentar."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/ttqc?url=https://clooud.my.id/uploder/uploads/fRkHHO.jpeg&name=NexaDev&text=halo+gua+nexa",
+    "catalogId": "ep092",
+    "subfolder": ""
+  },
+  {
+    "id": "cv3",
+    "name": "WMP1 Canvas",
+    "m": "GET",
+    "path": "/wmp1",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Render teks dalam visualisasi retro bergaya pemutar musik Windows Media Player v1.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Teks lirik, gunakan pembatas \"|\" untuk baris baru."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/wmp1?text=ngapain+cemburu|kan|cuman+sebatas|teman",
+    "catalogId": "ep093",
+    "subfolder": ""
+  },
+  {
+    "id": "cv4",
+    "name": "WMP2 Canvas",
+    "m": "GET",
+    "path": "/wmp2",
+    "folder": "Canvas",
+    "outputType": "image",
+    "desc": "Render teks visualisasi audio bergaya Windows Media Player v2 retro.",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 1,
+        "d": "Lirik teks dipisah dengan karakter \"|\"."
+      }
+    ],
+    "ex": "https://apii.nexadev.my.id/wmp2?text=ngapain+cemburu|kan|cuman+sebatas|teman",
+    "catalogId": "ep094",
+    "subfolder": ""
+  },
+  {
+    "id": "custom_1784547223_8158",
+    "name": "quote bucin",
+    "m": "GET",
+    "path": "/api/random/quotebucin",
+    "desc": "Endpoint untuk mendapatkan kata-kata romantis/bucin acak dalam format JSON.",
+    "folder": "Random",
+    "subfolder": "quotebucin",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/random/quotebucin/",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [],
+    "updated_at": "2026-07-20T11:34:41+00:00",
+    "created_at": "2026-07-20T11:34:41+00:00",
+    "catalogId": "ep095"
+  },
+  {
+    "id": "r2",
+    "name": "Random Anime",
+    "m": "GET",
+    "path": "/api/random/anime",
+    "folder": "Random",
+    "outputType": "image",
+    "desc": "Mengambil gambar wallpaper / fanart anime acak kualitas HD.",
+    "params": [],
+    "ex": "https://api.nexadev.my.id/api/random/anime",
+    "catalogId": "ep096",
+    "subfolder": ""
+  },
+  {
+    "id": "r1",
+    "name": "Random PAP",
+    "m": "GET",
+    "path": "/api/random/pap",
+    "folder": "Random",
+    "outputType": "image",
+    "desc": "Mengambil gambar PAP / foto kasual acak estetis dari server.",
+    "params": [],
+    "ex": "https://api.nexadev.my.id/api/random/pap",
+    "catalogId": "ep097",
+    "subfolder": ""
+  },
+  {
+    "name": "detik search ",
+    "m": "GET",
+    "path": "/api/detik",
+    "desc": "Endpoint ini berfungsi untuk melakukan pencarian artikel berita di seluruh ekosistem Detikcom berdasarkan kata kunci (query).",
+    "folder": "Search",
+    "subfolder": "detiksearch",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/detik/?query=gempa",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": ""
+      }
+    ],
+    "id": "custom_1786697820_4799",
+    "updated_at": "2026-08-14T08:57:00+00:00",
+    "created_at": "2026-08-14T08:57:00+00:00",
+    "catalogId": "ep098"
+  },
+  {
+    "id": "custom_1786539989_4261",
+    "name": "Lahelu search",
+    "m": "GET",
+    "path": "/api/lahelu",
+    "desc": "Untuk mencari meme yg ada di lahelu ",
+    "folder": "Search",
+    "subfolder": "lahelu",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/lahelu/?query=sad",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "meme"
+      }
+    ],
+    "updated_at": "2026-08-14T19:42:35+00:00",
+    "created_at": "2026-08-14T19:42:35+00:00",
+    "catalogId": "ep099"
+  },
+  {
+    "id": "custom_1785425590_5832",
+    "name": "lyric",
+    "m": "GET",
+    "path": "/api/lyric",
+    "desc": "API untuk melakukan pencarian daftar lirik lagu berdasarkan judul, nama penyanyi, atau potongan lirik. Mengembalikan daftar list hasil pencarian yang berisi judul lagu dan URL lirik terkait.",
+    "folder": "Search",
+    "subfolder": "lyric",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/lyric/?q=alone",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "search lyric"
+      }
+    ],
+    "updated_at": "2026-08-15T00:48:42+00:00",
+    "created_at": "2026-08-15T00:48:42+00:00",
+    "catalogId": "ep100"
+  },
+  {
+    "id": "custom_1785425531_6123",
+    "name": "lyric get",
+    "m": "GET",
+    "path": "/api/lyric",
+    "desc": "API untuk  mengekstrak teks lirik lagu secara utuh berdasarkan link direct URL penyedia lirik (seperti Genius).",
+    "folder": "Search",
+    "subfolder": "lyricget",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/lyric/?q=https://genius.com/Drake-hate-sleeping-alone-lyrics",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "masukan url lyric"
+      }
+    ],
+    "updated_at": "2026-08-15T00:48:54+00:00",
+    "created_at": "2026-08-15T00:48:54+00:00",
+    "catalogId": "ep101"
+  },
+  {
+    "id": "src1",
+    "name": "MCPDL Search",
+    "m": "GET",
+    "path": "/api/mcpdl/",
+    "folder": "Search",
+    "desc": "Mencari add-on, mod, skin, texture, atau map Minecraft PE/Bedrock dari MCPDL.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 1,
+        "d": "Kata kunci pencarian Minecraft."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/api/mcpdl/?q=lucky+block",
+    "catalogId": "ep102",
+    "subfolder": ""
+  },
+  {
+    "name": "pinterest search",
+    "m": "GET",
+    "path": "/api/pin",
+    "desc": "untuk mencari metadata Pinterest ",
+    "folder": "Search",
+    "subfolder": "pinss",
+    "outputType": "",
+    "ex": "https://api.nexaadev.my.id/api/pin?q=anime",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": ""
+      }
+    ],
+    "id": "custom_1787373081_9696",
+    "updated_at": "2026-08-22T04:31:21+00:00",
+    "created_at": "2026-08-22T04:31:21+00:00",
+    "catalogId": "ep103"
+  },
+  {
+    "id": "custom_1786581235_4978",
+    "name": "sound effect detail",
+    "m": "GET",
+    "path": "/api/soundeffect/detail",
+    "desc": "detail dari spesifik efek suara MyInstants. Dengan memberikan URL halaman MyInstants yang valid, sistem akan melakukan ekstraksi meta data untuk mengembalikan informasi lengkap, termasuk judul asli dan direct link file MP3 (audio) yang siap untuk diputar atau diunduh oleh client.",
+    "folder": "Search",
+    "subfolder": "soundeffect1",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/soundeffect/detail/?url=https://www.myinstants.com/en/instant/sad-violin-the-meme-one/",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": ""
+      }
+    ],
+    "updated_at": "2026-08-14T04:52:02+00:00",
+    "created_at": "2026-08-14T04:52:02+00:00",
+    "catalogId": "ep104"
+  },
+  {
+    "id": "custom_1786581109_1167",
+    "name": "sound effect search",
+    "m": "GET",
+    "path": "/api/soundeffect",
+    "desc": "Endpoint ini berfungsi untuk melakukan pencarian efek suara (sound effect) meme berdasarkan kata kunci (query). ",
+    "folder": "Search",
+    "subfolder": "soundeffect",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/soundeffect/?q=sad",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "sad"
+      }
+    ],
+    "updated_at": "2026-08-14T04:51:52+00:00",
+    "created_at": "2026-08-14T04:51:52+00:00",
+    "catalogId": "ep105"
+  },
+  {
+    "id": "custom_1784548512_7396",
+    "name": "yt search",
+    "m": "GET",
+    "path": "/tools/ytsearch",
+    "desc": "YouTube Search",
+    "folder": "Search",
+    "subfolder": "ytsearch",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/tools/ytsearch/?q=karna+kamu",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "karna kamu"
+      }
+    ],
+    "updated_at": "2026-08-15T00:48:24+00:00",
+    "created_at": "2026-08-15T00:48:24+00:00",
+    "catalogId": "ep106"
+  },
+  {
+    "id": "sm1",
+    "name": "Cek Status Order",
+    "m": "GET",
+    "path": "/cekstatus",
+    "folder": "SMM",
+    "desc": "Cek riwayat/status pesanan panel SMM berdasarkan ID transaksi.",
+    "params": [
+      {
+        "n": "id",
+        "t": "string",
+        "r": 1,
+        "d": "Nomor order ID transaksi."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/cekstatus?id=123456",
+    "catalogId": "ep107",
+    "subfolder": ""
+  },
+  {
+    "id": "nw1",
+    "name": "FF News Feed",
+    "m": "GET",
+    "path": "/berita/ffnews/",
+    "folder": "Berita",
+    "desc": "Mengambil berita, event, dan update terbaru seputar game Free Fire secara langsung.",
+    "params": [],
+    "ex": "https://api.nexadev.my.id/berita/ffnews/",
+    "catalogId": "ep108",
+    "subfolder": ""
+  },
+  {
+    "name": "Kompas news",
+    "m": "GET",
+    "path": "/api/kompasnews",
+    "desc": "untuk mendapatkan News berita di kompas.com",
+    "folder": "Berita",
+    "subfolder": "kompas news",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/kompasnews/",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [],
+    "id": "custom_1786736845_8221",
+    "updated_at": "2026-08-14T19:47:25+00:00",
+    "created_at": "2026-08-14T19:47:25+00:00",
+    "catalogId": "ep109"
+  },
+  {
+    "name": "detik News",
+    "m": "GET",
+    "path": "/api/detiknews",
+    "desc": "Endpoint ini digunakan untuk melakukan scraping daftar berita terbaru dan headline utama langsung dari halaman beranda DetikNews",
+    "folder": "Info",
+    "subfolder": "detiknews",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/detiknews/",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [],
+    "id": "custom_1786698336_4077",
+    "updated_at": "2026-08-14T09:05:36+00:00",
+    "created_at": "2026-08-14T09:05:36+00:00",
+    "catalogId": "ep110"
+  },
+  {
+    "id": "in2",
+    "name": "Info Cuaca",
+    "m": "GET",
+    "path": "/api/cuaca",
+    "folder": "Info",
+    "desc": "Cek informasi perkiraan cuaca kota tertentu secara real-time.",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 1,
+        "d": "Nama kota atau wilayah."
+      },
+      {
+        "n": "index",
+        "t": "number",
+        "r": 0,
+        "d": "Indeks hari/sesi cuaca."
+      }
+    ],
+    "ex": "https://api.nexaadev.my.id/api/cuaca?q=bandung&index=1",
+    "catalogId": "ep111",
+    "subfolder": ""
+  },
+  {
+    "id": "in1",
+    "name": "Info Gempa BMKG",
+    "m": "GET",
+    "path": "/tools/infogempa/",
+    "folder": "Info",
+    "desc": "Menampilkan data seismik gempa bumi terbaru berskala di atas 5.0 SR langsung dari BMKG.",
+    "params": [],
+    "ex": "https://api.nexadev.my.id/tools/infogempa/",
+    "catalogId": "ep112",
+    "subfolder": ""
+  },
+  {
+    "id": "in3",
+    "name": "Metadata Channel",
+    "m": "GET",
+    "path": "/api/channel/",
+    "folder": "Info",
+    "desc": "Mengambil informasi metadata dan detail dari saluran (channel) WhatsApp.",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 1,
+        "d": "URL channel WhatsApp."
+      }
+    ],
+    "ex": "https://api.nexadev.my.id/api/channel/?url=https://whatsapp.com/channel/0029Vb7TkCcD38CStrAMMb3N",
+    "catalogId": "ep113",
+    "subfolder": ""
+  },
+  {
+    "name": "AL-Quran",
+    "m": "GET",
+    "path": "/api/quran/",
+    "desc": "Endpoint pencarian ayat Al-Qur'an untuk mengambil teks Arab, latin, dan terjemahan berdasarkan nomor surah dan ayat.",
+    "folder": "Islami",
+    "subfolder": "quran",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/quran/?surah=5&verse=1",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "surah",
+        "t": "string",
+        "r": 0,
+        "d": "2"
+      },
+      {
+        "n": "verse",
+        "t": "string",
+        "r": 0,
+        "d": "1"
+      }
+    ],
+    "id": "custom_1784579293_2423",
+    "updated_at": "2026-07-20T20:28:13+00:00",
+    "created_at": "2026-07-20T20:28:13+00:00",
+    "catalogId": "ep114"
+  },
+  {
+    "name": "AL-Quran Full audio ",
+    "m": "GET",
+    "path": "/api/quranaudio/",
+    "desc": "Quran Audio API Wrapper adalah skrip/endpoint berbasis PHP yang mengambil data ayat Al-Qur'an beserta audio bacaannya secara otomatis, kemudian menyajikannya kembali dalam format JSON yang rapi",
+    "folder": "Islami",
+    "subfolder": "quranaudio",
+    "outputType": "",
+    "ex": "https://api.nexadev.my.id/api/quranaudio/?surah=2",
+    "needKey": false,
+    "keyParam": "key",
+    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "params": [
+      {
+        "n": "surah",
+        "t": "string",
+        "r": 0,
+        "d": "2"
+      }
+    ],
+    "id": "custom_1784687415_2512",
+    "updated_at": "2026-07-22T02:30:15+00:00",
+    "created_at": "2026-07-22T02:30:15+00:00",
+    "catalogId": "ep115"
+  },
+  {
+    "id": "is1",
+    "name": "Doa Harian",
+    "m": "GET",
+    "path": "/api/doa",
+    "folder": "Islami",
+    "desc": "Kumpulan doa harian lengkap beserta transliterasi arab, latin, dan terjemahan bahasa Indonesia.",
+    "params": [],
+    "ex": "https://api.nexadev.my.id/api/doa",
+    "catalogId": "ep116",
+    "subfolder": ""
+  },
+  {
+    "id": "up1",
+    "name": "File Uploader",
+    "m": "POST",
+    "path": "/uploder/",
+    "folder": "Uploader",
+    "desc": "Unggah file multimedia (JPG, PNG, WEBP, MP3, MP4, dll) via form-data. Mengembalikan response JSON dengan data URL file, tipe, ukuran, dan masa kedaluwarsa.",
+    "params": [
+      {
+        "n": "files[]",
+        "t": "file",
+        "r": 1,
+        "d": "Berkas biner file unggahan (multipart/form-data)."
+      }
+    ],
+    "ex": "https://clooud.my.id/uploder/",
+    "catalogId": "ep117",
+    "subfolder": ""
+  }
+]
