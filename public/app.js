@@ -60,55 +60,36 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     var parts = [];
 
     // 1. User Agent + platform
-    parts.push(navigator.userAgent || '');
-    parts.push(navigator.platform || '');
-    parts.push(navigator.language || '');
-    parts.push((navigator.languages || []).join(','));
-    parts.push(String(navigator.hardwareConcurrency || 0));
-    parts.push(String(navigator.deviceMemory || 0));
-    parts.push(String(navigator.maxTouchPoints || 0));
+    parts.push('ua=' + (navigator.userAgent || ''));
+    parts.push('pl=' + (navigator.platform || ''));
+    parts.push('lang=' + (navigator.language || ''));
+    parts.push('langs=' + ((navigator.languages || []).join(',') || ''));
+    parts.push('cores=' + (navigator.hardwareConcurrency || 0));
+    parts.push('mem=' + (navigator.deviceMemory || 0));
+    parts.push('touch=' + (navigator.maxTouchPoints || 0));
 
-    // 2. Screen
-    parts.push(screen.width + 'x' + screen.height + 'x' + screen.colorDepth);
-    parts.push(String(window.devicePixelRatio || 1));
+    // 2. Screen — stabil per device
+    parts.push('scr=' + screen.width + 'x' + screen.height);
+    parts.push('dep=' + screen.colorDepth);
+    parts.push('avail=' + screen.availWidth + 'x' + screen.availHeight);
+    parts.push('dpr=' + (window.devicePixelRatio || 1));
 
-    // 3. Timezone
+    // 3. Timezone — stabil per region
     try {
-      parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone || '');
-    } catch(e) { parts.push(''); }
+      parts.push('tz=' + (Intl.DateTimeFormat().resolvedOptions().timeZone || ''));
+    } catch(e) { parts.push('tz='); }
 
-    // 4. Canvas fingerprint
+    // 4. WebGL — stabil per device (GPU info)
     try {
-      var cv = document.createElement('canvas');
-      cv.width = 220;
-      cv.height = 40;
-      var ctx = cv.getContext('2d');
-      ctx.textBaseline = 'top';
-      ctx.font = '14px Arial';
-      ctx.fillStyle = '#f60';
-      ctx.fillRect(0, 0, 220, 40);
-      ctx.fillStyle = '#069';
-      ctx.fillText('JavinFingerprint\u2605', 2, 15);
-      ctx.fillStyle = 'rgba(102,204,0,0.7)';
-      ctx.fillText('JavinFingerprint\u2605', 4, 17);
-      parts.push(cv.toDataURL().slice(-120));
-    } catch(e) { parts.push('canvas-fail'); }
-
-    // 5. WebGL renderer
-    try {
-      var gl = document.createElement('canvas').getContext('webgl');
+      var gl = document.createElement('canvas').getContext('webgl') || document.createElement('canvas').getContext('experimental-webgl');
       if (gl) {
         var dbg = gl.getExtension('WEBGL_debug_renderer_info');
         if (dbg) {
-          parts.push(gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) || '');
-          parts.push(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '');
+          parts.push('gpu_v=' + (gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) || ''));
+          parts.push('gpu_r=' + (gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || ''));
         }
       }
     } catch(e) {}
-
-    // 6. Touch support
-    parts.push('touch:' + ('ontouchstart' in window));
-    parts.push('cores:' + (navigator.hardwareConcurrency || 0));
 
     // Hash pakai SubtleCrypto
     var raw = parts.join('||');
