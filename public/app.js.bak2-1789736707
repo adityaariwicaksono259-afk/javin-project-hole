@@ -281,26 +281,3 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   };
   if(closeBtn)closeBtn.onclick=closePanel;
 })();
-
-
-// === USER LIMIT BADGE ===
-async function refreshUserStatus(){
-  var uid = (typeof localStorage !== 'undefined') ? localStorage.getItem('javin_user_id') : null;
-  if(!uid) return;
-  var el = document.getElementById('userLimit');
-  if(!el) return;
-  try{
-    var r = await fetch('/api/user/me?uid=' + encodeURIComponent(uid));
-    var j = await r.json();
-    if(!j.ok) return;
-    var remain = Number(j.remaining) || 0;
-    var limit = Number(j.limit) || 0;
-    el.textContent = remain + '/' + limit;
-    var pct = limit > 0 ? (remain / limit) : 0;
-    if(pct > 0.5) el.style.color = '#4ade80';
-    else if(pct > 0.2) el.style.color = '#fbbf24';
-    else el.style.color = '#f87171';
-  }catch(e){}
-}
-window.refreshUserStatus = refreshUserStatus;
-setTimeout(refreshUserStatus, 600);

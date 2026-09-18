@@ -54,3 +54,5 @@
   .admin-tbl{font-size:11px;min-width:460px}
   .admin-tbl th,.admin-tbl td{padding:8px}
 }
+
+.u-limit{font-weight:700;color:#8a8a9a;transition:color .3s}

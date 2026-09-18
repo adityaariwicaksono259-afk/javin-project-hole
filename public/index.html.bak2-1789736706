@@ -11,7 +11,7 @@
 <div class="space"><div class="stars"></div><div class="nebula n1"></div><div class="nebula n2"></div><div class="blackhole"><div class="ring r1"></div><div class="ring r2"></div><div class="core"></div></div></div>
 <header class="hero"><div class="eyebrow">JAVIN PROJECT HOLE // DEEP SPACE CATALOG</div><h1>BLACK <span>HOLE</span></h1><p>Eksplorasi endpoint dalam katalog yang melayang di ruang hampa. Pilih kategori, buka card, isi parameter, lalu jalankan.</p><div class="stats"><div><b id="count">—</b><small>ENDPOINTS</small></div><div><b id="catCount">—</b><small>CATEGORIES</small></div><div><b>NO KEY</b><small>FILTER</small></div></div></header>
 <button class="admin-launch" id="adminLaunch">ADMIN</button>
-<div class="user-id">ID: <span id="userId"></span> · Limit: <span id="userLimit" class="u-limit">–</span></div>
+<div class="user-id">ID: <span id="userId"></span></div>
 <main><section class="catalog"><div class="sectionHead"><div><span class="eyebrow">EVENT HORIZON</span><h2>KATALOG API</h2></div><input id="search" placeholder="Cari endpoint..." autocomplete="off"></div><div id="categories" class="categories"></div><div id="grid" class="grid"></div></section>
 <section class="admin-panel" id="adminPanel">
   <div class="admin-head">

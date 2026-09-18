@@ -51,6 +51,29 @@ function extractHost(urlStr) {
   }
 }
 
+function sanitizeText(t) {
+  if (typeof t !== 'string') return t;
+  return t
+    .replace(/NexaDev/g, 'Javin')
+    .replace(/\bNEXA\b/g, 'JAVIN')
+    .replace(/\bNexa\b/g, 'Javin')
+    .replace(/\bnexa\b/g, 'javin');
+}
+
+function sanitizeJson(obj, depth) {
+  if (depth > 12) return obj;
+  if (typeof obj === 'string') return sanitizeText(obj);
+  if (Array.isArray(obj)) return obj.map(function (x) { return sanitizeJson(x, depth + 1); });
+  if (obj && typeof obj === 'object') {
+    const out = {};
+    for (const k in obj) {
+      out[k] = sanitizeJson(obj[k], depth + 1);
+    }
+    return out;
+  }
+  return obj;
+}
+
 async function logRequest(db, data) {
   if (!db) return;
   try {
@@ -58,6 +81,20 @@ async function logRequest(db, data) {
       'INSERT INTO logs (user_id, endpoint_id, status, ip_hash, created_at) VALUES (?, ?, ?, ?, ?)'
     ).bind(data.user_id, data.endpoint_id, data.status, '', Date.now()).run();
   } catch (e) {}
+}
+
+async function getUserStatus(db, userId) {
+  const todayStart = getWibDayStartMs();
+  const userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
+  const countRow = await db.prepare(
+    'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND created_at >= ? AND status >= 200 AND status < 300'
+  ).bind(userId, todayStart).first();
+  const used = (countRow && countRow.c) || 0;
+  let limit = DEFAULT_LIMIT;
+  if (userRow && typeof userRow.extra_limit === 'number' && userRow.extra_limit > 0) {
+    limit = userRow.extra_limit;
+  }
+  return { used: used, limit: limit, remaining: Math.max(0, limit - used) };
 }
 
 export async function onRequest(context) {
@@ -77,49 +114,32 @@ export async function onRequest(context) {
   }
 
   const db = env.JAVIN_DB;
-  const todayStart = getWibDayStartMs();
 
   // ==== Cek limit user ====
   if (userId && db) {
     try {
-      const userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
+      const status = await getUserStatus(db, userId);
 
-      // Hitung request user ini hari ini (WIB)
-      const countRow = await db.prepare(
-        'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND created_at >= ? AND status < 400'
-      ).bind(userId, todayStart).first();
-
-      const usedToday = (countRow && countRow.c) || 0;
-
-      // Custom limit kalau admin set > 0, kalau nggak pakai default 15
-      let limit = DEFAULT_LIMIT;
-      if (userRow && typeof userRow.extra_limit === 'number' && userRow.extra_limit > 0) {
-        limit = userRow.extra_limit;
-      }
-
-      if (usedToday >= limit) {
+      if (status.used >= status.limit) {
         const remaining = msUntilWibReset();
-        // Log blocked (tapi jangan hitung ke limit)
         await logRequest(db, { user_id: userId, endpoint_id: id, status: 429 });
         return jsonRes(429, {
           ok: false,
-          message: 'Limit harian habis (' + usedToday + '/' + limit + '). Reset dalam ' + formatDuration(remaining) + ' (00:00 WIB).',
-          limit: limit,
-          used: usedToday,
+          message: 'Limit harian habis (' + status.used + '/' + status.limit + '). Reset dalam ' + formatDuration(remaining) + ' (00:00 WIB).',
+          limit: status.limit,
+          used: status.used,
           reset_in_ms: remaining
         });
       }
 
-      // Update user record
       const now = Date.now();
+      const userRow = await db.prepare('SELECT id FROM users WHERE id = ?').bind(userId).first();
       if (!userRow) {
         await db.prepare(
-          'INSERT INTO users (id, extra_limit, created_at, last_seen, total_request) VALUES (?, 0, ?, ?, 1)'
+          'INSERT INTO users (id, extra_limit, created_at, last_seen, total_request) VALUES (?, 0, ?, ?, 0)'
         ).bind(userId, now, now).run();
       } else {
-        await db.prepare(
-          'UPDATE users SET last_seen = ?, total_request = total_request + 1 WHERE id = ?'
-        ).bind(now, userId).run();
+        await db.prepare('UPDATE users SET last_seen = ? WHERE id = ?').bind(now, userId).run();
       }
     } catch (e) {
       // fail-open
@@ -179,9 +199,30 @@ export async function onRequest(context) {
       return jsonRes(502, { ok: false, message: 'Response terlalu besar.' });
     }
 
+    // Log dengan status upstream — hanya 2xx yang dihitung ke limit
     await logRequest(db, { user_id: userId, endpoint_id: id, status: upstream.status });
 
     const ct = upstream.headers.get('content-type') || 'application/octet-stream';
+
+    // Sanitize JSON response (replace Nexa → Javin di string value)
+    if (ct.indexOf('application/json') !== -1) {
+      try {
+        const txt = new TextDecoder().decode(buf);
+        const parsed = JSON.parse(txt);
+        const clean = sanitizeJson(parsed, 0);
+        return new Response(JSON.stringify(clean), {
+          status: upstream.status,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': 'no-store',
+            'X-Content-Type-Options': 'nosniff'
+          }
+        });
+      } catch (e) {
+        // bukan JSON valid, biarin raw
+      }
+    }
+
     return new Response(buf, {
       status: upstream.status,
       headers: {
