@@ -11,3 +11,9 @@
 .admin-card button,.ghost{margin:7px 7px 0 0;padding:10px 13px;border:0;border-radius:12px;background:#fff;color:#09090e;cursor:pointer}
 .admin-card .danger{background:#2a1014;color:#ffb4bd;border:1px solid #6b2732}
 .admin-note{color:#a4a4b2;font-size:12px;margin-top:18px}
+
+/* Media actions */
+.media-actions{display:flex;gap:8px;justify-content:center;margin:12px 0 8px;flex-wrap:wrap}
+.btn-dl{display:inline-block;padding:10px 18px;background:linear-gradient(90deg,#7045ff,#a05cff);color:#fff;text-decoration:none;border-radius:10px;font-size:13px;font-weight:700;box-shadow:0 4px 14px #7045ff44;transition:.2s}
+.btn-dl:hover{transform:translateY(-2px);box-shadow:0 6px 20px #7045ff66}
+.media-info{text-align:center;font-size:11px;color:#888;margin-top:4px;letter-spacing:.05em}

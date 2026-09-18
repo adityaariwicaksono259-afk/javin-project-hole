@@ -1,4 +1,5 @@
-function maskHost(u){return String(u||"").replace(/(https?:\/\/)?(api\.|apii\.)?nexadev\.my\.id/gi,"").replace(/(https?:\/\/)?api\.nexaadev\.my\.id/gi,"").replace(/(https?:\/\/)?clooud\.my\.id/gi,"")||"/";}
+function maskHost(u){return String(u||"").replace(/https?:\/\/[^\/\s"']*/gi,"")||"/";}
+function maskUrl(t){return String(t||'').replace(/https?:\/\/[^"\s,}\)\]]+/gi,function(u){try{return '\u2026'+new URL(u).pathname}catch(e){return u}}).replace(/(api\.|apii\.)?nexadev\.my\.id/gi,'javin').replace(/api\.nexaadev\.my\.id/gi,'javin').replace(/clooud\.my\.id/gi,'javin');}
 let endpoints=[],active='ALL';
 const order=['AI','Tools','Downloader','Anime','Canvas','Random','Search','SMM','Berita','Info','Islami','Uploader','Other'];
 const $=s=>document.querySelector(s);
@@ -8,7 +9,42 @@ function render(){let q=$('#search').value.toLowerCase();let list=endpoints.filt
 $('#search').oninput=render;
 function card(x){return `<article class="card"><div class="badge">${esc(x.folder)} // ${esc(x.subfolder||'API')}</div><h3>${esc(x.name)}</h3><div class="desc">${esc(x.desc||'Nexa endpoint')}</div><div class="path">${esc(x.m||'GET')} ${esc(x.path)}</div><button class="run" data-id="${x.catalogId}">OPEN ENDPOINT</button></article>`}
 function openEp(id){let x=endpoints.find(e=>e.catalogId===id);if(!x)return;let params=x.params||[];$('#modalBody').innerHTML=`<div class="eyebrow">${esc(x.folder)} // ${esc(x.subfolder||'API')}</div><h2>${esc(x.name)}</h2><p style="color:#888;font-size:13px">${esc(x.desc||'')}</p><div class="urlbox">${esc(x.m+' '+maskHost(x.ex))}</div><div id="form">${params.map(p=>`<div class="formrow"><label>${esc(p.n)} ${p.r?'*':''}<br><small>${esc(p.d||'')}</small></label><input data-p="${esc(p.n)}" placeholder="${esc(p.d||p.n)}"></div>`).join('')}</div><button class="execute" id="execute">EXECUTE REQUEST</button><div id="result"></div>`;$('#modal').classList.remove('hidden');$('#execute').onclick=()=>execute(x);}
-async function execute(x){let result=$('#result');result.innerHTML='<div class="result">CONNECTING TO EVENT HORIZON...</div>';let qs=[];document.querySelectorAll('[data-p]').forEach(i=>{if(i.value)qs.push(encodeURIComponent(i.dataset.p)+'='+encodeURIComponent(i.value));});let url='/api/proxy?id='+encodeURIComponent(x.catalogId)+(qs.length?'&'+qs.join('&'):'');try{let r=await fetch(url);let type=r.headers.get('content-type')||'';if(!r.ok){let t=await r.text();result.innerHTML=`<pre class="result">HTTP ${r.status}\n${esc(t)}</pre>`;return;}if(type.includes('image/')){let blob=await r.blob();let src=URL.createObjectURL(blob);result.innerHTML=`<div class="result"><img class="media" src="${src}"><div>HTTP ${r.status} · ${esc(type)}</div></div>`}else if(type.includes('video/')){let blob=await r.blob();let src=URL.createObjectURL(blob);result.innerHTML=`<div class="result"><video class="media" controls src="${src}"></video><div>HTTP ${r.status}</div></div>`}else if(type.includes('audio/')){let blob=await r.blob();let src=URL.createObjectURL(blob);result.innerHTML=`<div class="result"><audio controls style="width:100%" src="${src}"></audio><div>HTTP ${r.status}</div></div>`}else{let t=await r.text();let pretty;try{pretty=JSON.stringify(JSON.parse(t),null,2)}catch{pretty=t}result.innerHTML=`<pre class="result">HTTP ${r.status}\n${esc(pretty)}</pre>`}}catch(e){result.innerHTML=`<pre class="result">ERROR\n${esc(e.message)}</pre>`}}
+async function execute(x){
+  var result=$('#result');
+  result.innerHTML='<div class="result">MENGHUBUNGI SERVER...</div>';
+  var qs=[];
+  document.querySelectorAll('[data-p]').forEach(function(i){if(i.value)qs.push(encodeURIComponent(i.dataset.p)+'='+encodeURIComponent(i.value));});
+  var url='/api/proxy?id='+encodeURIComponent(x.catalogId)+(qs.length?'&'+qs.join('&'):'');
+  try{
+    var r=await fetch(url);
+    var type=r.headers.get('content-type')||'';
+    var ext=(type.split('/')[1]||'bin').split(';')[0].trim();
+    var fname='javin-'+x.catalogId+'-'+Date.now()+'.'+ext;
+    if(!r.ok){
+      var t=await r.text();
+      result.innerHTML='<pre class="result">HTTP '+r.status+'\n'+esc(maskUrl(t))+'</pre>';
+      return;
+    }
+    if(type.indexOf('image/')!==-1){
+      var blob=await r.blob();
+      var src=URL.createObjectURL(blob);
+      result.innerHTML='<div class="result"><img class="media" src="'+src+'"><div class="media-actions"><a class="btn-dl" href="'+src+'" download="'+fname+'">\u2b07 Download Gambar</a></div><div class="media-info">by Javin \u00b7 HTTP '+r.status+' \u00b7 '+esc(type.split(';')[0])+'</div></div>';
+    } else if(type.indexOf('video/')!==-1){
+      var blob=await r.blob();
+      var src=URL.createObjectURL(blob);
+      result.innerHTML='<div class="result"><video class="media" controls src="'+src+'"></video><div class="media-actions"><a class="btn-dl" href="'+src+'" download="'+fname+'">\u2b07 Download Video</a></div><div class="media-info">by Javin \u00b7 HTTP '+r.status+'</div></div>';
+    } else if(type.indexOf('audio/')!==-1){
+      var blob=await r.blob();
+      var src=URL.createObjectURL(blob);
+      result.innerHTML='<div class="result"><audio controls style="width:100%" src="'+src+'"></audio><div class="media-actions"><a class="btn-dl" href="'+src+'" download="'+fname+'">\u2b07 Download Audio</a></div><div class="media-info">by Javin \u00b7 HTTP '+r.status+'</div></div>';
+    } else {
+      var t=await r.text();
+      var pretty;try{pretty=JSON.stringify(JSON.parse(t),null,2)}catch(e){pretty=t}
+      result.innerHTML='<pre class="result">HTTP '+r.status+'\n'+esc(maskUrl(pretty))+'</pre>';
+    }
+  }
+  catch(e){result.innerHTML='<pre class="result">ERROR\n'+esc(e.message)+'</pre>'}
+}
 $('#close').onclick=()=>$('#modal').classList.add('hidden');$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.add('hidden')};
 function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 
