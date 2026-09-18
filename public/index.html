@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NEXA // JAVIN PROJECT HOLE API</title>
+<meta name="description" content="Javin Project Hole catalog — floating black hole interface">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head><body>
+<div class="space"><div class="stars"></div><div class="nebula n1"></div><div class="nebula n2"></div><div class="blackhole"><div class="ring r1"></div><div class="ring r2"></div><div class="core"></div></div></div>
+<header class="hero"><div class="eyebrow">JAVIN PROJECT HOLE // DEEP SPACE CATALOG</div><h1>BLACK <span>HOLE</span></h1><p>Eksplorasi endpoint dalam katalog yang melayang di ruang hampa. Pilih kategori, buka card, isi parameter, lalu jalankan.</p><div class="stats"><div><b id="count">—</b><small>ENDPOINTS</small></div><div><b id="catCount">—</b><small>CATEGORIES</small></div><div><b>NO KEY</b><small>FILTER</small></div></div></header>
+<button class="admin-launch" id="adminLaunch">ADMIN</button>
+<div class="user-id">ID: <span id="userId"></span></div>
+<main><section class="catalog"><div class="sectionHead"><div><span class="eyebrow">EVENT HORIZON</span><h2>KATALOG API</h2></div><input id="search" placeholder="Cari endpoint..." autocomplete="off"></div><div id="categories" class="categories"></div><div id="grid" class="grid"></div></section>
+<section class="admin-panel" id="adminPanel">
+  <div class="admin-head">
+    <div>
+      <span class="eyebrow">CONTROL CENTER</span>
+      <h2>Admin Panel</h2>
+      <p>Kelola katalog endpoint dan limit user.</p>
+    </div>
+    <button class="ghost" id="adminToggle">Tutup</button>
+  </div>
+  <div class="admin-grid">
+    <div class="admin-card">
+      <h3>Endpoint</h3>
+      <input id="adminEndpointName" placeholder="Nama endpoint">
+      <input id="adminEndpointPath" placeholder="/path?param=value">
+      <input id="adminEndpointCategory" placeholder="Kategori">
+      <button id="adminAddEndpoint">Tambah Endpoint</button>
+      <button class="danger" id="adminRemoveEndpoint">Hapus Endpoint ID</button>
+    </div>
+    <div class="admin-card">
+      <h3>User Limit</h3>
+      <input id="adminUserId" placeholder="User ID (JH-...)">
+      <input id="adminExtraLimit" type="number" min="1" max="10000" placeholder="Tambah limit">
+      <button id="adminAddLimit">Tambah Limit</button>
+      <small>Reset harian 00:00 WIB. Limit dasar 10 request per endpoint.</small>
+    </div>
+  </div>
+  <p class="admin-note">Catatan: panel ini adalah UI lokal. Untuk admin production, autentikasi harus dipindahkan ke server dan memakai database/Redis; jangan simpan password admin di frontend.</p>
+</section>
+
+</main>
+<div id="modal" class="modal hidden"><div class="modalBox"><button class="close" id="close">×</button><div id="modalBody"></div></div></div>
+<footer>JAVIN PROJECT HOLE UI · DATA KATALOG DARI FILE DOKUMENTASI YANG DIBERIKAN</footer>
+<script src="/app.js"></script>
+</body></html>
