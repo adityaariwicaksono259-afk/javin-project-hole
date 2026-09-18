@@ -9,7 +9,8 @@ const ALLOWED_HOSTS = new Set([
 ]);
 
 const MAX_BODY = 6 * 1024 * 1024;
-const DEFAULT_LIMIT = 10;
+const DEFAULT_LIMIT = 15;
+const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
 
 function jsonRes(status, data) {
   return new Response(JSON.stringify(data), {
@@ -22,6 +23,25 @@ function jsonRes(status, data) {
   });
 }
 
+function getWibDayStartMs() {
+  const nowWib = Date.now() + WIB_OFFSET_MS;
+  const dayWib = Math.floor(nowWib / 86400000) * 86400000;
+  return dayWib - WIB_OFFSET_MS;
+}
+
+function msUntilWibReset() {
+  const nextDay = getWibDayStartMs() + 86400000;
+  return Math.max(0, nextDay - Date.now());
+}
+
+function formatDuration(ms) {
+  const totalMin = Math.floor(ms / 60000);
+  const h = Math.floor(totalMin / 60);
+  const m = totalMin % 60;
+  if (h > 0) return h + ' jam ' + m + ' menit';
+  return m + ' menit';
+}
+
 function extractHost(urlStr) {
   try {
     const u = new URL(urlStr);
@@ -31,18 +51,12 @@ function extractHost(urlStr) {
   }
 }
 
-async function sha256hex(text) {
-  const buf = new TextEncoder().encode(text);
-  const h = await crypto.subtle.digest('SHA-256', buf);
-  return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
-}
-
 async function logRequest(db, data) {
   if (!db) return;
   try {
     await db.prepare(
       'INSERT INTO logs (user_id, endpoint_id, status, ip_hash, created_at) VALUES (?, ?, ?, ?, ?)'
-    ).bind(data.user_id, data.endpoint_id, data.status, data.ip_hash, Date.now()).run();
+    ).bind(data.user_id, data.endpoint_id, data.status, '', Date.now()).run();
   } catch (e) {}
 }
 
@@ -62,35 +76,37 @@ export async function onRequest(context) {
     return jsonRes(400, { ok: false, message: 'Endpoint tidak valid.' });
   }
 
-  // ==== Cek limit user via D1 ====
   const db = env.JAVIN_DB;
-  let userRow = null;
+  const todayStart = getWibDayStartMs();
 
+  // ==== Cek limit user ====
   if (userId && db) {
-    const todayStart = new Date();
-    todayStart.setUTCHours(0, 0, 0, 0);
-
     try {
-      userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
+      const userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
 
-      // Hitung request hari ini
+      // Hitung request user ini hari ini (WIB)
       const countRow = await db.prepare(
-        'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND created_at >= ?'
-      ).bind(userId, todayStart.getTime()).first();
+        'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND created_at >= ? AND status < 400'
+      ).bind(userId, todayStart).first();
 
       const usedToday = (countRow && countRow.c) || 0;
-      const limit = DEFAULT_LIMIT + ((userRow && userRow.extra_limit) || 0);
+
+      // Custom limit kalau admin set > 0, kalau nggak pakai default 15
+      let limit = DEFAULT_LIMIT;
+      if (userRow && typeof userRow.extra_limit === 'number' && userRow.extra_limit > 0) {
+        limit = userRow.extra_limit;
+      }
 
       if (usedToday >= limit) {
-        await logRequest(db, {
-          user_id: userId,
-          endpoint_id: id,
-          status: 429,
-          ip_hash: '',
-        });
+        const remaining = msUntilWibReset();
+        // Log blocked (tapi jangan hitung ke limit)
+        await logRequest(db, { user_id: userId, endpoint_id: id, status: 429 });
         return jsonRes(429, {
           ok: false,
-          message: 'Limit harian tercapai (' + usedToday + '/' + limit + '). Coba lagi besok.'
+          message: 'Limit harian habis (' + usedToday + '/' + limit + '). Reset dalam ' + formatDuration(remaining) + ' (00:00 WIB).',
+          limit: limit,
+          used: usedToday,
+          reset_in_ms: remaining
         });
       }
 
@@ -106,14 +122,14 @@ export async function onRequest(context) {
         ).bind(now, userId).run();
       }
     } catch (e) {
-      // DB error → lanjut aja (fail-open)
+      // fail-open
     }
   }
 
   // ==== Cari endpoint ====
   const ep = endpointsData.find(function (x) { return x.catalogId === id; });
   if (!ep) {
-    await logRequest(db, { user_id: userId, endpoint_id: id, status: 404, ip_hash: '' });
+    await logRequest(db, { user_id: userId, endpoint_id: id, status: 404 });
     return jsonRes(404, { ok: false, message: 'Endpoint tidak ditemukan.' });
   }
 
@@ -125,12 +141,11 @@ export async function onRequest(context) {
   if (!host) host = 'api.nexadev.my.id';
 
   if (!ALLOWED_HOSTS.has(host)) {
-    await logRequest(db, { user_id: userId, endpoint_id: id, status: 403, ip_hash: '' });
+    await logRequest(db, { user_id: userId, endpoint_id: id, status: 403 });
     return jsonRes(403, { ok: false, message: 'Endpoint tidak tersedia.' });
   }
 
   const target = new URL(ep.path || '/', 'https://' + host);
-
   const params = ep.params || [];
   for (let i = 0; i < params.length; i++) {
     const p = params[i];
@@ -138,9 +153,7 @@ export async function onRequest(context) {
     if (!name || name === 'key') continue;
     const value = reqUrl.searchParams.get(name);
     if (value === null || value === '') {
-      if (p.r) {
-        return jsonRes(400, { ok: false, message: 'Parameter ' + name + ' wajib diisi.' });
-      }
+      if (p.r) return jsonRes(400, { ok: false, message: 'Parameter ' + name + ' wajib diisi.' });
       continue;
     }
     if (String(value).length > 2000) {
@@ -162,16 +175,11 @@ export async function onRequest(context) {
 
     const buf = await upstream.arrayBuffer();
     if (buf.byteLength > MAX_BODY) {
-      await logRequest(db, { user_id: userId, endpoint_id: id, status: 502, ip_hash: '' });
+      await logRequest(db, { user_id: userId, endpoint_id: id, status: 502 });
       return jsonRes(502, { ok: false, message: 'Response terlalu besar.' });
     }
 
-    await logRequest(db, {
-      user_id: userId,
-      endpoint_id: id,
-      status: upstream.status,
-      ip_hash: ''
-    });
+    await logRequest(db, { user_id: userId, endpoint_id: id, status: upstream.status });
 
     const ct = upstream.headers.get('content-type') || 'application/octet-stream';
     return new Response(buf, {
@@ -183,7 +191,7 @@ export async function onRequest(context) {
       }
     });
   } catch (err) {
-    await logRequest(db, { user_id: userId, endpoint_id: id, status: 502, ip_hash: '' });
+    await logRequest(db, { user_id: userId, endpoint_id: id, status: 502 });
     return jsonRes(502, { ok: false, message: 'Gagal mengambil data. Coba lagi.' });
   }
 }
