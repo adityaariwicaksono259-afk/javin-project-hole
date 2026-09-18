@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Premium APK - JAVIN PROJECT HOLE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',sans-serif;background:#03030a;color:#eee;min-height:100vh;overflow-x:hidden}
+.space{position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 50% 42%,#18112a 0,#070712 30%,#020207 70%)}
+.stars{position:fixed;inset:0;z-index:-1;opacity:.7;background-image:radial-gradient(#fff 1px,transparent 1px),radial-gradient(#aaa 1px,transparent 1px);background-size:83px 83px,137px 137px;background-position:12px 24px,40px 70px}
+header{position:sticky;top:0;z-index:10;background:rgba(10,10,16,.85);backdrop-filter:blur(14px);padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.back{color:#fff;text-decoration:none;background:rgba(255,255,255,.1);padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600}
+.back:hover{background:rgba(255,255,255,.18)}
+header h1{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;flex:1;text-align:center;padding-right:60px}
+.wrap{max-width:600px;margin:0 auto;padding:24px 16px 60px}
+.hero{text-align:center;margin-bottom:24px}
+.hero-icon{font-size:56px;margin-bottom:8px}
+.hero h2{font-family:'Orbitron',sans-serif;font-size:24px;background:linear-gradient(120deg,#fff,#b18cff,#ff7a18);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}
+.hero p{color:#888;font-size:13px;line-height:1.6}
+.status-bar{display:flex;justify-content:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.pill{padding:8px 14px;border-radius:20px;font-size:12px;font-weight:700;background:rgba(255,255,255,.05);color:#888;border:1px solid rgba(255,255,255,.08)}
+.pill.ok{background:rgba(74,222,128,.15);color:#4ade80;border-color:rgba(74,222,128,.35)}
+.pill.warn{background:rgba(251,191,36,.15);color:#fbbf24;border-color:rgba(251,191,36,.35)}
+.pill.err{background:rgba(255,77,109,.15);color:#ff9aad;border-color:rgba(255,77,109,.35)}
+.steps{display:flex;justify-content:center;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.step-pill{padding:6px 12px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,255,255,.05);color:#666;border:1px solid rgba(255,255,255,.08);letter-spacing:.5px}
+.step-pill.active{background:linear-gradient(90deg,#7045ff,#a05cff);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(112,69,255,.4)}
+.step-pill.done{background:rgba(74,222,128,.15);color:#4ade80;border-color:rgba(74,222,128,.3)}
+.card{background:linear-gradient(145deg,rgba(17,17,26,.8),rgba(7,7,13,.8));border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:20px;backdrop-filter:blur(18px);box-shadow:0 18px 60px rgba(0,0,0,.5);margin-bottom:16px}
+.card h3{font-size:14px;font-weight:700;color:#a98cff;margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase}
+.card .sub{font-size:12px;color:#666;margin-bottom:16px;line-height:1.5}
+input,textarea{width:100%;padding:13px 15px;background:#09090e;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:12px;outline:none;font-size:14px;font-family:inherit;transition:border-color .2s}
+input:focus,textarea:focus{border-color:#7045ff}
+textarea{resize:vertical;min-height:80px;font-family:'Courier New',monospace;font-size:12px}
+button{width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(90deg,#7045ff,#a05cff);color:#fff;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;letter-spacing:.3px;margin-top:12px;transition:.2s}
+button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 20px rgba(112,69,255,.4)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{background:rgba(255,255,255,.08);color:#ccc}
+button.ghost:hover:not(:disabled){background:rgba(255,255,255,.14);box-shadow:none}
+.result{margin-top:14px;padding:14px;border-radius:12px;font-size:12px;line-height:1.6;white-space:pre-wrap;word-break:break-word;display:none}
+.result.show{display:block}
+.result.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:#4ade80}
+.result.err{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:#ff9aad}
+.result.info{background:rgba(112,69,255,.1);border:1px solid rgba(112,69,255,.3);color:#b8a3ff}
+.step-content{display:none}
+.step-content.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hint{font-size:11px;color:#666;margin-top:10px;line-height:1.6;padding-left:4px}
+.hint b{color:#a98cff}
+footer{text-align:center;color:#444;font-size:10px;padding:20px;letter-spacing:.1em}
+.key-box{display:flex;gap:8px;align-items:center;background:#09090e;border:1px solid rgba(112,69,255,.35);border-radius:12px;padding:12px 14px;margin-bottom:12px}
+.key-value{flex:1;font-family:'Courier New',monospace;font-size:15px;font-weight:700;color:#a98cff;letter-spacing:1px}
+.key-copy{background:rgba(112,69,255,.2);border:1px solid rgba(112,69,255,.4);color:#b8a3ff;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+.key-copy:hover{background:rgba(112,69,255,.35)}
+.progress-bar{height:6px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,#7045ff,#a05cff);transition:width .4s ease;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="space"></div>
+<div class="stars"></div>
+
+<header>
+  <a href="/" class="back">← Beranda</a>
+  <h1>PREMIUM APK</h1>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-icon">💎</div>
+    <h2>Alight Motion Premium</h2>
+    <p>Generate akun premium Alight Motion otomatis.<br>Butuh <b style="color:#a98cff">key akses</b> dari admin.</p>
+  </div>
+
+  <div class="status-bar" id="statusBar">
+    <div class="pill" id="pillKey">🔑 Memuat key...</div>
+  </div>
+
+  <div class="steps" id="stepBar" style="display:none">
+    <div class="step-pill active" id="pill1">1 · Email</div>
+    <div class="step-pill" id="pill2">2 · Magic Link</div>
+    <div class="step-pill" id="pill3">3 · Premium</div>
+  </div>
+
+  <!-- STEP 0 — KEY INPUT -->
+  <div class="step-content active" id="step0">
+    <div class="card">
+      <h3>🔐 Masukkan Key Akses</h3>
+      <div class="sub">Key dari admin. Format: <b style="color:#a98cff">JV-XXXX</b> (4 digit)</div>
+      <input type="text" id="keyInput" placeholder="JV-1918" autocomplete="off" inputmode="text" maxlength="7" style="text-transform:uppercase;font-family:'Courier New',monospace;font-size:18px;letter-spacing:2px;text-align:center">
+      <button id="btnBind">🔑 Aktifkan Key</button>
+      <div class="result" id="res0"></div>
+      <div class="hint">Belum punya key? Hubungi admin.</div>
+    </div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="step-content" id="step1">
+    <div class="card">
+      <h3>Langkah 1 · Kirim Magic Link</h3>
+      <div class="sub">Masukkan email Alight Motion kamu. Magic link akan dikirim ke inbox.</div>
+      <input type="email" id="emailInput" placeholder="nama@gmail.com" autocomplete="email" inputmode="email">
+      <button id="btnSend">📧 Kirim Magic Link</button>
+      <button class="ghost" id="btnOpenGmail" type="button">📬 Buka Gmail</button>
+      <div class="result" id="res1"></div>
+      <div class="hint">⚠️ Cek inbox <b>(juga folder spam)</b>. Magic link dikirim oleh pihak Alight Motion.</div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step-content" id="step2">
+    <div class="card">
+      <h3>Langkah 2 · Verifikasi Magic Link</h3>
+      <div class="sub">Buka email Alight Motion, <b style="color:#a98cff">copy seluruh isi email</b>, lalu paste di bawah.</div>
+      <textarea id="rawLinkInput" placeholder="Paste isi email di sini..."></textarea>
+      <button id="btnVerify">🔗 Verifikasi & Lanjut</button>
+      <div class="result" id="res2"></div>
+      <div class="hint">💡 Copy dari <b>alamat pengirim</b> sampai <b>akhir email</b>. Sistem auto-extract link-nya.</div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step-content" id="step3">
+    <div class="card">
+      <h3>Langkah 3 · Klaim Premium</h3>
+      <div class="sub">Verifikasi berhasil. Klik tombol di bawah untuk aktifkan premium.</div>
+      <button id="btnApply">✨ Aktifkan Premium Sekarang</button>
+      <div class="result" id="res3"></div>
+    </div>
+  </div>
+
+  <div class="card" style="background:rgba(255,77,109,.05);border-color:rgba(255,77,109,.2)">
+    <h3 style="color:#ff9aad">⚠️ Peringatan</h3>
+    <div class="sub" style="color:#aa8890;margin-bottom:0">
+      Gunakan email yang <b>belum pernah</b> dipakai untuk premium sebelumnya. Kalau gagal di langkah 3, kuota <b>tidak</b> berkurang. Kuota berkurang hanya kalau generate sukses.
+    </div>
+  </div>
+</div>
+
+<footer>JAVIN PROJECT HOLE · PREMIUM APK</footer>
+
+<script>
+var $ = function(id){ return document.getElementById(id) };
+var state = { uid: '', key: '', email: '', idToken: '', maxUses: 0, usedCount: 0, remaining: 0 };
+
+function setResult(el, type, msg){
+  el.className = 'result show ' + type;
+  el.textContent = msg;
+}
+function showStep(n){
+  for (var i = 0; i <= 3; i++) {
+    var s = $('step' + i); if (s) s.classList.remove('active');
+  }
+  for (var i = 1; i <= 3; i++) {
+    var p = $('pill' + i); if (p) p.classList.remove('active','done');
+  }
+  var current = $('step' + n); if (current) current.classList.add('active');
+  if (n >= 1 && n <= 3) {
+    for (var i = 1; i < n; i++) { var pp = $('pill' + i); if (pp) pp.classList.add('done'); }
+    var pc = $('pill' + n); if (pc) pc.classList.add('active');
+    $('stepBar').style.display = 'flex';
+  } else {
+    $('stepBar').style.display = 'none';
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateStatusPill(){
+  var el = $('pillKey');
+  if (state.key) {
+    el.className = 'pill ok';
+    el.textContent = '🔑 ' + state.key + ' · ' + state.remaining + '/' + state.maxUses + ' sisa';
+  } else {
+    el.className = 'pill warn';
+    el.textContent = '🔑 Belum ada key';
+  }
+}
+
+// ==== LOAD STATUS ====
+async function init(){
+  var uid = null;
+  try { uid = localStorage.getItem('javin_user_id'); } catch(e) {}
+  if (!uid) {
+    // tunggu identify selesai (dari app.js yang lain)
+    var tries = 0;
+    while (tries < 20 && !uid) {
+      await new Promise(function(r){ setTimeout(r, 200); });
+      try { uid = localStorage.getItem('javin_user_id'); } catch(e) {}
+      tries++;
+    }
+  }
+  if (!uid) {
+    setResult($('res0'), 'err', '❌ Gagal memuat user ID. Refresh halaman.');
+    return;
+  }
+  state.uid = uid;
+
+  try {
+    var r = await fetch('/api/premium/bind-key?uid=' + encodeURIComponent(uid));
+    var j = await r.json();
+    if (j.ok && j.has_key) {
+      state.key = j.key;
+      state.maxUses = j.max_uses;
+      state.usedCount = j.used_count;
+      state.remaining = j.remaining;
+      updateStatusPill();
+
+      if (state.remaining <= 0 || j.status !== 'active') {
+        setResult($('res0'), 'err', '❌ Key sudah habis atau tidak aktif. Hubungi admin.');
+        return;
+      }
+
+      // Langsung ke step 1
+      showStep(1);
+      setResult($('res1'), 'info', '✅ Key aktif: ' + state.key + ' · sisa ' + state.remaining + '/' + state.maxUses);
+    } else {
+      updateStatusPill();
+      showStep(0);
+    }
+  } catch(e) {
+    setResult($('res0'), 'err', '❌ Error: ' + e.message);
+  }
+}
+
+// ==== BIND KEY ====
+$('btnBind').onclick = async function(){
+  var key = $('keyInput').value.trim().toUpperCase();
+  if (!/^JV-\d{4}$/.test(key)) {
+    setResult($('res0'), 'err', '❌ Format key harus JV-XXXX (contoh: JV-1918).');
+    return;
+  }
+  var btn = $('btnBind');
+  btn.disabled = true; btn.textContent = '⏳ Memverifikasi...';
+  setResult($('res0'), 'info', 'Menghubungi server...');
+
+  try {
+    var r = await fetch('/api/premium/bind-key', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uid: state.uid, key: key })
+    });
+    var j = await r.json();
+    if (!j.ok) throw new Error(j.message || 'Gagal bind key');
+
+    state.key = j.key;
+    state.maxUses = j.max_uses;
+    state.usedCount = j.used_count;
+    state.remaining = j.remaining;
+    updateStatusPill();
+
+    setResult($('res0'), 'ok', '✅ ' + j.message + '\nSisa kuota: ' + state.remaining + '/' + state.maxUses);
+    setTimeout(function(){ showStep(1); }, 1000);
+  } catch(e) {
+    setResult($('res0'), 'err', '❌ ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '🔑 Aktifkan Key';
+  }
+};
+
+// ==== API CALL ====
+async function apiCall(payload){
+  payload.uid = state.uid;
+  payload.key = state.key;
+  var r = await fetch('/api/premium/amprem', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  var j = await r.json();
+  if (!r.ok || j.success === false) {
+    throw new Error(j.message || ('HTTP ' + r.status));
+  }
+  return j;
+}
+
+// ==== STEP 1 ====
+$('btnSend').onclick = async function(){
+  var email = $('emailInput').value.trim();
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    setResult($('res1'), 'err', '❌ Masukkan email yang valid.');
+    return;
+  }
+  var btn = $('btnSend');
+  btn.disabled = true; btn.textContent = '⏳ Mengirim...';
+  setResult($('res1'), 'info', 'Mengirim magic link ke ' + email + '...');
+
+  try {
+    var j = await apiCall({ action: 'send-magiclink', email: email });
+    state.email = email;
+    setResult($('res1'), 'ok', '✅ Magic link terkirim!\n\nCek inbox ' + email + ' (juga folder spam).\nBuka email, copy SELURUH isinya, lanjut ke langkah 2.');
+    setTimeout(function(){ showStep(2); }, 1500);
+  } catch(e) {
+    setResult($('res1'), 'err', '❌ Gagal: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '📧 Kirim Magic Link';
+  }
+};
+$('btnOpenGmail').onclick = function(){
+  window.open('https://mail.google.com', '_blank');
+};
+
+// ==== STEP 2 ====
+$('btnVerify').onclick = async function(){
+  var rawLink = $('rawLinkInput').value.trim();
+  if (!rawLink) {
+    setResult($('res2'), 'err', '❌ Paste isi email dulu.');
+    return;
+  }
+  var btn = $('btnVerify');
+  btn.disabled = true; btn.textContent = '⏳ Memverifikasi...';
+  setResult($('res2'), 'info', 'Memverifikasi magic link...');
+
+  try {
+    var j = await apiCall({ action: 'verify-account', email: state.email, rawLink: rawLink });
+    var idToken = j.idToken || (j.profile && j.profile.idToken);
+    if (!idToken) throw new Error('idToken tidak diterima dari server.');
+    state.idToken = idToken;
+    setResult($('res2'), 'ok', '✅ Verifikasi berhasil!\nLanjut ke langkah 3.');
+    setTimeout(function(){ showStep(3); }, 1000);
+  } catch(e) {
+    setResult($('res2'), 'err', '❌ Gagal: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '🔗 Verifikasi & Lanjut';
+  }
+};
+
+// ==== STEP 3 ====
+$('btnApply').onclick = async function(){
+  if (!state.idToken) {
+    setResult($('res3'), 'err', '❌ idToken hilang. Ulangi dari langkah 1.');
+    return;
+  }
+  var btn = $('btnApply');
+  btn.disabled = true; btn.textContent = '⏳ Mengaktifkan...';
+  setResult($('res3'), 'info', 'Mengaktifkan premium untuk ' + state.email + '...');
+
+  try {
+    var j = await apiCall({ action: 'apply-premium', email: state.email, idToken: state.idToken });
+
+    var counterMsg = '';
+    if (j._counter) {
+      state.usedCount = j._counter.used;
+      state.remaining = j._counter.remaining;
+      updateStatusPill();
+      counterMsg = '\n\n📊 Kuota terpakai: ' + j._counter.used + '/' + j._counter.max + '\nSisa: ' + j._counter.remaining;
+      if (j._counter.status === 'exhausted') {
+        counterMsg += '\n\n⚠️ Kuota key HABIS. Hubungi admin untuk key baru.';
+      }
+    }
+
+    setResult($('res3'), 'ok', '🎉 BERHASIL!\n\nEmail: ' + state.email + '\nStatus: Premium aktif' + counterMsg);
+  } catch(e) {
+    setResult($('res3'), 'err', '❌ Gagal: ' + e.message + '\n\n💡 Kuota tidak berkurang karena gagal.');
+  } finally {
+    btn.disabled = false; btn.textContent = '✨ Aktifkan Premium Sekarang';
+  }
+};
+
+// ==== INIT ====
+init();
+</script>
+</body>
+</html>

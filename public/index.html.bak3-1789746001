@@ -12,19 +12,7 @@
 <header class="hero"><div class="eyebrow">JAVIN PROJECT HOLE // DEEP SPACE CATALOG</div><h1>BLACK <span>HOLE</span></h1><p>Eksplorasi endpoint dalam katalog yang melayang di ruang hampa. Pilih kategori, buka card, isi parameter, lalu jalankan.</p><div class="stats"><div><b id="count">—</b><small>ENDPOINTS</small></div><div><b id="catCount">—</b><small>CATEGORIES</small></div><div><b>NO KEY</b><small>FILTER</small></div></div></header>
 <button class="admin-launch" id="adminLaunch">ADMIN</button>
 <div class="user-id">ID: <span id="userId"></span> · Limit: <span id="userLimit" class="u-limit">–</span></div>
-<main>
-<section class="featured">
-  <a href="/premium.html" class="featured-card">
-    <div class="featured-icon">💎</div>
-    <div class="featured-info">
-      <div class="featured-badge">FEATURED</div>
-      <div class="featured-title">Premium APK Generator</div>
-      <div class="featured-desc">Buat akun premium Alight Motion otomatis · Gratis</div>
-    </div>
-    <div class="featured-arrow">→</div>
-  </a>
-</section>
-<section class="catalog"><div class="sectionHead"><div><span class="eyebrow">EVENT HORIZON</span><h2>KATALOG API</h2></div><input id="search" placeholder="Cari endpoint..." autocomplete="off"></div><div id="categories" class="categories"></div><div id="grid" class="grid"></div></section>
+<main><section class="catalog"><div class="sectionHead"><div><span class="eyebrow">EVENT HORIZON</span><h2>KATALOG API</h2></div><input id="search" placeholder="Cari endpoint..." autocomplete="off"></div><div id="categories" class="categories"></div><div id="grid" class="grid"></div></section>
 <section class="admin-panel" id="adminPanel">
   <div class="admin-head">
     <div>
@@ -38,7 +26,6 @@
     <button class="admin-tab active" data-tab="users">User & Limit</button>
     <button class="admin-tab" data-tab="logs">Log Aktivitas</button>
     <button class="admin-tab" data-tab="config">Config</button>
-    <button class="admin-tab" data-tab="keys">Premium Keys</button>
   </div>
   <div class="admin-tabpanes">
     <div class="admin-pane active" data-pane="users">
@@ -87,27 +74,6 @@
         <input id="configKey" placeholder="Key (mis. rate_limit)">
         <input id="configValue" placeholder="Value">
         <button id="configSave">Simpan</button>
-      </div>
-    </div>
-
-    <div class="admin-pane" data-pane="keys">
-      <div class="admin-toolbar">
-        <input id="keysSearch" placeholder="Cari key / label / owner...">
-        <button class="ghost" id="keysReload">Refresh</button>
-      </div>
-      <div class="admin-form-inline" style="margin-top:0;margin-bottom:14px">
-        <h4>Generate Key Baru</h4>
-        <input id="newKeyLabel" placeholder="Label (mis. Budi VIP)">
-        <input id="newKeyMax" type="number" min="1" max="100" placeholder="Kuota (default 5)" value="5">
-        <input id="newKeyQty" type="number" min="1" max="20" placeholder="Jumlah key (default 1)" value="1">
-        <button id="btnGenKeys">Generate</button>
-      </div>
-      <div id="genKeyResult" class="result" style="margin-top:0;margin-bottom:14px"></div>
-      <div class="admin-tbl-wrap">
-        <table class="admin-tbl">
-          <thead><tr><th>Key</th><th>Label</th><th>Owner</th><th>Kuota</th><th>Status</th><th>Aksi</th></tr></thead>
-          <tbody id="keysTbody"><tr><td colspan="6" class="tbl-empty">Loading...</td></tr></tbody>
-        </table>
       </div>
     </div>
   </div>

@@ -56,3 +56,20 @@
 }
 
 .u-limit{font-weight:700;color:#8a8a9a;transition:color .3s}
+
+/* === Featured Card === */
+.featured{max-width:1200px;margin:0 auto;padding:0 20px 30px}
+.featured-card{display:flex;align-items:center;gap:16px;padding:20px 22px;border-radius:20px;background:linear-gradient(135deg,rgba(112,69,255,.22),rgba(255,122,24,.15));border:1px solid rgba(169,140,255,.4);backdrop-filter:blur(18px);text-decoration:none;color:#fff;transition:.3s;box-shadow:0 12px 40px rgba(112,69,255,.18);position:relative;overflow:hidden}
+.featured-card:before{content:'';position:absolute;width:180px;height:180px;right:-60px;top:-60px;background:radial-gradient(circle,#a05cff88,transparent 70%);filter:blur(30px);pointer-events:none}
+.featured-card:hover{transform:translateY(-3px);border-color:rgba(169,140,255,.8);box-shadow:0 18px 50px rgba(112,69,255,.35)}
+.featured-icon{font-size:38px;flex-shrink:0;filter:drop-shadow(0 0 12px rgba(169,140,255,.6))}
+.featured-info{flex:1;min-width:0}
+.featured-badge{display:inline-block;font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;letter-spacing:.2em;color:#ffb84d;background:rgba(255,122,24,.18);padding:3px 9px;border-radius:6px;margin-bottom:6px}
+.featured-title{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;margin-bottom:4px;background:linear-gradient(120deg,#fff,#d9c4ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.featured-desc{font-size:12px;color:#b8a8d0;line-height:1.5}
+.featured-arrow{font-size:22px;color:#a98cff;flex-shrink:0;font-weight:700}
+@media(max-width:520px){
+  .featured-icon{font-size:32px}
+  .featured-title{font-size:14px}
+  .featured-desc{font-size:11px}
+}

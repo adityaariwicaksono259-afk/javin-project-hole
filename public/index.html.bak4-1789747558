@@ -38,7 +38,6 @@
     <button class="admin-tab active" data-tab="users">User & Limit</button>
     <button class="admin-tab" data-tab="logs">Log Aktivitas</button>
     <button class="admin-tab" data-tab="config">Config</button>
-    <button class="admin-tab" data-tab="keys">Premium Keys</button>
   </div>
   <div class="admin-tabpanes">
     <div class="admin-pane active" data-pane="users">
@@ -87,27 +86,6 @@
         <input id="configKey" placeholder="Key (mis. rate_limit)">
         <input id="configValue" placeholder="Value">
         <button id="configSave">Simpan</button>
-      </div>
-    </div>
-
-    <div class="admin-pane" data-pane="keys">
-      <div class="admin-toolbar">
-        <input id="keysSearch" placeholder="Cari key / label / owner...">
-        <button class="ghost" id="keysReload">Refresh</button>
-      </div>
-      <div class="admin-form-inline" style="margin-top:0;margin-bottom:14px">
-        <h4>Generate Key Baru</h4>
-        <input id="newKeyLabel" placeholder="Label (mis. Budi VIP)">
-        <input id="newKeyMax" type="number" min="1" max="100" placeholder="Kuota (default 5)" value="5">
-        <input id="newKeyQty" type="number" min="1" max="20" placeholder="Jumlah key (default 1)" value="1">
-        <button id="btnGenKeys">Generate</button>
-      </div>
-      <div id="genKeyResult" class="result" style="margin-top:0;margin-bottom:14px"></div>
-      <div class="admin-tbl-wrap">
-        <table class="admin-tbl">
-          <thead><tr><th>Key</th><th>Label</th><th>Owner</th><th>Kuota</th><th>Status</th><th>Aksi</th></tr></thead>
-          <tbody id="keysTbody"><tr><td colspan="6" class="tbl-empty">Loading...</td></tr></tbody>
-        </table>
       </div>
     </div>
   </div>
