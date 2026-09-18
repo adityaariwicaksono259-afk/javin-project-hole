@@ -1,0 +1,516 @@
+==============================================
+                 API CATALOG
+==============================================
+
+Total tested : 390
+OK          : 268
+4xx         : 13
+5xx         : 80
+Connection   : 33
+
+Format: alias = URL | METHOD | STATUS
+
+
+[AI]
+----------------------------------------------
+c.bibleai = https://api.siputzx.my.id/api/ai/bibleai?question=What+is+faith%3F&translation=ESV | GET | TIMEOUT
+  # Bible AI
+c.bibleai2 = https://api.siputzx.my.id/api/ai/bibleai | POST | 400
+  # Bible AI
+c.deepseekr1 = https://api.siputzx.my.id/api/ai/deepseekr1?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7 | GET | 200
+  # DeepSeek R1
+c.deepseekr12 = https://api.siputzx.my.id/api/ai/deepseekr1 | POST | TIMEOUT
+  # DeepSeek R1
+c.chat = https://api.siputzx.my.id/api/ai/duckai?message=What+is+the+meaning+of+life%3F&model=gpt-4o-mini&systemPrompt=You+are+a+helpful+assistant. | GET | 503
+  # DuckAI Chat
+c.chat2 = https://api.siputzx.my.id/api/ai/duckai | POST | 400
+  # DuckAI Chat
+c.duckaiimage = https://api.siputzx.my.id/api/ai/duckaiimage?prompt=a+cat+sitting+on+the+moon | GET | 503
+  # DuckAI Image Generator
+c.duckaiimage2 = https://api.siputzx.my.id/api/ai/duckaiimage | POST | 503
+  # DuckAI Image Generator
+c.gemini = https://api.siputzx.my.id/api/ai/gemini?text=Explain+quantum+physics.&cookie=&promptSystem=Act+as+a+professional+physicist. | GET | 400
+  # gemini [ BETA ]
+c.gemini2 = https://api.siputzx.my.id/api/ai/gemini | POST | 503
+  # gemini [ BETA ]
+c.gita = https://api.siputzx.my.id/api/ai/gita?q=What+is+karma%3F | GET | 200
+  # gita
+c.gita2 = https://api.siputzx.my.id/api/ai/gita | POST | 200
+  # gita
+c.glm47flash = https://api.siputzx.my.id/api/ai/glm47flash?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7 | GET | TIMEOUT
+  # GLM 4.7 Flash
+c.glm47flash2 = https://api.siputzx.my.id/api/ai/glm47flash | POST | TIMEOUT
+  # GLM 4.7 Flash
+c.gpt = https://api.siputzx.my.id/api/ai/gptoss120b?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7 | GET | TIMEOUT
+  # GPT OSS 120B
+c.gpt2 = https://api.siputzx.my.id/api/ai/gptoss120b | POST | TIMEOUT
+  # GPT OSS 120B
+c.metaai = https://api.siputzx.my.id/api/ai/metaai?query=Tell+me+a+fun+fact+about+space. | GET | 503
+  # meta ai
+c.metaai2 = https://api.siputzx.my.id/api/ai/metaai | POST | 503
+  # meta ai
+c.phi2 = https://api.siputzx.my.id/api/ai/phi2?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7 | GET | TIMEOUT
+  # Phi-2
+c.phi22 = https://api.siputzx.my.id/api/ai/phi2 | POST | 200
+  # Phi-2
+c.qwq32b = https://api.siputzx.my.id/api/ai/qwq32b?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7 | GET | 200
+  # QwQ 32B
+c.qwq32b2 = https://api.siputzx.my.id/api/ai/qwq32b | POST | 200
+  # QwQ 32B
+
+
+[ANIME]
+----------------------------------------------
+c.detail = https://api.siputzx.my.id/api/anime/anichin-detail?url=https%3A%2F%2Fanichin.cafe%2Frenegade-immortal-episode-69-subtitle-indonesia%2F | GET | TIMEOUT
+  # anichin detail
+c.detail2 = https://api.siputzx.my.id/api/anime/anichin-detail | POST | TIMEOUT
+  # anichin detail
+c.download = https://api.siputzx.my.id/api/anime/anichin-download?url=https%3A%2F%2Fanichin.cafe%2Frenegade-immortal-episode-69-subtitle-indonesia%2F | GET | TIMEOUT
+  # anichin download
+c.download2 = https://api.siputzx.my.id/api/anime/anichin-download | POST | TIMEOUT
+  # anichin download
+c.episode = https://api.siputzx.my.id/api/anime/anichin-episode?url=https%3A%2F%2Fanichin.cafe%2Frenegade-immortal%2F | GET | TIMEOUT
+  # anichin episode
+c.episode2 = https://api.siputzx.my.id/api/anime/anichin-episode | POST | TIMEOUT
+  # anichin episode
+c.latest = https://api.siputzx.my.id/api/anime/anichin-latest | GET | TIMEOUT
+  # anichin latest
+c.latest2 = https://api.siputzx.my.id/api/anime/anichin-latest | POST | TIMEOUT
+  # anichin latest
+c.popular = https://api.siputzx.my.id/api/anime/anichin-popular | GET | TIMEOUT
+  # anichin popular
+c.popular2 = https://api.siputzx.my.id/api/anime/anichin-popular | POST | TIMEOUT
+  # anichin popular
+c.search = https://api.siputzx.my.id/api/anime/anichin-search?query=naga | GET | TIMEOUT
+  # anichin search
+c.search2 = https://api.siputzx.my.id/api/anime/anichin-search | POST | TIMEOUT
+  # anichin search
+c.detail3 = https://api.siputzx.my.id/api/anime/auratail-detail?url=https%3A%2F%2Fauratail.vip%2Fthe-war-of-cards%2F | GET | 200
+  # auratail detail
+c.detail4 = https://api.siputzx.my.id/api/anime/auratail-detail | POST | TIMEOUT
+  # auratail detail
+c.latest3 = https://api.siputzx.my.id/api/anime/auratail-latest | GET | 200
+  # auratail latest
+c.latest4 = https://api.siputzx.my.id/api/anime/auratail-latest | POST | 200
+  # auratail latest
+c.schedule = https://api.siputzx.my.id/api/anime/auratail-schedule | GET | TIMEOUT
+  # auratail schedule
+c.schedule2 = https://api.siputzx.my.id/api/anime/auratail-schedule | POST | TIMEOUT
+  # auratail schedule
+c.search3 = https://api.siputzx.my.id/api/anime/auratail-search?query=war | GET | 200
+  # auratail search
+c.search4 = https://api.siputzx.my.id/api/anime/auratail-search | POST | 200
+  # auratail search
+c.detail5 = https://api.siputzx.my.id/api/anime/komikindo-detail?url=https%3A%2F%2Fkomikindo.cz%2Fkomik%2F550578-solo-leveling%2F | GET | TIMEOUT
+  # komikindo detail
+c.detail6 = https://api.siputzx.my.id/api/anime/komikindo-detail | POST | TIMEOUT
+  # komikindo detail
+c.download3 = https://api.siputzx.my.id/api/anime/komikindo-download?url=https%3A%2F%2Fkomikindo.cz%2Fsolo-leveling-chapter-1%2F | GET | TIMEOUT
+  # komikindo download
+c.download4 = https://api.siputzx.my.id/api/anime/komikindo-download | POST | TIMEOUT
+  # komikindo download
+c.search5 = https://api.siputzx.my.id/api/anime/komikindo-search?query=solo+leveling | GET | TIMEOUT
+  # komikindo search
+c.search6 = https://api.siputzx.my.id/api/anime/komikindo-search | POST | TIMEOUT
+  # komikindo search
+c.download5 = https://api.siputzx.my.id/api/anime/oploverz-download?url=https%3A%2F%2Foploverz.org%2Fanime%2Fcaptain-tsubasa-season-2-junior-youth-hen-1-episode-30-subtitle-indonesia%2F | GET | 200
+  # oploverz download
+c.download6 = https://api.siputzx.my.id/api/anime/oploverz-download | POST | 200
+  # oploverz download
+c.episode3 = https://api.siputzx.my.id/api/anime/oploverz-episode?url=https%3A%2F%2Foploverz.org%2Fmushoku-tensei-isekai-ittara-honki-dasu-s2%2F | GET | 200
+  # oploverz episode
+c.episode4 = https://api.siputzx.my.id/api/anime/oploverz-episode | POST | 200
+  # oploverz episode
+c.ongoing = https://api.siputzx.my.id/api/anime/oploverz-ongoing | GET | 200
+  # oploverz ongoing
+c.ongoing2 = https://api.siputzx.my.id/api/anime/oploverz-ongoing | POST | 200
+  # oploverz ongoing
+c.search7 = https://api.siputzx.my.id/api/anime/oploverz-search?query=romance | GET | 200
+  # oploverz search
+c.search8 = https://api.siputzx.my.id/api/anime/oploverz-search | POST | 200
+  # oploverz search
+c.detail7 = https://api.siputzx.my.id/api/anime/otakudesu/detail?url=https%3A%2F%2Fotakudesu.cloud%2Fanime%2Fborto-sub-indo%2F | GET | 200
+  # otakudesu detail
+c.detail8 = https://api.siputzx.my.id/api/anime/otakudesu/detail | POST | 200
+  # otakudesu detail
+c.download7 = https://api.siputzx.my.id/api/anime/otakudesu/download?url=https%3A%2F%2Fotakudesu.cloud%2Flengkap%2Fbtr-nng-sub-indo-part-1%2F | GET | 200
+  # otakudesu download
+c.download8 = https://api.siputzx.my.id/api/anime/otakudesu/download | POST | 200
+  # otakudesu download
+c.ongoing3 = https://api.siputzx.my.id/api/anime/otakudesu/ongoing | GET | 200
+  # otakudesu ongoing
+c.ongoing4 = https://api.siputzx.my.id/api/anime/otakudesu/ongoing | POST | 200
+  # otakudesu ongoing
+c.search9 = https://api.siputzx.my.id/api/anime/otakudesu/search?s=naruto | GET | 200
+  # otakudesu search
+c.search10 = https://api.siputzx.my.id/api/anime/otakudesu/search | POST | 200
+  # otakudesu search
+c.detail9 = https://api.siputzx.my.id/api/anime/samehadaku/detail?link=https%3A%2F%2Fv1.samehadaku.how%2Fanime%2Fblue-lock-season-2%2F | GET | 200
+  # samehadaku detail
+c.detail10 = https://api.siputzx.my.id/api/anime/samehadaku/detail | POST | 200
+  # samehadaku detail
+c.download9 = https://api.siputzx.my.id/api/anime/samehadaku/download?url=https%3A%2F%2Fv1.samehadaku.how%2Frekishi-ni-nokoru-akujo-ni-naru-zo-episode-9 | GET | 200
+  # samehadaku download
+c.download10 = https://api.siputzx.my.id/api/anime/samehadaku/download | POST | 200
+  # samehadaku download
+c.latest5 = https://api.siputzx.my.id/api/anime/samehadaku/latest | GET | 200
+  # samehadaku latest
+c.latest6 = https://api.siputzx.my.id/api/anime/samehadaku/latest | POST | 200
+  # samehadaku latest
+c.release = https://api.siputzx.my.id/api/anime/samehadaku/release | GET | 200
+  # samehadaku release
+c.release2 = https://api.siputzx.my.id/api/anime/samehadaku/release | POST | 200
+  # samehadaku release
+c.search11 = https://api.siputzx.my.id/api/anime/samehadaku/search?query=naruto | GET | 200
+  # samehadaku search
+c.search12 = https://api.siputzx.my.id/api/anime/samehadaku/search | POST | 200
+  # samehadaku search
+c.animequotes = https://api.siputzx.my.id/api/s/animequotes?query=fate | GET | 200
+  # quoted anime
+c.animequotes2 = https://api.siputzx.my.id/api/s/animequotes | POST | 200
+  # quoted anime
+
+[CANVAS]
+----------------------------------------------
+c.affect = https://api.siputzx.my.id/api/canvas/affect?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg | GET | 200
+  # Affect Image
+c.affect2 = https://api.siputzx.my.id/api/canvas/affect | POST | 503
+  # Affect Image
+c.batslap = https://api.siputzx.my.id/api/canvas/batslap?image1=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&image2=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg | GET | 200
+  # Batslap Image
+c.batslap2 = https://api.siputzx.my.id/api/canvas/batslap | POST | 503
+  # Batslap Image
+c.beautiful = https://api.siputzx.my.id/api/canvas/beautiful?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg | GET | 200
+  # Beautiful Image Effect
+c.beautiful2 = https://api.siputzx.my.id/api/canvas/beautiful | POST | 400
+  # Beautiful Image Effect
+c.blur = https://api.siputzx.my.id/api/canvas/blur?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg | GET | 200
+  # Blur Image Effect
+c.blur2 = https://api.siputzx.my.id/api/canvas/blur | POST | 503
+  # Blur Image Effect
+c.captcha = https://api.siputzx.my.id/api/canvas/captcha?background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&captchaKey=ABC123&border=%23f0f0f0&overlayOpacity=0.5 | GET | 200
+  # Captcha Image
+c.captcha2 = https://api.siputzx.my.id/api/canvas/captcha | POST | 503
+  # Captcha Image
+c.circle = https://api.siputzx.my.id/api/canvas/circle?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg | GET | 200
+  # Circle Image
+c.circle2 = https://api.siputzx.my.id/api/canvas/circle | POST | 503
+  # Circle Image
+c.darkness = https://api.siputzx.my.id/api/canvas/darkness?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg&amount=50 | GET | 200
+  # Darkness Image Effect
+c.darkness2 = https://api.siputzx.my.id/api/canvas/darkness | POST | 503
+  # Darkness Image Effect
+c.delete = https://api.siputzx.my.id/api/canvas/delete?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg | GET | 200
+  # Delete Image
+c.delete2 = https://api.siputzx.my.id/api/canvas/delete | POST | 503
+  # Delete Image
+c.ektp = https://api.siputzx.my.id/api/canvas/ektp?provinsi=JAWA+BARAT&kota=BANDUNG&nik=1234567890123456&nama=John+Doe&ttl=Bandung%2C+01-01-1990&jenis_kelamin=Laki-laki&golongan_darah=O&alamat=Jl.+Contoh+No.+123&rt%2Frw=001%2F002&kel%2Fdesa=Sukajadi&kecamatan=Sukajadi&agama=Islam&status=Belum+Kawin&pekerjaan=Pegawai+Swasta&kewarganegaraan=WNI&masa_berlaku=Seumur+Hidup&terbuat=01-01-2023&pas_photo=https%3A%2F%2Fi.pinimg.com%2F736x%2F0b%2F9f%2F0a%2F0b9f0a92a598e6c22629004c1027d23f.jpg | GET | 200
+  # eKTP Generator
+c.ektp2 = https://api.siputzx.my.id/api/canvas/ektp | POST | 503
+  # eKTP Generator
+c.facepalm = https://api.siputzx.my.id/api/canvas/facepalm?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg | GET | 200
+  # Facepalm Image
+c.facepalm2 = https://api.siputzx.my.id/api/canvas/facepalm | POST | 503
+  # Facepalm Image
+c.gay = https://api.siputzx.my.id/api/canvas/gay?nama=Lendra&avatar=https%3A%2F%2Ffiles.catbox.moe%2Fg45kly.jpg&num=87 | GET | 200
+  # Gay Image
+c.gay2 = https://api.siputzx.my.id/api/canvas/gay | POST | 503
+  # Gay Image
+c.goodbyev1 = https://api.siputzx.my.id/api/canvas/goodbyev1?username=John&guildName=Anime+Club&guildIcon=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&quality=80 | GET | 200
+  # Goodbye V1
+c.goodbyev2 = https://api.siputzx.my.id/api/canvas/goodbyev2?username=John&guildName=Siputzx+Api&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg | GET | 200
+  # Goodbye V2
+c.goodbyev3 = https://api.siputzx.my.id/api/canvas/goodbyev3?username=John&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg | GET | 200
+  # Goodbye V3
+c.goodbyev4 = https://api.siputzx.my.id/api/canvas/goodbyev4?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&title=goodbye&description=goodbye+to+the+server%21&border=%232a2e35&avatarBorder=%232a2e35&overlayOpacity=0.3 | GET | 200
+  # Goodbye V4
+c.goodbyev5 = https://api.siputzx.my.id/api/canvas/goodbyev5?username=Zero+Two&guildName=Siputzx+Community&memberCount=219&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fmountain-sunset.jpg&quality=90 | GET | 200
+  # Goodbye V5
+c.greyscale = https://api.siputzx.my.id/api/canvas/greyscale?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg | GET | 200
+  # Greyscale Image
+c.invert = https://api.siputzx.my.id/api/canvas/invert?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg | GET | 200
+  # Invert Image
+c.kiss = https://api.siputzx.my.id/api/canvas/kiss?image1=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&image2=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg | GET | 200
+  # Kiss Image
+c.up = https://api.siputzx.my.id/api/canvas/level-up?backgroundURL=https%3A%2F%2Fi.ibb.co.com%2F2jMjYXK%2FIMG-20250103-WA0469.jpg&avatarURL=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F159487561%3Fv%3D4&fromLevel=0&toLevel=1&name=putu | GET | 200
+  # Level Up Card
+c.profile = https://api.siputzx.my.id/api/canvas/profile?backgroundURL=https%3A%2F%2Fi.ibb.co.com%2F2jMjYXK%2FIMG-20250103-WA0469.jpg&avatarURL=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F159487561%3Fv%3D4&rankName=epik&rankId=0&exp=500&requireExp=1000&level=10&name=siputzx | GET | 200
+  # Profile Card
+c.security = https://api.siputzx.my.id/api/canvas/security?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&createdTimestamp=1672531200000&suspectTimestamp=604800000&locale=en | GET | 200
+  # Security Card
+c.tolol = https://api.siputzx.my.id/api/canvas/sertifikat-tolol?text=lorem+ipsum%21 | GET | 200
+  # Sertifikat Tolol
+c.tolol2 = https://api.siputzx.my.id/api/canvas/sertifikat-tolol | POST | 200
+  # Sertifikat Tolol
+c.ship = https://api.siputzx.my.id/api/canvas/ship?avatar1=https%3A%2F%2Fi.ibb.co.com%2FYc4MVdV%2Fimages.jpg&avatar2=https%3A%2F%2Fi.ibb.co.com%2FKKYxYQr%2Fdownload.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&persen=20 | GET | 200
+  # Ship Image
+c.spotify = https://api.siputzx.my.id/api/canvas/spotify?title=Blinding+Lights&artist=The+Weeknd&start=100000&end=200000&image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&border=%231DB954 | GET | 200
+  # Spotify Card
+c.tweet = https://api.siputzx.my.id/api/canvas/tweet?displayName=Gemini&username=gemini_ai&comment=Hello+World%21&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&verified=true&theme=dark | GET | 200
+  # Tweet Card
+c.welcomev1 = https://api.siputzx.my.id/api/canvas/welcomev1?username=John&guildName=Anime+Club&guildIcon=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&quality=80 | GET | 200
+  # Welcome V1
+c.welcomev2 = https://api.siputzx.my.id/api/canvas/welcomev2?username=John&guildName=Siputzx+Api&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg | GET | 200
+  # Welcome V2
+c.welcomev3 = https://api.siputzx.my.id/api/canvas/welcomev3?username=John&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg | GET | 200
+  # Welcome V3
+c.welcomev4 = https://api.siputzx.my.id/api/canvas/welcomev4?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&description=Welcome+friend%21 | GET | 200
+  # Welcome V4
+c.welcomev5 = https://api.siputzx.my.id/api/canvas/welcomev5?username=Zero+Two&guildName=Siputzx+Community&memberCount=219&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fmountain-sunset.jpg&quality=90 | GET | 200
+  # Welcome V5
+
+
+[DOWNLOADER]
+----------------------------------------------
+c.capcut = https://api.siputzx.my.id/api/d/capcut?url=https%3A%2F%2Fwww.capcut.com%2Ftv2%2FZSmm1R7Sd%2F+jj+kece+banget | GET | 200
+  # capcut
+c.capcut2 = https://api.siputzx.my.id/api/d/capcut | POST | 200
+  # capcut
+c.douyin = https://api.siputzx.my.id/api/d/douyin?url=https%3A%2F%2Fwww.douyin.com%2Fvideo%2F7256984651137289483 | GET | 200
+  # douyin downloader
+c.facebook = https://api.siputzx.my.id/api/d/facebook?url=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fr%2F1CbPCn9MQw%2F | GET | 200
+  # facebook
+c.facebook2 = https://api.siputzx.my.id/api/d/facebook | POST | 200
+  # facebook
+c.gdrive = https://api.siputzx.my.id/api/d/gdrive?url=https%3A%2F%2Fdrive.google.com%2Ffile%2Fd%2F1YTD7Ymux9puFNqu__5WPlYdFZHcGI3Wz%2Fview%3Fusp%3Ddrivesdk | GET | 200
+  # gdrive
+c.github = https://api.siputzx.my.id/api/d/github?url=https%3A%2F%2Fgist.github.com%2Fsiputzx%2F966268a3aa3c14695e80cc9f30da8e9f | GET | 200
+  # github downloader
+c.github2 = https://api.siputzx.my.id/api/d/github | POST | 200
+  # github downloader
+c.lahelu = https://api.siputzx.my.id/api/d/lahelu?url=https%3A%2F%2Flahelu.com%2Fpost%2FPMujNAfxy | GET | 200
+  # lahelu downloader
+c.lahelu2 = https://api.siputzx.my.id/api/d/lahelu | POST | 200
+  # lahelu downloader
+c.savefrom = https://api.siputzx.my.id/api/d/savefrom?url=https%3A%2F%2Fm.soundcloud.com%2Fteguh-hariyadi-652597010%2Fanji-dia | GET | 200
+  # SaveFrom Downloader
+c.savefrom2 = https://api.siputzx.my.id/api/d/savefrom | POST | 200
+  # SaveFrom Downloader
+c.soundcloud = https://api.siputzx.my.id/api/d/soundcloud?url=https%3A%2F%2Fm.soundcloud.com%2Fteguh-hariyadi-652597010%2Fanji-dia | GET | 200
+  # soundCloud
+c.instagram5 = https://api.siputzx.my.id/api/d/sssinstagram?url=siputzx_ | GET | 200
+  # sssinstagram downloader
+c.instagram6 = https://api.siputzx.my.id/api/d/sssinstagram | POST | 200
+  # sssinstagram downloader
+c.tiktok3 = https://api.siputzx.my.id/api/d/tiktok/v2?url=https%3A%2F%2Fvt.tiktok.com%2FZSjXNEnbC%2F | GET | 200
+  # tiktok v2
+c.tiktok4 = https://api.siputzx.my.id/api/d/tiktok/v2 | POST | 200
+  # tiktok v2
+c.twitter2 = https://api.siputzx.my.id/api/d/twitter | POST | 200
+  # twitter downloader
+c.ummy = https://api.siputzx.my.id/api/d/ummy?url=nasaartemis | GET | 200
+  # ummy downloader
+c.ummy2 = https://api.siputzx.my.id/api/d/ummy | POST | 200
+  # ummy downloader
+
+[GAMES]
+----------------------------------------------
+c.asahotak = https://api.siputzx.my.id/api/games/asahotak | GET | 200
+  # Asah Otak
+c.caklontong = https://api.siputzx.my.id/api/games/caklontong | GET | 200
+  # Cak Lontong
+c.sd = https://api.siputzx.my.id/api/games/cc-sd?matapelajaran=matematika&jumlahsoal=5 | GET | 200
+  # Cerdas Cermat
+c.family100 = https://api.siputzx.my.id/api/games/family100 | GET | 200
+  # Family100
+c.freefire = https://api.siputzx.my.id/api/games/karakter-freefire | GET | 200
+  # Tebak Karakter Free Fire
+c.lengkapikalimat = https://api.siputzx.my.id/api/games/lengkapikalimat | GET | 200
+  # Lengkapi Kalimat
+c.maths = https://api.siputzx.my.id/api/games/maths?level=easy | GET | 200
+  # Maths
+c.siapakahaku = https://api.siputzx.my.id/api/games/siapakahaku | GET | 200
+  # Siapakah Aku
+c.surah = https://api.siputzx.my.id/api/games/surah | GET | 200
+  # Tebak Surah
+c.susunkata = https://api.siputzx.my.id/api/games/susunkata | GET | 200
+  # Susun Kata
+c.tebakbendera = https://api.siputzx.my.id/api/games/tebakbendera | GET | 200
+  # Tebak Bendera
+c.tebakgambar = https://api.siputzx.my.id/api/games/tebakgambar | GET | 200
+  # Tebak Gambar
+c.tebakgame = https://api.siputzx.my.id/api/games/tebakgame | GET | 200
+  # Tebak Game
+c.tebakjkt = https://api.siputzx.my.id/api/games/tebakjkt | GET | 200
+  # Tebak JKT
+c.tebakkalimat = https://api.siputzx.my.id/api/games/tebakkalimat | GET | 200
+  # Tebak Kalimat
+c.tebakkartun = https://api.siputzx.my.id/api/games/tebakkartun | GET | 200
+  # Tebak Kartun
+c.tebakkata = https://api.siputzx.my.id/api/games/tebakkata | GET | 200
+  # Tebak Kata
+c.tebakkimia = https://api.siputzx.my.id/api/games/tebakkimia | GET | 200
+  # Tebak Kimia
+c.tebaklagu = https://api.siputzx.my.id/api/games/tebaklagu | GET | 200
+  # Tebak Lagu
+c.tebaklirik = https://api.siputzx.my.id/api/games/tebaklirik | GET | 200
+  # Tebak Lirik
+c.tebaklogo = https://api.siputzx.my.id/api/games/tebaklogo | GET | 200
+  # Tebak Logo
+c.tebaktebakan = https://api.siputzx.my.id/api/games/tebaktebakan | GET | 200
+  # Tebak Tebakan
+c.tebakwarna = https://api.siputzx.my.id/api/games/tebakwarna | GET | 200
+  # Tebak Warna
+c.tekateki = https://api.siputzx.my.id/api/games/tekateki | GET | 200
+  # Teka Teki
+
+
+[SEARCH]
+----------------------------------------------
+c.8font = https://api.siputzx.my.id/api/s/8font?query=cartoon&page=1 | GET | 200
+  # 8 font
+c.applemusic = https://api.siputzx.my.id/api/s/applemusic?query=duka&region=id | GET | 200
+  # music apple
+c.bimg = https://api.siputzx.my.id/api/s/bimg?query=kucing | GET | 200
+  # bing image
+c.brave = https://api.siputzx.my.id/api/s/brave?query=apa+itu+nodejs | GET | 200
+  # brave search
+c.duckduckgo = https://api.siputzx.my.id/api/s/duckduckgo?query=openai&kl=us-en&df=w | GET | 200
+  # duckduckgo
+c.gitagram = https://api.siputzx.my.id/api/s/gitagram?search=sekuat+hatimu | GET | 200
+  # gitagram search
+c.google = https://api.siputzx.my.id/api/s/googleimg?query=siputzx | GET | 200
+  # google image
+c.gsmarena = https://api.siputzx.my.id/api/s/gsmarena?query=iphone | GET | 200
+  # gsmarena
+c.lahelu3 = https://api.siputzx.my.id/api/s/lahelu?query=drak | GET | 200
+  # lahelu search
+c.mangatoon = https://api.siputzx.my.id/api/s/mangatoon?query=cat | GET | 200
+  # mangatoon search
+c.mcpedl = https://api.siputzx.my.id/api/s/mcpedl?q=shaders | GET | 200
+  # mcpedl search
+c.myinstants = https://api.siputzx.my.id/api/s/myinstants?query=cihuyy | GET | 200
+  # my instants search
+c.otakotaku = https://api.siputzx.my.id/api/s/otakotaku?query=mahiru | GET | 200
+  # otakotaku search
+c.pinterest = https://api.siputzx.my.id/api/s/pinterest?query=cat&type=image | GET | 200
+  # pinterest
+c.resep = https://api.siputzx.my.id/api/s/resep?query=nasi+goreng | GET | 200
+  # resep koki search
+c.seegore = https://api.siputzx.my.id/api/s/seegore?query=train | GET | 200
+  # seegore search
+c.soundcloud3 = https://api.siputzx.my.id/api/s/soundcloud?query=duka | GET | 200
+  # soundcloud search
+c.youtube3 = https://api.siputzx.my.id/api/s/youtube?query=sc+bot | GET | 200
+  # youtube
+
+[RANDOM]
+----------------------------------------------
+c.archive = https://api.siputzx.my.id/api/r/blue-archive | GET | 200
+  # random blue archive
+c.china = https://api.siputzx.my.id/api/r/cecan/china | GET | 200
+  # Random Cecan CHINA
+c.indonesia = https://api.siputzx.my.id/api/r/cecan/indonesia | GET | 200
+  # Random Cecan Indonesia
+c.japan = https://api.siputzx.my.id/api/r/cecan/japan | GET | 200
+  # Random Cecan JAPAN
+c.korea = https://api.siputzx.my.id/api/r/cecan/korea | GET | 200
+  # Random Cecan KOREA
+c.thailand = https://api.siputzx.my.id/api/r/cecan/thailand | GET | 200
+  # Random Cecan THAILAND
+c.vietnam = https://api.siputzx.my.id/api/r/cecan/vietnam | GET | 200
+  # Random Cecan VIETNAM
+c.lahelu5 = https://api.siputzx.my.id/api/r/lahelu | GET | 200
+  # lahelu
+c.quotesanime = https://api.siputzx.my.id/api/r/quotesanime | GET | 200
+  # animequotes
+
+
+[BERITA]
+----------------------------------------------
+c.antara = https://api.siputzx.my.id/api/berita/antara | GET | 200
+  # antara news
+c.cnbcindonesia = https://api.siputzx.my.id/api/berita/cnbcindonesia | GET | 200
+  # cnbc indonesia
+c.cnn = https://api.siputzx.my.id/api/berita/cnn | GET | 200
+  # cnn Indonesia
+c.kompas = https://api.siputzx.my.id/api/berita/kompas | GET | 200
+  # kompas news
+c.liputan6 = https://api.siputzx.my.id/api/berita/liputan6 | GET | 200
+  # liputan6
+c.merdeka = https://api.siputzx.my.id/api/berita/merdeka | GET | 200
+  # merdeka news
+c.sindonews = https://api.siputzx.my.id/api/berita/sindonews | GET | 200
+  # sindonews
+c.suara = https://api.siputzx.my.id/api/berita/suara | GET | 200
+  # suara news
+c.tribunnews = https://api.siputzx.my.id/api/berita/tribunnews | GET | 200
+  # tribunnews
+
+
+[PRIMBON]
+----------------------------------------------
+c.artinama = https://api.siputzx.my.id/api/primbon/artinama?nama=putu | GET | 200
+  # arti nama
+c.penyakit = https://api.siputzx.my.id/api/primbon/cek_potensi_penyakit?tgl=12&bln=05&thn=1998 | GET | 200
+  # cek potensi penyakit
+c.pasangan = https://api.siputzx.my.id/api/primbon/kecocokan_nama_pasangan?nama1=putu&nama2=keyla | GET | 200
+  # kecocokan nama pasangan
+c.nomorhoki = https://api.siputzx.my.id/api/primbon/nomorhoki?phoneNumber=6285658939117 | GET | 200
+  # nomor hoki
+c.ramalanjodoh = https://api.siputzx.my.id/api/primbon/ramalanjodoh?nama1=putu&tgl1=16&bln1=11&thn1=2007&nama2=keyla&tgl2=1&bln2=1&thn2=2008 | GET | 200
+  # ramalan jodoh
+c.ramalanjodohbali = https://api.siputzx.my.id/api/primbon/ramalanjodohbali?nama1=putu&tgl1=16&bln1=11&thn1=2007&nama2=keyla&tgl2=1&bln2=1&thn2=2008 | GET | 200
+  # ramalan jodoh bali
+c.weton = https://api.siputzx.my.id/api/primbon/rejeki_hoki_weton?tgl=1&bln=1&thn=2025 | GET | 200
+  # rejeki hoki weton
+c.bisnis = https://api.siputzx.my.id/api/primbon/sifat_usaha_bisnis?tgl=1&bln=1&thn=2000 | GET | 200
+  # sifat usaha bisnis
+c.tafsirmimpi = https://api.siputzx.my.id/api/primbon/tafsirmimpi?mimpi=bertemu | GET | 200
+  # tafsir mimpi
+c.zodiak = https://api.siputzx.my.id/api/primbon/zodiak?zodiak=gemini | GET | 200
+  # zodiak
+
+
+[STALKER]
+----------------------------------------------
+c.github3 = https://api.siputzx.my.id/api/stalk/github?user=octocat | GET | 200
+  # github
+c.pinterest3 = https://api.siputzx.my.id/api/stalk/pinterest?q=dims | GET | 200
+  # pinterest
+c.threads = https://api.siputzx.my.id/api/stalk/threads?q=google | GET | 200
+  # threads
+c.twitter3 = https://api.siputzx.my.id/api/stalk/twitter?user=siputzx | GET | 200
+  # twitter stalk
+c.youtube5 = https://api.siputzx.my.id/api/stalk/youtube?username=siputzx | GET | 200
+  # youtube stalk
+
+
+[TOOLS]
+----------------------------------------------
+c.countryinfo = https://api.siputzx.my.id/api/tools/countryInfo?name=Indonesia | GET | 200
+  # country Info
+c.kodepos = https://api.siputzx.my.id/api/tools/kodepos?form=pasiran+jaya | GET | 200
+  # kodepos
+c.subdomains = https://api.siputzx.my.id/api/tools/subdomains?domain=siputzx.my.id | GET | 200
+  # subdomain finder
+c.translate = https://api.siputzx.my.id/api/tools/translate?text=I+love+you&source=en&target=id | GET | 200
+  # translate
+
+
+[INFO]
+----------------------------------------------
+c.bmkg = https://api.siputzx.my.id/api/info/bmkg | GET | 200
+  # bmkg gempa
+c.cuaca = https://api.siputzx.my.id/api/info/cuaca?q=pasiran+jaya | GET | 200
+  # cuaca
+c.jadwaltv = https://api.siputzx.my.id/api/info/jadwaltv?channel=sctv | GET | 200
+  # jadwalTV
+
+
+[MAKER]
+----------------------------------------------
+c.brat = https://api.siputzx.my.id/api/m/brat?text=Hello+world%21&isAnimated=false&delay=500 | GET | 200
+  # brat
+c.ephoto360 = https://api.siputzx.my.id/api/m/ephoto360?url=https%3A%2F%2Fen.ephoto360.com%2Fcreate-a-cartoon-style-graffiti-text-effect-online-668.html&text1=siputzx | GET | 200
+  # ephoto360
+c.photooxy = https://api.siputzx.my.id/api/m/photooxy?url=https%3A%2F%2Fphotooxy.com%2Flogo-and-text-effects%2Fshadow-text-effect-in-the-sky-394.html&text1=test | GET | 200
+  # photooxy
+c.textpro = https://api.siputzx.my.id/api/m/textpro?url=https%3A%2F%2Ftextpro.me%2Fcreate-artistic-3d-text-effects-from-corn-kernels-1177.html&text1=test | GET | 200
+  # textpro
+
+
+[STICKER]
+----------------------------------------------
+c.search13 = https://api.siputzx.my.id/api/sticker/combot-search?q=jomok+nye&page=1 | GET | 200
+  # combot sticker

@@ -225,51 +225,6 @@
     "catalogId": "ep009"
   },
   {
-    "id": "tl4",
-    "name": "HD Gambar",
-    "m": "GET",
-    "path": "/tools/hd/",
-    "folder": "Tools",
-    "desc": "Tingkatkan resolusi dan kualitas gambar secara otomatis menggunakan AI upscaling.",
-    "params": [
-      {
-        "n": "image",
-        "t": "string",
-        "r": 1,
-        "d": "URL gambar yang ingin ditingkatkan kualitasnya."
-      }
-    ],
-    "ex": "https://api.nexadev.my.id/tools/hd/?image=https://images.unsplash.com/photo-1541963463532-d68292c34b19",
-    "catalogId": "ep010",
-    "subfolder": ""
-  },
-  {
-    "id": "tl2",
-    "name": "Image to Pixel Art",
-    "m": "GET",
-    "path": "/pixel",
-    "folder": "Tools",
-    "outputType": "image",
-    "desc": "Konversi gambar apa saja menjadi visual bergaya retro pixel art.",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 1,
-        "d": "URL gambar sumber."
-      },
-      {
-        "n": "pixel",
-        "t": "number",
-        "r": 0,
-        "d": "Ukuran pixelation (default: 5, semakin besar semakin bergaya retro)."
-      }
-    ],
-    "ex": "https://apii.nexadev.my.id/pixel?url=https://api.nexadev.my.id/uploder/uploads/WjqDwO.jpg&pixel=5",
-    "catalogId": "ep011",
-    "subfolder": ""
-  },
-  {
     "id": "tl3",
     "name": "NGL Spam",
     "m": "GET",
@@ -326,26 +281,6 @@
     "catalogId": "ep013"
   },
   {
-    "id": "tl1",
-    "name": "Remove Background",
-    "m": "GET",
-    "path": "/tools/remove/",
-    "folder": "Tools",
-    "outputType": "binary-png",
-    "desc": "Hapus background gambar secara otomatis dengan deteksi AI tingkat tinggi.",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 1,
-        "d": "URL gambar JPG/PNG/WEBP yang ingin dihapus latarnya."
-      }
-    ],
-    "ex": "https://api.nexadev.my.id/tools/remove/?url=https://images.unsplash.com/photo-1541963463532-d68292c34b19",
-    "catalogId": "ep014",
-    "subfolder": ""
-  },
-  {
     "id": "custom_1785330922_6030",
     "name": "Roblox Stalker ",
     "m": "GET",
@@ -369,124 +304,6 @@
     "updated_at": "2026-07-29T18:38:43+00:00",
     "created_at": "2026-07-29T18:38:43+00:00",
     "catalogId": "ep015"
-  },
-  {
-    "id": "custom_1785332443_8094",
-    "name": "ss desktop ",
-    "m": "GET",
-    "path": "/api/ss",
-    "desc": "API untuk menangkap tampilan (screenshot) dari halaman situs web secara otomatis dalam bentuk gambar dengan opsi tampilan desktop maupun mobile.",
-    "folder": "Tools",
-    "subfolder": "ssdesktop",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=desktop",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url website "
-      },
-      {
-        "n": "device",
-        "t": "string",
-        "r": 0,
-        "d": "desktop"
-      }
-    ],
-    "updated_at": "2026-07-29T13:41:05+00:00",
-    "created_at": "2026-07-29T13:41:05+00:00",
-    "catalogId": "ep016"
-  },
-  {
-    "id": "custom_1785332339_6470",
-    "name": "ss phone",
-    "m": "GET",
-    "path": "/api/ss",
-    "desc": "API untuk menangkap tampilan (screenshot) dari halaman situs web secara otomatis dalam bentuk gambar dengan opsi tampilan desktop maupun mobile.",
-    "folder": "Tools",
-    "subfolder": "ssphone",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=phone",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url website"
-      },
-      {
-        "n": "device",
-        "t": "string",
-        "r": 0,
-        "d": "phone"
-      }
-    ],
-    "updated_at": "2026-07-29T13:41:15+00:00",
-    "created_at": "2026-07-29T13:41:15+00:00",
-    "catalogId": "ep017"
-  },
-  {
-    "name": "ss tablet ",
-    "m": "GET",
-    "path": "/api/ss",
-    "desc": "API untuk menangkap tampilan (screenshot) dari halaman situs web secara otomatis dalam bentuk gambar dengan opsi tampilan desktop maupun mobile.",
-    "folder": "Tools",
-    "subfolder": "sstablet",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=tablet",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url website nya"
-      },
-      {
-        "n": "device",
-        "t": "string",
-        "r": 0,
-        "d": "tablet"
-      }
-    ],
-    "id": "custom_1785332203_1108",
-    "updated_at": "2026-07-29T13:36:43+00:00",
-    "created_at": "2026-07-29T13:36:43+00:00",
-    "catalogId": "ep018"
-  },
-  {
-    "name": "stalker ff",
-    "m": "GET",
-    "path": "/api/ff",
-    "desc": "API untuk memverifikasi dan mengambil Nickname/In-Game Name (IGN) akun Free Fire berdasarkan User ID secara otomatis.",
-    "folder": "Tools",
-    "subfolder": "stalkerff",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ff/?id=7606762852",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "id",
-        "t": "string",
-        "r": 0,
-        "d": "masukan id ff"
-      }
-    ],
-    "id": "custom_1785329516_6185",
-    "updated_at": "2026-07-29T12:51:56+00:00",
-    "created_at": "2026-07-29T12:51:56+00:00",
-    "catalogId": "ep019"
   },
   {
     "id": "custom_1786270010_9211",
@@ -743,31 +560,6 @@
     "ex": "https://api.nexadev.my.id/api/aio?url=https://vt.tiktok.com/ZS2x9a9d",
     "catalogId": "ep029",
     "subfolder": ""
-  },
-  {
-    "name": "apple music",
-    "m": "GET",
-    "path": "/api/applemusic",
-    "desc": "Endpoint pengunduh lagu Apple Music untuk mengunduh audio MP3 dan mengambil metadata lagu secara instan.",
-    "folder": "Downloader",
-    "subfolder": "apple music",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/applemusic/?url=https://music.apple.com/us/song/unholy-confessions/898356745",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "https://music.apple.com/us/song/unholy-confessions/898356745"
-      }
-    ],
-    "id": "custom_1784551346_6446",
-    "updated_at": "2026-07-20T12:42:26+00:00",
-    "created_at": "2026-07-20T12:42:26+00:00",
-    "catalogId": "ep030"
   },
   {
     "name": "capcut downloader ",
@@ -1118,31 +910,6 @@
     "updated_at": "2026-09-08T01:54:17+00:00",
     "created_at": "2026-09-08T01:54:17+00:00",
     "catalogId": "ep044"
-  },
-  {
-    "id": "custom_1785293718_6414",
-    "name": "yt video",
-    "m": "GET",
-    "path": "/api/ytvideo",
-    "desc": "API untuk melakukan pencarian video berdasarkan kata kunci (query) beserta informasi detail video dan direct link unduhan secara otomatis",
-    "folder": "Downloader",
-    "subfolder": "ytvideo",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ytvideo/?q=cacamelon",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "q",
-        "t": "string",
-        "r": 0,
-        "d": "masukan judul video "
-      }
-    ],
-    "updated_at": "2026-07-29T02:55:41+00:00",
-    "created_at": "2026-07-29T02:55:41+00:00",
-    "catalogId": "ep045"
   },
   {
     "name": "ytmp4",
@@ -1990,61 +1757,6 @@
     "subfolder": ""
   },
   {
-    "id": "custom_1784532944_6384",
-    "name": "fake profile ig",
-    "m": "GET",
-    "path": "/fakeigprofile",
-    "desc": "buat Fake Ig Profile mu Sekarang juga",
-    "folder": "Canvas",
-    "subfolder": "fakeig",
-    "outputType": "binary-png",
-    "ex": "https://apii.nexadev.my.id/fakeigprofile?ppurl=&username=&postingan=&mengikuti=&pengikut=&bio=",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "ppurl",
-        "t": "string",
-        "r": 0,
-        "d": "https://clooud.my.id/uploder/uploads/Lpwzuc.jpg"
-      },
-      {
-        "n": "username",
-        "t": "string",
-        "r": 0,
-        "d": "Javin"
-      },
-      {
-        "n": "postingan",
-        "t": "string",
-        "r": 0,
-        "d": "2"
-      },
-      {
-        "n": "mengikuti",
-        "t": "string",
-        "r": 0,
-        "d": "0"
-      },
-      {
-        "n": "pengikut",
-        "t": "string",
-        "r": 0,
-        "d": "1.222"
-      },
-      {
-        "n": "bio",
-        "t": "string",
-        "r": 0,
-        "d": "Hello, I'm Javin"
-      }
-    ],
-    "updated_at": "2026-07-20T08:03:20+00:00",
-    "created_at": "2026-07-20T08:03:20+00:00",
-    "catalogId": "ep085"
-  },
-  {
     "id": "cv12",
     "name": "Instagram Story Image",
     "m": "GET",
@@ -2520,31 +2232,6 @@
     "subfolder": ""
   },
   {
-    "name": "pinterest search",
-    "m": "GET",
-    "path": "/api/pin",
-    "desc": "untuk mencari metadata Pinterest ",
-    "folder": "Search",
-    "subfolder": "pinss",
-    "outputType": "",
-    "ex": "https://api.nexaadev.my.id/api/pin?q=anime",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "q",
-        "t": "string",
-        "r": 0,
-        "d": ""
-      }
-    ],
-    "id": "custom_1787373081_9696",
-    "updated_at": "2026-08-22T04:31:21+00:00",
-    "created_at": "2026-08-22T04:31:21+00:00",
-    "catalogId": "ep103"
-  },
-  {
     "id": "custom_1786581235_4978",
     "name": "sound effect detail",
     "m": "GET",
@@ -2712,18 +2399,6 @@
     "subfolder": ""
   },
   {
-    "id": "in1",
-    "name": "Info Gempa BMKG",
-    "m": "GET",
-    "path": "/tools/infogempa/",
-    "folder": "Info",
-    "desc": "Menampilkan data seismik gempa bumi terbaru berskala di atas 5.0 SR langsung dari BMKG.",
-    "params": [],
-    "ex": "https://api.nexadev.my.id/tools/infogempa/",
-    "catalogId": "ep112",
-    "subfolder": ""
-  },
-  {
     "id": "in3",
     "name": "Metadata Channel",
     "m": "GET",
@@ -2828,5 +2503,3139 @@
     "ex": "https://clooud.my.id/uploder/",
     "catalogId": "ep117",
     "subfolder": ""
+  },
+  {
+    "catalogId": "ep118",
+    "name": "DeepSeek R1",
+    "m": "GET",
+    "path": "/api/ai/deepseekr1",
+    "folder": "AI",
+    "subfolder": "deepseekr1",
+    "desc": "DeepSeek R1",
+    "ex": "https://api.siputzx.my.id/api/ai/deepseekr1?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7",
+    "params": [
+      {
+        "n": "prompt",
+        "t": "string",
+        "r": 0,
+        "d": "prompt"
+      },
+      {
+        "n": "system",
+        "t": "string",
+        "r": 0,
+        "d": "system"
+      },
+      {
+        "n": "temperature",
+        "t": "string",
+        "r": 0,
+        "d": "temperature"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep119",
+    "name": "gita",
+    "m": "GET",
+    "path": "/api/ai/gita",
+    "folder": "AI",
+    "subfolder": "gita",
+    "desc": "gita",
+    "ex": "https://api.siputzx.my.id/api/ai/gita?q=What+is+karma%3F",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "q"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep120",
+    "name": "QwQ 32B",
+    "m": "GET",
+    "path": "/api/ai/qwq32b",
+    "folder": "AI",
+    "subfolder": "qwq32b",
+    "desc": "QwQ 32B",
+    "ex": "https://api.siputzx.my.id/api/ai/qwq32b?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7",
+    "params": [
+      {
+        "n": "prompt",
+        "t": "string",
+        "r": 0,
+        "d": "prompt"
+      },
+      {
+        "n": "system",
+        "t": "string",
+        "r": 0,
+        "d": "system"
+      },
+      {
+        "n": "temperature",
+        "t": "string",
+        "r": 0,
+        "d": "temperature"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep121",
+    "name": "auratail detail",
+    "m": "GET",
+    "path": "/api/anime/auratail-detail",
+    "folder": "Anime",
+    "subfolder": "auratail-detail",
+    "desc": "auratail detail",
+    "ex": "https://api.siputzx.my.id/api/anime/auratail-detail?url=https%3A%2F%2Fauratail.vip%2Fthe-war-of-cards%2F",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep122",
+    "name": "auratail latest",
+    "m": "GET",
+    "path": "/api/anime/auratail-latest",
+    "folder": "Anime",
+    "subfolder": "auratail-latest",
+    "desc": "auratail latest",
+    "ex": "https://api.siputzx.my.id/api/anime/auratail-latest",
+    "params": []
+  },
+  {
+    "catalogId": "ep123",
+    "name": "auratail search",
+    "m": "GET",
+    "path": "/api/anime/auratail-search",
+    "folder": "Anime",
+    "subfolder": "auratail-search",
+    "desc": "auratail search",
+    "ex": "https://api.siputzx.my.id/api/anime/auratail-search?query=war",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep124",
+    "name": "oploverz download",
+    "m": "GET",
+    "path": "/api/anime/oploverz-download",
+    "folder": "Anime",
+    "subfolder": "oploverz-download",
+    "desc": "oploverz download",
+    "ex": "https://api.siputzx.my.id/api/anime/oploverz-download?url=https%3A%2F%2Foploverz.org%2Fanime%2Fcaptain-tsubasa-season-2-junior-youth-hen-1-episode-30-subtitle-indonesia%2F",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep125",
+    "name": "oploverz episode",
+    "m": "GET",
+    "path": "/api/anime/oploverz-episode",
+    "folder": "Anime",
+    "subfolder": "oploverz-episode",
+    "desc": "oploverz episode",
+    "ex": "https://api.siputzx.my.id/api/anime/oploverz-episode?url=https%3A%2F%2Foploverz.org%2Fmushoku-tensei-isekai-ittara-honki-dasu-s2%2F",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep126",
+    "name": "oploverz ongoing",
+    "m": "GET",
+    "path": "/api/anime/oploverz-ongoing",
+    "folder": "Anime",
+    "subfolder": "oploverz-ongoing",
+    "desc": "oploverz ongoing",
+    "ex": "https://api.siputzx.my.id/api/anime/oploverz-ongoing",
+    "params": []
+  },
+  {
+    "catalogId": "ep127",
+    "name": "oploverz search",
+    "m": "GET",
+    "path": "/api/anime/oploverz-search",
+    "folder": "Anime",
+    "subfolder": "oploverz-search",
+    "desc": "oploverz search",
+    "ex": "https://api.siputzx.my.id/api/anime/oploverz-search?query=romance",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep128",
+    "name": "otakudesu detail",
+    "m": "GET",
+    "path": "/api/anime/otakudesu/detail",
+    "folder": "Anime",
+    "subfolder": "detail",
+    "desc": "otakudesu detail",
+    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/detail?url=https%3A%2F%2Fotakudesu.cloud%2Fanime%2Fborto-sub-indo%2F",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep129",
+    "name": "otakudesu download",
+    "m": "GET",
+    "path": "/api/anime/otakudesu/download",
+    "folder": "Anime",
+    "subfolder": "download",
+    "desc": "otakudesu download",
+    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/download?url=https%3A%2F%2Fotakudesu.cloud%2Flengkap%2Fbtr-nng-sub-indo-part-1%2F",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep130",
+    "name": "otakudesu ongoing",
+    "m": "GET",
+    "path": "/api/anime/otakudesu/ongoing",
+    "folder": "Anime",
+    "subfolder": "ongoing",
+    "desc": "otakudesu ongoing",
+    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/ongoing",
+    "params": []
+  },
+  {
+    "catalogId": "ep131",
+    "name": "otakudesu search",
+    "m": "GET",
+    "path": "/api/anime/otakudesu/search",
+    "folder": "Anime",
+    "subfolder": "search",
+    "desc": "otakudesu search",
+    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/search?s=naruto",
+    "params": [
+      {
+        "n": "s",
+        "t": "string",
+        "r": 0,
+        "d": "s"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep132",
+    "name": "samehadaku detail",
+    "m": "GET",
+    "path": "/api/anime/samehadaku/detail",
+    "folder": "Anime",
+    "subfolder": "detail",
+    "desc": "samehadaku detail",
+    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/detail?link=https%3A%2F%2Fv1.samehadaku.how%2Fanime%2Fblue-lock-season-2%2F",
+    "params": [
+      {
+        "n": "link",
+        "t": "string",
+        "r": 0,
+        "d": "link"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep133",
+    "name": "samehadaku download",
+    "m": "GET",
+    "path": "/api/anime/samehadaku/download",
+    "folder": "Anime",
+    "subfolder": "download",
+    "desc": "samehadaku download",
+    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/download?url=https%3A%2F%2Fv1.samehadaku.how%2Frekishi-ni-nokoru-akujo-ni-naru-zo-episode-9",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep134",
+    "name": "samehadaku latest",
+    "m": "GET",
+    "path": "/api/anime/samehadaku/latest",
+    "folder": "Anime",
+    "subfolder": "latest",
+    "desc": "samehadaku latest",
+    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/latest",
+    "params": []
+  },
+  {
+    "catalogId": "ep135",
+    "name": "samehadaku release",
+    "m": "GET",
+    "path": "/api/anime/samehadaku/release",
+    "folder": "Anime",
+    "subfolder": "release",
+    "desc": "samehadaku release",
+    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/release",
+    "params": []
+  },
+  {
+    "catalogId": "ep136",
+    "name": "samehadaku search",
+    "m": "GET",
+    "path": "/api/anime/samehadaku/search",
+    "folder": "Anime",
+    "subfolder": "search",
+    "desc": "samehadaku search",
+    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/search?query=naruto",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep137",
+    "name": "quoted anime",
+    "m": "GET",
+    "path": "/api/s/animequotes",
+    "folder": "Anime",
+    "subfolder": "animequotes",
+    "desc": "quoted anime",
+    "ex": "https://api.siputzx.my.id/api/s/animequotes?query=fate",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep138",
+    "name": "Affect Image",
+    "m": "GET",
+    "path": "/api/canvas/affect",
+    "folder": "Canvas",
+    "subfolder": "affect",
+    "desc": "Affect Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/affect?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep139",
+    "name": "Batslap Image",
+    "m": "GET",
+    "path": "/api/canvas/batslap",
+    "folder": "Canvas",
+    "subfolder": "batslap",
+    "desc": "Batslap Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/batslap?image1=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&image2=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg",
+    "params": [
+      {
+        "n": "image1",
+        "t": "string",
+        "r": 0,
+        "d": "image1"
+      },
+      {
+        "n": "image2",
+        "t": "string",
+        "r": 0,
+        "d": "image2"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep140",
+    "name": "Beautiful Image Effect",
+    "m": "GET",
+    "path": "/api/canvas/beautiful",
+    "folder": "Canvas",
+    "subfolder": "beautiful",
+    "desc": "Beautiful Image Effect",
+    "ex": "https://api.siputzx.my.id/api/canvas/beautiful?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep141",
+    "name": "Blur Image Effect",
+    "m": "GET",
+    "path": "/api/canvas/blur",
+    "folder": "Canvas",
+    "subfolder": "blur",
+    "desc": "Blur Image Effect",
+    "ex": "https://api.siputzx.my.id/api/canvas/blur?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep142",
+    "name": "Captcha Image",
+    "m": "GET",
+    "path": "/api/canvas/captcha",
+    "folder": "Canvas",
+    "subfolder": "captcha",
+    "desc": "Captcha Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/captcha?background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&captchaKey=ABC123&border=%23f0f0f0&overlayOpacity=0.5",
+    "params": [
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "captchaKey",
+        "t": "string",
+        "r": 0,
+        "d": "captchaKey"
+      },
+      {
+        "n": "border",
+        "t": "string",
+        "r": 0,
+        "d": "border"
+      },
+      {
+        "n": "overlayOpacity",
+        "t": "string",
+        "r": 0,
+        "d": "overlayOpacity"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep143",
+    "name": "Circle Image",
+    "m": "GET",
+    "path": "/api/canvas/circle",
+    "folder": "Canvas",
+    "subfolder": "circle",
+    "desc": "Circle Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/circle?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep144",
+    "name": "Darkness Image Effect",
+    "m": "GET",
+    "path": "/api/canvas/darkness",
+    "folder": "Canvas",
+    "subfolder": "darkness",
+    "desc": "Darkness Image Effect",
+    "ex": "https://api.siputzx.my.id/api/canvas/darkness?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg&amount=50",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      },
+      {
+        "n": "amount",
+        "t": "string",
+        "r": 0,
+        "d": "amount"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep145",
+    "name": "Delete Image",
+    "m": "GET",
+    "path": "/api/canvas/delete",
+    "folder": "Canvas",
+    "subfolder": "delete",
+    "desc": "Delete Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/delete?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep146",
+    "name": "eKTP Generator",
+    "m": "GET",
+    "path": "/api/canvas/ektp",
+    "folder": "Canvas",
+    "subfolder": "ektp",
+    "desc": "eKTP Generator",
+    "ex": "https://api.siputzx.my.id/api/canvas/ektp?provinsi=JAWA+BARAT&kota=BANDUNG&nik=1234567890123456&nama=John+Doe&ttl=Bandung%2C+01-01-1990&jenis_kelamin=Laki-laki&golongan_darah=O&alamat=Jl.+Contoh+No.+123&rt%2Frw=001%2F002&kel%2Fdesa=Sukajadi&kecamatan=Sukajadi&agama=Islam&status=Belum+Kawin&pekerjaan=Pegawai+Swasta&kewarganegaraan=WNI&masa_berlaku=Seumur+Hidup&terbuat=01-01-2023&pas_photo=https%3A%2F%2Fi.pinimg.com%2F736x%2F0b%2F9f%2F0a%2F0b9f0a92a598e6c22629004c1027d23f.jpg",
+    "params": [
+      {
+        "n": "provinsi",
+        "t": "string",
+        "r": 0,
+        "d": "provinsi"
+      },
+      {
+        "n": "kota",
+        "t": "string",
+        "r": 0,
+        "d": "kota"
+      },
+      {
+        "n": "nik",
+        "t": "string",
+        "r": 0,
+        "d": "nik"
+      },
+      {
+        "n": "nama",
+        "t": "string",
+        "r": 0,
+        "d": "nama"
+      },
+      {
+        "n": "ttl",
+        "t": "string",
+        "r": 0,
+        "d": "ttl"
+      },
+      {
+        "n": "jenis_kelamin",
+        "t": "string",
+        "r": 0,
+        "d": "jenis_kelamin"
+      },
+      {
+        "n": "golongan_darah",
+        "t": "string",
+        "r": 0,
+        "d": "golongan_darah"
+      },
+      {
+        "n": "alamat",
+        "t": "string",
+        "r": 0,
+        "d": "alamat"
+      },
+      {
+        "n": "rt/rw",
+        "t": "string",
+        "r": 0,
+        "d": "rt/rw"
+      },
+      {
+        "n": "kel/desa",
+        "t": "string",
+        "r": 0,
+        "d": "kel/desa"
+      },
+      {
+        "n": "kecamatan",
+        "t": "string",
+        "r": 0,
+        "d": "kecamatan"
+      },
+      {
+        "n": "agama",
+        "t": "string",
+        "r": 0,
+        "d": "agama"
+      },
+      {
+        "n": "status",
+        "t": "string",
+        "r": 0,
+        "d": "status"
+      },
+      {
+        "n": "pekerjaan",
+        "t": "string",
+        "r": 0,
+        "d": "pekerjaan"
+      },
+      {
+        "n": "kewarganegaraan",
+        "t": "string",
+        "r": 0,
+        "d": "kewarganegaraan"
+      },
+      {
+        "n": "masa_berlaku",
+        "t": "string",
+        "r": 0,
+        "d": "masa_berlaku"
+      },
+      {
+        "n": "terbuat",
+        "t": "string",
+        "r": 0,
+        "d": "terbuat"
+      },
+      {
+        "n": "pas_photo",
+        "t": "string",
+        "r": 0,
+        "d": "pas_photo"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep147",
+    "name": "Facepalm Image",
+    "m": "GET",
+    "path": "/api/canvas/facepalm",
+    "folder": "Canvas",
+    "subfolder": "facepalm",
+    "desc": "Facepalm Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/facepalm?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep148",
+    "name": "Gay Image",
+    "m": "GET",
+    "path": "/api/canvas/gay",
+    "folder": "Canvas",
+    "subfolder": "gay",
+    "desc": "Gay Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/gay?nama=Lendra&avatar=https%3A%2F%2Ffiles.catbox.moe%2Fg45kly.jpg&num=87",
+    "params": [
+      {
+        "n": "nama",
+        "t": "string",
+        "r": 0,
+        "d": "nama"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "num",
+        "t": "string",
+        "r": 0,
+        "d": "num"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep149",
+    "name": "Goodbye V1",
+    "m": "GET",
+    "path": "/api/canvas/goodbyev1",
+    "folder": "Canvas",
+    "subfolder": "goodbyev1",
+    "desc": "Goodbye V1",
+    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev1?username=John&guildName=Anime+Club&guildIcon=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&quality=80",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "guildName",
+        "t": "string",
+        "r": 0,
+        "d": "guildName"
+      },
+      {
+        "n": "guildIcon",
+        "t": "string",
+        "r": 0,
+        "d": "guildIcon"
+      },
+      {
+        "n": "memberCount",
+        "t": "string",
+        "r": 0,
+        "d": "memberCount"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "quality",
+        "t": "string",
+        "r": 0,
+        "d": "quality"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep150",
+    "name": "Goodbye V2",
+    "m": "GET",
+    "path": "/api/canvas/goodbyev2",
+    "folder": "Canvas",
+    "subfolder": "goodbyev2",
+    "desc": "Goodbye V2",
+    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev2?username=John&guildName=Siputzx+Api&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "guildName",
+        "t": "string",
+        "r": 0,
+        "d": "guildName"
+      },
+      {
+        "n": "memberCount",
+        "t": "string",
+        "r": 0,
+        "d": "memberCount"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep151",
+    "name": "Goodbye V3",
+    "m": "GET",
+    "path": "/api/canvas/goodbyev3",
+    "folder": "Canvas",
+    "subfolder": "goodbyev3",
+    "desc": "Goodbye V3",
+    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev3?username=John&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep152",
+    "name": "Goodbye V4",
+    "m": "GET",
+    "path": "/api/canvas/goodbyev4",
+    "folder": "Canvas",
+    "subfolder": "goodbyev4",
+    "desc": "Goodbye V4",
+    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev4?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&title=goodbye&description=goodbye+to+the+server%21&border=%232a2e35&avatarBorder=%232a2e35&overlayOpacity=0.3",
+    "params": [
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "title",
+        "t": "string",
+        "r": 0,
+        "d": "title"
+      },
+      {
+        "n": "description",
+        "t": "string",
+        "r": 0,
+        "d": "description"
+      },
+      {
+        "n": "border",
+        "t": "string",
+        "r": 0,
+        "d": "border"
+      },
+      {
+        "n": "avatarBorder",
+        "t": "string",
+        "r": 0,
+        "d": "avatarBorder"
+      },
+      {
+        "n": "overlayOpacity",
+        "t": "string",
+        "r": 0,
+        "d": "overlayOpacity"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep153",
+    "name": "Goodbye V5",
+    "m": "GET",
+    "path": "/api/canvas/goodbyev5",
+    "folder": "Canvas",
+    "subfolder": "goodbyev5",
+    "desc": "Goodbye V5",
+    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev5?username=Zero+Two&guildName=Siputzx+Community&memberCount=219&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fmountain-sunset.jpg&quality=90",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "guildName",
+        "t": "string",
+        "r": 0,
+        "d": "guildName"
+      },
+      {
+        "n": "memberCount",
+        "t": "string",
+        "r": 0,
+        "d": "memberCount"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "quality",
+        "t": "string",
+        "r": 0,
+        "d": "quality"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep154",
+    "name": "Greyscale Image",
+    "m": "GET",
+    "path": "/api/canvas/greyscale",
+    "folder": "Canvas",
+    "subfolder": "greyscale",
+    "desc": "Greyscale Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/greyscale?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep155",
+    "name": "Invert Image",
+    "m": "GET",
+    "path": "/api/canvas/invert",
+    "folder": "Canvas",
+    "subfolder": "invert",
+    "desc": "Invert Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/invert?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "params": [
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep156",
+    "name": "Kiss Image",
+    "m": "GET",
+    "path": "/api/canvas/kiss",
+    "folder": "Canvas",
+    "subfolder": "kiss",
+    "desc": "Kiss Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/kiss?image1=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&image2=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg",
+    "params": [
+      {
+        "n": "image1",
+        "t": "string",
+        "r": 0,
+        "d": "image1"
+      },
+      {
+        "n": "image2",
+        "t": "string",
+        "r": 0,
+        "d": "image2"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep157",
+    "name": "Level Up Card",
+    "m": "GET",
+    "path": "/api/canvas/level-up",
+    "folder": "Canvas",
+    "subfolder": "level-up",
+    "desc": "Level Up Card",
+    "ex": "https://api.siputzx.my.id/api/canvas/level-up?backgroundURL=https%3A%2F%2Fi.ibb.co.com%2F2jMjYXK%2FIMG-20250103-WA0469.jpg&avatarURL=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F159487561%3Fv%3D4&fromLevel=0&toLevel=1&name=putu",
+    "params": [
+      {
+        "n": "backgroundURL",
+        "t": "string",
+        "r": 0,
+        "d": "backgroundURL"
+      },
+      {
+        "n": "avatarURL",
+        "t": "string",
+        "r": 0,
+        "d": "avatarURL"
+      },
+      {
+        "n": "fromLevel",
+        "t": "string",
+        "r": 0,
+        "d": "fromLevel"
+      },
+      {
+        "n": "toLevel",
+        "t": "string",
+        "r": 0,
+        "d": "toLevel"
+      },
+      {
+        "n": "name",
+        "t": "string",
+        "r": 0,
+        "d": "name"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep158",
+    "name": "Profile Card",
+    "m": "GET",
+    "path": "/api/canvas/profile",
+    "folder": "Canvas",
+    "subfolder": "profile",
+    "desc": "Profile Card",
+    "ex": "https://api.siputzx.my.id/api/canvas/profile?backgroundURL=https%3A%2F%2Fi.ibb.co.com%2F2jMjYXK%2FIMG-20250103-WA0469.jpg&avatarURL=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F159487561%3Fv%3D4&rankName=epik&rankId=0&exp=500&requireExp=1000&level=10&name=siputzx",
+    "params": [
+      {
+        "n": "backgroundURL",
+        "t": "string",
+        "r": 0,
+        "d": "backgroundURL"
+      },
+      {
+        "n": "avatarURL",
+        "t": "string",
+        "r": 0,
+        "d": "avatarURL"
+      },
+      {
+        "n": "rankName",
+        "t": "string",
+        "r": 0,
+        "d": "rankName"
+      },
+      {
+        "n": "rankId",
+        "t": "string",
+        "r": 0,
+        "d": "rankId"
+      },
+      {
+        "n": "exp",
+        "t": "string",
+        "r": 0,
+        "d": "exp"
+      },
+      {
+        "n": "requireExp",
+        "t": "string",
+        "r": 0,
+        "d": "requireExp"
+      },
+      {
+        "n": "level",
+        "t": "string",
+        "r": 0,
+        "d": "level"
+      },
+      {
+        "n": "name",
+        "t": "string",
+        "r": 0,
+        "d": "name"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep159",
+    "name": "Security Card",
+    "m": "GET",
+    "path": "/api/canvas/security",
+    "folder": "Canvas",
+    "subfolder": "security",
+    "desc": "Security Card",
+    "ex": "https://api.siputzx.my.id/api/canvas/security?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&createdTimestamp=1672531200000&suspectTimestamp=604800000&locale=en",
+    "params": [
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "createdTimestamp",
+        "t": "string",
+        "r": 0,
+        "d": "createdTimestamp"
+      },
+      {
+        "n": "suspectTimestamp",
+        "t": "string",
+        "r": 0,
+        "d": "suspectTimestamp"
+      },
+      {
+        "n": "locale",
+        "t": "string",
+        "r": 0,
+        "d": "locale"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep160",
+    "name": "Sertifikat Tolol",
+    "m": "GET",
+    "path": "/api/canvas/sertifikat-tolol",
+    "folder": "Canvas",
+    "subfolder": "sertifikat-tolol",
+    "desc": "Sertifikat Tolol",
+    "ex": "https://api.siputzx.my.id/api/canvas/sertifikat-tolol?text=lorem+ipsum%21",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 0,
+        "d": "text"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep161",
+    "name": "Ship Image",
+    "m": "GET",
+    "path": "/api/canvas/ship",
+    "folder": "Canvas",
+    "subfolder": "ship",
+    "desc": "Ship Image",
+    "ex": "https://api.siputzx.my.id/api/canvas/ship?avatar1=https%3A%2F%2Fi.ibb.co.com%2FYc4MVdV%2Fimages.jpg&avatar2=https%3A%2F%2Fi.ibb.co.com%2FKKYxYQr%2Fdownload.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&persen=20",
+    "params": [
+      {
+        "n": "avatar1",
+        "t": "string",
+        "r": 0,
+        "d": "avatar1"
+      },
+      {
+        "n": "avatar2",
+        "t": "string",
+        "r": 0,
+        "d": "avatar2"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "persen",
+        "t": "string",
+        "r": 0,
+        "d": "persen"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep162",
+    "name": "Spotify Card",
+    "m": "GET",
+    "path": "/api/canvas/spotify",
+    "folder": "Canvas",
+    "subfolder": "spotify",
+    "desc": "Spotify Card",
+    "ex": "https://api.siputzx.my.id/api/canvas/spotify?title=Blinding+Lights&artist=The+Weeknd&start=100000&end=200000&image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&border=%231DB954",
+    "params": [
+      {
+        "n": "title",
+        "t": "string",
+        "r": 0,
+        "d": "title"
+      },
+      {
+        "n": "artist",
+        "t": "string",
+        "r": 0,
+        "d": "artist"
+      },
+      {
+        "n": "start",
+        "t": "string",
+        "r": 0,
+        "d": "start"
+      },
+      {
+        "n": "end",
+        "t": "string",
+        "r": 0,
+        "d": "end"
+      },
+      {
+        "n": "image",
+        "t": "string",
+        "r": 0,
+        "d": "image"
+      },
+      {
+        "n": "border",
+        "t": "string",
+        "r": 0,
+        "d": "border"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep163",
+    "name": "Tweet Card",
+    "m": "GET",
+    "path": "/api/canvas/tweet",
+    "folder": "Canvas",
+    "subfolder": "tweet",
+    "desc": "Tweet Card",
+    "ex": "https://api.siputzx.my.id/api/canvas/tweet?displayName=Gemini&username=gemini_ai&comment=Hello+World%21&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&verified=true&theme=dark",
+    "params": [
+      {
+        "n": "displayName",
+        "t": "string",
+        "r": 0,
+        "d": "displayName"
+      },
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "comment",
+        "t": "string",
+        "r": 0,
+        "d": "comment"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "verified",
+        "t": "string",
+        "r": 0,
+        "d": "verified"
+      },
+      {
+        "n": "theme",
+        "t": "string",
+        "r": 0,
+        "d": "theme"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep164",
+    "name": "Welcome V1",
+    "m": "GET",
+    "path": "/api/canvas/welcomev1",
+    "folder": "Canvas",
+    "subfolder": "welcomev1",
+    "desc": "Welcome V1",
+    "ex": "https://api.siputzx.my.id/api/canvas/welcomev1?username=John&guildName=Anime+Club&guildIcon=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&quality=80",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "guildName",
+        "t": "string",
+        "r": 0,
+        "d": "guildName"
+      },
+      {
+        "n": "guildIcon",
+        "t": "string",
+        "r": 0,
+        "d": "guildIcon"
+      },
+      {
+        "n": "memberCount",
+        "t": "string",
+        "r": 0,
+        "d": "memberCount"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "quality",
+        "t": "string",
+        "r": 0,
+        "d": "quality"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep165",
+    "name": "Welcome V2",
+    "m": "GET",
+    "path": "/api/canvas/welcomev2",
+    "folder": "Canvas",
+    "subfolder": "welcomev2",
+    "desc": "Welcome V2",
+    "ex": "https://api.siputzx.my.id/api/canvas/welcomev2?username=John&guildName=Siputzx+Api&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "guildName",
+        "t": "string",
+        "r": 0,
+        "d": "guildName"
+      },
+      {
+        "n": "memberCount",
+        "t": "string",
+        "r": 0,
+        "d": "memberCount"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep166",
+    "name": "Welcome V3",
+    "m": "GET",
+    "path": "/api/canvas/welcomev3",
+    "folder": "Canvas",
+    "subfolder": "welcomev3",
+    "desc": "Welcome V3",
+    "ex": "https://api.siputzx.my.id/api/canvas/welcomev3?username=John&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep167",
+    "name": "Welcome V4",
+    "m": "GET",
+    "path": "/api/canvas/welcomev4",
+    "folder": "Canvas",
+    "subfolder": "welcomev4",
+    "desc": "Welcome V4",
+    "ex": "https://api.siputzx.my.id/api/canvas/welcomev4?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&description=Welcome+friend%21",
+    "params": [
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "description",
+        "t": "string",
+        "r": 0,
+        "d": "description"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep168",
+    "name": "Welcome V5",
+    "m": "GET",
+    "path": "/api/canvas/welcomev5",
+    "folder": "Canvas",
+    "subfolder": "welcomev5",
+    "desc": "Welcome V5",
+    "ex": "https://api.siputzx.my.id/api/canvas/welcomev5?username=Zero+Two&guildName=Siputzx+Community&memberCount=219&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fmountain-sunset.jpg&quality=90",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      },
+      {
+        "n": "guildName",
+        "t": "string",
+        "r": 0,
+        "d": "guildName"
+      },
+      {
+        "n": "memberCount",
+        "t": "string",
+        "r": 0,
+        "d": "memberCount"
+      },
+      {
+        "n": "avatar",
+        "t": "string",
+        "r": 0,
+        "d": "avatar"
+      },
+      {
+        "n": "background",
+        "t": "string",
+        "r": 0,
+        "d": "background"
+      },
+      {
+        "n": "quality",
+        "t": "string",
+        "r": 0,
+        "d": "quality"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep169",
+    "name": "capcut",
+    "m": "GET",
+    "path": "/api/d/capcut",
+    "folder": "Downloader",
+    "subfolder": "capcut",
+    "desc": "capcut",
+    "ex": "https://api.siputzx.my.id/api/d/capcut?url=https%3A%2F%2Fwww.capcut.com%2Ftv2%2FZSmm1R7Sd%2F+jj+kece+banget",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep170",
+    "name": "douyin downloader",
+    "m": "GET",
+    "path": "/api/d/douyin",
+    "folder": "Downloader",
+    "subfolder": "douyin",
+    "desc": "douyin downloader",
+    "ex": "https://api.siputzx.my.id/api/d/douyin?url=https%3A%2F%2Fwww.douyin.com%2Fvideo%2F7256984651137289483",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep171",
+    "name": "facebook",
+    "m": "GET",
+    "path": "/api/d/facebook",
+    "folder": "Downloader",
+    "subfolder": "facebook",
+    "desc": "facebook",
+    "ex": "https://api.siputzx.my.id/api/d/facebook?url=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fr%2F1CbPCn9MQw%2F",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep172",
+    "name": "gdrive",
+    "m": "GET",
+    "path": "/api/d/gdrive",
+    "folder": "Downloader",
+    "subfolder": "gdrive",
+    "desc": "gdrive",
+    "ex": "https://api.siputzx.my.id/api/d/gdrive?url=https%3A%2F%2Fdrive.google.com%2Ffile%2Fd%2F1YTD7Ymux9puFNqu__5WPlYdFZHcGI3Wz%2Fview%3Fusp%3Ddrivesdk",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep173",
+    "name": "github downloader",
+    "m": "GET",
+    "path": "/api/d/github",
+    "folder": "Downloader",
+    "subfolder": "github",
+    "desc": "github downloader",
+    "ex": "https://api.siputzx.my.id/api/d/github?url=https%3A%2F%2Fgist.github.com%2Fsiputzx%2F966268a3aa3c14695e80cc9f30da8e9f",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep174",
+    "name": "lahelu downloader",
+    "m": "GET",
+    "path": "/api/d/lahelu",
+    "folder": "Downloader",
+    "subfolder": "lahelu",
+    "desc": "lahelu downloader",
+    "ex": "https://api.siputzx.my.id/api/d/lahelu?url=https%3A%2F%2Flahelu.com%2Fpost%2FPMujNAfxy",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep175",
+    "name": "SaveFrom Downloader",
+    "m": "GET",
+    "path": "/api/d/savefrom",
+    "folder": "Downloader",
+    "subfolder": "savefrom",
+    "desc": "SaveFrom Downloader",
+    "ex": "https://api.siputzx.my.id/api/d/savefrom?url=https%3A%2F%2Fm.soundcloud.com%2Fteguh-hariyadi-652597010%2Fanji-dia",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep176",
+    "name": "soundCloud",
+    "m": "GET",
+    "path": "/api/d/soundcloud",
+    "folder": "Downloader",
+    "subfolder": "soundcloud",
+    "desc": "soundCloud",
+    "ex": "https://api.siputzx.my.id/api/d/soundcloud?url=https%3A%2F%2Fm.soundcloud.com%2Fteguh-hariyadi-652597010%2Fanji-dia",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep177",
+    "name": "sssinstagram downloader",
+    "m": "GET",
+    "path": "/api/d/sssinstagram",
+    "folder": "Downloader",
+    "subfolder": "sssinstagram",
+    "desc": "sssinstagram downloader",
+    "ex": "https://api.siputzx.my.id/api/d/sssinstagram?url=siputzx_",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep178",
+    "name": "tiktok v2",
+    "m": "GET",
+    "path": "/api/d/tiktok/v2",
+    "folder": "Downloader",
+    "subfolder": "v2",
+    "desc": "tiktok v2",
+    "ex": "https://api.siputzx.my.id/api/d/tiktok/v2?url=https%3A%2F%2Fvt.tiktok.com%2FZSjXNEnbC%2F",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep179",
+    "name": "ummy downloader",
+    "m": "GET",
+    "path": "/api/d/ummy",
+    "folder": "Downloader",
+    "subfolder": "ummy",
+    "desc": "ummy downloader",
+    "ex": "https://api.siputzx.my.id/api/d/ummy?url=nasaartemis",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep180",
+    "name": "Asah Otak",
+    "m": "GET",
+    "path": "/api/games/asahotak",
+    "folder": "Games",
+    "subfolder": "asahotak",
+    "desc": "Asah Otak",
+    "ex": "https://api.siputzx.my.id/api/games/asahotak",
+    "params": []
+  },
+  {
+    "catalogId": "ep181",
+    "name": "Cak Lontong",
+    "m": "GET",
+    "path": "/api/games/caklontong",
+    "folder": "Games",
+    "subfolder": "caklontong",
+    "desc": "Cak Lontong",
+    "ex": "https://api.siputzx.my.id/api/games/caklontong",
+    "params": []
+  },
+  {
+    "catalogId": "ep182",
+    "name": "Cerdas Cermat",
+    "m": "GET",
+    "path": "/api/games/cc-sd",
+    "folder": "Games",
+    "subfolder": "cc-sd",
+    "desc": "Cerdas Cermat",
+    "ex": "https://api.siputzx.my.id/api/games/cc-sd?matapelajaran=matematika&jumlahsoal=5",
+    "params": [
+      {
+        "n": "matapelajaran",
+        "t": "string",
+        "r": 0,
+        "d": "matapelajaran"
+      },
+      {
+        "n": "jumlahsoal",
+        "t": "string",
+        "r": 0,
+        "d": "jumlahsoal"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep183",
+    "name": "Family100",
+    "m": "GET",
+    "path": "/api/games/family100",
+    "folder": "Games",
+    "subfolder": "family100",
+    "desc": "Family100",
+    "ex": "https://api.siputzx.my.id/api/games/family100",
+    "params": []
+  },
+  {
+    "catalogId": "ep184",
+    "name": "Tebak Karakter Free Fire",
+    "m": "GET",
+    "path": "/api/games/karakter-freefire",
+    "folder": "Games",
+    "subfolder": "karakter-freefire",
+    "desc": "Tebak Karakter Free Fire",
+    "ex": "https://api.siputzx.my.id/api/games/karakter-freefire",
+    "params": []
+  },
+  {
+    "catalogId": "ep185",
+    "name": "Lengkapi Kalimat",
+    "m": "GET",
+    "path": "/api/games/lengkapikalimat",
+    "folder": "Games",
+    "subfolder": "lengkapikalimat",
+    "desc": "Lengkapi Kalimat",
+    "ex": "https://api.siputzx.my.id/api/games/lengkapikalimat",
+    "params": []
+  },
+  {
+    "catalogId": "ep186",
+    "name": "Maths",
+    "m": "GET",
+    "path": "/api/games/maths",
+    "folder": "Games",
+    "subfolder": "maths",
+    "desc": "Maths",
+    "ex": "https://api.siputzx.my.id/api/games/maths?level=easy",
+    "params": [
+      {
+        "n": "level",
+        "t": "string",
+        "r": 0,
+        "d": "level"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep187",
+    "name": "Siapakah Aku",
+    "m": "GET",
+    "path": "/api/games/siapakahaku",
+    "folder": "Games",
+    "subfolder": "siapakahaku",
+    "desc": "Siapakah Aku",
+    "ex": "https://api.siputzx.my.id/api/games/siapakahaku",
+    "params": []
+  },
+  {
+    "catalogId": "ep188",
+    "name": "Tebak Surah",
+    "m": "GET",
+    "path": "/api/games/surah",
+    "folder": "Games",
+    "subfolder": "surah",
+    "desc": "Tebak Surah",
+    "ex": "https://api.siputzx.my.id/api/games/surah",
+    "params": []
+  },
+  {
+    "catalogId": "ep189",
+    "name": "Susun Kata",
+    "m": "GET",
+    "path": "/api/games/susunkata",
+    "folder": "Games",
+    "subfolder": "susunkata",
+    "desc": "Susun Kata",
+    "ex": "https://api.siputzx.my.id/api/games/susunkata",
+    "params": []
+  },
+  {
+    "catalogId": "ep190",
+    "name": "Tebak Bendera",
+    "m": "GET",
+    "path": "/api/games/tebakbendera",
+    "folder": "Games",
+    "subfolder": "tebakbendera",
+    "desc": "Tebak Bendera",
+    "ex": "https://api.siputzx.my.id/api/games/tebakbendera",
+    "params": []
+  },
+  {
+    "catalogId": "ep191",
+    "name": "Tebak Gambar",
+    "m": "GET",
+    "path": "/api/games/tebakgambar",
+    "folder": "Games",
+    "subfolder": "tebakgambar",
+    "desc": "Tebak Gambar",
+    "ex": "https://api.siputzx.my.id/api/games/tebakgambar",
+    "params": []
+  },
+  {
+    "catalogId": "ep192",
+    "name": "Tebak Game",
+    "m": "GET",
+    "path": "/api/games/tebakgame",
+    "folder": "Games",
+    "subfolder": "tebakgame",
+    "desc": "Tebak Game",
+    "ex": "https://api.siputzx.my.id/api/games/tebakgame",
+    "params": []
+  },
+  {
+    "catalogId": "ep193",
+    "name": "Tebak JKT",
+    "m": "GET",
+    "path": "/api/games/tebakjkt",
+    "folder": "Games",
+    "subfolder": "tebakjkt",
+    "desc": "Tebak JKT",
+    "ex": "https://api.siputzx.my.id/api/games/tebakjkt",
+    "params": []
+  },
+  {
+    "catalogId": "ep194",
+    "name": "Tebak Kalimat",
+    "m": "GET",
+    "path": "/api/games/tebakkalimat",
+    "folder": "Games",
+    "subfolder": "tebakkalimat",
+    "desc": "Tebak Kalimat",
+    "ex": "https://api.siputzx.my.id/api/games/tebakkalimat",
+    "params": []
+  },
+  {
+    "catalogId": "ep195",
+    "name": "Tebak Kartun",
+    "m": "GET",
+    "path": "/api/games/tebakkartun",
+    "folder": "Games",
+    "subfolder": "tebakkartun",
+    "desc": "Tebak Kartun",
+    "ex": "https://api.siputzx.my.id/api/games/tebakkartun",
+    "params": []
+  },
+  {
+    "catalogId": "ep196",
+    "name": "Tebak Kata",
+    "m": "GET",
+    "path": "/api/games/tebakkata",
+    "folder": "Games",
+    "subfolder": "tebakkata",
+    "desc": "Tebak Kata",
+    "ex": "https://api.siputzx.my.id/api/games/tebakkata",
+    "params": []
+  },
+  {
+    "catalogId": "ep197",
+    "name": "Tebak Kimia",
+    "m": "GET",
+    "path": "/api/games/tebakkimia",
+    "folder": "Games",
+    "subfolder": "tebakkimia",
+    "desc": "Tebak Kimia",
+    "ex": "https://api.siputzx.my.id/api/games/tebakkimia",
+    "params": []
+  },
+  {
+    "catalogId": "ep198",
+    "name": "Tebak Lagu",
+    "m": "GET",
+    "path": "/api/games/tebaklagu",
+    "folder": "Games",
+    "subfolder": "tebaklagu",
+    "desc": "Tebak Lagu",
+    "ex": "https://api.siputzx.my.id/api/games/tebaklagu",
+    "params": []
+  },
+  {
+    "catalogId": "ep199",
+    "name": "Tebak Lirik",
+    "m": "GET",
+    "path": "/api/games/tebaklirik",
+    "folder": "Games",
+    "subfolder": "tebaklirik",
+    "desc": "Tebak Lirik",
+    "ex": "https://api.siputzx.my.id/api/games/tebaklirik",
+    "params": []
+  },
+  {
+    "catalogId": "ep200",
+    "name": "Tebak Logo",
+    "m": "GET",
+    "path": "/api/games/tebaklogo",
+    "folder": "Games",
+    "subfolder": "tebaklogo",
+    "desc": "Tebak Logo",
+    "ex": "https://api.siputzx.my.id/api/games/tebaklogo",
+    "params": []
+  },
+  {
+    "catalogId": "ep201",
+    "name": "Tebak Tebakan",
+    "m": "GET",
+    "path": "/api/games/tebaktebakan",
+    "folder": "Games",
+    "subfolder": "tebaktebakan",
+    "desc": "Tebak Tebakan",
+    "ex": "https://api.siputzx.my.id/api/games/tebaktebakan",
+    "params": []
+  },
+  {
+    "catalogId": "ep202",
+    "name": "Tebak Warna",
+    "m": "GET",
+    "path": "/api/games/tebakwarna",
+    "folder": "Games",
+    "subfolder": "tebakwarna",
+    "desc": "Tebak Warna",
+    "ex": "https://api.siputzx.my.id/api/games/tebakwarna",
+    "params": []
+  },
+  {
+    "catalogId": "ep203",
+    "name": "Teka Teki",
+    "m": "GET",
+    "path": "/api/games/tekateki",
+    "folder": "Games",
+    "subfolder": "tekateki",
+    "desc": "Teka Teki",
+    "ex": "https://api.siputzx.my.id/api/games/tekateki",
+    "params": []
+  },
+  {
+    "catalogId": "ep204",
+    "name": "8 font",
+    "m": "GET",
+    "path": "/api/s/8font",
+    "folder": "Search",
+    "subfolder": "8font",
+    "desc": "8 font",
+    "ex": "https://api.siputzx.my.id/api/s/8font?query=cartoon&page=1",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      },
+      {
+        "n": "page",
+        "t": "string",
+        "r": 0,
+        "d": "page"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep205",
+    "name": "music apple",
+    "m": "GET",
+    "path": "/api/s/applemusic",
+    "folder": "Search",
+    "subfolder": "applemusic",
+    "desc": "music apple",
+    "ex": "https://api.siputzx.my.id/api/s/applemusic?query=duka&region=id",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      },
+      {
+        "n": "region",
+        "t": "string",
+        "r": 0,
+        "d": "region"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep206",
+    "name": "bing image",
+    "m": "GET",
+    "path": "/api/s/bimg",
+    "folder": "Search",
+    "subfolder": "bimg",
+    "desc": "bing image",
+    "ex": "https://api.siputzx.my.id/api/s/bimg?query=kucing",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep207",
+    "name": "brave search",
+    "m": "GET",
+    "path": "/api/s/brave",
+    "folder": "Search",
+    "subfolder": "brave",
+    "desc": "brave search",
+    "ex": "https://api.siputzx.my.id/api/s/brave?query=apa+itu+nodejs",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep208",
+    "name": "duckduckgo",
+    "m": "GET",
+    "path": "/api/s/duckduckgo",
+    "folder": "Search",
+    "subfolder": "duckduckgo",
+    "desc": "duckduckgo",
+    "ex": "https://api.siputzx.my.id/api/s/duckduckgo?query=openai&kl=us-en&df=w",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      },
+      {
+        "n": "kl",
+        "t": "string",
+        "r": 0,
+        "d": "kl"
+      },
+      {
+        "n": "df",
+        "t": "string",
+        "r": 0,
+        "d": "df"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep209",
+    "name": "gitagram search",
+    "m": "GET",
+    "path": "/api/s/gitagram",
+    "folder": "Search",
+    "subfolder": "gitagram",
+    "desc": "gitagram search",
+    "ex": "https://api.siputzx.my.id/api/s/gitagram?search=sekuat+hatimu",
+    "params": [
+      {
+        "n": "search",
+        "t": "string",
+        "r": 0,
+        "d": "search"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep210",
+    "name": "google image",
+    "m": "GET",
+    "path": "/api/s/googleimg",
+    "folder": "Search",
+    "subfolder": "googleimg",
+    "desc": "google image",
+    "ex": "https://api.siputzx.my.id/api/s/googleimg?query=siputzx",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep211",
+    "name": "gsmarena",
+    "m": "GET",
+    "path": "/api/s/gsmarena",
+    "folder": "Search",
+    "subfolder": "gsmarena",
+    "desc": "gsmarena",
+    "ex": "https://api.siputzx.my.id/api/s/gsmarena?query=iphone",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep212",
+    "name": "lahelu search",
+    "m": "GET",
+    "path": "/api/s/lahelu",
+    "folder": "Search",
+    "subfolder": "lahelu",
+    "desc": "lahelu search",
+    "ex": "https://api.siputzx.my.id/api/s/lahelu?query=drak",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep213",
+    "name": "mangatoon search",
+    "m": "GET",
+    "path": "/api/s/mangatoon",
+    "folder": "Search",
+    "subfolder": "mangatoon",
+    "desc": "mangatoon search",
+    "ex": "https://api.siputzx.my.id/api/s/mangatoon?query=cat",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep214",
+    "name": "mcpedl search",
+    "m": "GET",
+    "path": "/api/s/mcpedl",
+    "folder": "Search",
+    "subfolder": "mcpedl",
+    "desc": "mcpedl search",
+    "ex": "https://api.siputzx.my.id/api/s/mcpedl?q=shaders",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "q"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep215",
+    "name": "my instants search",
+    "m": "GET",
+    "path": "/api/s/myinstants",
+    "folder": "Search",
+    "subfolder": "myinstants",
+    "desc": "my instants search",
+    "ex": "https://api.siputzx.my.id/api/s/myinstants?query=cihuyy",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep216",
+    "name": "otakotaku search",
+    "m": "GET",
+    "path": "/api/s/otakotaku",
+    "folder": "Search",
+    "subfolder": "otakotaku",
+    "desc": "otakotaku search",
+    "ex": "https://api.siputzx.my.id/api/s/otakotaku?query=mahiru",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep217",
+    "name": "pinterest",
+    "m": "GET",
+    "path": "/api/s/pinterest",
+    "folder": "Search",
+    "subfolder": "pinterest",
+    "desc": "pinterest",
+    "ex": "https://api.siputzx.my.id/api/s/pinterest?query=cat&type=image",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      },
+      {
+        "n": "type",
+        "t": "string",
+        "r": 0,
+        "d": "type"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep218",
+    "name": "resep koki search",
+    "m": "GET",
+    "path": "/api/s/resep",
+    "folder": "Search",
+    "subfolder": "resep",
+    "desc": "resep koki search",
+    "ex": "https://api.siputzx.my.id/api/s/resep?query=nasi+goreng",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep219",
+    "name": "seegore search",
+    "m": "GET",
+    "path": "/api/s/seegore",
+    "folder": "Search",
+    "subfolder": "seegore",
+    "desc": "seegore search",
+    "ex": "https://api.siputzx.my.id/api/s/seegore?query=train",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep220",
+    "name": "soundcloud search",
+    "m": "GET",
+    "path": "/api/s/soundcloud",
+    "folder": "Search",
+    "subfolder": "soundcloud",
+    "desc": "soundcloud search",
+    "ex": "https://api.siputzx.my.id/api/s/soundcloud?query=duka",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep221",
+    "name": "youtube",
+    "m": "GET",
+    "path": "/api/s/youtube",
+    "folder": "Search",
+    "subfolder": "youtube",
+    "desc": "youtube",
+    "ex": "https://api.siputzx.my.id/api/s/youtube?query=sc+bot",
+    "params": [
+      {
+        "n": "query",
+        "t": "string",
+        "r": 0,
+        "d": "query"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep222",
+    "name": "random blue archive",
+    "m": "GET",
+    "path": "/api/r/blue-archive",
+    "folder": "Random",
+    "subfolder": "blue-archive",
+    "desc": "random blue archive",
+    "ex": "https://api.siputzx.my.id/api/r/blue-archive",
+    "params": []
+  },
+  {
+    "catalogId": "ep223",
+    "name": "Random Cecan CHINA",
+    "m": "GET",
+    "path": "/api/r/cecan/china",
+    "folder": "Random",
+    "subfolder": "china",
+    "desc": "Random Cecan CHINA",
+    "ex": "https://api.siputzx.my.id/api/r/cecan/china",
+    "params": []
+  },
+  {
+    "catalogId": "ep224",
+    "name": "Random Cecan Indonesia",
+    "m": "GET",
+    "path": "/api/r/cecan/indonesia",
+    "folder": "Random",
+    "subfolder": "indonesia",
+    "desc": "Random Cecan Indonesia",
+    "ex": "https://api.siputzx.my.id/api/r/cecan/indonesia",
+    "params": []
+  },
+  {
+    "catalogId": "ep225",
+    "name": "Random Cecan JAPAN",
+    "m": "GET",
+    "path": "/api/r/cecan/japan",
+    "folder": "Random",
+    "subfolder": "japan",
+    "desc": "Random Cecan JAPAN",
+    "ex": "https://api.siputzx.my.id/api/r/cecan/japan",
+    "params": []
+  },
+  {
+    "catalogId": "ep226",
+    "name": "Random Cecan KOREA",
+    "m": "GET",
+    "path": "/api/r/cecan/korea",
+    "folder": "Random",
+    "subfolder": "korea",
+    "desc": "Random Cecan KOREA",
+    "ex": "https://api.siputzx.my.id/api/r/cecan/korea",
+    "params": []
+  },
+  {
+    "catalogId": "ep227",
+    "name": "Random Cecan THAILAND",
+    "m": "GET",
+    "path": "/api/r/cecan/thailand",
+    "folder": "Random",
+    "subfolder": "thailand",
+    "desc": "Random Cecan THAILAND",
+    "ex": "https://api.siputzx.my.id/api/r/cecan/thailand",
+    "params": []
+  },
+  {
+    "catalogId": "ep228",
+    "name": "Random Cecan VIETNAM",
+    "m": "GET",
+    "path": "/api/r/cecan/vietnam",
+    "folder": "Random",
+    "subfolder": "vietnam",
+    "desc": "Random Cecan VIETNAM",
+    "ex": "https://api.siputzx.my.id/api/r/cecan/vietnam",
+    "params": []
+  },
+  {
+    "catalogId": "ep229",
+    "name": "lahelu",
+    "m": "GET",
+    "path": "/api/r/lahelu",
+    "folder": "Random",
+    "subfolder": "lahelu",
+    "desc": "lahelu",
+    "ex": "https://api.siputzx.my.id/api/r/lahelu",
+    "params": []
+  },
+  {
+    "catalogId": "ep230",
+    "name": "animequotes",
+    "m": "GET",
+    "path": "/api/r/quotesanime",
+    "folder": "Random",
+    "subfolder": "quotesanime",
+    "desc": "animequotes",
+    "ex": "https://api.siputzx.my.id/api/r/quotesanime",
+    "params": []
+  },
+  {
+    "catalogId": "ep231",
+    "name": "antara news",
+    "m": "GET",
+    "path": "/api/berita/antara",
+    "folder": "Berita",
+    "subfolder": "antara",
+    "desc": "antara news",
+    "ex": "https://api.siputzx.my.id/api/berita/antara",
+    "params": []
+  },
+  {
+    "catalogId": "ep232",
+    "name": "cnbc indonesia",
+    "m": "GET",
+    "path": "/api/berita/cnbcindonesia",
+    "folder": "Berita",
+    "subfolder": "cnbcindonesia",
+    "desc": "cnbc indonesia",
+    "ex": "https://api.siputzx.my.id/api/berita/cnbcindonesia",
+    "params": []
+  },
+  {
+    "catalogId": "ep233",
+    "name": "cnn Indonesia",
+    "m": "GET",
+    "path": "/api/berita/cnn",
+    "folder": "Berita",
+    "subfolder": "cnn",
+    "desc": "cnn Indonesia",
+    "ex": "https://api.siputzx.my.id/api/berita/cnn",
+    "params": []
+  },
+  {
+    "catalogId": "ep234",
+    "name": "kompas news",
+    "m": "GET",
+    "path": "/api/berita/kompas",
+    "folder": "Berita",
+    "subfolder": "kompas",
+    "desc": "kompas news",
+    "ex": "https://api.siputzx.my.id/api/berita/kompas",
+    "params": []
+  },
+  {
+    "catalogId": "ep235",
+    "name": "liputan6",
+    "m": "GET",
+    "path": "/api/berita/liputan6",
+    "folder": "Berita",
+    "subfolder": "liputan6",
+    "desc": "liputan6",
+    "ex": "https://api.siputzx.my.id/api/berita/liputan6",
+    "params": []
+  },
+  {
+    "catalogId": "ep236",
+    "name": "merdeka news",
+    "m": "GET",
+    "path": "/api/berita/merdeka",
+    "folder": "Berita",
+    "subfolder": "merdeka",
+    "desc": "merdeka news",
+    "ex": "https://api.siputzx.my.id/api/berita/merdeka",
+    "params": []
+  },
+  {
+    "catalogId": "ep237",
+    "name": "sindonews",
+    "m": "GET",
+    "path": "/api/berita/sindonews",
+    "folder": "Berita",
+    "subfolder": "sindonews",
+    "desc": "sindonews",
+    "ex": "https://api.siputzx.my.id/api/berita/sindonews",
+    "params": []
+  },
+  {
+    "catalogId": "ep238",
+    "name": "suara news",
+    "m": "GET",
+    "path": "/api/berita/suara",
+    "folder": "Berita",
+    "subfolder": "suara",
+    "desc": "suara news",
+    "ex": "https://api.siputzx.my.id/api/berita/suara",
+    "params": []
+  },
+  {
+    "catalogId": "ep239",
+    "name": "tribunnews",
+    "m": "GET",
+    "path": "/api/berita/tribunnews",
+    "folder": "Berita",
+    "subfolder": "tribunnews",
+    "desc": "tribunnews",
+    "ex": "https://api.siputzx.my.id/api/berita/tribunnews",
+    "params": []
+  },
+  {
+    "catalogId": "ep240",
+    "name": "arti nama",
+    "m": "GET",
+    "path": "/api/primbon/artinama",
+    "folder": "Primbon",
+    "subfolder": "artinama",
+    "desc": "arti nama",
+    "ex": "https://api.siputzx.my.id/api/primbon/artinama?nama=putu",
+    "params": [
+      {
+        "n": "nama",
+        "t": "string",
+        "r": 0,
+        "d": "nama"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep241",
+    "name": "cek potensi penyakit",
+    "m": "GET",
+    "path": "/api/primbon/cek_potensi_penyakit",
+    "folder": "Primbon",
+    "subfolder": "cek_potensi_penyakit",
+    "desc": "cek potensi penyakit",
+    "ex": "https://api.siputzx.my.id/api/primbon/cek_potensi_penyakit?tgl=12&bln=05&thn=1998",
+    "params": [
+      {
+        "n": "tgl",
+        "t": "string",
+        "r": 0,
+        "d": "tgl"
+      },
+      {
+        "n": "bln",
+        "t": "string",
+        "r": 0,
+        "d": "bln"
+      },
+      {
+        "n": "thn",
+        "t": "string",
+        "r": 0,
+        "d": "thn"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep242",
+    "name": "kecocokan nama pasangan",
+    "m": "GET",
+    "path": "/api/primbon/kecocokan_nama_pasangan",
+    "folder": "Primbon",
+    "subfolder": "kecocokan_nama_pasangan",
+    "desc": "kecocokan nama pasangan",
+    "ex": "https://api.siputzx.my.id/api/primbon/kecocokan_nama_pasangan?nama1=putu&nama2=keyla",
+    "params": [
+      {
+        "n": "nama1",
+        "t": "string",
+        "r": 0,
+        "d": "nama1"
+      },
+      {
+        "n": "nama2",
+        "t": "string",
+        "r": 0,
+        "d": "nama2"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep243",
+    "name": "nomor hoki",
+    "m": "GET",
+    "path": "/api/primbon/nomorhoki",
+    "folder": "Primbon",
+    "subfolder": "nomorhoki",
+    "desc": "nomor hoki",
+    "ex": "https://api.siputzx.my.id/api/primbon/nomorhoki?phoneNumber=6285658939117",
+    "params": [
+      {
+        "n": "phoneNumber",
+        "t": "string",
+        "r": 0,
+        "d": "phoneNumber"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep244",
+    "name": "ramalan jodoh",
+    "m": "GET",
+    "path": "/api/primbon/ramalanjodoh",
+    "folder": "Primbon",
+    "subfolder": "ramalanjodoh",
+    "desc": "ramalan jodoh",
+    "ex": "https://api.siputzx.my.id/api/primbon/ramalanjodoh?nama1=putu&tgl1=16&bln1=11&thn1=2007&nama2=keyla&tgl2=1&bln2=1&thn2=2008",
+    "params": [
+      {
+        "n": "nama1",
+        "t": "string",
+        "r": 0,
+        "d": "nama1"
+      },
+      {
+        "n": "tgl1",
+        "t": "string",
+        "r": 0,
+        "d": "tgl1"
+      },
+      {
+        "n": "bln1",
+        "t": "string",
+        "r": 0,
+        "d": "bln1"
+      },
+      {
+        "n": "thn1",
+        "t": "string",
+        "r": 0,
+        "d": "thn1"
+      },
+      {
+        "n": "nama2",
+        "t": "string",
+        "r": 0,
+        "d": "nama2"
+      },
+      {
+        "n": "tgl2",
+        "t": "string",
+        "r": 0,
+        "d": "tgl2"
+      },
+      {
+        "n": "bln2",
+        "t": "string",
+        "r": 0,
+        "d": "bln2"
+      },
+      {
+        "n": "thn2",
+        "t": "string",
+        "r": 0,
+        "d": "thn2"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep245",
+    "name": "ramalan jodoh bali",
+    "m": "GET",
+    "path": "/api/primbon/ramalanjodohbali",
+    "folder": "Primbon",
+    "subfolder": "ramalanjodohbali",
+    "desc": "ramalan jodoh bali",
+    "ex": "https://api.siputzx.my.id/api/primbon/ramalanjodohbali?nama1=putu&tgl1=16&bln1=11&thn1=2007&nama2=keyla&tgl2=1&bln2=1&thn2=2008",
+    "params": [
+      {
+        "n": "nama1",
+        "t": "string",
+        "r": 0,
+        "d": "nama1"
+      },
+      {
+        "n": "tgl1",
+        "t": "string",
+        "r": 0,
+        "d": "tgl1"
+      },
+      {
+        "n": "bln1",
+        "t": "string",
+        "r": 0,
+        "d": "bln1"
+      },
+      {
+        "n": "thn1",
+        "t": "string",
+        "r": 0,
+        "d": "thn1"
+      },
+      {
+        "n": "nama2",
+        "t": "string",
+        "r": 0,
+        "d": "nama2"
+      },
+      {
+        "n": "tgl2",
+        "t": "string",
+        "r": 0,
+        "d": "tgl2"
+      },
+      {
+        "n": "bln2",
+        "t": "string",
+        "r": 0,
+        "d": "bln2"
+      },
+      {
+        "n": "thn2",
+        "t": "string",
+        "r": 0,
+        "d": "thn2"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep246",
+    "name": "rejeki hoki weton",
+    "m": "GET",
+    "path": "/api/primbon/rejeki_hoki_weton",
+    "folder": "Primbon",
+    "subfolder": "rejeki_hoki_weton",
+    "desc": "rejeki hoki weton",
+    "ex": "https://api.siputzx.my.id/api/primbon/rejeki_hoki_weton?tgl=1&bln=1&thn=2025",
+    "params": [
+      {
+        "n": "tgl",
+        "t": "string",
+        "r": 0,
+        "d": "tgl"
+      },
+      {
+        "n": "bln",
+        "t": "string",
+        "r": 0,
+        "d": "bln"
+      },
+      {
+        "n": "thn",
+        "t": "string",
+        "r": 0,
+        "d": "thn"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep247",
+    "name": "sifat usaha bisnis",
+    "m": "GET",
+    "path": "/api/primbon/sifat_usaha_bisnis",
+    "folder": "Primbon",
+    "subfolder": "sifat_usaha_bisnis",
+    "desc": "sifat usaha bisnis",
+    "ex": "https://api.siputzx.my.id/api/primbon/sifat_usaha_bisnis?tgl=1&bln=1&thn=2000",
+    "params": [
+      {
+        "n": "tgl",
+        "t": "string",
+        "r": 0,
+        "d": "tgl"
+      },
+      {
+        "n": "bln",
+        "t": "string",
+        "r": 0,
+        "d": "bln"
+      },
+      {
+        "n": "thn",
+        "t": "string",
+        "r": 0,
+        "d": "thn"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep248",
+    "name": "tafsir mimpi",
+    "m": "GET",
+    "path": "/api/primbon/tafsirmimpi",
+    "folder": "Primbon",
+    "subfolder": "tafsirmimpi",
+    "desc": "tafsir mimpi",
+    "ex": "https://api.siputzx.my.id/api/primbon/tafsirmimpi?mimpi=bertemu",
+    "params": [
+      {
+        "n": "mimpi",
+        "t": "string",
+        "r": 0,
+        "d": "mimpi"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep249",
+    "name": "zodiak",
+    "m": "GET",
+    "path": "/api/primbon/zodiak",
+    "folder": "Primbon",
+    "subfolder": "zodiak",
+    "desc": "zodiak",
+    "ex": "https://api.siputzx.my.id/api/primbon/zodiak?zodiak=gemini",
+    "params": [
+      {
+        "n": "zodiak",
+        "t": "string",
+        "r": 0,
+        "d": "zodiak"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep250",
+    "name": "github",
+    "m": "GET",
+    "path": "/api/stalk/github",
+    "folder": "Stalker",
+    "subfolder": "github",
+    "desc": "github",
+    "ex": "https://api.siputzx.my.id/api/stalk/github?user=octocat",
+    "params": [
+      {
+        "n": "user",
+        "t": "string",
+        "r": 0,
+        "d": "user"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep251",
+    "name": "pinterest",
+    "m": "GET",
+    "path": "/api/stalk/pinterest",
+    "folder": "Stalker",
+    "subfolder": "pinterest",
+    "desc": "pinterest",
+    "ex": "https://api.siputzx.my.id/api/stalk/pinterest?q=dims",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "q"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep252",
+    "name": "threads",
+    "m": "GET",
+    "path": "/api/stalk/threads",
+    "folder": "Stalker",
+    "subfolder": "threads",
+    "desc": "threads",
+    "ex": "https://api.siputzx.my.id/api/stalk/threads?q=google",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "q"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep253",
+    "name": "twitter stalk",
+    "m": "GET",
+    "path": "/api/stalk/twitter",
+    "folder": "Stalker",
+    "subfolder": "twitter",
+    "desc": "twitter stalk",
+    "ex": "https://api.siputzx.my.id/api/stalk/twitter?user=siputzx",
+    "params": [
+      {
+        "n": "user",
+        "t": "string",
+        "r": 0,
+        "d": "user"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep254",
+    "name": "youtube stalk",
+    "m": "GET",
+    "path": "/api/stalk/youtube",
+    "folder": "Stalker",
+    "subfolder": "youtube",
+    "desc": "youtube stalk",
+    "ex": "https://api.siputzx.my.id/api/stalk/youtube?username=siputzx",
+    "params": [
+      {
+        "n": "username",
+        "t": "string",
+        "r": 0,
+        "d": "username"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep255",
+    "name": "country Info",
+    "m": "GET",
+    "path": "/api/tools/countryInfo",
+    "folder": "Tools",
+    "subfolder": "countryInfo",
+    "desc": "country Info",
+    "ex": "https://api.siputzx.my.id/api/tools/countryInfo?name=Indonesia",
+    "params": [
+      {
+        "n": "name",
+        "t": "string",
+        "r": 0,
+        "d": "name"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep256",
+    "name": "kodepos",
+    "m": "GET",
+    "path": "/api/tools/kodepos",
+    "folder": "Tools",
+    "subfolder": "kodepos",
+    "desc": "kodepos",
+    "ex": "https://api.siputzx.my.id/api/tools/kodepos?form=pasiran+jaya",
+    "params": [
+      {
+        "n": "form",
+        "t": "string",
+        "r": 0,
+        "d": "form"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep258",
+    "name": "translate",
+    "m": "GET",
+    "path": "/api/tools/translate",
+    "folder": "Tools",
+    "subfolder": "translate",
+    "desc": "translate",
+    "ex": "https://api.siputzx.my.id/api/tools/translate?text=I+love+you&source=en&target=id",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 0,
+        "d": "text"
+      },
+      {
+        "n": "source",
+        "t": "string",
+        "r": 0,
+        "d": "source"
+      },
+      {
+        "n": "target",
+        "t": "string",
+        "r": 0,
+        "d": "target"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep259",
+    "name": "bmkg gempa",
+    "m": "GET",
+    "path": "/api/info/bmkg",
+    "folder": "Info",
+    "subfolder": "bmkg",
+    "desc": "bmkg gempa",
+    "ex": "https://api.siputzx.my.id/api/info/bmkg",
+    "params": []
+  },
+  {
+    "catalogId": "ep260",
+    "name": "cuaca",
+    "m": "GET",
+    "path": "/api/info/cuaca",
+    "folder": "Info",
+    "subfolder": "cuaca",
+    "desc": "cuaca",
+    "ex": "https://api.siputzx.my.id/api/info/cuaca?q=pasiran+jaya",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "q"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep261",
+    "name": "jadwalTV",
+    "m": "GET",
+    "path": "/api/info/jadwaltv",
+    "folder": "Info",
+    "subfolder": "jadwaltv",
+    "desc": "jadwalTV",
+    "ex": "https://api.siputzx.my.id/api/info/jadwaltv?channel=sctv",
+    "params": [
+      {
+        "n": "channel",
+        "t": "string",
+        "r": 0,
+        "d": "channel"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep262",
+    "name": "brat",
+    "m": "GET",
+    "path": "/api/m/brat",
+    "folder": "Maker",
+    "subfolder": "brat",
+    "desc": "brat",
+    "ex": "https://api.siputzx.my.id/api/m/brat?text=Hello+world%21&isAnimated=false&delay=500",
+    "params": [
+      {
+        "n": "text",
+        "t": "string",
+        "r": 0,
+        "d": "text"
+      },
+      {
+        "n": "isAnimated",
+        "t": "string",
+        "r": 0,
+        "d": "isAnimated"
+      },
+      {
+        "n": "delay",
+        "t": "string",
+        "r": 0,
+        "d": "delay"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep263",
+    "name": "ephoto360",
+    "m": "GET",
+    "path": "/api/m/ephoto360",
+    "folder": "Maker",
+    "subfolder": "ephoto360",
+    "desc": "ephoto360",
+    "ex": "https://api.siputzx.my.id/api/m/ephoto360?url=https%3A%2F%2Fen.ephoto360.com%2Fcreate-a-cartoon-style-graffiti-text-effect-online-668.html&text1=siputzx",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      },
+      {
+        "n": "text1",
+        "t": "string",
+        "r": 0,
+        "d": "text1"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep264",
+    "name": "photooxy",
+    "m": "GET",
+    "path": "/api/m/photooxy",
+    "folder": "Maker",
+    "subfolder": "photooxy",
+    "desc": "photooxy",
+    "ex": "https://api.siputzx.my.id/api/m/photooxy?url=https%3A%2F%2Fphotooxy.com%2Flogo-and-text-effects%2Fshadow-text-effect-in-the-sky-394.html&text1=test",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      },
+      {
+        "n": "text1",
+        "t": "string",
+        "r": 0,
+        "d": "text1"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep265",
+    "name": "textpro",
+    "m": "GET",
+    "path": "/api/m/textpro",
+    "folder": "Maker",
+    "subfolder": "textpro",
+    "desc": "textpro",
+    "ex": "https://api.siputzx.my.id/api/m/textpro?url=https%3A%2F%2Ftextpro.me%2Fcreate-artistic-3d-text-effects-from-corn-kernels-1177.html&text1=test",
+    "params": [
+      {
+        "n": "url",
+        "t": "string",
+        "r": 0,
+        "d": "url"
+      },
+      {
+        "n": "text1",
+        "t": "string",
+        "r": 0,
+        "d": "text1"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep266",
+    "name": "combot sticker",
+    "m": "GET",
+    "path": "/api/sticker/combot-search",
+    "folder": "Sticker",
+    "subfolder": "combot-search",
+    "desc": "combot sticker",
+    "ex": "https://api.siputzx.my.id/api/sticker/combot-search?q=jomok+nye&page=1",
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 0,
+        "d": "q"
+      },
+      {
+        "n": "page",
+        "t": "string",
+        "r": 0,
+        "d": "page"
+      }
+    ]
   }
 ]

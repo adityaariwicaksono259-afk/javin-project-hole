@@ -1,0 +1,46 @@
+=== 5xx (1) ===
+  ep011 Image to Pixel Art
+
+=== timeout (38) ===
+  ep003 chat gpt4
+  ep016 ss desktop 
+  ep019 stalker ff
+  ep013 remini
+  ep005 deepsek ai
+  ep007 IMG to promt
+  ep017 ss phone
+  ep018 ss tablet 
+  ep014 Remove Background
+  ep027 upscale v1
+  ep028 wink
+  ep030 apple music
+  ep039 Spotify 
+  ep045 yt video
+  ep044 yt play
+  ep046 ytmp4
+  ep054 Animekuindo Completed
+  ep056 Animekuindo Recent
+  ep057 Animekuindo Search
+  ep068 Komik indo search
+  ep082 Fake Call
+  ep080 Bratvid Patrick
+  ep086 Instagram Story Image
+  ep077 Brat Canvas
+  ep091 QCWA (Quote Card WhatsApp) +
+  ep092 TTQC (TikTok Quote Card)
+  ep103 pinterest search
+  ep112 Info Gempa BMKG
+  ep118 DeepSeek R1
+  ep120 QwQ 32B
+  ep133 samehadaku download
+  ep132 samehadaku detail
+  ep171 facebook
+  ep209 gitagram search
+  ep219 seegore search
+  ep225 Random Cecan JAPAN
+  ep251 pinterest
+  ep257 subdomain finder
+
+=== error (1) ===
+  ep081 bratvid2
+

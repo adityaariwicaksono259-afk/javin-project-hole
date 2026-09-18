@@ -5,7 +5,8 @@ const ALLOWED_HOSTS = new Set([
   'api.nexadev.my.id',
   'apii.nexadev.my.id',
   'api.nexaadev.my.id',
-  'clooud.my.id'
+  'clooud.my.id',
+  'api.siputzx.my.id'
 ]);
 
 const MAX_BODY = 6 * 1024 * 1024;
