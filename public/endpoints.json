@@ -11,7 +11,7 @@
     "ex": "https://api.nexadev.my.id/ai/cai/?q=sukuna",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -35,7 +35,7 @@
     "ex": "https://api.nexadev.my.id/ai/chatgptpro/?q=apa%20itu%20axios",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -60,7 +60,7 @@
     "ex": "https://api.nexadev.my.id/ai/gpt4/?q=apa%20itu%20php",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -85,7 +85,7 @@
     "ex": "api.nexadev.my.id/ai/claude/?text=hallo",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "text",
@@ -110,7 +110,7 @@
     "ex": "https://api.nexadev.my.id/ai/deepsek/?text=apa+nodejs",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "text",
@@ -135,7 +135,7 @@
     "ex": "https://api.nexadev.my.id/ai/felo/?q=apa%20itu%20javascript",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -161,7 +161,7 @@
     "ex": "https://api.nexadev.my.id/ai/imgtopromt/?url=https://clooud.my.id/uploder/uploads/tpRbqq.jpg",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -185,7 +185,7 @@
     "ex": "https://api.nexadev.my.id/ai/llama/?q=apa%20itu%20php",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -211,7 +211,7 @@
     "ex": "https://api.nexadev.my.id/api/githubstalker/?username=skayhayato-cmyk",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username ",
@@ -312,7 +312,7 @@
     "ex": "https://api.nexadev.my.id/api/remini?url=https://clooud.my.id/uploder/uploads/tpRbqq.jpg",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -357,7 +357,7 @@
     "ex": "https://api.nexadev.my.id/api/roblox/?username=Linkmon99",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -382,7 +382,7 @@
     "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=desktop",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -413,7 +413,7 @@
     "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=phone",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -443,7 +443,7 @@
     "ex": "https://api.nexadev.my.id/api/ss/?url=https://api.nexadev.my.id&device=tablet",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -474,7 +474,7 @@
     "ex": "https://api.nexadev.my.id/api/ff/?id=7606762852",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "id",
@@ -500,7 +500,7 @@
     "ex": "https://api.nexadev.my.id/api/instagramstalker/?username=Kyzeee48",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -525,7 +525,7 @@
     "ex": "https://api.nexadev.my.id/api/ml/?id=134972929&zone=2687",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "id",
@@ -555,7 +555,7 @@
     "ex": "https://api.nexadev.my.id/api/pubg/?id=5119961143",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "id",
@@ -580,7 +580,7 @@
     "ex": "https://api.nexadev.my.id/api/stalkertwiter/?username=",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -605,7 +605,7 @@
     "ex": "https://api.nexadev.my.id/api/tiktokstalker/?username=nexadevv",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -630,7 +630,7 @@
     "ex": "https://api.nexadev.my.id/tools/toqr/?url=https://clooud.my.id/uploder/uploads/ISsVGW.jpg",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -655,7 +655,7 @@
     "ex": "https://api.nexadev.my.id/api/upscale/?url=https://clooud.my.id/uploder/uploads/QdhzJe.jpg",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -680,7 +680,7 @@
     "ex": "https://api.nexadev.my.id/api/upscale1/?url=https://clooud.my.id/uploder/uploads/QdhzJe.jpg&resolusi=4",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -711,7 +711,7 @@
     "ex": "https://api.nexadev.my.id/api/wink/?url=https://clooud.my.id/uploder/uploads/XIxbPP.jpg",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -755,7 +755,7 @@
     "ex": "https://api.nexadev.my.id/api/applemusic/?url=https://music.apple.com/us/song/unholy-confessions/898356745",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -780,7 +780,7 @@
     "ex": "https://api.nexadev.my.id/api/capcut/?url=https://www.capcut.com/tv2/ZSXXSAX2q/",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -805,7 +805,7 @@
     "ex": "https://api.nexadev.my.id/api/fb/?url=https://www.facebook.com/share/r/176Gd2Y3F5/",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -830,7 +830,7 @@
     "ex": "https://api.nexadev.my.id/api/ig/?url=https://www.instagram.com/reel/Da_eH4pva9C/?igsh=MWpzNXdhbjE1cjZmOA==",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -855,7 +855,7 @@
     "ex": "https://api.nexadev.my.id/api/igstories/?username=",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -881,7 +881,7 @@
     "ex": "https://api.nexadev.my.id/api/mediafire/?url=https://www.mediafire.com/file/v7rlj8ngxj1621f/Nexa_Bot_v1.0.0.zip/file",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -905,7 +905,7 @@
     "ex": "https://api.nexadev.my.id/api/pin/?url=https://pin.it/5TJ3CCrNF",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -931,7 +931,7 @@
     "ex": "https://api.nexaadev.my.id/api/sanapsave?url=https://www.instagram.com/reel/Dbzp_KGTxOI/?igsi=OXdiMmlpMjIyeDc5",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -956,7 +956,7 @@
     "ex": "https://api.nexadev.my.id/api/snaptik/?url=https://vt.tiktok.com/ZSXXAnbkc/",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -980,7 +980,7 @@
     "ex": "https://api.nexadev.my.id/api/spotify/?url=https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=jEdF4DG3R2ShotykgqJE4A&utm_source=copy-link",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -1005,7 +1005,7 @@
     "ex": "https://api.nexaadev.my.id/api/spotify?url=https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=XtbNv3PmQ4Gtbz8Ts1tIAQ&utm_source=copy-link&sci=spotify%3Acard-config%3A4RqxR7Vh1ZgcevwExir9GJ",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -1030,7 +1030,7 @@
     "ex": "https://api.nexadev.my.id/api/spotifyplay/?q=karna+kamu",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -1055,7 +1055,7 @@
     "ex": "https://api.nexadev.my.id/api/spotifypl/?url=https://open.spotify.com/playlist/6Tp1XghEcLfAsZfwHZA6dK?si=FtE2Y1DsSKiy5csMSmrYXw&utm_source=copy-link&pi=TXUyK1-lRRKQC",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -1080,7 +1080,7 @@
     "ex": "https://api.nexadev.my.id/api/ytplaylist/?url=https://youtube.com/playlist?list=PLnQvfeVegcJbjCnML6FdusK-rl-oDRMXJ&si=5Y98HQ_qMhovarVr",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -1106,7 +1106,7 @@
     "ex": "https://api.nexadev.my.id/api/ytplay/?q=alone",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -1131,7 +1131,7 @@
     "ex": "https://api.nexadev.my.id/api/ytvideo/?q=cacamelon",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -1155,7 +1155,7 @@
     "ex": "https://api.nexadev.my.id/api/ytmp4/?url=https://youtu.be/gQmLrZw5Jlg?si=LZWsf2kY90HG9nEo&type=video&quality=720p",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -1556,7 +1556,7 @@
     "ex": "https://apii.nexadev.my.id/komik/daftar?page=1",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "page",
@@ -1581,7 +1581,7 @@
     "ex": "https://apii.nexadev.my.id/komik/detail?slug=the-great-ruler",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "slug",
@@ -1606,7 +1606,7 @@
     "ex": "https://apii.nexadev.my.id/komik?page=2",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "page",
@@ -1632,7 +1632,7 @@
     "ex": "https://apii.nexadev.my.id/komik?q=nano",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -1656,7 +1656,7 @@
     "ex": "https://apii.nexadev.my.id/komik/stream?slug=the-great-ruler-chapter-304",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "slug",
@@ -1682,7 +1682,7 @@
     "ex": "https://apii.nexadev.my.id/komik/update?page=1",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "page",
@@ -1892,7 +1892,7 @@
     "ex": "https://apii.nexadev.my.id/bratvid2?text=nexa+nich😱",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "text",
@@ -1946,10 +1946,10 @@
     "folder": "Canvas",
     "subfolder": "Fakeffduo",
     "outputType": "",
-    "ex": "https://apii.nexadev.my.id/fakeffduo?nickname1=Nexa%20%F0%9F%98%A0&nickname2=Xy%20Pemula",
+    "ex": "https://apii.nexadev.my.id/fakeffduo?nickname1=Javin%20%F0%9F%98%A0&nickname2=Xy%20Pemula",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "nickname1",
@@ -2001,7 +2001,7 @@
     "ex": "https://apii.nexadev.my.id/fakeigprofile?ppurl=&username=&postingan=&mengikuti=&pengikut=&bio=",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "ppurl",
@@ -2013,7 +2013,7 @@
         "n": "username",
         "t": "string",
         "r": 0,
-        "d": "Nexa"
+        "d": "Javin"
       },
       {
         "n": "postingan",
@@ -2037,7 +2037,7 @@
         "n": "bio",
         "t": "string",
         "r": 0,
-        "d": "Hello, I'm Nexa"
+        "d": "Hello, I'm Javin"
       }
     ],
     "updated_at": "2026-07-20T08:03:20+00:00",
@@ -2078,7 +2078,7 @@
         "d": "Nama tampilan (display name) pengguna."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/igstory-img?photo=https://clooud.my.id/uploder/uploads/jaoCqc.jpeg&avatar=https://clooud.my.id/uploder/uploads/Mbasnl.jpeg&usn=nexadev&name=Nexa",
+    "ex": "https://apii.nexadev.my.id/igstory-img?photo=https://clooud.my.id/uploder/uploads/jaoCqc.jpeg&avatar=https://clooud.my.id/uploder/uploads/Mbasnl.jpeg&usn=nexadev&name=Javin",
     "catalogId": "ep086",
     "subfolder": ""
   },
@@ -2368,7 +2368,7 @@
     "ex": "https://api.nexadev.my.id/api/random/quotebucin/",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [],
     "updated_at": "2026-07-20T11:34:41+00:00",
     "created_at": "2026-07-20T11:34:41+00:00",
@@ -2411,7 +2411,7 @@
     "ex": "https://api.nexadev.my.id/api/detik/?query=gempa",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "query",
@@ -2437,7 +2437,7 @@
     "ex": "https://api.nexadev.my.id/api/lahelu/?query=sad",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "query",
@@ -2462,7 +2462,7 @@
     "ex": "https://api.nexadev.my.id/api/lyric/?q=alone",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2487,7 +2487,7 @@
     "ex": "https://api.nexadev.my.id/api/lyric/?q=https://genius.com/Drake-hate-sleeping-alone-lyrics",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2530,7 +2530,7 @@
     "ex": "https://api.nexaadev.my.id/api/pin?q=anime",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2556,7 +2556,7 @@
     "ex": "https://api.nexadev.my.id/api/soundeffect/detail/?url=https://www.myinstants.com/en/instant/sad-violin-the-meme-one/",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -2581,7 +2581,7 @@
     "ex": "https://api.nexadev.my.id/api/soundeffect/?q=sad",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2606,7 +2606,7 @@
     "ex": "https://api.nexadev.my.id/tools/ytsearch/?q=karna+kamu",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2661,7 +2661,7 @@
     "ex": "https://api.nexadev.my.id/api/kompasnews/",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [],
     "id": "custom_1786736845_8221",
     "updated_at": "2026-08-14T19:47:25+00:00",
@@ -2679,7 +2679,7 @@
     "ex": "https://api.nexadev.my.id/api/detiknews/",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [],
     "id": "custom_1786698336_4077",
     "updated_at": "2026-08-14T09:05:36+00:00",
@@ -2753,7 +2753,7 @@
     "ex": "https://api.nexadev.my.id/api/quran/?surah=5&verse=1",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "surah",
@@ -2784,7 +2784,7 @@
     "ex": "https://api.nexadev.my.id/api/quranaudio/?surah=2",
     "needKey": false,
     "keyParam": "key",
-    "keyDesc": "API Key Nexa dari dasbor registrasi.",
+    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "surah",

@@ -59,18 +59,6 @@ function extractHost(urlStr) {
   }
 }
 
-function sanitizeResponse(text) {
-  return text
-    .replace(/NexaDev/g, 'Javin')
-    .replace(/"author"\s*:\s*"Nexa"/gi, '"author":"Javin"')
-    .replace(/https?:\/\/(api\.|apii\.)?nexadev\.my\.id/gi, 'https://javin.api')
-    .replace(/https?:\/\/api\.nexaadev\.my\.id/gi, 'https://javin.api')
-    .replace(/https?:\/\/clooud\.my\.id/gi, 'https://javin.cdn')
-    .replace(/(api\.|apii\.)?nexadev\.my\.id/gi, 'javin.api')
-    .replace(/api\.nexaadev\.my\.id/gi, 'javin.api')
-    .replace(/clooud\.my\.id/gi, 'javin.cdn');
-}
-
 export async function onRequest(context) {
   const request = context.request;
 
@@ -142,23 +130,6 @@ export async function onRequest(context) {
     }
 
     const ct = upstream.headers.get('content-type') || 'application/octet-stream';
-
-    if (ct.indexOf('application/json') !== -1) {
-      try {
-        const txt = new TextDecoder().decode(buf);
-        const clean = sanitizeResponse(txt);
-        return new Response(clean, {
-          status: upstream.status,
-          headers: {
-            'Content-Type': 'application/json; charset=utf-8',
-            'Cache-Control': 'no-store',
-            'X-Content-Type-Options': 'nosniff'
-          }
-        });
-      } catch (e) {
-        // fallthrough
-      }
-    }
 
     return new Response(buf, {
       status: upstream.status,
