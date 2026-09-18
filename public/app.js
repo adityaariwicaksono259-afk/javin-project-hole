@@ -45,21 +45,132 @@ async function execute(x){
     }
   }
   catch(e){result.innerHTML='<pre class="result">ERROR\n'+esc(e.message)+'</pre>'}
+  finally{if(window.refreshUserStatus)setTimeout(window.refreshUserStatus,500)}
 }
 $('#close').onclick=()=>$('#modal').classList.add('hidden');$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.add('hidden')};
 function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 
-// === USER ID ===
+// === USER ID (fingerprint-based) ===
 (function(){
-  var KEY='javin_user_id';
-  var id=localStorage.getItem(KEY);
-  if(!id){
-    var rand=Math.random().toString(36).slice(2,8).toUpperCase();
-    id='JH-'+rand;
-    localStorage.setItem(KEY,id);
+  var KEY = 'javin_user_id';
+  var FP_KEY = 'javin_fp_cache';
+
+  // ==== Fingerprint generator ====
+  async function generateFingerprint(){
+    var parts = [];
+
+    // 1. User Agent + platform
+    parts.push(navigator.userAgent || '');
+    parts.push(navigator.platform || '');
+    parts.push(navigator.language || '');
+    parts.push((navigator.languages || []).join(','));
+    parts.push(String(navigator.hardwareConcurrency || 0));
+    parts.push(String(navigator.deviceMemory || 0));
+    parts.push(String(navigator.maxTouchPoints || 0));
+
+    // 2. Screen
+    parts.push(screen.width + 'x' + screen.height + 'x' + screen.colorDepth);
+    parts.push(String(window.devicePixelRatio || 1));
+
+    // 3. Timezone
+    try {
+      parts.push(Intl.DateTimeFormat().resolvedOptions().timeZone || '');
+    } catch(e) { parts.push(''); }
+
+    // 4. Canvas fingerprint
+    try {
+      var cv = document.createElement('canvas');
+      cv.width = 220;
+      cv.height = 40;
+      var ctx = cv.getContext('2d');
+      ctx.textBaseline = 'top';
+      ctx.font = '14px Arial';
+      ctx.fillStyle = '#f60';
+      ctx.fillRect(0, 0, 220, 40);
+      ctx.fillStyle = '#069';
+      ctx.fillText('JavinFingerprint\u2605', 2, 15);
+      ctx.fillStyle = 'rgba(102,204,0,0.7)';
+      ctx.fillText('JavinFingerprint\u2605', 4, 17);
+      parts.push(cv.toDataURL().slice(-120));
+    } catch(e) { parts.push('canvas-fail'); }
+
+    // 5. WebGL renderer
+    try {
+      var gl = document.createElement('canvas').getContext('webgl');
+      if (gl) {
+        var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+        if (dbg) {
+          parts.push(gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) || '');
+          parts.push(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '');
+        }
+      }
+    } catch(e) {}
+
+    // 6. Touch support
+    parts.push('touch:' + ('ontouchstart' in window));
+    parts.push('cores:' + (navigator.hardwareConcurrency || 0));
+
+    // Hash pakai SubtleCrypto
+    var raw = parts.join('||');
+    var buf = new TextEncoder().encode(raw);
+    var hashBuf = await crypto.subtle.digest('SHA-256', buf);
+    var arr = Array.from(new Uint8Array(hashBuf));
+    return arr.map(function(b){return b.toString(16).padStart(2,'0')}).join('');
   }
-  var el=document.getElementById('userId');
-  if(el)el.textContent=id;
+
+  async function ensureUserId(){
+    // Cek cache dulu
+    var cached = null;
+    try { cached = localStorage.getItem(KEY); } catch(e) {}
+    if (cached && /^JH-[A-Z0-9]{6}$/.test(cached)) {
+      return cached;
+    }
+
+    // Generate fingerprint & kirim ke server
+    try {
+      var fp = await generateFingerprint();
+      try { localStorage.setItem(FP_KEY, fp); } catch(e) {}
+
+      var r = await fetch('/api/user/identify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fp: fp })
+      });
+      var j = await r.json();
+      if (j.ok && j.uid) {
+        try { localStorage.setItem(KEY, j.uid); } catch(e) {}
+        return j.uid;
+      }
+    } catch(e) {}
+
+    // Fallback: bikin random ID lokal (kalau network error)
+    var rand = '';
+    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    for (var i = 0; i < 6; i++) rand += chars[Math.floor(Math.random() * chars.length)];
+    var fallbackId = 'JH-' + rand;
+    try { localStorage.setItem(KEY, fallbackId); } catch(e) {}
+    return fallbackId;
+  }
+
+  // Ekspos biar bisa dipakai fungsi lain
+  window.ensureUserId = ensureUserId;
+
+  // Render badge + trigger identify
+  ensureUserId().then(function(uid){
+    var el = document.getElementById('userId');
+    if (el) el.textContent = uid;
+    if (window.refreshUserStatus) setTimeout(window.refreshUserStatus, 300);
+  });
+
+  // Listener: kalau tab balik aktif, pastikan ID ada
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'visible') {
+      ensureUserId().then(function(uid){
+        var el = document.getElementById('userId');
+        if (el) el.textContent = uid;
+      });
+    }
+  });
 })();
 
 // === ADMIN PANEL ===
@@ -179,6 +290,7 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     var uid=document.getElementById('adminUserId').value.trim();
     var extra=parseInt(document.getElementById('adminExtraLimit').value||'0');
     if(!uid){alert('User ID wajib.');return}
+    if(isNaN(extra)||extra<1||extra>15){alert('Limit harus 1-15.');return}
     var r=await fetch('/api/admin/users',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
@@ -284,23 +396,50 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
 
 
 // === USER LIMIT BADGE ===
-async function refreshUserStatus(){
-  var uid = (typeof localStorage !== 'undefined') ? localStorage.getItem('javin_user_id') : null;
-  if(!uid) return;
-  var el = document.getElementById('userLimit');
-  if(!el) return;
-  try{
-    var r = await fetch('/api/user/me?uid=' + encodeURIComponent(uid));
-    var j = await r.json();
-    if(!j.ok) return;
-    var remain = Number(j.remaining) || 0;
-    var limit = Number(j.limit) || 0;
-    el.textContent = remain + '/' + limit;
-    var pct = limit > 0 ? (remain / limit) : 0;
-    if(pct > 0.5) el.style.color = '#4ade80';
-    else if(pct > 0.2) el.style.color = '#fbbf24';
-    else el.style.color = '#f87171';
-  }catch(e){}
-}
-window.refreshUserStatus = refreshUserStatus;
-setTimeout(refreshUserStatus, 600);
+(function(){
+  var lastFetch = 0;
+  var MIN_GAP = 300;
+
+  async function refreshUserStatus(force){
+    var now = Date.now();
+    if(!force && now - lastFetch < MIN_GAP) return;
+    lastFetch = now;
+
+    var uid = (typeof localStorage !== 'undefined') ? localStorage.getItem('javin_user_id') : null;
+    if(!uid) return;
+    var el = document.getElementById('userLimit');
+    if(!el) return;
+    try{
+      var r = await fetch('/api/user/me?uid=' + encodeURIComponent(uid) + '&t=' + Date.now(), {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      var j = await r.json();
+      if(!j.ok) return;
+      var remain = Number(j.remaining) || 0;
+      var limit = Number(j.limit) || 0;
+      el.textContent = remain + '/' + limit;
+      var pct = limit > 0 ? (remain / limit) : 0;
+      if(remain <= 0) el.style.color = '#f87171';
+      else if(pct > 0.5) el.style.color = '#4ade80';
+      else if(pct > 0.2) el.style.color = '#fbbf24';
+      else el.style.color = '#f87171';
+    }catch(e){}
+  }
+
+  window.refreshUserStatus = refreshUserStatus;
+
+  // Refresh pertama setelah load
+  setTimeout(function(){ refreshUserStatus(true); }, 400);
+
+  // Polling tiap 8 detik (biar sinkron kalau di tab lain ada request)
+  setInterval(function(){ refreshUserStatus(true); }, 8000);
+
+  // Refresh saat tab kembali aktif (user balik dari tab lain)
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible') refreshUserStatus(true);
+  });
+
+  // Refresh saat window fokus lagi
+  window.addEventListener('focus', function(){ refreshUserStatus(true); });
+})();

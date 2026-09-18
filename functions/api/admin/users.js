@@ -62,8 +62,8 @@ export async function onRequestPost({ request, env }) {
     if (!id || !/^[A-Za-z0-9_-]{1,40}$/.test(id)) {
       return json({ ok: false, message: 'User ID tidak valid.' }, 400);
     }
-    if (!isFinite(extra) || extra < 0 || extra > 100000) {
-      return json({ ok: false, message: 'extra_limit tidak valid.' }, 400);
+    if (!isFinite(extra) || extra < 1 || extra > 15) {
+      return json({ ok: false, message: 'Limit harus antara 1-15.' }, 400);
     }
 
     const existing = await db.prepare('SELECT id FROM users WHERE id = ?').bind(id).first();
