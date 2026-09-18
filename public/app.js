@@ -429,8 +429,16 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     if (!tb) return;
     tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">Loading...</td></tr>';
     try {
-      var r = await fetch('/api/admin/premium-keys');
-      if (r.status === 401) { loggedIn = false; alert('Session expired.'); closePanel(); return; }
+      var r = await fetch('/api/admin/premium-keys?_=' + Date.now(), { cache: 'no-store' });
+      if (r.status === 401) {
+        tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">🔒 Sesi habis. <button class="tbl-btn" onclick="location.reload()">Login Ulang</button></td></tr>';
+        return;
+      }
+      if (!r.ok) {
+        var txt = await r.text();
+        tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">HTTP ' + r.status + ' — ' + escHtml(txt.slice(0,100)) + '</td></tr>';
+        return;
+      }
       var j = await r.json();
       if (!j.ok) { tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">' + escHtml(j.message || 'Gagal') + '</td></tr>'; return; }
       var filter = (document.getElementById('keysSearch').value || '').toLowerCase();
@@ -495,33 +503,48 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
 
   var btnGen = document.getElementById('btnGenKeys');
   if (btnGen) btnGen.onclick = async function(){
-    if (!loggedIn) { alert('Login dulu.'); return; }
-    var label = document.getElementById('newKeyLabel').value.trim() || 'Tanpa label';
+    var label = (document.getElementById('newKeyLabel').value || '').trim();
     var maxUses = parseInt(document.getElementById('newKeyMax').value) || 5;
-    var qty = parseInt(document.getElementById('newKeyQty').value) || 1;
+    if (!label) { alert('Isi nama pemilik dulu.'); return; }
     if (maxUses < 1 || maxUses > 100) { alert('Kuota harus 1-100.'); return; }
-    if (qty < 1 || qty > 20) { alert('Jumlah key harus 1-20.'); return; }
-    btnGen.disabled = true; btnGen.textContent = 'Generating...';
+    btnGen.disabled = true;
+    btnGen.textContent = '⏳ Generating...';
+    var res = document.getElementById('genKeyResult');
+    res.className = 'result show info';
+    res.textContent = 'Membuat key...';
     try {
       var r = await fetch('/api/admin/premium-keys', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ label: label, max_uses: maxUses, quantity: qty })
+        body: JSON.stringify({ label: label, max_uses: maxUses, quantity: 1 })
       });
       var j = await r.json();
-      var res = document.getElementById('genKeyResult');
-      if (j.ok) {
+      if (j.ok && j.keys && j.keys[0]) {
+        var k = j.keys[0];
         res.className = 'result show ok';
-        res.textContent = '✅ ' + j.message + '\n\n' + j.keys.join('\n');
+        res.textContent = '✅ Key dibuat!
+
+Key: ' + k + '
+Pemilik: ' + label + '
+Kuota: ' + maxUses + 'x';
+        // Auto copy
+        try {
+          if (navigator.clipboard) await navigator.clipboard.writeText(k);
+          res.textContent += '
+
+📋 Otomatis di-copy ke clipboard';
+        } catch(e) {}
       } else {
         res.className = 'result show err';
-        res.textContent = '❌ ' + (j.message || 'Gagal');
+        res.textContent = '❌ ' + (j.message || 'Gagal generate key.');
       }
       loadKeys();
     } catch(e) {
-      alert('Error: ' + e.message);
+      res.className = 'result show err';
+      res.textContent = '❌ Network error: ' + e.message;
     } finally {
-      btnGen.disabled = false; btnGen.textContent = 'Generate';
+      btnGen.disabled = false;
+      btnGen.textContent = '🎲 Generate Key';
     }
   };
 
