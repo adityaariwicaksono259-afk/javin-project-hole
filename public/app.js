@@ -48,37 +48,105 @@ async function execute(x){
 $('#close').onclick=()=>$('#modal').classList.add('hidden');$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.add('hidden')};
 function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 
-(() => {
-  const id = localStorage.getItem("javin_project_hole_user_id");
-  const badge = document.getElementById("userId"); if (badge) badge.textContent = id || "-";
-  const panel = document.getElementById("adminPanel");
-  const launch = document.getElementById("adminLaunch");
-  const close = document.getElementById("adminToggle");
-  if (launch) launch.onclick = () => panel?.classList.add("open");
-  if (close) close.onclick = () => panel?.classList.remove("open");
+// === USER ID ===
+(function(){
+  var KEY='javin_user_id';
+  var id=localStorage.getItem(KEY);
+  if(!id){
+    var rand=Math.random().toString(36).slice(2,8).toUpperCase();
+    id='JH-'+rand;
+    localStorage.setItem(KEY,id);
+  }
+  var el=document.getElementById('userId');
+  if(el)el.textContent=id;
+})();
 
-  const adminKey = "javin_admin_endpoint_overrides";
-  const getOverrides = () => JSON.parse(localStorage.getItem(adminKey) || "[]");
-  document.getElementById("adminAddEndpoint")?.addEventListener("click", () => {
-    const name = document.getElementById("adminEndpointName").value.trim();
-    const path = document.getElementById("adminEndpointPath").value.trim();
-    const category = document.getElementById("adminEndpointCategory").value.trim() || "Tools";
-    if (!name || !path.startsWith("/")) return alert("Nama dan path wajib valid.");
-    const a = getOverrides(); a.push({name,path,folder:category,createdBy:id,createdAt:new Date().toISOString()});
-    localStorage.setItem(adminKey, JSON.stringify(a)); alert("Endpoint ditambahkan ke katalog lokal. Deploy production perlu API admin server-side.");
-  });
-  document.getElementById("adminRemoveEndpoint")?.addEventListener("click", () => {
-    const target = prompt("Masukkan catalogId endpoint:");
-    if (!target) return;
-    const a = getOverrides().filter(x => x.catalogId !== target);
-    localStorage.setItem(adminKey, JSON.stringify(a)); alert("Override lokal dihapus.");
-  });
-  document.getElementById("adminAddLimit")?.addEventListener("click", () => {
-    const uid = document.getElementById("adminUserId").value.trim();
-    const extra = Math.max(1, Number(document.getElementById("adminExtraLimit").value || 0));
-    if (!uid || !Number.isFinite(extra)) return alert("User ID/limit tidak valid.");
-    const k = `javin_extra_limit_${uid}`;
-    localStorage.setItem(k, String(Number(localStorage.getItem(k)||0)+extra));
-    alert("Limit lokal ditambahkan. Untuk multi-device/anti-reset wajib database server-side.");
-  });
+// === ADMIN PANEL ===
+(function(){
+  var panel=document.getElementById('adminPanel');
+  var launch=document.getElementById('adminLaunch');
+  var closeBtn=document.getElementById('adminToggle');
+  if(!panel||!launch)return;
+
+  var loggedIn=false;
+
+  function openPanel(){panel.classList.add('open')}
+  function closePanel(){panel.classList.remove('open')}
+
+  function getUserId(){return localStorage.getItem('javin_user_id')||'JH-ANON'}
+
+  function getOverrides(){try{return JSON.parse(localStorage.getItem('javin_admin_endpoint_overrides')||'[]')}catch(e){return[]}}
+
+  async function checkSession(){
+    try{
+      var r=await fetch('/api/admin/check');
+      if(!r.ok)return false;
+      var j=await r.json();
+      return j&&j.ok;
+    }catch(e){return false}
+  }
+
+  async function doLogin(){
+    var u=prompt('Username admin:');
+    if(u===null)return;
+    var p=prompt('Password admin:');
+    if(p===null)return;
+    try{
+      var r=await fetch('/api/admin/login',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({username:u,password:p})
+      });
+      var j=await r.json();
+      if(j.ok){
+        loggedIn=true;
+        openPanel();
+      } else {
+        alert(j.message||'Login gagal.');
+      }
+    }catch(e){alert('Error: '+e.message)}
+  }
+
+  launch.onclick=async function(){
+    if(loggedIn){openPanel();return}
+    var ok=await checkSession();
+    if(ok){loggedIn=true;openPanel();return}
+    doLogin();
+  };
+
+  if(closeBtn)closeBtn.onclick=closePanel;
+
+  var addEp=document.getElementById('adminAddEndpoint');
+  if(addEp)addEp.onclick=function(){
+    if(!loggedIn){alert('Login dulu.');return}
+    var name=document.getElementById('adminEndpointName').value.trim();
+    var path=document.getElementById('adminEndpointPath').value.trim();
+    var category=document.getElementById('adminEndpointCategory').value.trim()||'Tools';
+    if(!name||path.indexOf('/')!==0){alert('Nama dan path wajib valid (path mulai dengan /).');return}
+    var a=getOverrides();
+    a.push({name:name,path:path,folder:category,createdBy:getUserId(),createdAt:new Date().toISOString()});
+    localStorage.setItem('javin_admin_endpoint_overrides',JSON.stringify(a));
+    alert('Endpoint ditambahkan (lokal).');
+  };
+
+  var rmEp=document.getElementById('adminRemoveEndpoint');
+  if(rmEp)rmEp.onclick=function(){
+    if(!loggedIn){alert('Login dulu.');return}
+    var target=prompt('Masukkan catalogId endpoint:');
+    if(!target)return;
+    var a=getOverrides().filter(function(x){return x.catalogId!==target});
+    localStorage.setItem('javin_admin_endpoint_overrides',JSON.stringify(a));
+    alert('Override lokal dihapus.');
+  };
+
+  var addLimit=document.getElementById('adminAddLimit');
+  if(addLimit)addLimit.onclick=function(){
+    if(!loggedIn){alert('Login dulu.');return}
+    var uid=document.getElementById('adminUserId').value.trim();
+    var extra=Math.max(1,Number(document.getElementById('adminExtraLimit').value||0));
+    if(!uid||!isFinite(extra)){alert('User ID / limit tidak valid.');return}
+    var k='javin_extra_limit_'+uid;
+    localStorage.setItem(k,String(Number(localStorage.getItem(k)||0)+extra));
+    alert('Limit lokal ditambahkan.');
+  };
 })();
