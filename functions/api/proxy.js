@@ -9,32 +9,7 @@ const ALLOWED_HOSTS = new Set([
 ]);
 
 const MAX_BODY = 6 * 1024 * 1024;
-const WINDOW_MS = 60 * 1000;
-const MAX_REQUESTS_PER_WINDOW = 30;
-
-const buckets = new Map();
-
-function clientKey(request) {
-  const ip = request.headers.get('CF-Connecting-IP')
-    || (request.headers.get('x-forwarded-for') || '').split(',')[0].trim()
-    || 'unknown';
-  let hash = 0;
-  for (let i = 0; i < ip.length; i++) {
-    hash = ((hash << 5) - hash + ip.charCodeAt(i)) | 0;
-  }
-  return 'k_' + (hash >>> 0).toString(16);
-}
-
-function isLimited(key) {
-  const now = Date.now();
-  let b = buckets.get(key);
-  if (!b || now - b.start >= WINDOW_MS) {
-    b = { start: now, count: 0 };
-  }
-  b.count += 1;
-  buckets.set(key, b);
-  return b.count > MAX_REQUESTS_PER_WINDOW;
-}
+const DEFAULT_LIMIT = 10;
 
 function jsonRes(status, data) {
   return new Response(JSON.stringify(data), {
@@ -42,10 +17,7 @@ function jsonRes(status, data) {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Cache-Control': 'no-store',
-      'X-Content-Type-Options': 'nosniff',
-      'X-Frame-Options': 'DENY',
-      'Referrer-Policy': 'no-referrer',
-      'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+      'X-Content-Type-Options': 'nosniff'
     }
   });
 }
@@ -59,26 +31,89 @@ function extractHost(urlStr) {
   }
 }
 
+async function sha256hex(text) {
+  const buf = new TextEncoder().encode(text);
+  const h = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+}
+
+async function logRequest(db, data) {
+  if (!db) return;
+  try {
+    await db.prepare(
+      'INSERT INTO logs (user_id, endpoint_id, status, ip_hash, created_at) VALUES (?, ?, ?, ?, ?)'
+    ).bind(data.user_id, data.endpoint_id, data.status, data.ip_hash, Date.now()).run();
+  } catch (e) {}
+}
+
 export async function onRequest(context) {
   const request = context.request;
+  const env = context.env;
 
   if (request.method !== 'GET') {
     return jsonRes(405, { ok: false, message: 'Method not allowed' });
   }
 
-  if (isLimited(clientKey(request))) {
-    return jsonRes(429, { ok: false, message: 'Terlalu banyak request. Coba lagi sebentar.' });
-  }
-
   const reqUrl = new URL(request.url);
+  const userId = String(reqUrl.searchParams.get('uid') || '').trim().slice(0, 40);
   const id = String(reqUrl.searchParams.get('id') || '');
 
   if (!/^[a-zA-Z0-9_-]{1,40}$/.test(id)) {
     return jsonRes(400, { ok: false, message: 'Endpoint tidak valid.' });
   }
 
+  // ==== Cek limit user via D1 ====
+  const db = env.JAVIN_DB;
+  let userRow = null;
+
+  if (userId && db) {
+    const todayStart = new Date();
+    todayStart.setUTCHours(0, 0, 0, 0);
+
+    try {
+      userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
+
+      // Hitung request hari ini
+      const countRow = await db.prepare(
+        'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND created_at >= ?'
+      ).bind(userId, todayStart.getTime()).first();
+
+      const usedToday = (countRow && countRow.c) || 0;
+      const limit = DEFAULT_LIMIT + ((userRow && userRow.extra_limit) || 0);
+
+      if (usedToday >= limit) {
+        await logRequest(db, {
+          user_id: userId,
+          endpoint_id: id,
+          status: 429,
+          ip_hash: '',
+        });
+        return jsonRes(429, {
+          ok: false,
+          message: 'Limit harian tercapai (' + usedToday + '/' + limit + '). Coba lagi besok.'
+        });
+      }
+
+      // Update user record
+      const now = Date.now();
+      if (!userRow) {
+        await db.prepare(
+          'INSERT INTO users (id, extra_limit, created_at, last_seen, total_request) VALUES (?, 0, ?, ?, 1)'
+        ).bind(userId, now, now).run();
+      } else {
+        await db.prepare(
+          'UPDATE users SET last_seen = ?, total_request = total_request + 1 WHERE id = ?'
+        ).bind(now, userId).run();
+      }
+    } catch (e) {
+      // DB error → lanjut aja (fail-open)
+    }
+  }
+
+  // ==== Cari endpoint ====
   const ep = endpointsData.find(function (x) { return x.catalogId === id; });
   if (!ep) {
+    await logRequest(db, { user_id: userId, endpoint_id: id, status: 404, ip_hash: '' });
     return jsonRes(404, { ok: false, message: 'Endpoint tidak ditemukan.' });
   }
 
@@ -90,6 +125,7 @@ export async function onRequest(context) {
   if (!host) host = 'api.nexadev.my.id';
 
   if (!ALLOWED_HOSTS.has(host)) {
+    await logRequest(db, { user_id: userId, endpoint_id: id, status: 403, ip_hash: '' });
     return jsonRes(403, { ok: false, message: 'Endpoint tidak tersedia.' });
   }
 
@@ -126,11 +162,18 @@ export async function onRequest(context) {
 
     const buf = await upstream.arrayBuffer();
     if (buf.byteLength > MAX_BODY) {
+      await logRequest(db, { user_id: userId, endpoint_id: id, status: 502, ip_hash: '' });
       return jsonRes(502, { ok: false, message: 'Response terlalu besar.' });
     }
 
-    const ct = upstream.headers.get('content-type') || 'application/octet-stream';
+    await logRequest(db, {
+      user_id: userId,
+      endpoint_id: id,
+      status: upstream.status,
+      ip_hash: ''
+    });
 
+    const ct = upstream.headers.get('content-type') || 'application/octet-stream';
     return new Response(buf, {
       status: upstream.status,
       headers: {
@@ -140,6 +183,7 @@ export async function onRequest(context) {
       }
     });
   } catch (err) {
+    await logRequest(db, { user_id: userId, endpoint_id: id, status: 502, ip_hash: '' });
     return jsonRes(502, { ok: false, message: 'Gagal mengambil data. Coba lagi.' });
   }
 }

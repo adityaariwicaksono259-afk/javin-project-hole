@@ -14,7 +14,8 @@ async function execute(x){
   result.innerHTML='<div class="result">MENGHUBUNGI SERVER...</div>';
   var qs=[];
   document.querySelectorAll('[data-p]').forEach(function(i){if(i.value)qs.push(encodeURIComponent(i.dataset.p)+'='+encodeURIComponent(i.value));});
-  var url='/api/proxy?id='+encodeURIComponent(x.catalogId)+(qs.length?'&'+qs.join('&'):'');
+  var uid='';try{uid=localStorage.getItem('javin_user_id')||''}catch(e){}
+  var url='/api/proxy?id='+encodeURIComponent(x.catalogId)+(uid?'&uid='+encodeURIComponent(uid):'')+(qs.length?'&'+qs.join('&'):'');
   try{
     var r=await fetch(url);
     var type=r.headers.get('content-type')||'';
@@ -73,9 +74,18 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   function openPanel(){panel.classList.add('open')}
   function closePanel(){panel.classList.remove('open')}
 
-  function getUserId(){return localStorage.getItem('javin_user_id')||'JH-ANON'}
+  function getUserId(){
+    try{return localStorage.getItem('javin_user_id')||'JH-ANON'}catch(e){return 'JH-ANON'}
+  }
 
-  function getOverrides(){try{return JSON.parse(localStorage.getItem('javin_admin_endpoint_overrides')||'[]')}catch(e){return[]}}
+  function fmtTime(ts){
+    if(!ts)return '-';
+    var d=new Date(Number(ts));
+    if(isNaN(d.getTime()))return '-';
+    return d.toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+  }
+
+  function escHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
   async function checkSession(){
     try{
@@ -88,9 +98,9 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
 
   async function doLogin(){
     var u=prompt('Username admin:');
-    if(u===null)return;
+    if(u===null)return false;
     var p=prompt('Password admin:');
-    if(p===null)return;
+    if(p===null)return false;
     try{
       var r=await fetch('/api/admin/login',{
         method:'POST',
@@ -98,55 +108,176 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
         body:JSON.stringify({username:u,password:p})
       });
       var j=await r.json();
-      if(j.ok){
-        loggedIn=true;
-        openPanel();
-      } else {
-        alert(j.message||'Login gagal.');
-      }
-    }catch(e){alert('Error: '+e.message)}
+      if(j.ok){loggedIn=true;return true}
+      alert(j.message||'Login gagal.');
+      return false;
+    }catch(e){alert('Error: '+e.message);return false}
   }
 
-  launch.onclick=async function(){
-    if(loggedIn){openPanel();return}
-    var ok=await checkSession();
-    if(ok){loggedIn=true;openPanel();return}
-    doLogin();
-  };
+  // ==== Tabs ====
+  var tabs=panel.querySelectorAll('.admin-tab');
+  var panes=panel.querySelectorAll('.admin-pane');
+  tabs.forEach(function(t){
+    t.onclick=function(){
+      tabs.forEach(function(x){x.classList.remove('active')});
+      panes.forEach(function(x){x.classList.remove('active')});
+      t.classList.add('active');
+      var name=t.dataset.tab;
+      var p=panel.querySelector('.admin-pane[data-pane="'+name+'"]');
+      if(p)p.classList.add('active');
+      if(name==='users')loadUsers();
+      if(name==='logs')loadLogs();
+      if(name==='config')loadConfig();
+    };
+  });
 
-  if(closeBtn)closeBtn.onclick=closePanel;
+  // ==== USERS ====
+  async function loadUsers(){
+    var tb=document.getElementById('userTbody');
+    if(!tb)return;
+    tb.innerHTML='<tr><td colspan="6" class="tbl-empty">Loading...</td></tr>';
+    try{
+      var r=await fetch('/api/admin/users');
+      if(r.status===401){loggedIn=false;alert('Session expired. Login ulang.');closePanel();return}
+      var j=await r.json();
+      if(!j.ok){tb.innerHTML='<tr><td colspan="6" class="tbl-empty">'+escHtml(j.message||'Gagal')+'</td></tr>';return}
+      var filter=(document.getElementById('userSearch').value||'').toLowerCase();
+      var list=(j.users||[]).filter(function(u){return !filter||u.id.toLowerCase().indexOf(filter)!==-1});
+      if(!list.length){tb.innerHTML='<tr><td colspan="6" class="tbl-empty">Belum ada user.</td></tr>';return}
+      tb.innerHTML=list.map(function(u){
+        return '<tr>'
+          +'<td><code>'+escHtml(u.id)+'</code></td>'
+          +'<td>'+u.extra_limit+'</td>'
+          +'<td>'+u.today+'</td>'
+          +'<td>'+u.total_request+'</td>'
+          +'<td>'+fmtTime(u.last_seen)+'</td>'
+          +'<td><button class="tbl-btn" data-edit="'+escHtml(u.id)+'" data-lim="'+u.extra_limit+'">Edit</button> '
+          +'<button class="tbl-btn danger" data-del="'+escHtml(u.id)+'">Hapus</button></td>'
+          +'</tr>';
+      }).join('');
+      tb.querySelectorAll('[data-edit]').forEach(function(b){
+        b.onclick=function(){
+          document.getElementById('adminUserId').value=b.dataset.edit;
+          document.getElementById('adminExtraLimit').value=b.dataset.lim;
+          document.getElementById('adminExtraLimit').focus();
+        };
+      });
+      tb.querySelectorAll('[data-del]').forEach(function(b){
+        b.onclick=async function(){
+          if(!confirm('Hapus user '+b.dataset.del+'? Log-nya ikut terhapus.'))return;
+          var rr=await fetch('/api/admin/users?id='+encodeURIComponent(b.dataset.del),{method:'DELETE'});
+          var jj=await rr.json();
+          alert(jj.message||'OK');
+          loadUsers();
+        };
+      });
+    }catch(e){tb.innerHTML='<tr><td colspan="6" class="tbl-empty">Error: '+escHtml(e.message)+'</td></tr>'}
+  }
 
-  var addEp=document.getElementById('adminAddEndpoint');
-  if(addEp)addEp.onclick=function(){
-    if(!loggedIn){alert('Login dulu.');return}
-    var name=document.getElementById('adminEndpointName').value.trim();
-    var path=document.getElementById('adminEndpointPath').value.trim();
-    var category=document.getElementById('adminEndpointCategory').value.trim()||'Tools';
-    if(!name||path.indexOf('/')!==0){alert('Nama dan path wajib valid (path mulai dengan /).');return}
-    var a=getOverrides();
-    a.push({name:name,path:path,folder:category,createdBy:getUserId(),createdAt:new Date().toISOString()});
-    localStorage.setItem('javin_admin_endpoint_overrides',JSON.stringify(a));
-    alert('Endpoint ditambahkan (lokal).');
-  };
-
-  var rmEp=document.getElementById('adminRemoveEndpoint');
-  if(rmEp)rmEp.onclick=function(){
-    if(!loggedIn){alert('Login dulu.');return}
-    var target=prompt('Masukkan catalogId endpoint:');
-    if(!target)return;
-    var a=getOverrides().filter(function(x){return x.catalogId!==target});
-    localStorage.setItem('javin_admin_endpoint_overrides',JSON.stringify(a));
-    alert('Override lokal dihapus.');
-  };
-
-  var addLimit=document.getElementById('adminAddLimit');
-  if(addLimit)addLimit.onclick=function(){
+  document.getElementById('adminAddLimit').onclick=async function(){
     if(!loggedIn){alert('Login dulu.');return}
     var uid=document.getElementById('adminUserId').value.trim();
-    var extra=Math.max(1,Number(document.getElementById('adminExtraLimit').value||0));
-    if(!uid||!isFinite(extra)){alert('User ID / limit tidak valid.');return}
-    var k='javin_extra_limit_'+uid;
-    localStorage.setItem(k,String(Number(localStorage.getItem(k)||0)+extra));
-    alert('Limit lokal ditambahkan.');
+    var extra=parseInt(document.getElementById('adminExtraLimit').value||'0');
+    if(!uid){alert('User ID wajib.');return}
+    var r=await fetch('/api/admin/users',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({id:uid,extra_limit:extra})
+    });
+    var j=await r.json();
+    alert(j.message||'OK');
+    if(j.ok)loadUsers();
   };
+  document.getElementById('userReload').onclick=loadUsers;
+  document.getElementById('userSearch').oninput=loadUsers;
+
+  // ==== LOGS ====
+  async function loadLogs(){
+    var tb=document.getElementById('logTbody');
+    if(!tb)return;
+    tb.innerHTML='<tr><td colspan="4" class="tbl-empty">Loading...</td></tr>';
+    try{
+      var uid=(document.getElementById('logFilterUid').value||'').trim();
+      var url='/api/admin/logs?limit=200'+(uid?'&uid='+encodeURIComponent(uid):'');
+      var r=await fetch(url);
+      if(r.status===401){loggedIn=false;alert('Session expired.');closePanel();return}
+      var j=await r.json();
+      if(!j.ok){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">'+escHtml(j.message||'Gagal')+'</td></tr>';return}
+      var list=j.logs||[];
+      if(!list.length){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">Belum ada log.</td></tr>';return}
+      tb.innerHTML=list.map(function(l){
+        var color=l.status>=200&&l.status<300?'#4ade80':(l.status>=400?'#f87171':'#fbbf24');
+        return '<tr>'
+          +'<td>'+fmtTime(l.created_at)+'</td>'
+          +'<td><code>'+escHtml(l.user_id||'-')+'</code></td>'
+          +'<td>'+escHtml(l.endpoint_id)+'</td>'
+          +'<td style="color:'+color+'">'+l.status+'</td>'
+          +'</tr>';
+      }).join('');
+    }catch(e){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">Error: '+escHtml(e.message)+'</td></tr>'}
+  }
+  document.getElementById('logReload').onclick=loadLogs;
+  document.getElementById('logFilterUid').oninput=loadLogs;
+  document.getElementById('logClear').onclick=async function(){
+    if(!loggedIn){alert('Login dulu.');return}
+    if(!confirm('Hapus SEMUA log?'))return;
+    var r=await fetch('/api/admin/logs',{method:'DELETE'});
+    var j=await r.json();
+    alert(j.message||'OK');
+    loadLogs();
+  };
+
+  // ==== CONFIG ====
+  async function loadConfig(){
+    var tb=document.getElementById('configTbody');
+    if(!tb)return;
+    tb.innerHTML='<tr><td colspan="4" class="tbl-empty">Loading...</td></tr>';
+    try{
+      var r=await fetch('/api/admin/config');
+      if(r.status===401){loggedIn=false;alert('Session expired.');closePanel();return}
+      var j=await r.json();
+      if(!j.ok){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">'+escHtml(j.message||'Gagal')+'</td></tr>';return}
+      var list=j.config||[];
+      if(!list.length){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">Belum ada config.</td></tr>';return}
+      tb.innerHTML=list.map(function(c){
+        return '<tr>'
+          +'<td><code>'+escHtml(c.key)+'</code></td>'
+          +'<td>'+escHtml(c.value)+'</td>'
+          +'<td>'+fmtTime(c.updated_at)+'</td>'
+          +'<td><button class="tbl-btn" data-k="'+escHtml(c.key)+'" data-v="'+escHtml(c.value)+'">Edit</button></td>'
+          +'</tr>';
+      }).join('');
+      tb.querySelectorAll('[data-k]').forEach(function(b){
+        b.onclick=function(){
+          document.getElementById('configKey').value=b.dataset.k;
+          document.getElementById('configValue').value=b.dataset.v;
+        };
+      });
+    }catch(e){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">Error: '+escHtml(e.message)+'</td></tr>'}
+  }
+  document.getElementById('configReload').onclick=loadConfig;
+  document.getElementById('configSave').onclick=async function(){
+    if(!loggedIn){alert('Login dulu.');return}
+    var key=document.getElementById('configKey').value.trim();
+    var value=document.getElementById('configValue').value;
+    if(!key){alert('Key wajib.');return}
+    var r=await fetch('/api/admin/config',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({key:key,value:value})
+    });
+    var j=await r.json();
+    alert(j.message||'OK');
+    if(j.ok)loadConfig();
+  };
+
+  // ==== Open panel ====
+  launch.onclick=async function(){
+    if(loggedIn){openPanel();loadUsers();return}
+    var ok=await checkSession();
+    if(ok){loggedIn=true;openPanel();loadUsers();return}
+    var success=await doLogin();
+    if(success){openPanel();loadUsers()}
+  };
+  if(closeBtn)closeBtn.onclick=closePanel;
 })();

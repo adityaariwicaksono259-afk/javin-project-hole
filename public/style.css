@@ -17,3 +17,40 @@
 .btn-dl{display:inline-block;padding:10px 18px;background:linear-gradient(90deg,#7045ff,#a05cff);color:#fff;text-decoration:none;border-radius:10px;font-size:13px;font-weight:700;box-shadow:0 4px 14px #7045ff44;transition:.2s}
 .btn-dl:hover{transform:translateY(-2px);box-shadow:0 6px 20px #7045ff66}
 .media-info{text-align:center;font-size:11px;color:#888;margin-top:4px;letter-spacing:.05em}
+
+/* === Admin Panel v2 === */
+.admin-tabs{display:flex;gap:8px;margin:20px 0 16px;border-bottom:1px solid rgba(255,255,255,.1);overflow-x:auto;padding-bottom:2px}
+.admin-tab{background:transparent;border:0;color:#9a9aa8;padding:10px 16px;border-radius:10px 10px 0 0;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;transition:.2s}
+.admin-tab:hover{color:#fff;background:rgba(255,255,255,.05)}
+.admin-tab.active{color:#fff;background:linear-gradient(180deg,rgba(112,69,255,.25),rgba(112,69,255,.1));box-shadow:inset 0 -2px 0 #7045ff}
+.admin-tabpanes{position:relative}
+.admin-pane{display:none}
+.admin-pane.active{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.admin-toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.admin-toolbar input{flex:1;min-width:140px;padding:10px 12px;background:#09090e;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;outline:none;font-size:13px}
+.admin-toolbar input:focus{border-color:#7045ff}
+.admin-tbl-wrap{overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(0,0,0,.2)}
+.admin-tbl{width:100%;border-collapse:collapse;font-size:12px;min-width:520px}
+.admin-tbl th{background:rgba(112,69,255,.12);color:#c7b9ff;text-align:left;padding:10px 12px;font-weight:600;font-size:11px;letter-spacing:.5px;text-transform:uppercase}
+.admin-tbl td{padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);color:#ddd;vertical-align:middle}
+.admin-tbl tbody tr:hover{background:rgba(255,255,255,.03)}
+.admin-tbl code{font-size:11px;background:rgba(0,0,0,.4);padding:3px 7px;border-radius:6px;color:#a9c9ff}
+.tbl-empty{text-align:center;color:#666;padding:24px 12px !important;font-style:italic}
+.tbl-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:5px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-weight:600;margin-right:4px}
+.tbl-btn:hover{background:rgba(112,69,255,.35);border-color:#7045ff}
+.tbl-btn.danger{background:rgba(255,77,109,.15);border-color:rgba(255,77,109,.4);color:#ffb4bd}
+.tbl-btn.danger:hover{background:rgba(255,77,109,.3)}
+.admin-form-inline{margin-top:20px;padding:16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:14px}
+.admin-form-inline h4{margin:0 0 12px;font-size:12px;color:#a98cff;text-transform:uppercase;letter-spacing:.1em}
+.admin-form-inline input{display:inline-block;width:calc(50% - 8px);margin:0 8px 8px 0;padding:10px 12px;background:#09090e;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;outline:none;font-size:13px;vertical-align:middle}
+.admin-form-inline input:focus{border-color:#7045ff}
+.admin-form-inline button{display:inline-block;padding:10px 20px;background:linear-gradient(90deg,#7045ff,#a05cff);color:#fff;border:0;border-radius:10px;font-weight:700;cursor:pointer;vertical-align:middle}
+.admin-form-inline button:hover{opacity:.9}
+.admin-toolbar .ghost,.admin-toolbar .danger{padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);color:#fff}
+.admin-toolbar .danger{background:rgba(255,77,109,.15);border-color:rgba(255,77,109,.4);color:#ffb4bd}
+@media(max-width:520px){
+  .admin-form-inline input{width:100%;margin-right:0}
+  .admin-tbl{font-size:11px;min-width:460px}
+  .admin-tbl th,.admin-tbl td{padding:8px}
+}
