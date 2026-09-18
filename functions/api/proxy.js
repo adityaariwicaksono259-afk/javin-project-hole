@@ -118,7 +118,7 @@ export async function onRequest(context) {
   try {
     const upstream = await fetch(target.toString(), {
       method: 'GET',
-      redirect: 'manual',
+      redirect: 'follow',
       headers: {
         'User-Agent': 'Javin-Project-Hole/1.0 (Cloudflare)',
         'Accept': '*/*'
