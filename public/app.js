@@ -522,17 +522,11 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
       if (j.ok && j.keys && j.keys[0]) {
         var k = j.keys[0];
         res.className = 'result show ok';
-        res.textContent = '✅ Key dibuat!
-
-Key: ' + k + '
-Pemilik: ' + label + '
-Kuota: ' + maxUses + 'x';
+        res.textContent = '✅ Key dibuat!\n\nKey: ' + k + '\nPemilik: ' + label + '\nKuota: ' + maxUses + 'x';
         // Auto copy
         try {
           if (navigator.clipboard) await navigator.clipboard.writeText(k);
-          res.textContent += '
-
-📋 Otomatis di-copy ke clipboard';
+          res.textContent += '\n\n📋 Otomatis di-copy ke clipboard';
         } catch(e) {}
       } else {
         res.className = 'result show err';
