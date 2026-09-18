@@ -1,6 +1,4 @@
 // Cloudflare Pages Function: /api/proxy
-// Endpoint proxy dengan allowlist host, rate limit, dan validasi parameter.
-
 import endpointsData from '../data/endpoints.json';
 
 const ALLOWED_HOSTS = new Set([
@@ -61,6 +59,18 @@ function extractHost(urlStr) {
   }
 }
 
+function sanitizeResponse(text) {
+  return text
+    .replace(/NexaDev/g, 'Javin')
+    .replace(/"author"\s*:\s*"Nexa"/gi, '"author":"Javin"')
+    .replace(/https?:\/\/(api\.|apii\.)?nexadev\.my\.id/gi, 'https://javin.api')
+    .replace(/https?:\/\/api\.nexaadev\.my\.id/gi, 'https://javin.api')
+    .replace(/https?:\/\/clooud\.my\.id/gi, 'https://javin.cdn')
+    .replace(/(api\.|apii\.)?nexadev\.my\.id/gi, 'javin.api')
+    .replace(/api\.nexaadev\.my\.id/gi, 'javin.api')
+    .replace(/clooud\.my\.id/gi, 'javin.cdn');
+}
+
 export async function onRequest(context) {
   const request = context.request;
 
@@ -92,7 +102,7 @@ export async function onRequest(context) {
   if (!host) host = 'api.nexadev.my.id';
 
   if (!ALLOWED_HOSTS.has(host)) {
-    return jsonRes(403, { ok: false, message: 'Upstream diblokir: ' + host });
+    return jsonRes(403, { ok: false, message: 'Endpoint tidak tersedia.' });
   }
 
   const target = new URL(ep.path || '/', 'https://' + host);
@@ -120,17 +130,36 @@ export async function onRequest(context) {
       method: 'GET',
       redirect: 'follow',
       headers: {
-        'User-Agent': 'Javin-Project-Hole/1.0 (Cloudflare)',
-        'Accept': '*/*'
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'id-ID,id;q=0.9,en;q=0.8'
       }
     });
 
     const buf = await upstream.arrayBuffer();
     if (buf.byteLength > MAX_BODY) {
-      return jsonRes(502, { ok: false, message: 'Response upstream terlalu besar.' });
+      return jsonRes(502, { ok: false, message: 'Response terlalu besar.' });
     }
 
     const ct = upstream.headers.get('content-type') || 'application/octet-stream';
+
+    if (ct.indexOf('application/json') !== -1) {
+      try {
+        const txt = new TextDecoder().decode(buf);
+        const clean = sanitizeResponse(txt);
+        return new Response(clean, {
+          status: upstream.status,
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+            'Cache-Control': 'no-store',
+            'X-Content-Type-Options': 'nosniff'
+          }
+        });
+      } catch (e) {
+        // fallthrough
+      }
+    }
+
     return new Response(buf, {
       status: upstream.status,
       headers: {
@@ -140,6 +169,6 @@ export async function onRequest(context) {
       }
     });
   } catch (err) {
-    return jsonRes(502, { ok: false, message: 'Upstream tidak dapat diakses: ' + err.message });
+    return jsonRes(502, { ok: false, message: 'Gagal mengambil data. Coba lagi.' });
   }
 }
