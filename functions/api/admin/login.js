@@ -44,8 +44,11 @@ export async function onRequestPost({ request, env }) {
              (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
              'unknown';
 
-  // ==== Layer 5: cek rate limit per IP ====
-  if (db) {
+  // ==== Cek whitelist ====
+  const isWhitelisted = isWhitelistedIP(ip, env);
+
+  // ==== Layer 5: cek rate limit per IP (skip kalau whitelist) ====
+  if (db && !isWhitelisted) {
     try {
       const now = Date.now();
       const windowStart = now - WINDOW_MS;
