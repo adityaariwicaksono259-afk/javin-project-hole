@@ -1,15 +1,23 @@
-// Space Background Animation — Canvas
+// Realistic Space Background v3 — Canvas
+// Elements: stars (multi-layer + sparkle), nebula (noise), galaxy spiral, planets, meteors, comets
 (function(){
   var canvas = document.getElementById('spaceBg');
   if (!canvas) return;
-  var ctx = canvas.getContext('2d');
+  var ctx = canvas.getContext('2d', { alpha: false });
 
   var W, H, DPR;
   var stars = [];
+  var sparkleStars = [];
   var planets = [];
   var meteors = [];
-  var nebulas = [];
-  var sun = { x: 0, y: 0, r: 0 };
+  var comets = [];
+  var nebulaBlobs = [];
+  var galaxy = null;
+  var sun = null;
+  var t = 0;
+
+  function rand(min, max){ return Math.random() * (max - min) + min; }
+  function randInt(min, max){ return Math.floor(rand(min, max + 1)); }
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio || 1, 2);
@@ -23,197 +31,490 @@
     init();
   }
 
+  // ============ INIT ============
   function init(){
-    // Stars — 3 layers (parallax)
+    var isSmall = Math.min(W, H) < 600;
+    var starCount = isSmall ? 500 : 900;
+    var sparkleCount = isSmall ? 12 : 20;
+    var blobCount = isSmall ? 6 : 10;
+
+    // ==== STARS (4 layers parallax) ====
     stars = [];
-    for (var i = 0; i < 180; i++) {
-      var layer = i < 100 ? 1 : (i < 150 ? 2 : 3);
+    for (var i = 0; i < starCount; i++) {
+      var r = Math.random();
+      var layer = r < 0.5 ? 1 : r < 0.75 ? 2 : r < 0.92 ? 3 : 4;
+      var size = layer === 4 ? rand(0.9, 1.6) : layer === 3 ? rand(0.6, 1.0) : layer === 2 ? rand(0.4, 0.8) : rand(0.2, 0.6);
+
+      // warna bintang realistis: putih, biru, kuning, oranye
+      var colorR = Math.random();
+      var color;
+      if (colorR < 0.55) color = '255,255,255';      // putih
+      else if (colorR < 0.7) color = '200,220,255';  // biru muda
+      else if (colorR < 0.85) color = '255,240,200'; // kuning
+      else if (colorR < 0.95) color = '255,200,150'; // oranye
+      else color = '255,150,150';                    // merah
+
       stars.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 1.2 + 0.3,
-        layer: layer,
-        speed: 0.02 + layer * 0.03,
-        phase: Math.random() * Math.PI * 2,
-        twinkleSpeed: 0.01 + Math.random() * 0.03,
-        brightness: 0.5 + Math.random() * 0.5
+        x: rand(0, W), y: rand(0, H),
+        r: size, layer: layer,
+        speed: 0.02 * layer,
+        color: color,
+        twinkle: rand(0.008, 0.025),
+        phase: rand(0, Math.PI * 2),
+        baseAlpha: 0.4 + (layer / 4) * 0.5
       });
     }
 
-    // Nebulas
-    nebulas = [
-      { x: W * 0.15, y: H * 0.25, r: W * 0.5, color: 'rgba(112,69,255,0.14)', vx: 0.05, vy: 0.03 },
-      { x: W * 0.85, y: H * 0.7, r: W * 0.6, color: 'rgba(64,150,255,0.10)', vx: -0.04, vy: -0.02 },
-      { x: W * 0.5, y: H * 0.5, r: W * 0.7, color: 'rgba(180,60,220,0.08)', vx: 0.02, vy: 0.04 }
+    // ==== SPARKLE STARS (bintang terang dengan flare 4-point) ====
+    sparkleStars = [];
+    for (var i = 0; i < sparkleCount; i++) {
+      sparkleStars.push({
+        x: rand(0, W), y: rand(0, H),
+        size: rand(1.2, 2.5),
+        pulse: rand(0.01, 0.025),
+        phase: rand(0, Math.PI * 2),
+        flareLen: rand(8, 20),
+        alpha: rand(0.7, 1.0)
+      });
+    }
+
+    // ==== NEBULA BLOBS (banyak layer buat noise effect) ====
+    nebulaBlobs = [];
+    var nebulaColors = [
+      'rgba(60,120,220,0.10)',   // biru
+      'rgba(120,60,200,0.09)',   // ungu
+      'rgba(200,140,80,0.07)',   // emas
+      'rgba(80,180,200,0.08)',   // cyan
+      'rgba(180,60,120,0.06)',   // pink
+      'rgba(30,50,120,0.12)'     // biru tua
     ];
+    for (var i = 0; i < blobCount * 3; i++) {
+      nebulaBlobs.push({
+        x: rand(-W * 0.2, W * 1.2),
+        y: rand(-H * 0.2, H * 1.2),
+        r: rand(Math.min(W,H) * 0.25, Math.min(W,H) * 0.7),
+        color: nebulaColors[i % nebulaColors.length],
+        vx: rand(-0.05, 0.05),
+        vy: rand(-0.05, 0.05),
+        phase: rand(0, Math.PI * 2),
+        pulse: rand(0.002, 0.006)
+      });
+    }
 
-    // Sun (center)
-    sun = { x: W * 0.5, y: H * 0.55, r: Math.min(W, H) * 0.035 };
+    // ==== GALAXY SPIRAL (opsional, di background) ====
+    galaxy = {
+      x: W * 0.85,
+      y: H * 0.15,
+      r: Math.min(W, H) * 0.5,
+      angle: 0,
+      rotationSpeed: 0.00015,
+      arms: 3
+    };
 
-    // Planets orbiting the sun
+    // ==== SUN ====
+    sun = {
+      x: W * 0.5,
+      y: H * 0.55,
+      r: Math.min(W, H) * 0.03,
+      pulse: 0
+    };
+
+    // ==== PLANETS ====
     planets = [];
     var palette = [
-      { color: '#8b6fff', dist: 0.14, r: 0.012, speed: 0.00020, glow: 'rgba(139,111,255,0.6)' },
-      { color: '#ff8c42', dist: 0.22, r: 0.016, speed: 0.00014, glow: 'rgba(255,140,66,0.5)' },
-      { color: '#4ade80', dist: 0.30, r: 0.010, speed: 0.00010, glow: 'rgba(74,222,128,0.5)' },
-      { color: '#60a5fa', dist: 0.38, r: 0.014, speed: 0.00008, glow: 'rgba(96,165,250,0.55)' },
-      { color: '#f87171', dist: 0.46, r: 0.008, speed: 0.00006, glow: 'rgba(248,113,113,0.5)' }
+      { color1: '#4a7fb5', color2: '#1a3a5c', dist: 0.15, r: 0.014, speed: 0.00022, atmo: 'rgba(100,150,220,0.4)' },
+      { color1: '#d97d4a', color2: '#7a3a15', dist: 0.24, r: 0.017, speed: 0.00016, atmo: 'rgba(220,140,80,0.35)' },
+      { color1: '#5a8a6a', color2: '#2a4a35', dist: 0.33, r: 0.011, speed: 0.00011, atmo: 'rgba(120,180,140,0.3)' },
+      { color1: '#c8b878', color2: '#6a5a38', dist: 0.42, r: 0.015, speed: 0.00008, atmo: 'rgba(220,200,150,0.4)', hasRing: true, ringColor: 'rgba(200,180,140,0.5)' },
+      { color1: '#8a6a9a', color2: '#3a2a4a', dist: 0.50, r: 0.009, speed: 0.00006, atmo: 'rgba(160,120,200,0.35)' }
     ];
     for (var i = 0; i < palette.length; i++) {
       var p = palette[i];
       planets.push({
-        color: p.color,
-        glow: p.glow,
+        color1: p.color1,
+        color2: p.color2,
+        atmo: p.atmo,
+        hasRing: !!p.hasRing,
+        ringColor: p.ringColor || null,
         dist: Math.min(W, H) * p.dist,
         r: Math.min(W, H) * p.r,
-        angle: Math.random() * Math.PI * 2,
-        speed: p.speed,
-        hasRing: i === 3
+        angle: rand(0, Math.PI * 2),
+        speed: p.speed
       });
     }
+
+    meteors = [];
+    comets = [];
+
+    console.log('[SpaceV3] Init:', starCount, 'stars,', blobCount * 3, 'nebula blobs');
   }
 
-  function spawnMeteor(){
-    if (Math.random() < 0.005 && meteors.length < 3) {
-      var startX = Math.random() * W;
-      meteors.push({
-        x: startX,
-        y: -20,
-        vx: (Math.random() - 0.5) * 2,
-        vy: 4 + Math.random() * 3,
-        len: 30 + Math.random() * 60,
-        life: 1
-      });
-    }
-  }
+  // ============ DRAW: NEBULA ============
+  function drawNebula(){
+    for (var i = 0; i < nebulaBlobs.length; i++) {
+      var b = nebulaBlobs[i];
+      b.x += b.vx;
+      b.y += b.vy;
+      b.phase += b.pulse;
 
-  var t = 0;
+      // Wrapping
+      if (b.x < -b.r) b.x = W + b.r;
+      if (b.x > W + b.r) b.x = -b.r;
+      if (b.y < -b.r) b.y = H + b.r;
+      if (b.y > H + b.r) b.y = -b.r;
 
-  function draw(){
-    t++;
+      var pulseScale = 1 + Math.sin(b.phase) * 0.15;
+      var radius = b.r * pulseScale;
 
-    // Clear with slight trail for motion blur
-    ctx.fillStyle = 'rgba(3,3,10,0.35)';
-    ctx.fillRect(0, 0, W, H);
-
-    // Nebulas
-    for (var i = 0; i < nebulas.length; i++) {
-      var nb = nebulas[i];
-      nb.x += nb.vx;
-      nb.y += nb.vy;
-      if (nb.x < -nb.r) nb.x = W + nb.r;
-      if (nb.x > W + nb.r) nb.x = -nb.r;
-      if (nb.y < -nb.r) nb.y = H + nb.r;
-      if (nb.y > H + nb.r) nb.y = -nb.r;
-
-      var grad = ctx.createRadialGradient(nb.x, nb.y, 0, nb.x, nb.y, nb.r);
-      grad.addColorStop(0, nb.color);
+      var grad = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, radius);
+      grad.addColorStop(0, b.color);
+      grad.addColorStop(0.5, b.color.replace(/[\d.]+\)$/, '0.03)'));
       grad.addColorStop(1, 'rgba(0,0,0,0)');
+
       ctx.fillStyle = grad;
       ctx.beginPath();
-      ctx.arc(nb.x, nb.y, nb.r, 0, Math.PI * 2);
+      ctx.arc(b.x, b.y, radius, 0, Math.PI * 2);
       ctx.fill();
     }
+  }
 
-    // Stars
+  // ============ DRAW: GALAXY SPIRAL ============
+  function drawGalaxy(){
+    if (!galaxy) return;
+    galaxy.angle += galaxy.rotationSpeed;
+
+    var cx = galaxy.x;
+    var cy = galaxy.y;
+    var arms = galaxy.arms;
+
+    for (var arm = 0; arm < arms; arm++) {
+      var armOffset = (Math.PI * 2 / arms) * arm;
+      var points = 40;
+
+      for (var i = 0; i < points; i++) {
+        var progress = i / points;
+        var radius = progress * galaxy.r;
+        var angle = galaxy.angle + armOffset + progress * Math.PI * 1.5;
+        var x = cx + Math.cos(angle) * radius;
+        var y = cy + Math.sin(angle) * radius * 0.6;
+
+        if (x < -50 || x > W + 50 || y < -50 || y > H + 50) continue;
+
+        var size = (1 - progress) * 18 + 3;
+        var alpha = (1 - progress) * 0.15;
+
+        // Inti terang di tengah galaxy
+        var grad = ctx.createRadialGradient(x, y, 0, x, y, size);
+        grad.addColorStop(0, 'rgba(255,240,220,' + (alpha * 1.5) + ')');
+        grad.addColorStop(0.4, 'rgba(200,180,240,' + alpha + ')');
+        grad.addColorStop(1, 'rgba(0,0,0,0)');
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // Core galaxy
+    var coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, galaxy.r * 0.3);
+    coreGrad.addColorStop(0, 'rgba(255,250,240,0.25)');
+    coreGrad.addColorStop(0.3, 'rgba(220,200,255,0.15)');
+    coreGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = coreGrad;
+    ctx.beginPath();
+    ctx.arc(cx, cy, galaxy.r * 0.3, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // ============ DRAW: STARS ============
+  function drawStars(){
     for (var i = 0; i < stars.length; i++) {
       var s = stars[i];
       s.y += s.speed;
-      if (s.y > H + 5) { s.y = -5; s.x = Math.random() * W; }
+      s.phase += s.twinkle;
+      if (s.y > H + 5) { s.y = -5; s.x = rand(0, W); }
 
-      var twinkle = 0.5 + Math.sin(t * s.twinkleSpeed + s.phase) * 0.5;
-      var alpha = s.brightness * twinkle;
+      var twinkle = 0.6 + Math.sin(s.phase) * 0.4;
+      var alpha = s.baseAlpha * twinkle;
 
-      ctx.fillStyle = 'rgba(255,255,255,' + alpha + ')';
+      ctx.fillStyle = 'rgba(' + s.color + ',' + alpha + ')';
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
     }
+  }
 
-    // Sun
-    var sunPulse = 1 + Math.sin(t * 0.02) * 0.05;
-    var sunGrad = ctx.createRadialGradient(sun.x, sun.y, 0, sun.x, sun.y, sun.r * 4 * sunPulse);
-    sunGrad.addColorStop(0, 'rgba(255,220,120,0.9)');
-    sunGrad.addColorStop(0.3, 'rgba(255,150,60,0.5)');
-    sunGrad.addColorStop(1, 'rgba(255,100,30,0)');
-    ctx.fillStyle = sunGrad;
-    ctx.beginPath();
-    ctx.arc(sun.x, sun.y, sun.r * 4 * sunPulse, 0, Math.PI * 2);
-    ctx.fill();
+  // ============ DRAW: SPARKLE STARS (4-point flare) ============
+  function drawSparkleStars(){
+    for (var i = 0; i < sparkleStars.length; i++) {
+      var s = sparkleStars[i];
+      s.phase += s.pulse;
+      var pulse = 0.6 + Math.sin(s.phase) * 0.4;
+      var len = s.flareLen * pulse;
 
-    // Sun core
-    ctx.fillStyle = '#ffd166';
-    ctx.beginPath();
-    ctx.arc(sun.x, sun.y, sun.r, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Orbit rings
-    for (var i = 0; i < planets.length; i++) {
-      var p = planets[i];
-      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-      ctx.lineWidth = 1;
+      // Glow core
+      var coreGrad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size * 6);
+      coreGrad.addColorStop(0, 'rgba(255,255,255,' + (s.alpha * pulse) + ')');
+      coreGrad.addColorStop(0.3, 'rgba(200,220,255,' + (s.alpha * pulse * 0.5) + ')');
+      coreGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = coreGrad;
       ctx.beginPath();
-      ctx.arc(sun.x, sun.y, p.dist, 0, Math.PI * 2);
-      ctx.stroke();
-    }
+      ctx.arc(s.x, s.y, s.size * 6, 0, Math.PI * 2);
+      ctx.fill();
 
-    // Planets
+      // 4-point flare (horizontal + vertical)
+      ctx.strokeStyle = 'rgba(255,255,255,' + (s.alpha * pulse * 0.7) + ')';
+      ctx.lineWidth = 0.8;
+      ctx.lineCap = 'round';
+
+      // Horizontal
+      ctx.beginPath();
+      ctx.moveTo(s.x - len, s.y);
+      ctx.lineTo(s.x + len, s.y);
+      ctx.stroke();
+
+      // Vertical
+      ctx.beginPath();
+      ctx.moveTo(s.x, s.y - len);
+      ctx.lineTo(s.x, s.y + len);
+      ctx.stroke();
+
+      // Diagonal (lebih tipis)
+      ctx.strokeStyle = 'rgba(255,255,255,' + (s.alpha * pulse * 0.3) + ')';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.moveTo(s.x - len * 0.6, s.y - len * 0.6);
+      ctx.lineTo(s.x + len * 0.6, s.y + len * 0.6);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(s.x - len * 0.6, s.y + len * 0.6);
+      ctx.lineTo(s.x + len * 0.6, s.y - len * 0.6);
+      ctx.stroke();
+
+      // Core dot
+      ctx.fillStyle = 'rgba(255,255,255,' + (s.alpha * pulse) + ')';
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // ============ DRAW: SUN ============
+  function drawSun(){
+    if (!sun) return;
+    sun.pulse += 0.015;
+    var pulse = 1 + Math.sin(sun.pulse) * 0.08;
+
+    // Corona (outer glow)
+    var coronaGrad = ctx.createRadialGradient(sun.x, sun.y, 0, sun.x, sun.y, sun.r * 8 * pulse);
+    coronaGrad.addColorStop(0, 'rgba(255,230,180,0.5)');
+    coronaGrad.addColorStop(0.2, 'rgba(255,180,100,0.25)');
+    coronaGrad.addColorStop(0.5, 'rgba(255,120,50,0.08)');
+    coronaGrad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = coronaGrad;
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, sun.r * 8 * pulse, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Sun body (gradient)
+    var bodyGrad = ctx.createRadialGradient(sun.x - sun.r * 0.3, sun.y - sun.r * 0.3, 0, sun.x, sun.y, sun.r * pulse);
+    bodyGrad.addColorStop(0, '#ffffff');
+    bodyGrad.addColorStop(0.3, '#fff4c8');
+    bodyGrad.addColorStop(0.7, '#ffc266');
+    bodyGrad.addColorStop(1, '#ff8a3d');
+    ctx.fillStyle = bodyGrad;
+    ctx.beginPath();
+    ctx.arc(sun.x, sun.y, sun.r * pulse, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // ============ DRAW: PLANETS ============
+  function drawPlanets(){
     for (var i = 0; i < planets.length; i++) {
       var p = planets[i];
       p.angle += p.speed;
-
       var px = sun.x + Math.cos(p.angle) * p.dist;
-      var py = sun.y + Math.sin(p.angle) * p.dist * 0.85; // ellipsis
+      var py = sun.y + Math.sin(p.angle) * p.dist * 0.75;
 
-      // Glow
-      var glowGrad = ctx.createRadialGradient(px, py, 0, px, py, p.r * 5);
-      glowGrad.addColorStop(0, p.glow);
-      glowGrad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = glowGrad;
+      // Orbit trail (faint)
+      ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+      ctx.lineWidth = 0.7;
       ctx.beginPath();
-      ctx.arc(px, py, p.r * 5, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.ellipse(sun.x, sun.y, p.dist, p.dist * 0.75, 0, 0, Math.PI * 2);
+      ctx.stroke();
 
-      // Planet body
-      ctx.fillStyle = p.color;
+      // Atmosphere glow
+      if (p.atmo) {
+        var atmoGrad = ctx.createRadialGradient(px, py, p.r * 0.8, px, py, p.r * 3);
+        atmoGrad.addColorStop(0, p.atmo);
+        atmoGrad.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = atmoGrad;
+        ctx.beginPath();
+        ctx.arc(px, py, p.r * 3, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Ring (kalau ada, gambar di belakang planet dulu)
+      if (p.hasRing && p.ringColor) {
+        ctx.save();
+        ctx.translate(px, py);
+        ctx.rotate(0.35);
+        ctx.strokeStyle = p.ringColor;
+        ctx.lineWidth = p.r * 0.5;
+        ctx.beginPath();
+        ctx.ellipse(0, 0, p.r * 2.4, p.r * 0.7, 0, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Planet body (gradient with shading — light source = sun)
+      var lightAngle = Math.atan2(sun.y - py, sun.x - px);
+      var lightX = px - Math.cos(lightAngle) * p.r * 0.5;
+      var lightY = py - Math.sin(lightAngle) * p.r * 0.5;
+
+      var bodyGrad = ctx.createRadialGradient(lightX, lightY, 0, px, py, p.r * 1.3);
+      bodyGrad.addColorStop(0, p.color1);
+      bodyGrad.addColorStop(0.7, p.color2);
+      bodyGrad.addColorStop(1, '#000000');
+
+      ctx.fillStyle = bodyGrad;
       ctx.beginPath();
       ctx.arc(px, py, p.r, 0, Math.PI * 2);
       ctx.fill();
-
-      // Ring (jika ada)
-      if (p.hasRing) {
-        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.ellipse(px, py, p.r * 2.2, p.r * 0.7, 0.4, 0, Math.PI * 2);
-        ctx.stroke();
-      }
     }
+  }
 
-    // Meteors
+  // ============ DRAW: METEORS ============
+  function spawnMeteor(){
+    if (Math.random() < 0.008 && meteors.length < 4) {
+      meteors.push({
+        x: rand(0, W),
+        y: -20,
+        vx: rand(-1, 1),
+        vy: rand(3, 6),
+        len: rand(60, 150),
+        alpha: 1,
+        decay: rand(0.006, 0.012),
+        color: Math.random() < 0.5 ? '255,255,255' : '255,220,180'
+      });
+    }
+  }
+
+  function drawMeteors(){
     spawnMeteor();
     for (var i = meteors.length - 1; i >= 0; i--) {
       var m = meteors[i];
       m.x += m.vx;
       m.y += m.vy;
-      m.life -= 0.008;
+      m.alpha -= m.decay;
 
-      if (m.life <= 0 || m.y > H + 50) {
+      if (m.alpha <= 0 || m.y > H + 100) {
         meteors.splice(i, 1);
         continue;
       }
 
-      var mgrad = ctx.createLinearGradient(m.x, m.y, m.x - m.vx * 10, m.y - m.len);
-      mgrad.addColorStop(0, 'rgba(255,255,255,' + m.life + ')');
-      mgrad.addColorStop(1, 'rgba(255,200,120,0)');
-      ctx.strokeStyle = mgrad;
-      ctx.lineWidth = 1.8;
+      var tailX = m.x - m.vx * (m.len / m.vy);
+      var tailY = m.y - m.len;
+
+      var grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+      grad.addColorStop(0, 'rgba(' + m.color + ',' + m.alpha + ')');
+      grad.addColorStop(0.3, 'rgba(' + m.color + ',' + (m.alpha * 0.5) + ')');
+      grad.addColorStop(1, 'rgba(' + m.color + ',0)');
+
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 2;
       ctx.lineCap = 'round';
       ctx.beginPath();
       ctx.moveTo(m.x, m.y);
-      ctx.lineTo(m.x - m.vx * 10, m.y - m.len);
+      ctx.lineTo(tailX, tailY);
       ctx.stroke();
+
+      // Head glow
+      var headGrad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, 6);
+      headGrad.addColorStop(0, 'rgba(255,255,255,' + m.alpha + ')');
+      headGrad.addColorStop(1, 'rgba(255,255,255,0)');
+      ctx.fillStyle = headGrad;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, 6, 0, Math.PI * 2);
+      ctx.fill();
     }
+  }
+
+  // ============ DRAW: COMETS ============
+  function spawnComet(){
+    if (Math.random() < 0.001 && comets.length < 2) {
+      comets.push({
+        x: rand(-100, W * 0.3),
+        y: rand(0, H * 0.5),
+        vx: rand(0.5, 1.5),
+        vy: rand(0.2, 0.6),
+        len: rand(80, 180),
+        alpha: 1,
+        decay: 0.003
+      });
+    }
+  }
+
+  function drawComets(){
+    spawnComet();
+    for (var i = comets.length - 1; i >= 0; i--) {
+      var c = comets[i];
+      c.x += c.vx;
+      c.y += c.vy;
+      c.alpha -= c.decay;
+
+      if (c.alpha <= 0 || c.x > W + 200) {
+        comets.splice(i, 1);
+        continue;
+      }
+
+      var tailX = c.x - c.len;
+      var tailY = c.y - c.len * 0.3;
+
+      // Tail glow (biru/cyan)
+      var grad = ctx.createLinearGradient(c.x, c.y, tailX, tailY);
+      grad.addColorStop(0, 'rgba(180,240,255,' + (c.alpha * 0.9) + ')');
+      grad.addColorStop(0.3, 'rgba(120,180,255,' + (c.alpha * 0.4) + ')');
+      grad.addColorStop(1, 'rgba(80,120,200,0)');
+
+      ctx.strokeStyle = grad;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.moveTo(c.x, c.y);
+      ctx.lineTo(tailX, tailY);
+      ctx.stroke();
+
+      // Head glow
+      var headGrad = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, 12);
+      headGrad.addColorStop(0, 'rgba(255,255,255,' + c.alpha + ')');
+      headGrad.addColorStop(0.4, 'rgba(180,240,255,' + (c.alpha * 0.5) + ')');
+      headGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = headGrad;
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, 12, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  // ============ MAIN LOOP ============
+  function draw(){
+    t++;
+
+    // Clear (no trail, biar bersih)
+    ctx.fillStyle = '#03030a';
+    ctx.fillRect(0, 0, W, H);
+
+    // Layer order: galaxy → nebula → stars → sparkle → sun → planets → meteors → comets
+    drawGalaxy();
+    drawNebula();
+    drawStars();
+    drawSparkleStars();
+    drawSun();
+    drawPlanets();
+    drawMeteors();
+    drawComets();
 
     requestAnimationFrame(draw);
   }
@@ -221,24 +522,5 @@
   window.addEventListener('resize', resize);
   resize();
   draw();
-  console.log('[SpaceBG] Loaded');
-})();
-
-// === Auto-hide splash setelah load ===
-(function(){
-  function hideSplash(){
-    var s = document.getElementById('splashScreen');
-    if (s && !s.classList.contains('hide')) {
-      s.classList.add('hide');
-      setTimeout(function(){ s.style.display = 'none'; }, 700);
-    }
-  }
-  // Hide setelah 2 detik (atau lebih cepet kalau page udah ready)
-  if (document.readyState === 'complete') {
-    setTimeout(hideSplash, 1500);
-  } else {
-    window.addEventListener('load', function(){ setTimeout(hideSplash, 1500); });
-    // Fallback max 3.5 detik
-    setTimeout(hideSplash, 3500);
-  }
+  console.log('[SpaceV3] Started');
 })();
