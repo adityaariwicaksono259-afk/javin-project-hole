@@ -577,6 +577,61 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     }
   };
 
+  // ==== BACKUP ====
+  async function loadBackup() {
+    var info = document.getElementById('backupInfo');
+    if (!info) return;
+    info.innerHTML = '<div style="color:#888">Loading...</div>';
+    try {
+      var r = await fetch('/api/admin/backup');
+      if (r.status === 401) { info.innerHTML = '<div style="color:#ff9aad">🔒 Sesi habis. Login ulang.</div>'; return; }
+      var j = await r.json();
+      if (!j.ok) { info.innerHTML = '<div style="color:#ff9aad">Error: ' + (j.message || 'Gagal') + '</div>'; return; }
+
+      var rows = Object.entries(j.summary || {}).map(function (kv) {
+        return '<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.06)"><span style="color:#a98cff">' + kv[0] + '</span><span style="color:#fff;font-weight:700">' + kv[1] + ' rows</span></div>';
+      }).join('');
+
+      info.innerHTML = '<div style="font-weight:700;color:#a98cff;margin-bottom:8px">📊 Isi Database</div>' + rows;
+    } catch (e) {
+      info.innerHTML = '<div style="color:#ff9aad">Error: ' + e.message + '</div>';
+    }
+  }
+
+  var btnBackupRefresh = document.getElementById('backupRefresh');
+  if (btnBackupRefresh) btnBackupRefresh.onclick = loadBackup;
+
+  var btnBackupRun = document.getElementById('backupRun');
+  if (btnBackupRun) btnBackupRun.onclick = async function () {
+    if (!confirm('Jalankan backup sekarang? File bakal dikirim ke Telegram.')) return;
+    var res = document.getElementById('backupResult');
+    btnBackupRun.disabled = true;
+    btnBackupRun.textContent = '⏳ Backup...';
+    res.style.display = 'block';
+    res.innerHTML = '<div class="result show info">Membuat backup...</div>';
+    try {
+      var r = await fetch('/api/admin/backup', { method: 'POST' });
+      var j = await r.json();
+      if (j.ok) {
+        var tgMsg = j.telegram && j.telegram.ok ? '✅ Terkirim ke Telegram' : '⚠️ Gagal kirim: ' + (j.telegram && j.telegram.reason);
+        res.innerHTML = '<div class="result show ok">' +
+          '✅ Backup berhasil!\n\n' +
+          '📄 ' + j.filename + '\n' +
+          '📊 ' + j.total_rows + ' rows\n' +
+          '📦 ' + (j.size_bytes / 1024).toFixed(1) + ' KB\n' +
+          tgMsg + '</div>';
+        loadBackup();
+      } else {
+        res.innerHTML = '<div class="result show err">❌ ' + (j.message || 'Gagal') + '</div>';
+      }
+    } catch (e) {
+      res.innerHTML = '<div class="result show err">❌ Network error: ' + e.message + '</div>';
+    } finally {
+      btnBackupRun.disabled = false;
+      btnBackupRun.textContent = '📦 Backup Sekarang';
+    }
+  };
+
   // Patch tab click handler biar load keys pas diklik
   var origTabClick = null;
   tabs.forEach(function(t){
@@ -592,6 +647,14 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
       t.onclick = function(e) {
         if (currentClick2) currentClick2.call(t, e);
         loadKeys();
+      };
+    }
+
+    if (t.dataset.tab === 'backup') {
+      var currentClick3 = t.onclick;
+      t.onclick = function(e) {
+        if (currentClick3) currentClick3.call(t, e);
+        loadBackup();
       };
     }
   });
