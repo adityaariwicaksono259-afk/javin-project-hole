@@ -5637,5 +5637,41 @@
         "d": "page"
       }
     ]
+  },
+  {
+    "catalogId": "ep267",
+    "name": "Javin QR",
+    "folder": "Tools",
+    "subfolder": "qr",
+    "desc": "Generate QR code dari teks, URL, atau apapun. Output: gambar PNG.",
+    "m": "GET",
+    "path": "/v1/create-qr-code/",
+    "ex": "https://api.qrserver.com/v1/create-qr-code/?data=hello&size=300x300",
+    "params": [
+      {
+        "n": "data",
+        "t": "string",
+        "r": 1,
+        "d": "Teks atau URL untuk di-QR"
+      },
+      {
+        "n": "size",
+        "t": "string",
+        "r": 0,
+        "d": "Ukuran, contoh: 300x300"
+      }
+    ]
+  },
+  {
+    "catalogId": "ep268",
+    "name": "Img to URL",
+    "folder": "Canvas",
+    "subfolder": "upload",
+    "desc": "Upload gambar (max 5 MB) dan dapatkan URL permanen. Support JPG, PNG, WEBP, GIF. Output: URL gambar.",
+    "m": "POST",
+    "path": "/api/imgtourl",
+    "ex": "/upload.html",
+    "redirect": "/upload.html",
+    "params": []
   }
 ]

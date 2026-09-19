@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Img → URL - JAVIN PROJECT HOLE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Space Grotesk',sans-serif;background:#03030a;color:#eee;min-height:100vh;overflow-x:hidden}
+.space{position:fixed;inset:0;z-index:-1;background:radial-gradient(circle at 50% 42%,#18112a 0,#070712 30%,#020207 70%)}
+.stars{position:fixed;inset:0;z-index:-1;opacity:.7;background-image:radial-gradient(#fff 1px,transparent 1px),radial-gradient(#aaa 1px,transparent 1px);background-size:83px 83px,137px 137px;background-position:12px 24px,40px 70px}
+header{position:sticky;top:0;z-index:10;background:rgba(10,10,16,.85);backdrop-filter:blur(14px);padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.08)}
+.back{color:#fff;text-decoration:none;background:rgba(255,255,255,.1);padding:8px 14px;border-radius:20px;font-size:13px;font-weight:600}
+.back:hover{background:rgba(255,255,255,.18)}
+header h1{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;flex:1;text-align:center;padding-right:60px}
+.wrap{max-width:600px;margin:0 auto;padding:24px 16px 60px}
+.hero{text-align:center;margin-bottom:24px}
+.hero-icon{font-size:56px;margin-bottom:8px}
+.hero h2{font-family:'Orbitron',sans-serif;font-size:22px;background:linear-gradient(120deg,#fff,#b18cff,#ff7a18);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:6px}
+.hero p{color:#888;font-size:13px;line-height:1.6}
+.card{background:linear-gradient(145deg,rgba(17,17,26,.8),rgba(7,7,13,.8));border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:20px;backdrop-filter:blur(18px);box-shadow:0 18px 60px rgba(0,0,0,.5);margin-bottom:16px}
+.drop{border:2px dashed rgba(169,140,255,.4);border-radius:16px;padding:32px 16px;text-align:center;cursor:pointer;transition:.25s;background:rgba(112,69,255,.05)}
+.drop:hover,.drop.hover{border-color:#a98cff;background:rgba(112,69,255,.12)}
+.drop-icon{font-size:48px;margin-bottom:10px}
+.drop-title{font-weight:700;font-size:15px;margin-bottom:4px;color:#fff}
+.drop-sub{font-size:12px;color:#888}
+input[type=file]{display:none}
+.preview{margin-top:16px;display:none}
+.preview.show{display:block}
+.preview img{width:100%;max-height:280px;object-fit:contain;border-radius:12px;background:rgba(0,0,0,.3);padding:8px}
+.file-info{font-size:12px;color:#888;margin-top:8px;text-align:center;word-break:break-all}
+button{width:100%;padding:14px;border:0;border-radius:12px;background:linear-gradient(90deg,#7045ff,#a05cff);color:#fff;font-weight:800;font-size:14px;cursor:pointer;font-family:inherit;letter-spacing:.3px;margin-top:14px;transition:.2s}
+button:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 8px 20px rgba(112,69,255,.4)}
+button:disabled{opacity:.5;cursor:not-allowed}
+button.ghost{background:rgba(255,255,255,.08);color:#ccc;margin-top:8px}
+button.ghost:hover:not(:disabled){background:rgba(255,255,255,.14);box-shadow:none}
+.result{margin-top:14px;padding:14px;border-radius:12px;font-size:13px;line-height:1.6;word-break:break-all;display:none}
+.result.show{display:block}
+.result.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:#4ade80}
+.result.err{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:#ff9aad}
+.result.info{background:rgba(112,69,255,.1);border:1px solid rgba(112,69,255,.3);color:#b8a3ff}
+.url-box{background:#09090e;border:1px solid rgba(112,69,255,.4);border-radius:10px;padding:12px;margin-top:8px;font-family:'Courier New',monospace;font-size:12px;color:#a98cff;word-break:break-all;user-select:all}
+.copy-btn{background:rgba(112,69,255,.2);border:1px solid rgba(112,69,255,.4);color:#b8a3ff;padding:8px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px;width:auto}
+.copy-btn:hover{background:rgba(112,69,255,.35)}
+.hint{font-size:11px;color:#666;margin-top:12px;line-height:1.6;text-align:center}
+</style>
+</head>
+<body>
+<div class="space"></div>
+<div class="stars"></div>
+
+<header>
+  <a href="/" class="back">← Beranda</a>
+  <h1>IMG → URL</h1>
+</header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="hero-icon">🖼️</div>
+    <h2>Upload Gambar</h2>
+    <p>Upload gambar, dapet URL permanen.<br>Max 5 MB · JPG / PNG / WEBP / GIF</p>
+  </div>
+
+  <div class="card">
+    <div class="drop" id="drop">
+      <div class="drop-icon">📤</div>
+      <div class="drop-title">Tap untuk pilih gambar</div>
+      <div class="drop-sub">atau drag & drop di sini</div>
+    </div>
+    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif">
+
+    <div class="preview" id="preview">
+      <img id="previewImg" alt="Preview">
+      <div class="file-info" id="fileInfo"></div>
+    </div>
+
+    <button id="btnUpload" disabled>🚀 Upload Sekarang</button>
+    <button class="ghost" id="btnReset" style="display:none">🔄 Upload Gambar Lain</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <div class="hint">
+    File di-host di <b style="color:#a98cff">catbox.moe</b> · permanen & gratis<br>
+    URL bisa langsung dipakai untuk endpoint yang butuh gambar
+  </div>
+</div>
+
+<script>
+var $ = function(id){ return document.getElementById(id) };
+var selectedFile = null;
+
+var drop = $('drop');
+var fileInput = $('fileInput');
+var preview = $('preview');
+var previewImg = $('previewImg');
+var fileInfo = $('fileInfo');
+var btnUpload = $('btnUpload');
+var btnReset = $('btnReset');
+var result = $('result');
+
+function setResult(type, msg, isHtml){
+  result.className = 'result show ' + type;
+  if (isHtml) result.innerHTML = msg;
+  else result.textContent = msg;
+}
+
+function fmtSize(bytes){
+  if (bytes < 1024) return bytes + ' B';
+  if (bytes < 1024*1024) return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1024/1024).toFixed(2) + ' MB';
+}
+
+function handleFile(file){
+  if (!file) return;
+  var allowed = ['image/jpeg','image/png','image/webp','image/gif'];
+  if (allowed.indexOf(file.type) === -1) {
+    setResult('err', '❌ Tipe file tidak didukung. Cuma JPG/PNG/WEBP/GIF.');
+    return;
+  }
+  if (file.size > 5*1024*1024) {
+    setResult('err', '❌ File terlalu besar (' + fmtSize(file.size) + '). Max 5 MB.');
+    return;
+  }
+  if (file.size === 0) {
+    setResult('err', '❌ File kosong.');
+    return;
+  }
+
+  selectedFile = file;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    previewImg.src = e.target.result;
+    preview.classList.add('show');
+    fileInfo.textContent = file.name + ' · ' + fmtSize(file.size);
+    btnUpload.disabled = false;
+    btnReset.style.display = 'block';
+    result.className = 'result';
+  };
+  reader.readAsDataURL(file);
+}
+
+drop.onclick = function(){ fileInput.click() };
+fileInput.onchange = function(e){ handleFile(e.target.files[0]) };
+
+['dragover','dragenter'].forEach(function(ev){
+  drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('hover'); });
+});
+['dragleave','drop'].forEach(function(ev){
+  drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('hover'); });
+});
+drop.addEventListener('drop', function(e){
+  if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+
+btnUpload.onclick = async function(){
+  if (!selectedFile) return;
+  btnUpload.disabled = true;
+  btnUpload.textContent = '⏳ Mengupload...';
+  setResult('info', '📤 Mengupload ke server...');
+
+  var fd = new FormData();
+  fd.append('file', selectedFile);
+
+  try {
+    var r = await fetch('/api/imgtourl', { method: 'POST', body: fd });
+    var j = await r.json();
+
+    if (!j.ok) throw new Error(j.message || 'Gagal upload');
+
+    var html = '✅ Upload berhasil!<br><div class="url-box">' + j.url + '</div>'
+      + '<button class="copy-btn" id="btnCopy">📋 Copy URL</button>';
+    setResult('ok', html, true);
+
+    setTimeout(function(){
+      var bc = $('btnCopy');
+      if (bc) bc.onclick = function(){
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(j.url).then(function(){ alert('✅ URL ter-copy!'); });
+        } else {
+          prompt('Copy manual:', j.url);
+        }
+      };
+    }, 50);
+
+    btnUpload.style.display = 'none';
+  } catch(e) {
+    setResult('err', '❌ ' + e.message);
+    btnUpload.disabled = false;
+    btnUpload.textContent = '🚀 Upload Sekarang';
+  }
+};
+
+btnReset.onclick = function(){
+  selectedFile = null;
+  fileInput.value = '';
+  preview.classList.remove('show');
+  btnUpload.disabled = true;
+  btnUpload.style.display = 'block';
+  btnUpload.textContent = '🚀 Upload Sekarang';
+  btnReset.style.display = 'none';
+  result.className = 'result';
+};
+</script>
+</body>
+</html>
