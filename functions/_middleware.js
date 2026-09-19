@@ -1,5 +1,5 @@
 // Global Middleware — 24 Layer Security
-import { sendTelegram, escapeHtml } from '../_lib/telegram.js';
+import { sendTelegram, escapeHtml } from './_lib/telegram.js';
 function jsonResp(status, data, extraHeaders) {
   return new Response(JSON.stringify(data), {
     status: status,
