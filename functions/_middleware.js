@@ -1,5 +1,6 @@
 // Global Middleware — 24 Layer Security
 import { sendTelegram, escapeHtml } from './_lib/telegram.js';
+import { fingerprint, concurrentStart, concurrentEnd, detectPattern } from './_lib/detect.js';
 function jsonResp(status, data, extraHeaders) {
   return new Response(JSON.stringify(data), {
     status: status,
@@ -63,6 +64,39 @@ export async function onRequest(context) {
                'unknown';
   const __adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
   const __isWhitelisted = __adminIPs.includes(__ip);
+
+  // ==== LAYER 30-33: Detection (log only) ====
+  if (pathname.startsWith('/api/')) {
+    try {
+      // Layer 30: Fingerprint (log only)
+      const fp = await fingerprint(request);
+
+      // Layer 31: Slow Loris — check Content-Length + timeout
+      // (Sudah di-handle oleh CF timeout 100s)
+
+      // Layer 32: Concurrent request limit
+      if (!__isWhitelisted) {
+        const cc = concurrentStart(__ip);
+        if (!cc.ok) {
+          console.warn('[CONCURRENT] IP', __ip, 'exceeded', cc.current, '/', cc.max);
+          return jsonResp(429, {
+            ok: false,
+            message: 'Terlalu banyak request bersamaan. Coba lagi.'
+          });
+        }
+      }
+
+      // Layer 33: Pattern detection (log only)
+      if (!__isWhitelisted) {
+        const pat = detectPattern(__ip, pathname);
+        if (pat.repeated) {
+          console.warn('[PATTERN] IP', __ip, 'repeated path:', pathname, 'count:', pat.count);
+        }
+      }
+    } catch (e) {
+      console.error('[DETECT] Error:', e.message);
+    }
+  }
 
   if (__db && !__isWhitelisted) {
     try {
