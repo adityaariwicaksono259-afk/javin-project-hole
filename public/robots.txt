@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /api/
+Disallow: /debug.html
+Disallow: /*.json$
+Allow: /
+
+Sitemap: https://jvin.pages.dev/sitemap.xml

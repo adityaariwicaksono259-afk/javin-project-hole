@@ -1,46 +1,138 @@
-// Global middleware — security headers + CSRF check
+// Global middleware — Security Layer (1-17)
+
+// ==== Helper ====
+function jsonResp(status, data, extraHeaders) {
+  return new Response(JSON.stringify(data), {
+    status: status,
+    headers: Object.assign({
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store'
+    }, extraHeaders || {})
+  });
+}
+
 export async function onRequest(context) {
   const request = context.request;
   const url = new URL(request.url);
   const method = request.method.toUpperCase();
+  const pathname = url.pathname;
 
-  // ==== LAYER 4: CSRF check untuk endpoint admin ====
-  // Block method non-GET ke /api/admin/* kalau Origin/Referer bukan dari domain sendiri
-  if (url.pathname.startsWith('/api/admin/') && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
-    // Endpoint login dibebaskan (karena user belum auth, butuh submit pertama)
-    if (!url.pathname.endsWith('/login')) {
+  // ==== LAYER 15: Block sensitive paths ====
+  const blockedPaths = [
+    '/.env', '/.git', '/wp-admin', '/wp-login', '/phpmyadmin',
+    '/admin.php', '/.htaccess', '/config.php', '/backup',
+    '/.ssh', '/.aws', '/.vscode', '/vendor/phpunit', '/server.js',
+    '/package.json', '/wrangler.toml', '/.env.unban'
+  ];
+  if (blockedPaths.some(b => pathname.toLowerCase().indexOf(b) === 0)) {
+    return new Response('Not Found', { status: 404 });
+  }
+
+  // ==== LAYER 8a: Path traversal ====
+  try {
+    const decoded = decodeURIComponent(pathname);
+    if (decoded.includes('..') || decoded.includes('\0') || decoded.includes('\\')) {
+      return jsonResp(400, { ok: false, message: 'Path tidak valid.' });
+    }
+  } catch (e) {
+    return jsonResp(400, { ok: false, message: 'Path encoding tidak valid.' });
+  }
+
+  // ==== LAYER 8b: Header injection ====
+  const suspiciousHeaders = ['x-forwarded-host', 'x-original-url', 'x-rewrite-url', 'x-http-method-override'];
+  for (const h of suspiciousHeaders) {
+    if (request.headers.get(h)) {
+      return jsonResp(400, { ok: false, message: 'Header tidak diizinkan.' });
+    }
+  }
+
+  // ==== LAYER 10: HTTP Method restriction ====
+  const allowedMethods = ['GET', 'POST', 'PUT', 'DELETE', 'HEAD', 'OPTIONS'];
+  if (!allowedMethods.includes(method)) {
+    return jsonResp(405, { ok: false, message: 'Method tidak diizinkan.' });
+  }
+
+  // ==== LAYER 16: User-Agent filter ====
+  const ua = (request.headers.get('User-Agent') || '').toLowerCase();
+  if (pathname.startsWith('/api/')) {
+    // Block bot scanner terkenal
+    const badBots = /(sqlmap|nikto|nmap|masscan|nessus|acunetix|dirbuster|gobuster|hydra|zap|w3af)/i;
+    if (badBots.test(ua)) {
+      return jsonResp(403, { ok: false, message: 'Akses ditolak.' });
+    }
+  }
+
+  // ==== LAYER 9: Payload size limit ====
+  const cl = request.headers.get('Content-Length');
+  if (cl) {
+    const size = parseInt(cl);
+    if (isNaN(size) || size < 0) {
+      return jsonResp(400, { ok: false, message: 'Content-Length tidak valid.' });
+    }
+    // Limit 6 MB (cukup buat upload gambar 5 MB + overhead)
+    if (size > 6 * 1024 * 1024) {
+      return jsonResp(413, { ok: false, message: 'Payload terlalu besar (max 6 MB).' });
+    }
+  }
+
+  // Query string limit
+  if (url.search.length > 4000) {
+    return jsonResp(414, { ok: false, message: 'Query string terlalu panjang.' });
+  }
+
+  // ==== LAYER 11: Content-Type enforcement ====
+  if (['POST', 'PUT', 'PATCH'].includes(method) && pathname.startsWith('/api/')) {
+    // Skip untuk endpoint upload (multipart)
+    if (!pathname.includes('/imgtourl') && !pathname.includes('/premium/')) {
+      const ct = request.headers.get('Content-Type') || '';
+      if (!ct.includes('application/json') && ct !== '') {
+        return jsonResp(415, { ok: false, message: 'Content-Type harus application/json.' });
+      }
+    }
+  }
+
+  // ==== LAYER 12: Honeypot endpoints ====
+  const honeypots = ['/admin.php', '/wp-login.php', '/.env', '/.git/config', '/phpinfo.php', '/eval.php'];
+  if (honeypots.some(h => pathname.toLowerCase() === h)) {
+    // Log ke D1 (jangan block, biar attacker ngira berhasil)
+    const db = context.env.JAVIN_DB;
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (db) {
+      try {
+        await db.prepare(
+          'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind('honeypot_hit', 'attacker', pathname, ua.slice(0, 200), ip, Date.now()).run();
+      } catch (e) {}
+    }
+  }
+
+  // ==== LAYER 4: CSRF check ====
+  if (pathname.startsWith('/api/admin/') && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+    if (!pathname.endsWith('/login')) {
       const origin = request.headers.get('Origin') || '';
       const referer = request.headers.get('Referer') || '';
       const allowedHosts = ['jvin.pages.dev', 'localhost', '127.0.0.1'];
-
       const isAllowed = (u) => {
         try {
           const parsed = new URL(u);
           return allowedHosts.some(h => parsed.hostname === h || parsed.hostname.endsWith('.' + h));
         } catch (e) { return false; }
       };
-
       const ok = (origin && isAllowed(origin)) || (referer && isAllowed(referer));
       if (!ok) {
-        console.warn('[CSRF] Blocked:', method, url.pathname, 'Origin:', origin.slice(0,50));
-        return new Response(JSON.stringify({ ok: false, message: 'Origin tidak diizinkan.' }), {
-          status: 403,
-          headers: { 'Content-Type': 'application/json; charset=utf-8' }
-        });
+        return jsonResp(403, { ok: false, message: 'Origin tidak diizinkan.' });
       }
     }
   }
 
-  // ==== LAYER 6: Rate Limit Global (60 req/menit per IP) ====
-  // Hanya untuk endpoint /api/* (static files dibebaskan)
-  if (url.pathname.startsWith('/api/')) {
+  // ==== LAYER 6: Rate Limit ====
+  if (pathname.startsWith('/api/')) {
     const db = context.env.JAVIN_DB;
     const ip = request.headers.get('CF-Connecting-IP') ||
                (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
                'unknown';
     const adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
     const isWhitelisted = adminIPs.includes(ip);
-
     const WINDOW_MS = 60 * 1000;
     const MAX_REQ = 60;
 
@@ -48,49 +140,31 @@ export async function onRequest(context) {
       try {
         const now = Date.now();
         const windowStart = Math.floor(now / WINDOW_MS) * WINDOW_MS;
-
-        // Bersihin window lama (lebih dari 5 menit)
         await db.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(now - 5 * 60 * 1000).run();
-
-        // Get current count
-        const row = await db.prepare(
-          'SELECT count FROM rate_limits WHERE ip = ? AND window_start = ?'
-        ).bind(ip, windowStart).first();
-
+        const row = await db.prepare('SELECT count FROM rate_limits WHERE ip = ? AND window_start = ?').bind(ip, windowStart).first();
         const currentCount = (row && row.count) || 0;
-
         if (currentCount >= MAX_REQ) {
           const resetSec = Math.ceil((windowStart + WINDOW_MS - now) / 1000);
-          console.warn('[RATE-LIMIT] IP:', ip, 'count:', currentCount, 'path:', url.pathname);
-          return new Response(JSON.stringify({
+          return jsonResp(429, {
             ok: false,
             message: 'Terlalu banyak request. Tunggu ' + resetSec + ' detik lagi.',
             retry_after: resetSec
-          }), {
-            status: 429,
-            headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-              'Retry-After': String(resetSec)
-            }
-          });
+          }, { 'Retry-After': String(resetSec) });
         }
-
-        // Increment
         await db.prepare(
-          'INSERT INTO rate_limits (ip, window_start, count) VALUES (?, ?, 1) ' +
-          'ON CONFLICT(ip, window_start) DO UPDATE SET count = count + 1'
+          'INSERT INTO rate_limits (ip, window_start, count) VALUES (?, ?, 1) ON CONFLICT(ip, window_start) DO UPDATE SET count = count + 1'
         ).bind(ip, windowStart).run();
       } catch (e) {
-        // Kalau DB error, jangan block request (fail-open)
         console.error('[RATE-LIMIT] DB error:', e.message);
       }
     }
   }
 
-  // ==== LAYER 1: Security headers ====
+  // ==== Pass ke handler ====
   const response = await context.next();
   const newHeaders = new Headers(response.headers);
 
+  // ==== LAYER 1: Security headers ====
   newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
   newHeaders.set('X-Content-Type-Options', 'nosniff');
   newHeaders.set('X-XSS-Protection', '1; mode=block');
@@ -120,7 +194,8 @@ export async function onRequest(context) {
   ].join('; ');
   newHeaders.set('Content-Security-Policy', csp);
 
-  if (url.pathname.match(/\.(css|js|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico)$/i)) {
+  // ==== Cache static ====
+  if (pathname.match(/\.(css|js|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico)$/i)) {
     newHeaders.set('Cache-Control', 'public, max-age=86400');
   }
 

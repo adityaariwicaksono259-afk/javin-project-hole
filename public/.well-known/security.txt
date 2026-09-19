@@ -1,0 +1,5 @@
+Contact: mailto:adityaariwicaksono259@gmail.com
+Expires: 2027-12-31T23:59:59.000Z
+Preferred-Languages: id, en
+Canonical: https://jvin.pages.dev/.well-known/security.txt
+Policy: https://jvin.pages.dev
