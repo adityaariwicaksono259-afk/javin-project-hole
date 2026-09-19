@@ -1,5 +1,7 @@
 // Admin login dengan brute force protection (5 percobaan / 15 menit per IP)
 
+import { audit, getClientIP } from '../../_lib/audit.js';
+
 const WINDOW_MS = 15 * 60 * 1000;  // 15 menit
 const MAX_ATTEMPTS = 5;
 
@@ -113,6 +115,15 @@ export async function onRequestPost({ request, env }) {
       } catch (e) {}
     }
 
+    // Audit log
+    await audit(db, {
+      action: 'login_failed',
+      actor: username.slice(0, 40),
+      target: '',
+      detail: 'Wrong password',
+      ip: getClientIP(request)
+    });
+
     return json({ ok: false, message: 'Username atau password salah.' }, 401);
   }
 
@@ -121,6 +132,15 @@ export async function onRequestPost({ request, env }) {
   const payload = username + '.' + expires;
   const signature = await hmac(env.ADMIN_SESSION_SECRET, payload);
   const token = payload + '.' + signature;
+
+  // Audit log sukses
+  await audit(db, {
+    action: 'login_success',
+    actor: username,
+    target: '',
+    detail: 'Admin login',
+    ip: getClientIP(request)
+  });
 
   return json({ ok: true, message: 'Login berhasil.' }, 200, {
     'Set-Cookie': 'javin_admin=' + token + '; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict'
