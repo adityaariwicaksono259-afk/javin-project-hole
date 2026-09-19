@@ -26,6 +26,39 @@ export async function onRequest(context) {
     return new Response('Not Found', { status: 404 });
   }
 
+  // ==== LAYER 25: Cek IP Blocklist ====
+  const __db = context.env.JAVIN_DB;
+  const __ip = request.headers.get('CF-Connecting-IP') ||
+               (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+               'unknown';
+  const __adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+  const __isWhitelisted = __adminIPs.includes(__ip);
+
+  if (__db && !__isWhitelisted) {
+    try {
+      const blocked = await __db.prepare(
+        'SELECT reason, until FROM blocked_ips WHERE ip = ?'
+      ).bind(__ip).first();
+
+      if (blocked) {
+        if (blocked.until > Date.now()) {
+          const waitMin = Math.ceil((blocked.until - Date.now()) / 60000);
+          console.warn('[ANOMALY] Blocked IP hit:', __ip, 'Reason:', blocked.reason);
+          return jsonResp(403, {
+            ok: false,
+            message: 'IP kamu diblok sementara. Coba lagi dalam ' + waitMin + ' menit.',
+            reason: blocked.reason
+          });
+        } else {
+          // Expired, hapus
+          await __db.prepare('DELETE FROM blocked_ips WHERE ip = ?').bind(__ip).run();
+        }
+      }
+    } catch (e) {
+      console.error('[ANOMALY] Blocklist check error:', e.message);
+    }
+  }
+
   // ==== LAYER 8a: Path traversal ====
   try {
     const decoded = decodeURIComponent(pathname);
@@ -266,6 +299,45 @@ export async function onRequest(context) {
 
   if (pathname.match(/\.(css|js|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico)$/i)) {
     newHeaders.set('Cache-Control', 'public, max-age=86400');
+  }
+
+  // ==== LAYER 25: Track errors untuk anomaly detection ====
+  if (__db && !__isWhitelisted && response.status >= 400 && response.status < 500) {
+    try {
+      const now = Date.now();
+      const windowStart = Math.floor(now / (5 * 60 * 1000)) * (5 * 60 * 1000);
+
+      await __db.prepare(
+        'INSERT INTO ip_errors (ip, window_start, count) VALUES (?, ?, 1) ' +
+        'ON CONFLICT(ip, window_start) DO UPDATE SET count = count + 1'
+      ).bind(__ip, windowStart).run();
+
+      // Cek apakah udah lewat batas
+      const row = await __db.prepare(
+        'SELECT count FROM ip_errors WHERE ip = ? AND window_start = ?'
+      ).bind(__ip, windowStart).first();
+
+      if (row && row.count >= 100) {
+        const until = now + 60 * 60 * 1000; // block 1 jam
+        await __db.prepare(
+          'INSERT INTO blocked_ips (ip, reason, until, created_at) VALUES (?, ?, ?, ?) ' +
+          'ON CONFLICT(ip) DO UPDATE SET reason = excluded.reason, until = excluded.until'
+        ).bind(__ip, 'Too many errors (' + row.count + ')', until, now).run();
+
+        console.warn('[ANOMALY] IP auto-blocked:', __ip, 'Errors:', row.count);
+
+        // Audit log
+        await __db.prepare(
+          'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind('ip_autoblock', 'system', __ip, 'Errors: ' + row.count, __ip, now).run();
+      }
+
+      // Cleanup window lama
+      await __db.prepare('DELETE FROM ip_errors WHERE window_start < ?').bind(now - 30 * 60 * 1000).run();
+
+    } catch (e) {
+      console.error('[ANOMALY] Track error:', e.message);
+    }
   }
 
   return new Response(response.body, {
