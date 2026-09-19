@@ -16,6 +16,35 @@ export async function onRequest(context) {
   const method = request.method.toUpperCase();
   const pathname = url.pathname;
 
+  // ==== Ambil User-Agent (dipakai honeypot + Layer 16) ====
+  const ua = (request.headers.get('User-Agent') || '').toLowerCase();
+
+  // ==== LAYER 12: Honeypot (jalan DULUAN biar kelog) ====
+  const honeypots = ['/admin.php', '/wp-login.php', '/.env', '/.git/config', '/phpinfo.php', '/eval.php', '/config.php', '/backup.sql'];
+  if (honeypots.some(h => pathname.toLowerCase() === h)) {
+    const hdb = context.env.JAVIN_DB;
+    const hip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    if (hdb) {
+      try {
+        await hdb.prepare(
+          'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+        ).bind('honeypot_hit', 'attacker', pathname, ua.slice(0, 200), hip, Date.now()).run();
+      } catch (e) {}
+
+      try {
+        await sendTelegram(context.env,
+          '🍯 <b>Honeypot Hit</b>\n' +
+          'IP: <code>' + escapeHtml(hip) + '</code>\n' +
+          'Path: <code>' + escapeHtml(pathname) + '</code>\n' +
+          'UA: <code>' + escapeHtml(ua.slice(0, 80)) + '</code>\n' +
+          'Time: ' + new Date().toISOString()
+        , { type: 'honeypot', throttleMs: 30000 });
+      } catch (e) {}
+    }
+    // Return 404 biar attacker ngira biasa
+    return new Response('Not Found', { status: 404 });
+  }
+
   // ==== LAYER 15: Block sensitive paths ====
   const blockedPaths = [
     '/.env', '/.git', '/wp-admin', '/wp-login', '/phpmyadmin',
@@ -85,7 +114,6 @@ export async function onRequest(context) {
   }
 
   // ==== LAYER 16: User-Agent filter ====
-  const ua = (request.headers.get('User-Agent') || '').toLowerCase();
   if (pathname.startsWith('/api/')) {
     const badBots = /(sqlmap|nikto|nmap|masscan|nessus|acunetix|dirbuster|gobuster|hydra|zap|w3af)/i;
     if (badBots.test(ua)) {
@@ -115,31 +143,6 @@ export async function onRequest(context) {
       if (!ct.includes('application/json') && ct !== '') {
         return jsonResp(415, { ok: false, message: 'Content-Type harus application/json.' });
       }
-    }
-  }
-
-  // ==== LAYER 12: Honeypot ====
-  const honeypots = ['/admin.php', '/wp-login.php', '/.env', '/.git/config', '/phpinfo.php', '/eval.php'];
-  if (honeypots.some(h => pathname.toLowerCase() === h)) {
-    const db = context.env.JAVIN_DB;
-    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-    if (db) {
-      try {
-        await db.prepare(
-          'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
-        ).bind('honeypot_hit', 'attacker', pathname, ua.slice(0, 200), ip, Date.now()).run();
-      } catch (e) {}
-
-      // Kirim notif Telegram
-      try {
-        await sendTelegram(context.env,
-          '🍯 <b>Honeypot Hit</b>\n' +
-          'IP: <code>' + escapeHtml(ip) + '</code>\n' +
-          'Path: <code>' + escapeHtml(pathname) + '</code>\n' +
-          'UA: <code>' + escapeHtml(ua.slice(0, 80)) + '</code>\n' +
-          'Time: ' + new Date().toISOString()
-        , { type: 'honeypot', throttleMs: 30000 });
-      } catch (e) {}
     }
   }
 
