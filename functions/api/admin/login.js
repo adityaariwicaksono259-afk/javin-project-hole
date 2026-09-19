@@ -127,9 +127,10 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: false, message: 'Username atau password salah.' }, 401);
   }
 
-  // ==== Sukses: bikin token ====
+  // ==== Sukses: bikin token (bind ke IP) ====
   const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 8;  // 8 jam
-  const payload = username + '.' + expires;
+  const ipHash = await hmac(env.ADMIN_SESSION_SECRET, 'ip:' + ip);
+  const payload = username + '.' + expires + '.' + ipHash;
   const signature = await hmac(env.ADMIN_SESSION_SECRET, payload);
   const token = payload + '.' + signature;
 

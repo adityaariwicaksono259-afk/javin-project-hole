@@ -59,29 +59,42 @@ export async function verifyAdmin(request, env) {
   const token = decodeURIComponent(match[1]);
   const parts = token.split(".");
 
-  if (parts.length !== 3) {
+  if (parts.length !== 4) {
     return { ok: false, response: unauthorized() };
   }
 
   const username = parts[0];
   const expires = Number(parts[1]);
-  const signature = parts[2];
+  const tokenIpHash = parts[2];
+  const signature = parts[3];
 
   if (
     !username ||
     username !== env.ADMIN_USERNAME ||
     !Number.isFinite(expires) ||
     expires < Math.floor(Date.now() / 1000) ||
-    !signature
+    !signature ||
+    !tokenIpHash
   ) {
     return { ok: false, response: unauthorized("Session admin tidak valid atau sudah expired.") };
   }
 
-  const payload = `${username}.${expires}`;
+  const payload = `${username}.${expires}.${tokenIpHash}`;
   const expected = await hmac(env.ADMIN_SESSION_SECRET, payload);
 
   if (signature !== expected) {
     return { ok: false, response: unauthorized("Session admin tidak valid.") };
+  }
+
+  // ==== Cek IP bind ====
+  const ip = request.headers.get('CF-Connecting-IP') ||
+             (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+             'unknown';
+  const currentIpHash = await hmac(env.ADMIN_SESSION_SECRET, 'ip:' + ip);
+
+  if (currentIpHash !== tokenIpHash) {
+    console.warn('[AUTH] IP mismatch. Token IP:', tokenIpHash, 'Current IP:', ip);
+    return { ok: false, response: unauthorized("Session tidak valid untuk IP ini. Login ulang.") };
   }
 
   return {
