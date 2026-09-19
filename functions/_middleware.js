@@ -127,7 +127,8 @@ export async function onRequest(context) {
 
   // ==== LAYER 21: Turnstile Verification ====
   // Semua /api/* butuh cookie jvin_verified, kecuali endpoint verify-turnstile
-  if (pathname.startsWith('/api/') && pathname !== '/api/verify-turnstile') {
+  const turnstileOn = String(context.env.TURNSTILE_ENABLED || '') === '1';
+  if (turnstileOn && pathname.startsWith('/api/') && pathname !== '/api/verify-turnstile') {
     const secret = context.env.ADMIN_SESSION_SECRET;
     const ip = request.headers.get('CF-Connecting-IP') ||
                (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
