@@ -1,6 +1,6 @@
 // Global Middleware — 24 Layer Security
 import { sendTelegram, escapeHtml } from './_lib/telegram.js';
-import { fingerprint, concurrentStart, concurrentEnd, detectPattern } from './_lib/detect.js';
+import { fingerprint, detectPattern } from './_lib/detect.js';
 function jsonResp(status, data, extraHeaders) {
   return new Response(JSON.stringify(data), {
     status: status,
@@ -74,17 +74,8 @@ export async function onRequest(context) {
       // Layer 31: Slow Loris — check Content-Length + timeout
       // (Sudah di-handle oleh CF timeout 100s)
 
-      // Layer 32: Concurrent request limit
-      if (!__isWhitelisted) {
-        const cc = concurrentStart(__ip);
-        if (!cc.ok) {
-          console.warn('[CONCURRENT] IP', __ip, 'exceeded', cc.current, '/', cc.max);
-          return jsonResp(429, {
-            ok: false,
-            message: 'Terlalu banyak request bersamaan. Coba lagi.'
-          });
-        }
-      }
+      // Layer 32: Disabled (serverless environment nggak bisa track concurrent akurat)
+      // Ganti pakai Layer 6 (rate limit per menit) yang udah ada
 
       // Layer 33: Pattern detection (log only)
       if (!__isWhitelisted) {
