@@ -397,11 +397,15 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     if (__rotateTimer) { clearInterval(__rotateTimer); __rotateTimer = null; }
   }
 
-  launch.onclick=async function(){
-    // SELALU minta login, walaupun udah pernah
-    loggedIn=false;
-    var success=await doLogin();
-    if(success){openPanel();loadUsers();startRotateTimer()}
+    // Admin login di-handle sama admin-2fa.js
+  window.__adminReloadPanel = function(){
+    loggedIn = true;
+    openPanel();
+    loadUsers();
+  };
+
+  launch.onclick = function(e){
+    e.preventDefault();
   };
   if(closeBtn)closeBtn.onclick=function(){ stopRotateTimer(); closePanel(); };
 })();
