@@ -1,6 +1,6 @@
-// Admin 2FA Login Flow — 3 step: password → username → kode Telegram
+// Admin 2FA Login Flow — 3 step: username → password → kode Telegram
 (function(){
-  var state = { password: '', username: '', code: '' };
+  var state = { username: '', password: '', code: '' };
 
   function $(id){ return document.getElementById(id) }
 
@@ -16,12 +16,12 @@
     $('a2faStep2').style.display = (n === 2) ? 'flex' : 'none';
     $('a2faStep3').style.display = (n === 3) ? 'flex' : 'none';
     var sub = $('a2faSub');
-    if (n === 1) sub.textContent = 'Masukkan password administratif untuk melanjutkan.';
-    else if (n === 2) sub.textContent = 'Password OK. Sekarang masukkan username admin.';
-    else if (n === 3) sub.textContent = 'Kode 6 digit sudah dikirim ke Telegram kamu. Cek dan masukkan.';
+    if (n === 1) sub.textContent = 'Masukkan username admin untuk melanjutkan.';
+    else if (n === 2) sub.textContent = 'Username OK. Sekarang masukkan password admin.';
+    else if (n === 3) sub.textContent = 'Kode 6 digit sudah dikirim ke Telegram kamu.';
     setMsg('', '');
     setTimeout(function(){
-      var input = (n === 1) ? $('a2faPassword') : (n === 2) ? $('a2faUsername') : $('a2faCode');
+      var input = (n === 1) ? $('a2faUsername') : (n === 2) ? $('a2faPassword') : $('a2faCode');
       if (input) input.focus();
     }, 100);
   }
@@ -30,59 +30,91 @@
     var m = $('admin2FAModal');
     if (!m) return;
     m.style.display = 'flex';
-    $('a2faPassword').value = '';
     $('a2faUsername').value = '';
+    $('a2faPassword').value = '';
     $('a2faCode').value = '';
-    state = { password: '', username: '', code: '' };
+    state = { username: '', password: '', code: '' };
     showStep(1);
   }
 
   function closeModal(){
     var m = $('admin2FAModal');
     if (m) m.style.display = 'none';
-    state = { password: '', username: '', code: '' };
+    state = { username: '', password: '', code: '' };
   }
 
-  // ==== STEP 1: Password (client-side only check, verify bakal di step 3) ====
-  function submitPassword(){
-    var pw = $('a2faPassword').value;
-    if (!pw) { setMsg('Password wajib diisi.', 'err'); return; }
-    state.password = pw;
-    showStep(2);
-  }
-
-  // ==== STEP 2: Username (client-side only) ====
-  function submitUsername(){
+  // ==== STEP 1: Username ====
+  async function submitUsername(){
     var un = $('a2faUsername').value.trim();
     if (!un) { setMsg('Username wajib diisi.', 'err'); return; }
     state.username = un;
-    // Kirim ke server buat verify password + username, request kode Telegram
-    request2FA();
-  }
 
-  async function request2FA(){
-    setMsg('Memverifikasi...', 'info');
+    setMsg('Memverifikasi username...', 'info');
     var btn = $('a2faBtnUser');
     if (btn) btn.disabled = true;
 
     try {
-      var r = await fetch('/api/admin/request-2fa', {
+      var r = await fetch('/api/admin/step-auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: state.username, password: state.password })
+        body: JSON.stringify({ step: 'username', username: un })
       });
       var j = await r.json();
 
       if (!j.ok) {
-        setMsg(j.message || 'Gagal verifikasi.', 'err');
-        // Balik ke step 1 kalau salah password/username
-        setTimeout(function(){ showStep(1); setMsg(j.message, 'err'); }, 1500);
+        setMsg('❌ ' + (j.message || 'Username salah.'), 'err');
+        $('a2faUsername').value = '';
+        $('a2faUsername').focus();
         return;
       }
 
-      setMsg('✅ ' + j.message, 'ok');
+      setMsg('✅ ' + (j.message || 'Username OK.'), 'ok');
+      setTimeout(function(){ showStep(2); }, 600);
+    } catch(e) {
+      setMsg('Network error: ' + e.message, 'err');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  // ==== STEP 2: Password ====
+  async function submitPassword(){
+    var pw = $('a2faPassword').value;
+    if (!pw) { setMsg('Password wajib diisi.', 'err'); return; }
+    state.password = pw;
+
+    setMsg('Memverifikasi password...', 'info');
+    var btn = $('a2faBtnPw');
+    if (btn) btn.disabled = true;
+
+    try {
+      var r = await fetch('/api/admin/step-auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 'password', username: state.username, password: pw })
+      });
+      var j = await r.json();
+
+      if (!j.ok) {
+        setMsg('❌ ' + (j.message || 'Password salah.'), 'err');
+        $('a2faPassword').value = '';
+
+        // Kalau diminta balik ke username
+        if (j.back_to_username) {
+          setTimeout(function(){
+            state.username = '';
+            showStep(1);
+            setMsg('❌ ' + (j.message || 'Coba lagi.'), 'err');
+          }, 1800);
+        } else {
+          $('a2faPassword').focus();
+        }
+        return;
+      }
+
+      setMsg('✅ Kode dikirim ke Telegram!', 'ok');
       showStep(3);
-      startTimer(300); // 5 menit
+      startTimer(300);
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');
     } finally {
@@ -98,6 +130,7 @@
       return;
     }
     state.code = code;
+
     setMsg('Memverifikasi kode...', 'info');
     var btn = $('a2faBtnCode');
     if (btn) btn.disabled = true;
@@ -111,16 +144,18 @@
       var j = await r.json();
 
       if (!j.ok) {
-        setMsg(j.message || 'Kode salah.', 'err');
+        setMsg('❌ ' + (j.message || 'Kode salah.'), 'err');
         $('a2faCode').value = '';
         $('a2faCode').focus();
+        if (j.banned) {
+          setTimeout(closeModal, 2500);
+        }
         return;
       }
 
       setMsg('✅ Login berhasil! Memuat panel...', 'ok');
       setTimeout(function(){
         closeModal();
-        // Trigger refresh panel — kalau ada fungsi global
         if (window.__adminReloadPanel) window.__adminReloadPanel();
         else location.reload();
       }, 800);
@@ -131,7 +166,7 @@
     }
   }
 
-  // ==== Timer countdown 5 menit ====
+  // ==== Timer ====
   var timerHandle = null;
   function startTimer(seconds){
     var el = $('a2faTimer');
@@ -153,12 +188,10 @@
     timerHandle = setInterval(tick, 1000);
   }
 
-  // ==== Event listeners ====
+  // ==== Event ====
   document.addEventListener('DOMContentLoaded', function(){
     var launch = $('adminLaunch');
-    if (launch) {
-      launch.onclick = function(e){ e.preventDefault(); openModal(); };
-    }
+    if (launch) launch.onclick = function(e){ e.preventDefault(); openModal(); };
 
     var btnPw = $('a2faBtnPw');
     if (btnPw) btnPw.onclick = submitPassword;
@@ -172,7 +205,6 @@
     var btnClose = $('a2faClose');
     if (btnClose) btnClose.onclick = closeModal;
 
-    // Enter key support
     var pw = $('a2faPassword');
     if (pw) pw.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitPassword(); });
 
@@ -182,14 +214,12 @@
     var cd = $('a2faCode');
     if (cd) cd.addEventListener('keydown', function(e){ if (e.key === 'Enter') submitCode(); });
 
-    // Auto-clear code saat modal ditutup
     var overlay = $('admin2FAModal');
     if (overlay) overlay.addEventListener('click', function(e){
       if (e.target === overlay) closeModal();
     });
   });
 
-  // Ekspos biar bisa dipanggil dari app.js
   window.__admin2FAOpen = openModal;
   window.__admin2FAClose = closeModal;
 

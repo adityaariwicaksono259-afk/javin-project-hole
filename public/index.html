@@ -129,4 +129,34 @@
     <div id="turnstileMsg" style="font-size:11px;color:#ff9aad;margin-top:12px"></div>
   </div>
 </div>
+
+<!-- Admin 2FA Modal -->
+<div id="admin2FAModal" class="a2fa-overlay" style="display:none">
+  <div class="a2fa-modal">
+    <button class="a2fa-close" id="a2faClose">✕</button>
+    <div class="a2fa-header">
+      <div class="a2fa-icon">🔐</div>
+      <div class="a2fa-title">ADMIN VERIFICATION</div>
+    </div>
+    <div class="a2fa-sub" id="a2faSub">Masukkan username admin untuk melanjutkan.</div>
+
+    <div class="a2fa-step" id="a2faStep1">
+      <input type="text" id="a2faUsername" class="a2fa-input" placeholder="Username admin..." autocomplete="off" autofocus>
+      <button class="a2fa-btn" id="a2faBtnUser">VERIFY USERNAME</button>
+    </div>
+
+    <div class="a2fa-step" id="a2faStep2" style="display:none">
+      <input type="password" id="a2faPassword" class="a2fa-input" placeholder="Password admin..." autocomplete="off" autofocus>
+      <button class="a2fa-btn" id="a2faBtnPw">VERIFY PASSWORD</button>
+    </div>
+
+    <div class="a2fa-step" id="a2faStep3" style="display:none">
+      <input type="text" id="a2faCode" class="a2fa-input" placeholder="Kode 6 digit..." maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="off" autofocus>
+      <button class="a2fa-btn" id="a2faBtnCode">VERIFY CODE</button>
+      <div class="a2fa-timer" id="a2faTimer"></div>
+    </div>
+
+    <div class="a2fa-msg" id="a2faMsg"></div>
+  </div>
+</div>
 </body></html>
