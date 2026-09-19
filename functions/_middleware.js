@@ -392,6 +392,27 @@ export async function onRequest(context) {
   ].join('; ');
   newHeaders.set('Content-Security-Policy', csp);
 
+  // ==== LAYER 40-43: Response Hardening ====
+
+  // Layer 43: Hide server info
+  newHeaders.delete('Server');
+  newHeaders.delete('X-Powered-By');
+  newHeaders.delete('X-AspNet-Version');
+  newHeaders.delete('X-Runtime');
+
+  // Layer 41: Force no-cache untuk API
+  if (pathname.startsWith('/api/')) {
+    newHeaders.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    newHeaders.set('Pragma', 'no-cache');
+    newHeaders.set('Expires', '0');
+  }
+
+  // Layer 40: Response size check (soft, cuma header hint)
+  const contentLength = response.headers.get('Content-Length');
+  if (contentLength && parseInt(contentLength) > 5 * 1024 * 1024) {
+    console.warn('[RESPONSE] Large response:', pathname, contentLength);
+  }
+
   if (pathname.match(/\.(css|js)$/i)) {
     // CSS & JS: wajib revalidate tiap request (biar update cepet)
     newHeaders.set('Cache-Control', 'no-cache, must-revalidate');
