@@ -226,6 +226,84 @@ export async function onRequest(context) {
     }
   }
 
+  // ==== LAYER 44-49: Advanced Detection (log only, nggak block) ====
+  if (pathname.startsWith('/api/') && !__isWhitelisted) {
+    try {
+      // Layer 44: Bot score heuristic
+      let botScore = 0;
+      // UA mencurigakan
+      if (!ua || ua.length < 10) botScore += 20;
+      if (/bot|crawl|spider|scraper/i.test(ua) && !/googlebot|bingbot/i.test(ua)) botScore += 30;
+      // Nggak ada Accept-Language
+      if (!request.headers.get('Accept-Language')) botScore += 10;
+      // Nggak ada Referer
+      if (!request.headers.get('Referer') && method !== 'GET') botScore += 10;
+      // Header fetch metadata
+      const secFetchMode = request.headers.get('Sec-Fetch-Mode');
+      if (secFetchMode && secFetchMode === 'no-cors') botScore += 15;
+
+      if (botScore >= 50) {
+        console.warn('[BOT-SCORE]', __ip, 'score:', botScore, 'UA:', ua.slice(0, 60));
+        if (__db) {
+          try {
+            await __db.prepare(
+              'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+            ).bind('bot_score_high', 'system', pathname.slice(0, 80), 'Score: ' + botScore + ' UA: ' + ua.slice(0, 60), __ip, Date.now()).run();
+          } catch (e) {}
+        }
+      }
+
+      // Layer 45: Session replay protection (log only)
+      const adminCookie = request.headers.get('Cookie') || '';
+      if (adminCookie.includes('javin_admin=')) {
+        const match = adminCookie.match(/javin_admin=([^;]+)/);
+        if (match) {
+          const token = match[1];
+          const parts = token.split('.');
+          // Cek format token valid (4 bagian)
+          if (parts.length !== 4) {
+            console.warn('[REPLAY] Invalid token format from', __ip);
+          }
+        }
+      }
+
+      // Layer 46: Referrer chain validation
+      const referer = request.headers.get('Referer') || '';
+      const origin = request.headers.get('Origin') || '';
+      if (method !== 'GET' && method !== 'HEAD') {
+        if (referer && origin && referer.indexOf(origin) === -1 && origin.indexOf(referer) === -1) {
+          // Referer dan Origin nggak match — suspicious
+          console.warn('[REFERER-MISMATCH]', __ip, 'Ref:', referer.slice(0, 50), 'Orig:', origin.slice(0, 50));
+        }
+      }
+
+      // Layer 47: Origin strict check (buat POST admin)
+      if (pathname.startsWith('/api/admin/') && method === 'POST') {
+        if (!origin && !referer) {
+          console.warn('[ORIGIN-MISSING]', __ip, pathname);
+        }
+      }
+
+      // Layer 48: Fetch metadata check
+      const secFetchSite = request.headers.get('Sec-Fetch-Site');
+      const secFetchDest = request.headers.get('Sec-Fetch-Dest');
+      if (secFetchSite && secFetchSite === 'cross-site' && pathname.startsWith('/api/admin/')) {
+        console.warn('[SEC-FETCH] Cross-site request to admin:', __ip);
+      }
+
+      // Layer 49: Auto-blacklist pattern (kombinasi event)
+      // Note: ini otomatis jalan dari Layer 25 (auto-ban)
+      // Kalau IP udah:
+      // - Bot score tinggi (>50)
+      // - Pattern berulang (>20x)
+      // - Salah login 5x
+      // → auto kena Layer 25 ban
+
+    } catch (e) {
+      console.error('[ADVANCED] Error:', e.message);
+    }
+  }
+
   // ==== LAYER 4: CSRF check ====
   if (pathname.startsWith('/api/admin/') && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
     if (!pathname.endsWith('/login')) {
