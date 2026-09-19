@@ -27,7 +27,8 @@ export async function onRequestGet({ request, env }) {
     ).all();
     return json({ ok: true, keys: rows.results || [] });
   } catch (e) {
-    return json({ ok: false, message: 'DB error: ' + e.message }, 500);
+    console.error('[DB ERROR]', e.message);
+    return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
   }
 }
 
@@ -68,7 +69,8 @@ export async function onRequestPost({ request, env }) {
 
     return json({ ok: true, keys: created, message: created.length + ' key dibikin.' });
   } catch (e) {
-    return json({ ok: false, message: 'Error: ' + e.message }, 500);
+    console.error('[ERROR]', e.message);
+    return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
   }
 }
 
@@ -96,6 +98,7 @@ export async function onRequestDelete({ request, env }) {
     await db.prepare('UPDATE premium_keys SET status = "revoked" WHERE key = ?').bind(key).run();
     return json({ ok: true, message: 'Key di-revoke.' });
   } catch (e) {
-    return json({ ok: false, message: 'Error: ' + e.message }, 500);
+    console.error('[ERROR]', e.message);
+    return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
   }
 }

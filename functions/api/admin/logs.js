@@ -24,7 +24,8 @@ export async function onRequestGet({ request, env }) {
 
     return json({ ok: true, logs: r.results || [] });
   } catch (e) {
-    return json({ ok: false, message: 'DB error: ' + e.message }, 500);
+    console.error('[DB ERROR]', e.message);
+    return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
   }
 }
 
@@ -46,7 +47,8 @@ export async function onRequestDelete({ request, env }) {
     await db.prepare('DELETE FROM logs WHERE created_at < ?').bind(before).run();
     return json({ ok: true, message: 'Log lama dihapus.' });
   } catch (e) {
-    return json({ ok: false, message: 'Error: ' + e.message }, 500);
+    console.error('[ERROR]', e.message);
+    return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
   }
 }
 

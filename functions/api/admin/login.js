@@ -1,90 +1,119 @@
-async function hmac(secret, value) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
+// Admin login dengan brute force protection (5 percobaan / 15 menit per IP)
 
-  const signature = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(value)
-  );
+const WINDOW_MS = 15 * 60 * 1000;  // 15 menit
+const MAX_ATTEMPTS = 5;
 
-  return btoa(String.fromCharCode(...new Uint8Array(signature)))
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/, "");
-}
-
-function json(data, status = 200, headers = {}) {
+function json(data, status, extraHeaders) {
   return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-      ...headers
-    }
+    status: status || 200,
+    headers: Object.assign({
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store'
+    }, extraHeaders || {})
   });
 }
 
+async function hmac(secret, value) {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signature = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value));
+  return btoa(String.fromCharCode(...new Uint8Array(signature)))
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=+$/, '');
+}
+
 export async function onRequestPost({ request, env }) {
-  if (!env.ADMIN_USERNAME || !env.ADMIN_PASSWORD) {
-    return json({
-      ok: false,
-      message: "Admin authentication belum dikonfigurasi."
-    }, 503);
+  if (!env.ADMIN_USERNAME || !env.ADMIN_PASSWORD || !env.ADMIN_SESSION_SECRET) {
+    return json({ ok: false, message: 'Admin auth belum dikonfigurasi.' }, 503);
   }
 
-  if (!env.ADMIN_SESSION_SECRET) {
-    return json({
-      ok: false,
-      message: "ADMIN_SESSION_SECRET belum dikonfigurasi."
-    }, 503);
+  const db = env.JAVIN_DB;
+  const ip = request.headers.get('CF-Connecting-IP') ||
+             (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+             'unknown';
+
+  // ==== Layer 5: cek rate limit per IP ====
+  if (db) {
+    try {
+      const now = Date.now();
+      const windowStart = now - WINDOW_MS;
+
+      // Bersihin yang expired (opsional, biar DB nggak numpuk)
+      await db.prepare('DELETE FROM login_attempts WHERE created_at < ?').bind(windowStart).run();
+
+      const row = await db.prepare(
+        'SELECT COUNT(*) as c FROM login_attempts WHERE ip = ? AND created_at >= ?'
+      ).bind(ip, windowStart).first();
+
+      if (row && row.c >= MAX_ATTEMPTS) {
+        const oldest = await db.prepare(
+          'SELECT created_at FROM login_attempts WHERE ip = ? AND created_at >= ? ORDER BY created_at ASC LIMIT 1'
+        ).bind(ip, windowStart).first();
+
+        const waitSec = oldest ? Math.ceil((oldest.created_at + WINDOW_MS - now) / 1000) : 900;
+
+        console.warn('[LOGIN-LOCKOUT] IP:', ip, 'attempts:', row.c);
+        return json({
+          ok: false,
+          message: 'Terlalu banyak percobaan login. Coba lagi dalam ' + Math.ceil(waitSec/60) + ' menit.'
+        }, 429);
+      }
+    } catch (e) {
+      console.error('[LOGIN] DB check error:', e.message);
+    }
   }
 
-  try {
-    const body = await request.json();
+  let body;
+  try { body = await request.json(); }
+  catch (e) { return json({ ok: false, message: 'Request tidak valid.' }, 400); }
 
-    const username = String(body.username || "");
-    const password = String(body.password || "");
+  const username = String(body.username || '');
+  const password = String(body.password || '');
 
-    if (
-      username !== env.ADMIN_USERNAME ||
-      password !== env.ADMIN_PASSWORD
-    ) {
-      return json({
-        ok: false,
-        message: "Username atau password salah."
-      }, 401);
+  // Validasi format input
+  if (username.length > 100 || password.length > 200) {
+    return json({ ok: false, message: 'Username/password terlalu panjang.' }, 400);
+  }
+
+  // ==== Constant-time compare (Layer 8) ====
+  const safeCompare = (a, b) => {
+    if (a.length !== b.length) return false;
+    let result = 0;
+    for (let i = 0; i < a.length; i++) {
+      result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+    }
+    return result === 0;
+  };
+
+  const userOk = safeCompare(username, env.ADMIN_USERNAME);
+  const passOk = safeCompare(password, env.ADMIN_PASSWORD);
+
+  if (!userOk || !passOk) {
+    // ==== Log failed attempt ====
+    if (db) {
+      try {
+        await db.prepare(
+          'INSERT INTO login_attempts (ip, created_at) VALUES (?, ?)'
+        ).bind(ip, Date.now()).run();
+      } catch (e) {}
     }
 
-    const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 8;
-    const payload = `${username}.${expires}`;
-    const signature = await hmac(
-      env.ADMIN_SESSION_SECRET,
-      payload
-    );
-
-    const token = `${payload}.${signature}`;
-
-    return json(
-      {
-        ok: true,
-        message: "Login berhasil."
-      },
-      200,
-      {
-        "Set-Cookie":
-          `javin_admin=${token}; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict`
-      }
-    );
-  } catch {
-    return json({
-      ok: false,
-      message: "Request tidak valid."
-    }, 400);
+    return json({ ok: false, message: 'Username atau password salah.' }, 401);
   }
+
+  // ==== Sukses: bikin token ====
+  const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 8;  // 8 jam
+  const payload = username + '.' + expires;
+  const signature = await hmac(env.ADMIN_SESSION_SECRET, payload);
+  const token = payload + '.' + signature;
+
+  return json({ ok: true, message: 'Login berhasil.' }, 200, {
+    'Set-Cookie': 'javin_admin=' + token + '; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict'
+  });
 }

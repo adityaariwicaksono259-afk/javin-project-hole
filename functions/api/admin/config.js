@@ -13,7 +13,8 @@ export async function onRequestGet({ request, env }) {
     const r = await db.prepare('SELECT key, value, updated_at FROM config ORDER BY key').all();
     return json({ ok: true, config: r.results || [] });
   } catch (e) {
-    return json({ ok: false, message: 'DB error: ' + e.message }, 500);
+    console.error('[DB ERROR]', e.message);
+    return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
   }
 }
 
@@ -42,7 +43,8 @@ export async function onRequestPost({ request, env }) {
 
     return json({ ok: true, message: 'Config disimpan.' });
   } catch (e) {
-    return json({ ok: false, message: 'Error: ' + e.message }, 500);
+    console.error('[ERROR]', e.message);
+    return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
   }
 }
 
