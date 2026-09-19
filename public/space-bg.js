@@ -524,3 +524,19 @@
   draw();
   console.log('[SpaceV3] Started');
 })();
+
+// === Auto-hide splash ===
+(function(){
+  function hideSplash(){
+    var s = document.getElementById('splashScreen');
+    if (s && !s.classList.contains('hide')) {
+      s.classList.add('hide');
+      setTimeout(function(){ s.style.display = 'none'; }, 700);
+      console.log('[Splash] Hidden');
+    }
+  }
+  // Force hide setelah 2 detik
+  setTimeout(hideSplash, 2000);
+  // Backup: hide saat window load
+  window.addEventListener('load', function(){ setTimeout(hideSplash, 1500); });
+})();
