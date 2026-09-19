@@ -1,6 +1,7 @@
 // Admin login dengan brute force protection (5 percobaan / 15 menit per IP)
 
 import { audit, getClientIP } from '../../_lib/audit.js';
+import { checkPasswordStrength } from '../../_lib/password.js';
 
 const WINDOW_MS = 15 * 60 * 1000;  // 15 menit
 const MAX_ATTEMPTS = 5;
@@ -143,7 +144,19 @@ export async function onRequestPost({ request, env }) {
     ip: getClientIP(request)
   });
 
-  return json({ ok: true, message: 'Login berhasil.' }, 200, {
+  // Cek kekuatan password (warning only)
+  const pwCheck = checkPasswordStrength(env.ADMIN_PASSWORD);
+  const warning = pwCheck.ok ? null : 'Password admin lemah: ' + pwCheck.reason;
+
+  if (warning) {
+    console.warn('[PASSWORD] Weak password detected:', pwCheck.reason);
+  }
+
+  return json({
+    ok: true,
+    message: 'Login berhasil.',
+    warning: warning
+  }, 200, {
     'Set-Cookie': 'javin_admin=' + token + '; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict'
   });
 }
