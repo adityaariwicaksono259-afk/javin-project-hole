@@ -371,13 +371,39 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   };
 
   // ==== Open panel ====
+  // ==== Auto-rotate session tiap 10 menit ====
+  var __rotateTimer = null;
+  async function autoRotate(){
+    if (!loggedIn) return;
+    try {
+      var r = await fetch('/api/admin/rotate', { method: 'POST' });
+      if (!r.ok) {
+        console.warn('[ROTATE] Failed, HTTP', r.status);
+        if (r.status === 401) {
+          loggedIn = false;
+          closePanel();
+          alert('Session expired. Login ulang.');
+        }
+      }
+    } catch(e) {
+      console.warn('[ROTATE] Error:', e.message);
+    }
+  }
+  function startRotateTimer(){
+    if (__rotateTimer) clearInterval(__rotateTimer);
+    __rotateTimer = setInterval(autoRotate, 10 * 60 * 1000); // 10 menit
+  }
+  function stopRotateTimer(){
+    if (__rotateTimer) { clearInterval(__rotateTimer); __rotateTimer = null; }
+  }
+
   launch.onclick=async function(){
     // SELALU minta login, walaupun udah pernah
     loggedIn=false;
     var success=await doLogin();
-    if(success){openPanel();loadUsers()}
+    if(success){openPanel();loadUsers();startRotateTimer()}
   };
-  if(closeBtn)closeBtn.onclick=closePanel;
+  if(closeBtn)closeBtn.onclick=function(){ stopRotateTimer(); closePanel(); };
 })();
 
 
