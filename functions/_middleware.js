@@ -1,4 +1,5 @@
 // Global Middleware — 24 Layer Security
+import { sendTelegram, escapeHtml } from '../_lib/telegram.js';
 function jsonResp(status, data, extraHeaders) {
   return new Response(JSON.stringify(data), {
     status: status,
@@ -127,6 +128,17 @@ export async function onRequest(context) {
         await db.prepare(
           'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind('honeypot_hit', 'attacker', pathname, ua.slice(0, 200), ip, Date.now()).run();
+      } catch (e) {}
+
+      // Kirim notif Telegram
+      try {
+        await sendTelegram(context.env,
+          '🍯 <b>Honeypot Hit</b>\n' +
+          'IP: <code>' + escapeHtml(ip) + '</code>\n' +
+          'Path: <code>' + escapeHtml(pathname) + '</code>\n' +
+          'UA: <code>' + escapeHtml(ua.slice(0, 80)) + '</code>\n' +
+          'Time: ' + new Date().toISOString()
+        , { type: 'honeypot', throttleMs: 30000 });
       } catch (e) {}
     }
   }
@@ -330,6 +342,17 @@ export async function onRequest(context) {
         await __db.prepare(
           'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind('ip_autoblock', 'system', __ip, 'Errors: ' + row.count, __ip, now).run();
+
+        // Notif Telegram
+        try {
+          await sendTelegram(context.env,
+            '🚫 <b>IP Auto-Blocked</b>\n' +
+            'IP: <code>' + escapeHtml(__ip) + '</code>\n' +
+            'Errors: <b>' + row.count + '</b> in 5 min\n' +
+            'Duration: 1 jam\n' +
+            'Time: ' + new Date().toISOString()
+          , { type: 'autoblock', throttleMs: 60000 });
+        } catch (e) {}
       }
 
       // Cleanup window lama
