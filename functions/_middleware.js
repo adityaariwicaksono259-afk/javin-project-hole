@@ -312,8 +312,12 @@ export async function onRequest(context) {
   ].join('; ');
   newHeaders.set('Content-Security-Policy', csp);
 
-  if (pathname.match(/\.(css|js|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico)$/i)) {
-    newHeaders.set('Cache-Control', 'public, max-age=86400');
+  if (pathname.match(/\.(css|js)$/i)) {
+    // CSS & JS: wajib revalidate tiap request (biar update cepet)
+    newHeaders.set('Cache-Control', 'no-cache, must-revalidate');
+  } else if (pathname.match(/\.(png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico)$/i)) {
+    // Image & font: cache 7 hari (jarang berubah)
+    newHeaders.set('Cache-Control', 'public, max-age=604800');
   }
 
   // ==== LAYER 25: Track errors untuk anomaly detection ====
