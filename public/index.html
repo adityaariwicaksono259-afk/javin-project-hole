@@ -8,7 +8,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v=20260919b">
 </head><body>
-<div class="space"><div class="stars"></div><div class="nebula n1"></div><div class="nebula n2"></div><div class="blackhole"><div class="ring r1"></div><div class="ring r2"></div><div class="core"></div></div></div>
+<canvas id="spaceBg" style="position:fixed;inset:0;z-index:-2;pointer-events:none"></canvas>
+<div id="splashScreen">
+  <div class="splash-inner">
+    <div class="splash-icon">✨</div>
+    <div class="splash-title">JAVIN PLAYGROUND</div>
+    <div class="splash-loader"><span></span><span></span><span></span></div>
+  </div>
+</div>
 <header class="hero"><div class="eyebrow">JAVIN PROJECT HOLE // DEEP SPACE CATALOG</div><h1>BLACK <span>HOLE</span></h1><p>Eksplorasi endpoint dalam katalog yang melayang di ruang hampa. Pilih kategori, buka card, isi parameter, lalu jalankan.</p><div class="stats"><div><b id="count">—</b><small>ENDPOINTS</small></div><div><b id="catCount">—</b><small>CATEGORIES</small></div><div><b>NO KEY</b><small>FILTER</small></div></div></header>
 <button class="admin-launch" id="adminLaunch">🛡️</button>
 <div class="user-id">ID: <span id="userId"></span> · Limit: <span id="userLimit" class="u-limit">–</span></div>
@@ -119,6 +126,7 @@
 <script src="/turnstile.js"></script>
 <script src="/app.js"></script>
 <script src="/admin-2fa.js"></script>
+<script src="/space-bg.js"></script>
 <!-- Turnstile Script -->
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <div id="turnstileWrap" style="position:fixed;inset:0;z-index:9999;background:rgba(3,3,10,.95);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)">

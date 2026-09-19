@@ -101,3 +101,20 @@
 .a2fa-timer{font-size:11px;color:#666;text-align:center;margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:.5px}
 #a2faCode{letter-spacing:8px;text-align:center;font-size:22px;font-family:'Courier New',monospace;font-weight:700;color:#a98cff}
 @media(max-width:420px){.a2fa-modal{padding:24px 20px 20px;border-radius:18px}.a2fa-title{font-size:13px}.a2fa-input{padding:14px 16px;font-size:14px}.a2fa-btn{padding:14px;font-size:12px}#a2faCode{font-size:20px;letter-spacing:6px}}
+
+/* === Splash Screen === */
+#splashScreen{position:fixed;inset:0;z-index:100000;background:radial-gradient(circle at 50% 50%,#0a0616 0,#03030a 60%);display:flex;align-items:center;justify-content:center;transition:opacity .6s ease,visibility .6s ease}
+#splashScreen.hide{opacity:0;visibility:hidden;pointer-events:none}
+.splash-inner{text-align:center;animation:splashPop .8s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes splashPop{0%{opacity:0;transform:scale(.85)}100%{opacity:1;transform:scale(1)}}
+.splash-icon{font-size:64px;margin-bottom:16px;filter:drop-shadow(0 0 30px rgba(169,140,255,.9));animation:splashFloat 2.4s ease-in-out infinite}
+@keyframes splashFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.splash-title{font-family:'Orbitron',sans-serif;font-size:22px;font-weight:800;letter-spacing:4px;background:linear-gradient(120deg,#fff,#b18cff,#ff7a18,#fff);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:splashShine 3s linear infinite;margin-bottom:24px}
+@keyframes splashShine{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+.splash-loader{display:inline-flex;gap:8px}
+.splash-loader span{width:8px;height:8px;border-radius:50%;background:#7045ff;box-shadow:0 0 12px rgba(112,69,255,.8);animation:splashDot 1.4s ease-in-out infinite}
+.splash-loader span:nth-child(2){animation-delay:.2s;background:#a05cff}
+.splash-loader span:nth-child(3){animation-delay:.4s;background:#ff7a18}
+@keyframes splashDot{0%,80%,100%{transform:scale(.5);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+/* Sembunyikan background lama */
+.space,.stars,.nebula,.blackhole{display:none!important}
