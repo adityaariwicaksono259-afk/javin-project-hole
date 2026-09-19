@@ -1,6 +1,4 @@
-// Global middleware — Security Layer (1-17)
-
-// ==== Helper ====
+// Global Middleware — 24 Layer Security
 function jsonResp(status, data, extraHeaders) {
   return new Response(JSON.stringify(data), {
     status: status,
@@ -55,7 +53,6 @@ export async function onRequest(context) {
   // ==== LAYER 16: User-Agent filter ====
   const ua = (request.headers.get('User-Agent') || '').toLowerCase();
   if (pathname.startsWith('/api/')) {
-    // Block bot scanner terkenal
     const badBots = /(sqlmap|nikto|nmap|masscan|nessus|acunetix|dirbuster|gobuster|hydra|zap|w3af)/i;
     if (badBots.test(ua)) {
       return jsonResp(403, { ok: false, message: 'Akses ditolak.' });
@@ -69,20 +66,16 @@ export async function onRequest(context) {
     if (isNaN(size) || size < 0) {
       return jsonResp(400, { ok: false, message: 'Content-Length tidak valid.' });
     }
-    // Limit 6 MB (cukup buat upload gambar 5 MB + overhead)
     if (size > 6 * 1024 * 1024) {
       return jsonResp(413, { ok: false, message: 'Payload terlalu besar (max 6 MB).' });
     }
   }
-
-  // Query string limit
   if (url.search.length > 4000) {
     return jsonResp(414, { ok: false, message: 'Query string terlalu panjang.' });
   }
 
   // ==== LAYER 11: Content-Type enforcement ====
   if (['POST', 'PUT', 'PATCH'].includes(method) && pathname.startsWith('/api/')) {
-    // Skip untuk endpoint upload (multipart)
     if (!pathname.includes('/imgtourl') && !pathname.includes('/premium/')) {
       const ct = request.headers.get('Content-Type') || '';
       if (!ct.includes('application/json') && ct !== '') {
@@ -91,10 +84,9 @@ export async function onRequest(context) {
     }
   }
 
-  // ==== LAYER 12: Honeypot endpoints ====
+  // ==== LAYER 12: Honeypot ====
   const honeypots = ['/admin.php', '/wp-login.php', '/.env', '/.git/config', '/phpinfo.php', '/eval.php'];
   if (honeypots.some(h => pathname.toLowerCase() === h)) {
-    // Log ke D1 (jangan block, biar attacker ngira berhasil)
     const db = context.env.JAVIN_DB;
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
     if (db) {
@@ -125,16 +117,13 @@ export async function onRequest(context) {
     }
   }
 
-  // ==== LAYER 21: Turnstile Verification ====
-  // Semua /api/* butuh cookie jvin_verified, kecuali endpoint verify-turnstile
+  // ==== LAYER 21: Turnstile (kill switch TURNSTILE_ENABLED) ====
   const turnstileOn = String(context.env.TURNSTILE_ENABLED || '') === '1';
   if (turnstileOn && pathname.startsWith('/api/') && pathname !== '/api/verify-turnstile') {
     const secret = context.env.ADMIN_SESSION_SECRET;
     const ip = request.headers.get('CF-Connecting-IP') ||
                (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
                'unknown';
-
-    // Whitelist admin IP → auto-pass
     const adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
     const isWhitelisted = adminIPs.includes(ip);
 
@@ -151,10 +140,7 @@ export async function onRequest(context) {
             const expires = parseInt(parts[0]);
             const payload = parts[0] + '.' + parts[1];
             const signature = parts[2];
-
-            // Cek expired
             if (expires > Date.now()) {
-              // Verify HMAC
               const key = await crypto.subtle.importKey(
                 'raw', new TextEncoder().encode(secret),
                 { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
@@ -162,9 +148,7 @@ export async function onRequest(context) {
               const expectedBuf = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
               const expected = btoa(String.fromCharCode(...new Uint8Array(expectedBuf)))
                 .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-
               if (expected === signature) {
-                // Verify IP bind
                 const ipKey = await crypto.subtle.importKey(
                   'raw', new TextEncoder().encode(secret),
                   { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
@@ -172,7 +156,6 @@ export async function onRequest(context) {
                 const ipSigBuf = await crypto.subtle.sign('HMAC', ipKey, new TextEncoder().encode('ip:' + ip));
                 const expectedIpHash = btoa(String.fromCharCode(...new Uint8Array(ipSigBuf)))
                   .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-
                 if (expectedIpHash === parts[1]) {
                   verified = true;
                 }
@@ -180,7 +163,7 @@ export async function onRequest(context) {
             }
           }
         } catch (e) {
-          console.error('[TURNSTILE] Cookie parse error:', e.message);
+          console.error('[TURNSTILE] Cookie error:', e.message);
         }
       }
 
@@ -194,7 +177,7 @@ export async function onRequest(context) {
     }
   }
 
-  // ==== LAYER 6: Rate Limit ====
+  // ==== LAYER 6 + 24: Rate Limit (Global + Per-Endpoint) ====
   if (pathname.startsWith('/api/')) {
     const db = context.env.JAVIN_DB;
     const ip = request.headers.get('CF-Connecting-IP') ||
@@ -202,27 +185,45 @@ export async function onRequest(context) {
                'unknown';
     const adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
     const isWhitelisted = adminIPs.includes(ip);
+
     const WINDOW_MS = 60 * 1000;
-    const MAX_REQ = 60;
+
+    // Per-endpoint rate limit
+    let MAX_REQ = 60;
+    if (pathname.startsWith('/api/imgtourl')) MAX_REQ = 10;
+    else if (pathname.startsWith('/api/premium/')) MAX_REQ = 5;
+    else if (pathname.startsWith('/api/admin/')) MAX_REQ = 20;
+    else if (pathname.startsWith('/api/javin')) MAX_REQ = 30;
+    else if (pathname.startsWith('/api/user/')) MAX_REQ = 30;
+    else if (pathname.startsWith('/api/proxy')) MAX_REQ = 60;
 
     if (db && !isWhitelisted) {
       try {
         const now = Date.now();
+        const pathBucket = pathname.split('/').slice(0, 3).join('/');
         const windowStart = Math.floor(now / WINDOW_MS) * WINDOW_MS;
+        const bucketKey = pathBucket;
+
         await db.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(now - 5 * 60 * 1000).run();
-        const row = await db.prepare('SELECT count FROM rate_limits WHERE ip = ? AND window_start = ?').bind(ip, windowStart).first();
+
+        const row = await db.prepare(
+          'SELECT count FROM rate_limits WHERE ip = ? AND window_start = ?'
+        ).bind(ip + ':' + bucketKey, windowStart).first();
+
         const currentCount = (row && row.count) || 0;
+
         if (currentCount >= MAX_REQ) {
           const resetSec = Math.ceil((windowStart + WINDOW_MS - now) / 1000);
           return jsonResp(429, {
             ok: false,
-            message: 'Terlalu banyak request. Tunggu ' + resetSec + ' detik lagi.',
+            message: 'Terlalu banyak request ke endpoint ini. Tunggu ' + resetSec + ' detik.',
             retry_after: resetSec
           }, { 'Retry-After': String(resetSec) });
         }
+
         await db.prepare(
           'INSERT INTO rate_limits (ip, window_start, count) VALUES (?, ?, 1) ON CONFLICT(ip, window_start) DO UPDATE SET count = count + 1'
-        ).bind(ip, windowStart).run();
+        ).bind(ip + ':' + bucketKey, windowStart).run();
       } catch (e) {
         console.error('[RATE-LIMIT] DB error:', e.message);
       }
@@ -263,7 +264,6 @@ export async function onRequest(context) {
   ].join('; ');
   newHeaders.set('Content-Security-Policy', csp);
 
-  // ==== Cache static ====
   if (pathname.match(/\.(css|js|png|jpg|jpeg|webp|gif|svg|woff2?|ttf|ico)$/i)) {
     newHeaders.set('Cache-Control', 'public, max-age=86400');
   }
