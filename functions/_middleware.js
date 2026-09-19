@@ -155,6 +155,52 @@ export async function onRequest(context) {
     }
   }
 
+  // ==== LAYER 35-39: Input Hardening ====
+  if (pathname.startsWith('/api/')) {
+    // Layer 35: JSON depth limit
+    // (cek nanti saat body di-parse oleh handler, kita cek header dulu)
+
+    // Layer 36: Header size limit (max 8KB total)
+    let headerSize = 0;
+    for (const [k, v] of request.headers.entries()) {
+      headerSize += k.length + v.length + 4;
+      if (headerSize > 8192) {
+        return jsonResp(431, { ok: false, message: 'Header terlalu besar.' });
+      }
+    }
+
+    // Layer 37: Cookie size limit (max 4KB)
+    const cookieHeader = request.headers.get('Cookie') || '';
+    if (cookieHeader.length > 4096) {
+      return jsonResp(431, { ok: false, message: 'Cookie terlalu besar.' });
+    }
+
+    // Layer 38: Unicode normalization check
+    // Block null bytes + kontrol karakter
+    try {
+      const rawUrl = decodeURIComponent(url.search);
+      if (/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/.test(rawUrl)) {
+        return jsonResp(400, { ok: false, message: 'Input mengandung karakter tidak valid.' });
+      }
+    } catch (e) {}
+
+    // Layer 39: SQLi pattern detection (log only — kita udah pakai prepared statements)
+    const fullUrl = url.pathname + url.search;
+    const sqliPattern = /(\bunion\b.*\bselect\b|\bor\b\s+1\s*=\s*1|\bdrop\b\s+table|\binsert\b\s+into|--\s|\/\*.*\*\/|;\s*\bselect\b)/i;
+    if (sqliPattern.test(fullUrl)) {
+      console.warn('[SQLI-DETECT] IP:', __ip, 'URL:', fullUrl.slice(0, 200));
+      // Log ke audit kalau ada DB
+      if (__db && !__isWhitelisted) {
+        try {
+          await __db.prepare(
+            'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+          ).bind('sqli_attempt', 'attacker', pathname.slice(0, 100), fullUrl.slice(0, 200), __ip, Date.now()).run();
+        } catch (e) {}
+      }
+      // Note: kita TETAP lanjut karena prepared statements nggak bisa di-inject
+    }
+  }
+
   // ==== LAYER 9: Payload size limit ====
   const cl = request.headers.get('Content-Length');
   if (cl) {
