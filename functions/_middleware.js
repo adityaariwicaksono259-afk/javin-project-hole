@@ -125,6 +125,74 @@ export async function onRequest(context) {
     }
   }
 
+  // ==== LAYER 21: Turnstile Verification ====
+  // Semua /api/* butuh cookie jvin_verified, kecuali endpoint verify-turnstile
+  if (pathname.startsWith('/api/') && pathname !== '/api/verify-turnstile') {
+    const secret = context.env.ADMIN_SESSION_SECRET;
+    const ip = request.headers.get('CF-Connecting-IP') ||
+               (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+               'unknown';
+
+    // Whitelist admin IP → auto-pass
+    const adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+    const isWhitelisted = adminIPs.includes(ip);
+
+    if (!isWhitelisted && secret) {
+      const cookieHeader = request.headers.get('Cookie') || '';
+      const match = cookieHeader.match(/(?:^|;\s*)jvin_verified=([^;]+)/);
+      let verified = false;
+
+      if (match) {
+        try {
+          const token = decodeURIComponent(match[1]);
+          const parts = token.split('.');
+          if (parts.length === 3) {
+            const expires = parseInt(parts[0]);
+            const payload = parts[0] + '.' + parts[1];
+            const signature = parts[2];
+
+            // Cek expired
+            if (expires > Date.now()) {
+              // Verify HMAC
+              const key = await crypto.subtle.importKey(
+                'raw', new TextEncoder().encode(secret),
+                { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+              );
+              const expectedBuf = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+              const expected = btoa(String.fromCharCode(...new Uint8Array(expectedBuf)))
+                .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+              if (expected === signature) {
+                // Verify IP bind
+                const ipKey = await crypto.subtle.importKey(
+                  'raw', new TextEncoder().encode(secret),
+                  { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+                );
+                const ipSigBuf = await crypto.subtle.sign('HMAC', ipKey, new TextEncoder().encode('ip:' + ip));
+                const expectedIpHash = btoa(String.fromCharCode(...new Uint8Array(ipSigBuf)))
+                  .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+
+                if (expectedIpHash === parts[1]) {
+                  verified = true;
+                }
+              }
+            }
+          }
+        } catch (e) {
+          console.error('[TURNSTILE] Cookie parse error:', e.message);
+        }
+      }
+
+      if (!verified) {
+        return jsonResp(403, {
+          ok: false,
+          message: 'Verifikasi diperlukan. Refresh halaman.',
+          need_turnstile: true
+        });
+      }
+    }
+  }
+
   // ==== LAYER 6: Rate Limit ====
   if (pathname.startsWith('/api/')) {
     const db = context.env.JAVIN_DB;

@@ -567,3 +567,82 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   });
 
 })();
+
+
+// === TURNSTILE AUTO-VERIFY ===
+(function(){
+  var SITE_KEY = '0x4AAAAAAE85ztR80uqZYabJlh4DfEJzRnY';
+  var wrap = document.getElementById('turnstileWrap');
+  var container = document.getElementById('turnstileContainer');
+  var msg = document.getElementById('turnstileMsg');
+  if (!wrap || !container) return;
+
+  // Cek apakah perlu verify (test 1 request ringan)
+  async function needsVerify() {
+    try {
+      var r = await fetch('/api/user/me?uid=test-check', { method: 'GET' });
+      if (r.status === 403) {
+        var j = await r.json();
+        return j.need_turnstile === true;
+      }
+      return false;
+    } catch(e) { return false; }
+  }
+
+  function setMsg(text, color) {
+    if (msg) { msg.textContent = text; msg.style.color = color || '#ff9aad'; }
+  }
+
+  async function submitToken(token) {
+    setMsg('Memverifikasi...', '#b8a3ff');
+    try {
+      var r = await fetch('/api/verify-turnstile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: token })
+      });
+      var j = await r.json();
+      if (j.ok) {
+        setMsg('✅ Berhasil! Loading...', '#4ade80');
+        setTimeout(function(){ location.reload(); }, 800);
+      } else {
+        setMsg('❌ ' + (j.message || 'Gagal verifikasi. Refresh halaman.'), '#ff9aad');
+        setTimeout(function(){ turnstile.reset(); }, 2000);
+      }
+    } catch(e) {
+      setMsg('❌ Network error: ' + e.message, '#ff9aad');
+    }
+  }
+
+  var turnstile = null;
+
+  function initWidget() {
+    if (typeof turnstile === 'undefined' || !turnstile.render) {
+      // Script belum load, tunggu
+      setTimeout(initWidget, 300);
+      return;
+    }
+    turnstile.render('#turnstileContainer', {
+      sitekey: SITE_KEY,
+      theme: 'dark',
+      callback: function(token) {
+        submitToken(token);
+      },
+      'error-callback': function() {
+        setMsg('❌ Widget error. Refresh halaman.', '#ff9aad');
+      },
+      'expired-callback': function() {
+        setMsg('⏱️ Verifikasi expired, solve ulang...', '#fbbf24');
+      }
+    });
+  }
+
+  // Cek dulu apakah perlu verify
+  setTimeout(async function(){
+    var need = await needsVerify();
+    if (need) {
+      wrap.style.display = 'flex';
+      initWidget();
+    }
+  }, 800);
+})();

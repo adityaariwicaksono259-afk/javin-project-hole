@@ -116,4 +116,14 @@
 <div id="modal" class="modal hidden"><div class="modalBox"><button class="close" id="close">×</button><div id="modalBody"></div></div></div>
 <footer>JAVIN PROJECT HOLE UI · DATA KATALOG DARI FILE DOKUMENTASI YANG DIBERIKAN</footer>
 <script src="/app.js"></script>
+<!-- Turnstile Script -->
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+<div id="turnstileWrap" style="position:fixed;inset:0;z-index:9999;background:rgba(3,3,10,.95);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
+  <div style="text-align:center;padding:24px">
+    <div style="font-family:'Orbitron',sans-serif;font-size:18px;color:#a98cff;margin-bottom:12px">🔒 Verifikasi Keamanan</div>
+    <div style="font-size:12px;color:#888;margin-bottom:16px">Sebentar, lagi cek apakah kamu manusia...</div>
+    <div id="turnstileContainer"></div>
+    <div id="turnstileMsg" style="font-size:11px;color:#ff9aad;margin-top:12px"></div>
+  </div>
+</div>
 </body></html>
