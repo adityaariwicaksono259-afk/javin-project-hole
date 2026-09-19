@@ -28,6 +28,12 @@ async function hmac(secret, value) {
     .replace(/=+$/, '');
 }
 
+function isWhitelistedIP(ip, env) {
+  if (!env.ADMIN_IPS) return false;
+  const list = String(env.ADMIN_IPS).split(',').map(s => s.trim()).filter(Boolean);
+  return list.includes(ip);
+}
+
 export async function onRequestPost({ request, env }) {
   if (!env.ADMIN_USERNAME || !env.ADMIN_PASSWORD || !env.ADMIN_SESSION_SECRET) {
     return json({ ok: false, message: 'Admin auth belum dikonfigurasi.' }, 503);
@@ -95,8 +101,8 @@ export async function onRequestPost({ request, env }) {
   const passOk = safeCompare(password, env.ADMIN_PASSWORD);
 
   if (!userOk || !passOk) {
-    // ==== Log failed attempt ====
-    if (db) {
+    // ==== Log failed attempt (kecuali whitelist) ====
+    if (db && !isWhitelisted) {
       try {
         await db.prepare(
           'INSERT INTO login_attempts (ip, created_at) VALUES (?, ?)'
