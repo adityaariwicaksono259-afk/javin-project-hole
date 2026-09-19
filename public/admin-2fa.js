@@ -156,8 +156,28 @@
       setMsg('✅ Login berhasil! Memuat panel...', 'ok');
       setTimeout(function(){
         closeModal();
-        if (window.__adminReloadPanel) window.__adminReloadPanel();
-        else location.reload();
+        // Coba panggil fungsi buka panel
+        if (typeof window.__adminReloadPanel === 'function') {
+          try {
+            window.__adminReloadPanel();
+            console.log('[2FA] Panel opened via __adminReloadPanel');
+            return;
+          } catch (e) {
+            console.error('[2FA] __adminReloadPanel error:', e);
+          }
+        }
+        // Fallback: tunggu app.js load, coba lagi
+        var tries = 0;
+        var waitApp = setInterval(function(){
+          tries++;
+          if (typeof window.__adminReloadPanel === 'function') {
+            clearInterval(waitApp);
+            try { window.__adminReloadPanel(); } catch(e) {}
+          } else if (tries > 20) {
+            clearInterval(waitApp);
+            console.error('[2FA] __adminReloadPanel never loaded');
+          }
+        }, 100);
       }, 800);
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');
