@@ -31,6 +31,62 @@ export async function onRequest(context) {
     }
   }
 
+  // ==== LAYER 6: Rate Limit Global (60 req/menit per IP) ====
+  // Hanya untuk endpoint /api/* (static files dibebaskan)
+  if (url.pathname.startsWith('/api/')) {
+    const db = context.env.JAVIN_DB;
+    const ip = request.headers.get('CF-Connecting-IP') ||
+               (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+               'unknown';
+    const adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+    const isWhitelisted = adminIPs.includes(ip);
+
+    const WINDOW_MS = 60 * 1000;
+    const MAX_REQ = 60;
+
+    if (db && !isWhitelisted) {
+      try {
+        const now = Date.now();
+        const windowStart = Math.floor(now / WINDOW_MS) * WINDOW_MS;
+
+        // Bersihin window lama (lebih dari 5 menit)
+        await db.prepare('DELETE FROM rate_limits WHERE window_start < ?').bind(now - 5 * 60 * 1000).run();
+
+        // Get current count
+        const row = await db.prepare(
+          'SELECT count FROM rate_limits WHERE ip = ? AND window_start = ?'
+        ).bind(ip, windowStart).first();
+
+        const currentCount = (row && row.count) || 0;
+
+        if (currentCount >= MAX_REQ) {
+          const resetSec = Math.ceil((windowStart + WINDOW_MS - now) / 1000);
+          console.warn('[RATE-LIMIT] IP:', ip, 'count:', currentCount, 'path:', url.pathname);
+          return new Response(JSON.stringify({
+            ok: false,
+            message: 'Terlalu banyak request. Tunggu ' + resetSec + ' detik lagi.',
+            retry_after: resetSec
+          }), {
+            status: 429,
+            headers: {
+              'Content-Type': 'application/json; charset=utf-8',
+              'Retry-After': String(resetSec)
+            }
+          });
+        }
+
+        // Increment
+        await db.prepare(
+          'INSERT INTO rate_limits (ip, window_start, count) VALUES (?, ?, 1) ' +
+          'ON CONFLICT(ip, window_start) DO UPDATE SET count = count + 1'
+        ).bind(ip, windowStart).run();
+      } catch (e) {
+        // Kalau DB error, jangan block request (fail-open)
+        console.error('[RATE-LIMIT] DB error:', e.message);
+      }
+    }
+  }
+
   // ==== LAYER 1: Security headers ====
   const response = await context.next();
   const newHeaders = new Headers(response.headers);
