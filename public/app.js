@@ -3,7 +3,12 @@ function maskUrl(t){return String(t||'').replace(/https?:\/\/[^"\s,}\)\]]+/gi,fu
 let endpoints=[],active='ALL';
 const order=['AI','Tools','Downloader','Anime','Canvas','Random','Search','SMM','Berita','Info','Islami','Uploader','Other'];
 const $=s=>document.querySelector(s);
-fetch('/endpoints.json').then(r=>r.json()).then(data=>{endpoints=data;$('#count').textContent=data.length;let cats=[...new Set(data.map(x=>x.folder))];$('#catCount').textContent=cats.length;renderCats(cats);render();});
+fetch('/endpoints.json').then(function(r){ return r.json(); }).then(function(data){
+  endpoints = data;
+  var cats = Array.from(new Set(data.map(function(x){ return x.folder; })));
+  renderCats(cats);
+  render();
+});
 function renderCats(cats){
   var sorted = cats.sort((a,b) => {
     var ai = order.indexOf(a) < 0 ? 99 : order.indexOf(a);
