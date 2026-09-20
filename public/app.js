@@ -1,3 +1,19 @@
+
+// === Auto-hide splash screen ===
+(function(){
+  function hideSplash(){
+    var s = document.getElementById('splashScreen');
+    if (s && !s.classList.contains('hide')) {
+      s.classList.add('hide');
+      setTimeout(function(){ s.style.display = 'none'; }, 700);
+    }
+  }
+  // Hide setelah 1.5 detik (maks 2.5 detik)
+  setTimeout(hideSplash, 1500);
+  window.addEventListener('load', function(){ setTimeout(hideSplash, 800); });
+  setTimeout(hideSplash, 2500);
+})();
+
 function maskHost(u){return String(u||"").replace(/https?:\/\/[^\/\s"']*/gi,"")||"/";}
 function maskUrl(t){return String(t||'').replace(/https?:\/\/[^"\s,}\)\]]+/gi,function(u){try{return '\u2026'+new URL(u).pathname}catch(e){return u}}).replace(/(api\.|apii\.)?nexadev\.my\.id/gi,'javin').replace(/api\.nexaadev\.my\.id/gi,'javin').replace(/clooud\.my\.id/gi,'javin');}
 let endpoints=[],active='ALL';
