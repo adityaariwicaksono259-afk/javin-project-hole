@@ -153,11 +153,32 @@
         return;
       }
 
-      setMsg('✅ Login berhasil!', 'ok');
-      setTimeout(function(){
-        closeModal();
-        window.location.href = '/admin';
-      }, 500);
+      // Verifikasi cookie beneran ke-set dengan fetch
+      fetch('/api/admin/check', { credentials: 'same-origin' })
+        .then(function(r){ return r.json(); })
+        .then(function(j){
+          if (j && j.ok) {
+            // Cookie valid — tampilkan tombol buka panel
+            setMsg('✅ Login berhasil!', 'ok');
+            var modal = document.querySelector('.a2fa-modal');
+            if (modal) {
+              var oldBtn = document.getElementById('a2faOpenPanel');
+              if (oldBtn) oldBtn.remove();
+              var btn = document.createElement('a');
+              btn.id = 'a2faOpenPanel';
+              btn.href = '/admin';
+              btn.textContent = '🚀 BUKA PANEL ADMIN';
+              btn.style.cssText = 'display:block;width:100%;padding:16px;margin-top:12px;background:linear-gradient(90deg,#4ade80,#22c55e);color:#fff;border:0;border-radius:14px;font-family:Orbitron,sans-serif;font-size:13px;font-weight:800;letter-spacing:1.5px;text-align:center;text-decoration:none;box-shadow:0 6px 20px rgba(74,222,128,.4)';
+              var msg = document.getElementById('a2faMsg');
+              if (msg && msg.parentNode) msg.parentNode.insertBefore(btn, msg.nextSibling);
+            }
+          } else {
+            setMsg('❌ Session gagal ke-set. Coba login ulang.', 'err');
+          }
+        })
+        .catch(function(e){
+          setMsg('❌ Error: ' + e.message, 'err');
+        });
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');
     } finally {
