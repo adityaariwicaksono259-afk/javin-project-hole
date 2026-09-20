@@ -197,30 +197,67 @@ function finishResult(container, html){
     };
   }
 
-  // Search lirik (kalau nggak ada lyrics di response)
+  // Search lirik (kalau nggak ada lyrics di response) — 2-STEP
   var btnSearchLy = container.querySelector('#btnSearchLyrics');
   if (btnSearchLy && lyricsBox) {
     btnSearchLy.onclick = async function(){
       btnSearchLy.disabled = true;
       btnSearchLy.innerHTML = '⏳ Mencari lirik...';
       lyricsBox.style.display = 'block';
-      lyricsBox.textContent = 'Memuat...';
+      lyricsBox.textContent = '🔍 Step 1/2: Mencari lagu...';
+
       try {
-        var q = btnSearchLy.dataset.title + (btnSearchLy.dataset.artist ? ' ' + btnSearchLy.dataset.artist : '');
         var uid = '';
         try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e){}
-        var url = '/api/proxy?id=ep100&q=' + encodeURIComponent(q) + (uid ? '&uid=' + encodeURIComponent(uid) : '');
-        var r = await fetch(url);
-        var txt = await r.text();
-        var result = txt;
-        try {
-          var j = JSON.parse(txt);
-          // Cari lirik di hasil
-          var found = extractLyrics(j);
-          if (found) result = found;
-        } catch(e) {}
-        lyricsBox.textContent = result || 'Lirik tidak ditemukan.';
+        var q = btnSearchLy.dataset.title + (btnSearchLy.dataset.artist ? ' ' + btnSearchLy.dataset.artist : '');
+
+        // STEP 1: Search lyric (ep100)
+        var url1 = '/api/proxy?id=ep100&q=' + encodeURIComponent(q) + (uid ? '&uid=' + encodeURIComponent(uid) : '');
+        var r1 = await fetch(url1);
+        var txt1 = await r1.text();
+        var j1 = null;
+        try { j1 = JSON.parse(txt1); } catch(e){}
+
+        if (!j1) throw new Error('Search gagal');
+
+        // Cek kalau search langsung kasih lirik
+        var directLyrics = extractLyrics(j1);
+        if (directLyrics && directLyrics.length > 50) {
+          lyricsBox.textContent = directLyrics;
+          btnSearchLy.innerHTML = '📜 Sembunyikan Lirik';
+          btnSearchLy.disabled = false;
+          return;
+        }
+
+        // Cari URL genius dari response
+        var geniusUrl = findGeniusUrl(j1);
+        if (!geniusUrl) {
+          lyricsBox.textContent = '❌ Lirik tidak ditemukan.\n\nResponse: ' + txt1.slice(0, 300);
+          btnSearchLy.innerHTML = '📜 Coba Lagi';
+          btnSearchLy.disabled = false;
+          return;
+        }
+
+        // STEP 2: Get lyric detail (ep101)
+        lyricsBox.textContent = '🔍 Step 2/2: Mengambil lirik dari Genius...';
+        var url2 = '/api/proxy?id=ep101&q=' + encodeURIComponent(geniusUrl) + (uid ? '&uid=' + encodeURIComponent(uid) : '');
+        var r2 = await fetch(url2);
+        var txt2 = await r2.text();
+        var j2 = null;
+        try { j2 = JSON.parse(txt2); } catch(e){}
+
+        var finalLyrics = null;
+        if (j2) finalLyrics = extractLyrics(j2);
+        if (!finalLyrics) finalLyrics = txt2;
+
+        // Bersihin lirik
+        if (typeof finalLyrics === 'string') {
+          finalLyrics = finalLyrics.replace(/\\n/g, '\n').trim();
+        }
+
+        lyricsBox.textContent = finalLyrics || 'Lirik tidak ditemukan.';
         btnSearchLy.innerHTML = '📜 Sembunyikan Lirik';
+
       } catch(e) {
         lyricsBox.textContent = '❌ Gagal: ' + e.message;
         btnSearchLy.innerHTML = '📜 Coba Lagi';
@@ -327,15 +364,16 @@ function smartJsonRender(j){
       '<div class="result-text" style="font-family:monospace;font-size:11px">' + esc(JSON.stringify(j, null, 2)) + '</div></div>';
   }
 
-  // ==== Cari lirik dari berbagai kemungkinan field ====
-  var lyrics = d.lyrics || d.lirik || d.synced_lyrics || d.syncedLyrics || (d.result && (d.result.lyrics || d.result.lirik)) || null;
-  var trackTitle = d.title || d.name || (d.result && d.result.title) || '';
+  // ==== Lyrics — cuma kalau ini tool musik ====
+  var isMusicTool = !!(d.duration || d.track || d.album || d.artist || (d.result && (d.result.duration || d.result.artist)));
+  var lyrics = d.lyrics || d.lirik || d.synced_lyrics || (d.result && (d.result.lyrics || d.result.lirik)) || null;
+  var trackTitle = d.title || (d.result && d.result.title) || '';
   var trackArtist = d.artist || d.author || (d.result && d.result.artist) || '';
 
-  if (lyrics && typeof lyrics === 'string' && lyrics.trim().length > 3) {
+  if (isMusicTool && lyrics && typeof lyrics === 'string' && lyrics.trim().length > 3) {
     out += '<button class="btn-action" id="btnLyrics" style="margin-top:10px">📜 Lihat Lirik</button>' +
       '<div id="lyricsBox" style="display:none;margin-top:10px;background:#f8fafc;border-radius:14px;padding:16px;font-size:13px;line-height:1.8;color:#334155;white-space:pre-wrap;max-height:400px;overflow-y:auto">' + esc(lyrics.trim()) + '</div>';
-  } else if (trackTitle) {
+  } else if (isMusicTool && trackTitle) {
     out += '<button class="btn-action" id="btnSearchLyrics" style="margin-top:10px" data-title="' + esc(trackTitle) + '" data-artist="' + esc(trackArtist) + '">📜 Cari Lirik</button>' +
       '<div id="lyricsBox" style="display:none;margin-top:10px;background:#f8fafc;border-radius:14px;padding:16px;font-size:13px;line-height:1.8;color:#334155;white-space:pre-wrap;max-height:400px;overflow-y:auto"></div>';
   }
@@ -514,7 +552,20 @@ function renderError(c, msg){
   }
 
   // ===== LOAD ENDPOINT DATA =====
-  fetch('/endpoints.json').then(function(r){ return r.json(); }).then(function(data){
+  function loadEndpoints(){
+    return new Promise(function(resolve){
+      try {
+        var cached = sessionStorage.getItem('javin_ep_cache');
+        if (cached) { resolve(JSON.parse(cached)); return; }
+      } catch(e){}
+      fetch('/endpoints.json').then(function(r){ return r.json(); }).then(function(data){
+        try { sessionStorage.setItem('javin_ep_cache', JSON.stringify(data)); } catch(e){}
+        resolve(data);
+      }).catch(function(){ resolve([]); });
+    });
+  }
+
+  loadEndpoints().then(function(data){
     var ep = data.find(function(x){ return x.catalogId === epId; });
     if (!ep) {
       wrap.innerHTML = '<div class="notfound"><h2>❌ Tool tidak ditemukan</h2><p>Endpoint <b>' + esc(epId) + '</b> nggak ada.</p><a href="/">Kembali ke Beranda</a></div>';
@@ -820,6 +871,28 @@ function deepSearch(obj, depth){
     for (var k=0;k<keys.length;k++){
       var r2 = deepSearch(obj[keys[k]], depth+1);
       if (r2 && r2.length > 5) return r2;
+    }
+  }
+  return null;
+}
+
+
+function findGeniusUrl(obj, depth){
+  if (depth === undefined) depth = 0;
+  if (depth > 6 || !obj) return null;
+  if (typeof obj === 'string') {
+    if (/genius\.com/.test(obj) && /lyrics/i.test(obj)) return obj;
+    return null;
+  }
+  if (Array.isArray(obj)) {
+    for (var i=0;i<obj.length;i++){ var r = findGeniusUrl(obj[i], depth+1); if (r) return r; }
+    return null;
+  }
+  if (typeof obj === 'object') {
+    var keys = Object.keys(obj);
+    for (var k=0;k<keys.length;k++){
+      var r = findGeniusUrl(obj[keys[k]], depth+1);
+      if (r) return r;
     }
   }
   return null;
