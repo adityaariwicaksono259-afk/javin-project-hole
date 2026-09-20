@@ -27,7 +27,25 @@
     if (/remover|remove.*background|remini|upscale|hd quality|hd gambar|wink|enhance|pixel art|beautiful|hd image/i.test(txt)) return 'image';
 
     if (folder === 'stalker' || /stalker|stalk|lacak|cek profil/i.test(name)) return 'stalker';
-    if (folder === 'ai' || /^chat|^ai |assistant|gpt|claude|gemini|llama|deepseek|qwen|gita|qwq|felo/i.test(name)) return 'chat';
+    // AI folder: cek dulu apakah ini list/search atau chat
+    if (folder === 'ai') {
+      var descL = (ep.desc || '').toLowerCase();
+      // Kalau ada indikasi list/daftar/pencarian → bukan chat
+      if (/pencarian|mengembalikan daftar|daftar bot|daftar karakter|list karakter|search|mencari karakter|mencari list/i.test(descL)) {
+        return 'search';
+      }
+      // Kalau name pake "c.ai", "character" → search juga
+      if (/c\.?ai|character/i.test(name) && !/^chat/i.test(name)) {
+        return 'search';
+      }
+      return 'chat';
+    }
+    if (/^chat|^ai |assistant|gpt|claude|gemini|llama|deepseek|qwen|gita|qwq|felo/i.test(name)) {
+      // Tapi kalau ada "cari/daftar" di desc, bukan chat
+      var dl = (ep.desc || '').toLowerCase();
+      if (/pencarian|daftar|search|mencari/i.test(dl)) return 'search';
+      return 'chat';
+    }
     if (folder === 'downloader' || /downloader|download/i.test(name)) return 'downloader';
     if (folder === 'search' || /search|cari|pencarian/i.test(name)) return 'search';
     if (folder === 'games') return 'no-input';
@@ -364,6 +382,19 @@ function smartJsonRender(j){
       '<div class="result-text" style="font-family:monospace;font-size:11px">' + esc(JSON.stringify(j, null, 2)) + '</div></div>';
   }
 
+  // ==== Prefix avatar URL (c.ai pakai path relatif) ====
+  function fixAvatar(u){
+    if (!u || typeof u !== 'string') return u;
+    if (/^https?:\/\//.test(u)) return u;
+    if (/^avatars?\//i.test(u)) {
+      return 'https://characterai.io/i/200/static/' + u;
+    }
+    if (/^uploads?\//i.test(u)) {
+      return 'https://characterai.io/i/200/static/' + u;
+    }
+    return u;
+  }
+
   // ==== Lyrics — cuma kalau ini tool musik ====
   var isMusicTool = !!(d.duration || d.track || d.album || d.artist || (d.result && (d.result.duration || d.result.artist)));
   var lyrics = d.lyrics || d.lirik || d.synced_lyrics || (d.result && (d.result.lyrics || d.result.lirik)) || null;
@@ -425,7 +456,7 @@ function isProfileData(d){
 function renderProfileCard(d){
   var name = d.name || d.nickname || d.nama || d.username || d.user;
   var uname = d.username || d.user || '';
-  var avatar = d.avatar || d.avatar_url || d.profile_pic || d.pp || '';
+  var avatar = fixAvatar(d.avatar || d.avatar_url || d.profile_pic || d.pp || '');
   var stats = [];
   if (d.followers !== undefined) stats.push({ v: d.followers, l: 'Followers' });
   if (d.followers_count !== undefined) stats.push({ v: d.followers_count, l: 'Followers' });
@@ -470,7 +501,7 @@ function renderProfileCard(d){
 function renderDownloaderCard(d){
   var title = d.title || d.name || d.filename || 'Media';
   var artist = d.artist || d.author || d.channel || '';
-  var thumb = d.thumbnail || d.thumb || d.cover || d.image || '';
+  var thumb = fixAvatar(d.thumbnail || d.thumb || d.cover || d.image || '');
   var duration = d.duration || d.length || '';
   var downloads = [];
   if (d.download_url) downloads.push({ label: 'Download', url: d.download_url });
@@ -510,7 +541,7 @@ function renderListCard(arr){
     }
     var title = item.title || item.name || item.username || item.id || '';
     var sub = item.desc || item.description || item.bio || item.url || '';
-    var thumb = item.thumbnail || item.image || item.thumb || '';
+    var thumb = fixAvatar(item.thumbnail || item.image || item.thumb || item.avatar_url || item.avatar || '');
     var thumbHtml = thumb ? '<img src="' + esc(thumb) + '" style="width:50px;height:50px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display=\'none\'">' : '';
     return '<div style="display:flex;gap:10px;padding:10px 12px;background:#f8fafc;border-radius:10px;align-items:center">' +
       thumbHtml +
@@ -855,6 +886,23 @@ function renderError(c, msg){
             return;
           }
           var answer = extractAnswer(raw);
+          // Kalau answer kosong atau pendek & response aslinya array, render sebagai card
+          if (!answer || answer.length < 3) {
+            try {
+              var jj = JSON.parse(raw);
+              var arr = Array.isArray(jj) ? jj :
+                        (jj.data && Array.isArray(jj.data)) ? jj.data :
+                        (jj.result && Array.isArray(jj.result)) ? jj.result : null;
+              if (arr && arr.length > 0) {
+                bubble.innerHTML = renderListCard(arr);
+                bubble.style.maxWidth = '100%';
+                bubble.style.background = 'transparent';
+                bubble.style.padding = '0';
+                history.push({ role: 'ai', text: '[Daftar hasil: ' + arr.length + ' item]' }); save();
+                return;
+              }
+            } catch(e){}
+          }
           bubble.textContent = answer;
           history.push({ role: 'ai', text: answer }); save();
         }
