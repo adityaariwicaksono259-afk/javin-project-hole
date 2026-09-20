@@ -154,12 +154,11 @@
       }
 
       setMsg('✅ Login berhasil! Membuka panel...', 'ok');
+      try { sessionStorage.setItem('admin_just_logged_in', '1'); } catch(e) {}
       setTimeout(function(){
         closeModal();
-        // PAKSA buka panel via URL param — paling reliable
-        var url = new URL(window.location.href);
-        url.searchParams.set('admin', '1');
-        window.location.href = url.toString();
+        // Reload tanpa query
+        window.location.href = window.location.pathname;
       }, 800);
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');

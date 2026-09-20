@@ -407,37 +407,35 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   launch.onclick = function(e){
     e.preventDefault();
   };
-  // Auto-open panel kalau ada ?admin=1
-  function __checkAdminUrlParam(){
+  // Auto-open panel kalau abis login (sessionStorage flag)
+  function __checkAdminFlag(){
     try {
-      var params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === '1') {
-        // Cek session dulu
-        fetch('/api/admin/check').then(function(r){ return r.json(); }).then(function(j){
+      var flag = sessionStorage.getItem('admin_just_logged_in');
+      if (flag !== '1') return;
+      sessionStorage.removeItem('admin_just_logged_in');
+
+      // Verify session dulu
+      fetch('/api/admin/check', { credentials: 'same-origin' })
+        .then(function(r){ return r.json(); })
+        .then(function(j){
           if (j && j.ok) {
             loggedIn = true;
             openPanel();
             loadUsers();
             startRotateTimer();
-            // Bersihin URL
-            try {
-              var url = new URL(window.location.href);
-              url.searchParams.delete('admin');
-              window.history.replaceState({}, '', url.toString());
-            } catch(e){}
-            console.log('[ADMIN] Panel auto-opened via URL param');
+            console.log('[ADMIN] Panel auto-opened via sessionStorage flag');
           } else {
             console.warn('[ADMIN] Session invalid, nggak buka panel');
           }
-        }).catch(function(e){
+        })
+        .catch(function(e){
           console.error('[ADMIN] Check error:', e);
         });
-      }
     } catch(e) {
-      console.error('[ADMIN] URL param error:', e);
+      console.error('[ADMIN] Flag check error:', e);
     }
   }
-  setTimeout(__checkAdminUrlParam, 500);
+  setTimeout(__checkAdminFlag, 800);
 
   if(closeBtn)closeBtn.onclick=function(){ stopRotateTimer(); closePanel(); };
 })();
