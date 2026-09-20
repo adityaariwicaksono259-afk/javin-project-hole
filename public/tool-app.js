@@ -524,23 +524,43 @@ function renderListCard(arr){
 }
 
 // ==== Extract text answer dari JSON ====
+function isJunkString(s){
+  if (!s || typeof s !== 'string') return true;
+  s = s.trim();
+  if (s.length < 3) return true;
+  // Skip kalau URL absolute
+  if (/^https?:\/\//.test(s)) return true;
+  // Skip kalau path/file (av=... .jpg, /path/, dll)
+  if (/^(avatars?\/|\/|uploads?\/|files?\/)/i.test(s)) return true;
+  if (/\.(jpg|jpeg|png|gif|webp|mp4|mp3|pdf|zip)$/i.test(s)) return true;
+  // Skip kalau isinya cuma 1 kata tanpa spasi & nggak ada huruf biasa
+  if (!/\s/.test(s) && /^[a-z0-9_\-\/\.]+$/i.test(s) && s.length < 50) return true;
+  // Skip UUID-like
+  if (/^[a-f0-9\-]{20,}$/i.test(s)) return true;
+  return false;
+}
+
 function extractTextAnswer(j, depth){
   if (depth === undefined) depth = 0;
-  if (depth > 5 || j == null) return null;
-  if (typeof j === 'string') return j.length > 2 ? j : null;
+  if (depth > 6 || j == null) return null;
+  if (typeof j === 'string') return isJunkString(j) ? null : j;
+
   if (Array.isArray(j)) {
     for (var i=0;i<j.length;i++){ var r = extractTextAnswer(j[i], depth+1); if (r) return r; }
     return null;
   }
+
   if (typeof j === 'object') {
-    var keys = ['answer','result','response','reply','message','text','jawaban','output','content','msg'];
+    // Priority keys dulu
+    var keys = ['answer','result','response','reply','message','text','jawaban','output','content','msg','description','desc','name','title'];
     for (var i=0;i<keys.length;i++){
-      if (typeof j[keys[i]] === 'string' && j[keys[i]].length > 2) return j[keys[i]];
+      if (typeof j[keys[i]] === 'string' && !isJunkString(j[keys[i]])) return j[keys[i]];
     }
+    // Recurse ke semua value
     var ks = Object.keys(j);
     for (var k=0;k<ks.length;k++){
       var r2 = extractTextAnswer(j[ks[k]], depth+1);
-      if (r2 && r2.length > 10 && !/^https?:/.test(r2)) return r2;
+      if (r2 && r2.length > 5) return r2;
     }
   }
   return null;
@@ -722,6 +742,15 @@ function renderError(c, msg){
 
         if (!res.ok) {
           var t = await res.text();
+          // Kalau HTML (bukan JSON), ambil status code aja
+          if (t.trim().startsWith('<')) {
+            var statusMsg = res.status === 503 ? 'Service Unavailable' :
+                           res.status === 502 ? 'Bad Gateway' :
+                           res.status === 504 ? 'Gateway Timeout' :
+                           res.status === 500 ? 'Internal Server Error' :
+                           'HTTP ' + res.status;
+            throw new Error('Server upstream sedang bermasalah. ' + statusMsg + '. Coba lagi nanti atau pakai tool lain.');
+          }
           try { var ej = JSON.parse(t); t = ej.message || ej.error || t; } catch(e){}
           throw new Error(t.slice(0, 200));
         }
@@ -817,6 +846,14 @@ function renderError(c, msg){
           history.push({ role: 'ai', text: '[Gambar]' }); save();
         } else {
           var raw = await res.text();
+          // Cek kalau HTML error
+          if (raw.trim().startsWith('<')) {
+            var sm = raw.match(/<title>([^<]*)<\/title>/i);
+            var errMsg = sm ? sm[1].trim() : 'Server upstream sedang bermasalah';
+            bubble.textContent = '⚠️ ' + errMsg + '. Coba lagi nanti atau pakai AI lain.';
+            history.push({ role: 'ai', text: '[Error]' }); save();
+            return;
+          }
           var answer = extractAnswer(raw);
           bubble.textContent = answer;
           history.push({ role: 'ai', text: answer }); save();
