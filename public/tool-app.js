@@ -4,6 +4,15 @@
   var wrap = document.getElementById('wrap');
   var headerTitle = document.getElementById('headerTitle');
 
+  // ==== Global helper: fix avatar URL ====
+  function fixAvatar(u){
+    if (!u || typeof u !== 'string') return u;
+    if (/^https?:\/\//.test(u)) return u;
+    if (/^avatars?\//i.test(u)) return 'https://characterai.io/i/200/static/' + u;
+    if (/^uploads?\//i.test(u)) return 'https://characterai.io/i/200/static/' + u;
+    return u;
+  }
+
   function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 
   if (!epId) {
@@ -380,19 +389,6 @@ function smartJsonRender(j){
   if (!out) {
     out = '<div class="result-card"><div class="result-title">Hasil</div>' +
       '<div class="result-text" style="font-family:monospace;font-size:11px">' + esc(JSON.stringify(j, null, 2)) + '</div></div>';
-  }
-
-  // ==== Prefix avatar URL (c.ai pakai path relatif) ====
-  function fixAvatar(u){
-    if (!u || typeof u !== 'string') return u;
-    if (/^https?:\/\//.test(u)) return u;
-    if (/^avatars?\//i.test(u)) {
-      return 'https://characterai.io/i/200/static/' + u;
-    }
-    if (/^uploads?\//i.test(u)) {
-      return 'https://characterai.io/i/200/static/' + u;
-    }
-    return u;
   }
 
   // ==== Lyrics — cuma kalau ini tool musik ====
