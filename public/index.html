@@ -9,6 +9,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style.css?v=3">
 <meta name="theme-color" content="#f0f7ff">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="VinAPIay">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<link rel="icon" type="image/png" href="/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head><body>
@@ -185,4 +191,15 @@
     <div class="a2fa-msg" id="a2faMsg"></div>
   </div>
 </div>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/service-worker.js').then(function(reg){
+      console.log('[SW] Registered:', reg.scope);
+    }).catch(function(e){
+      console.warn('[SW] Register failed:', e.message);
+    });
+  });
+}
+</script>
 </body></html>
