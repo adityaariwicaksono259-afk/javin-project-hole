@@ -357,9 +357,54 @@ async function handleUpdate(env, update) {
     return;
   }
 
-  // Foto (screenshot)
+  // Foto (screenshot ATAU set QRIS admin)
   if (msg.photo && msg.photo.length > 0) {
+    // Admin set QRIS?
+    const caption = (msg.caption || '').trim().toLowerCase();
+    const isAdmin = String(chatId) === String(env.SHOP_ADMIN_CHAT_ID);
+
+    if (isAdmin && caption.indexOf('/setqris') === 0) {
+      const photo = msg.photo[msg.photo.length - 1];
+      const fileId = photo.file_id;
+      const db = env.JAVIN_DB;
+      const now = Date.now();
+      try {
+        await db.prepare(
+          'INSERT INTO config (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at'
+        ).bind('shop_qris_file_id', fileId, now).run();
+        await sendMessage(env, chatId, '✅ <b>QRIS tersimpan!</b>\n\nUser akan dapet QRIS ini tiap mau beli.');
+      } catch (e) {
+        await sendMessage(env, chatId, '❌ Gagal simpan: ' + e.message);
+      }
+      return;
+    }
+
     await handleScreenshot(env, msg);
+    return;
+  }
+
+  // Admin: /setpackages
+  if (text.indexOf('/setpackages') === 0 && String(chatId) === String(env.SHOP_ADMIN_CHAT_ID)) {
+    const jsonStr = text.slice(12).trim();
+    if (!jsonStr) {
+      await sendMessage(env, chatId,
+        '📝 <b>Format:</b>\n' +
+        '<code>/setpackages [{"qty":1,"price":1000,"label":"1 Key","bonus":0},...]</code>\n\n' +
+        'Contoh:\n' +
+        '<code>/setpackages [{"qty":1,"price":1000,"label":"1 Key","bonus":0},{"qty":5,"price":4500,"label":"5 Key","bonus":500}]</code>'
+      );
+      return;
+    }
+    try {
+      const parsed = JSON.parse(jsonStr);
+      if (!Array.isArray(parsed) || !parsed.length) throw new Error('Harus array non-kosong');
+      await env.JAVIN_DB.prepare(
+        'INSERT INTO config (key, value, updated_at) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at'
+      ).bind('shop_packages', JSON.stringify(parsed), Date.now()).run();
+      await sendMessage(env, chatId, '✅ <b>Paket tersimpan!</b>\n\n' + parsed.map(function(p){ return p.label + ': Rp ' + p.price; }).join('\n'));
+    } catch (e) {
+      await sendMessage(env, chatId, '❌ Error: ' + e.message);
+    }
     return;
   }
 
