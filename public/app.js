@@ -66,16 +66,8 @@ function render(){
 }
 
 function card(x){
-  var icons = {
-    'AI': '🤖', 'Anime': '🎌', 'Canvas': '🎨', 'Downloader': '⬇️',
-    'Games': '🎮', 'Search': '🔍', 'Random': '🎲', 'Berita': '📰',
-    'Primbon': '🔮', 'Stalker': '🕵️', 'Tools': '🔧', 'Info': 'ℹ️',
-    'Islami': '📖', 'Maker': '✨', 'SMM': '📊', 'Uploader': '📤', 'Sticker': '💬'
-  };
-  var icon = icons[x.folder] || '⚡';
   var badge = x.subfolder || x.folder;
   return '<div class="fx-card" data-id="' + esc(x.catalogId) + '">' +
-    '<div class="fx-card-icon">' + icon + '</div>' +
     '<div class="fx-card-body">' +
       '<div class="fx-card-title">' +
         '<h3>' + esc(x.name) + '</h3>' +
