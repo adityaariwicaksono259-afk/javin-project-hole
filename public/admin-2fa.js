@@ -153,31 +153,13 @@
         return;
       }
 
-      setMsg('✅ Login berhasil! Memuat panel...', 'ok');
+      setMsg('✅ Login berhasil! Membuka panel...', 'ok');
       setTimeout(function(){
         closeModal();
-        // Coba panggil fungsi buka panel
-        if (typeof window.__adminReloadPanel === 'function') {
-          try {
-            window.__adminReloadPanel();
-            console.log('[2FA] Panel opened via __adminReloadPanel');
-            return;
-          } catch (e) {
-            console.error('[2FA] __adminReloadPanel error:', e);
-          }
-        }
-        // Fallback: tunggu app.js load, coba lagi
-        var tries = 0;
-        var waitApp = setInterval(function(){
-          tries++;
-          if (typeof window.__adminReloadPanel === 'function') {
-            clearInterval(waitApp);
-            try { window.__adminReloadPanel(); } catch(e) {}
-          } else if (tries > 20) {
-            clearInterval(waitApp);
-            console.error('[2FA] __adminReloadPanel never loaded');
-          }
-        }, 100);
+        // PAKSA buka panel via URL param — paling reliable
+        var url = new URL(window.location.href);
+        url.searchParams.set('admin', '1');
+        window.location.href = url.toString();
       }, 800);
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');
