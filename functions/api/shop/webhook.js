@@ -348,12 +348,21 @@ async function handleUpdate(env, update) {
   }
 
   if (text === '/help') {
-    await sendMessage(env, chatId,
-      '📖 <b>CARA PAKAI</b>\n\n' +
+    const isAdmin = String(chatId) === String(env.SHOP_ADMIN_CHAT_ID);
+    let helpText = '📖 <b>CARA PAKAI</b>\n\n' +
       '/beli — Beli key baru\n' +
       '/menu — Menu utama\n\n' +
-      'Butuh bantuan? @JekyNobb'
-    );
+      'Butuh bantuan? @JekyNobb';
+
+    if (isAdmin) {
+      helpText += '\n\n🛡️ <b>ADMIN COMMANDS</b>\n' +
+        '<i>Set QRIS:</i> kirim foto QRIS + caption <code>/setqris</code>\n' +
+        '<i>Hapus QRIS:</i> <code>/unsetqris</code>\n' +
+        '<i>Set paket:</i> <code>/setpackages [{...}]</code>\n' +
+        '<i>Reset paket:</i> <code>/unsetpackages</code>';
+    }
+
+    await sendMessage(env, chatId, helpText);
     return;
   }
 
@@ -380,6 +389,28 @@ async function handleUpdate(env, update) {
     }
 
     await handleScreenshot(env, msg);
+    return;
+  }
+
+  // Admin: /unsetqris
+  if (text === '/unsetqris' && String(chatId) === String(env.SHOP_ADMIN_CHAT_ID)) {
+    try {
+      await env.JAVIN_DB.prepare('DELETE FROM config WHERE key = ?').bind('shop_qris_file_id').run();
+      await sendMessage(env, chatId, '✅ <b>QRIS dihapus.</b>\n\nUser nggak bisa beli sampai QRIS di-set ulang.');
+    } catch (e) {
+      await sendMessage(env, chatId, '❌ Gagal: ' + e.message);
+    }
+    return;
+  }
+
+  // Admin: /unsetpackages
+  if (text === '/unsetpackages' && String(chatId) === String(env.SHOP_ADMIN_CHAT_ID)) {
+    try {
+      await env.JAVIN_DB.prepare('DELETE FROM config WHERE key = ?').bind('shop_packages').run();
+      await sendMessage(env, chatId, '✅ <b>Paket di-reset</b> ke default (1, 3, 5, 10 key).');
+    } catch (e) {
+      await sendMessage(env, chatId, '❌ Gagal: ' + e.message);
+    }
     return;
   }
 
