@@ -159,30 +159,8 @@ var $ = function(id){ return document.getElementById(id) };
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function fmtTime(ts){ if(!ts) return '-'; var d=new Date(Number(ts)); if(isNaN(d.getTime())) return '-'; return d.toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
 
-// ==== INIT: cek fresh login (URL param ATAU sessionStorage) ====
+// ==== INIT: cek session ====
 (function(){
-  var urlParams = new URLSearchParams(window.location.search);
-  var urlFresh = urlParams.get('fresh') === '1';
-  var ssFresh = false;
-  try { ssFresh = !!sessionStorage.getItem('admin_fresh_login'); } catch(e) {}
-
-  var freshFlag = urlFresh || ssFresh;
-
-  // Bersihin flag
-  try { sessionStorage.removeItem('admin_fresh_login'); } catch(e) {}
-  try {
-    var url = new URL(window.location.href);
-    if (url.searchParams.has('fresh')) {
-      url.searchParams.delete('fresh');
-      window.history.replaceState({}, '', url.toString());
-    }
-  } catch(e) {}
-
-  if (!freshFlag) {
-    $('loading').innerHTML = '<div style="color:#ff9aad">🔒 Harus login dulu.<br><br>Redirect ke beranda...</div>';
-    setTimeout(function(){ window.location.href = '/'; }, 1200);
-    return;
-  }
 
   // Cek session server juga
   fetch('/api/admin/check', { credentials: 'same-origin' })

@@ -154,11 +154,9 @@
       }
 
       setMsg('✅ Login berhasil!', 'ok');
-      try { sessionStorage.setItem('admin_fresh_login', String(Date.now())); } catch(e) {}
       setTimeout(function(){
         closeModal();
-        // Pakai /admin (tanpa .html) biar nggak kena 308 redirect
-        window.location.replace('/admin?fresh=1');
+        window.location.href = '/admin';
       }, 500);
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');
