@@ -20,22 +20,22 @@
     <div class="splash-loader"><span></span><span></span><span></span></div>
   </div>
 </div>
-<header class="hero"><div class="eyebrow">JAVIN PROJECT // DEEP SPACE CATALOG</div><h1>JAVIN <span>BLACK</span></h1><p>Eksplorasi endpoint dalam katalog yang melayang di ruang hampa. Pilih kategori, buka card, isi parameter, lalu jalankan.</p><div class="stats"><div><b id="count">—</b><small>ENDPOINTS</small></div><div><b id="catCount">—</b><small>CATEGORIES</small></div><div><b>NO KEY</b><small>FILTER</small></div></div></header>
-<button class="admin-launch" id="adminLaunch">🛡️</button>
-<div class="user-id">ID: <span id="userId"></span> · Limit: <span id="userLimit" class="u-limit">–</span></div>
-<main>
-<section class="featured">
-  <a href="/premium.html" class="featured-card">
-    <div class="featured-icon">💎</div>
-    <div class="featured-info">
-      <div class="featured-badge">FEATURED</div>
-      <div class="featured-title">Premium APK Generator</div>
-      <div class="featured-desc">Aktifkan akun Alight Motion Premium</div>
+<header class="fx-header">
+  <div class="fx-header-row">
+    <a href="/" class="fx-logo">Javin</a>
+    <div class="fx-search">
+      <input id="search" placeholder="Cari tool..." autocomplete="off">
     </div>
-    <div class="featured-arrow">→</div>
-  </a>
-</section>
-<section class="catalog"><div class="sectionHead"><div><span class="eyebrow">EVENT HORIZON</span><h2>KATALOG API</h2></div><input id="search" placeholder="Cari endpoint..." autocomplete="off"></div><div id="categories" class="categories"></div><div id="grid" class="grid"></div></section>
+    <button class="fx-icon-btn" id="adminLaunch" title="Admin Panel">🛡️</button>
+  </div>
+  <div class="fx-user-row">
+    <div class="user-id-inline">ID: <span id="userId">–</span> · <span id="userLimit" class="u-limit">–</span></div>
+  </div>
+</header>
+<main>
+
+<div class="fx-cats" id="categories"></div>
+<div class="fx-grid" id="grid"></div>
 <section class="admin-panel" id="adminPanel">
   <div class="admin-head">
     <div>
@@ -149,7 +149,6 @@
 <script src="/space-bg.js?v=20260920a"></script>
 <script src="/admin-login-v2.js?v=1"></script>
 <!-- Turnstile Script -->
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <div id="turnstileWrap" style="position:fixed;inset:0;z-index:9999;background:rgba(3,3,10,.95);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
   <div style="text-align:center;padding:24px">
     <div style="font-family:'Orbitron',sans-serif;font-size:18px;color:#a98cff;margin-bottom:12px">🔒 Verifikasi Keamanan</div>

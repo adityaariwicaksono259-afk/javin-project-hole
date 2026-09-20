@@ -4,10 +4,75 @@ let endpoints=[],active='ALL';
 const order=['AI','Tools','Downloader','Anime','Canvas','Random','Search','SMM','Berita','Info','Islami','Uploader','Other'];
 const $=s=>document.querySelector(s);
 fetch('/endpoints.json').then(r=>r.json()).then(data=>{endpoints=data;$('#count').textContent=data.length;let cats=[...new Set(data.map(x=>x.folder))];$('#catCount').textContent=cats.length;renderCats(cats);render();});
-function renderCats(cats){let sorted=cats.sort((a,b)=>(order.indexOf(a)<0?99:order.indexOf(a))-(order.indexOf(b)<0?99:order.indexOf(b)));$('#categories').innerHTML='<button class="cat active" data-c="ALL">ALL</button>'+sorted.map(c=>`<button class="cat" data-c="${esc(c)}">${esc(c)} <small>(${endpoints.filter(x=>x.folder===c).length})</small></button>`).join('');document.querySelectorAll('.cat').forEach(b=>b.onclick=()=>{active=b.dataset.c;document.querySelectorAll('.cat').forEach(x=>x.classList.remove('active'));b.classList.add('active');render();});}
-function render(){let q=$('#search').value.toLowerCase();let list=endpoints.filter(x=>(active==='ALL'||x.folder===active)&&(`${x.name} ${x.path} ${x.desc}`.toLowerCase().includes(q)));$('#grid').innerHTML=list.map(card).join('');document.querySelectorAll('.run').forEach(b=>b.onclick=()=>openEp(b.dataset.id));}
-$('#search').oninput=render;
-function card(x){return `<article class="card"><div class="badge">${esc(x.folder)} // ${esc(x.subfolder||'API')}</div><h3>${esc(x.name)}</h3><div class="desc">${esc(x.desc||'Javin endpoint')}</div><div class="path">${esc(x.m||'GET')} ${esc(x.path)}</div><button class="run" data-id="${x.catalogId}">OPEN ENDPOINT</button></article>`}
+function renderCats(cats){
+  var sorted = cats.sort((a,b) => {
+    var ai = order.indexOf(a) < 0 ? 99 : order.indexOf(a);
+    var bi = order.indexOf(b) < 0 ? 99 : order.indexOf(b);
+    return ai - bi;
+  });
+  var el = document.getElementById('categories');
+  if (!el) return;
+  el.innerHTML = '<button class="fx-cat active" data-c="ALL">Semua <small>' + endpoints.length + '</small></button>' +
+    sorted.map(function(c){ return '<button class="fx-cat" data-c="' + esc(c) + '">' + esc(c) + ' <small>' + endpoints.filter(function(x){ return x.folder === c; }).length + '</small></button>'; }).join('');
+  document.querySelectorAll('.fx-cat').forEach(function(b){
+    b.onclick = function(){
+      active = b.dataset.c;
+      document.querySelectorAll('.fx-cat').forEach(function(x){ x.classList.remove('active'); });
+      b.classList.add('active');
+      render();
+    };
+  });
+}
+
+function render(){
+  var searchEl = document.getElementById('search');
+  var q = (searchEl && searchEl.value ? searchEl.value : '').toLowerCase();
+  var list = endpoints.filter(function(x){
+    var matchCat = (active === 'ALL' || x.folder === active);
+    var hay = (x.name + ' ' + x.path + ' ' + (x.desc||'')).toLowerCase();
+    return matchCat && hay.indexOf(q) !== -1;
+  });
+  var grid = document.getElementById('grid');
+  if (!grid) return;
+  if (!list.length) {
+    grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada tool ditemukan</div>';
+    return;
+  }
+  grid.innerHTML = list.map(card).join('');
+  document.querySelectorAll('.fx-card').forEach(function(el){
+    el.onclick = function(){ openEp(el.dataset.id); };
+  });
+}
+
+function card(x){
+  var icons = {
+    'AI': '🤖', 'Anime': '🎌', 'Canvas': '🎨', 'Downloader': '⬇️',
+    'Games': '🎮', 'Search': '🔍', 'Random': '🎲', 'Berita': '📰',
+    'Primbon': '🔮', 'Stalker': '🕵️', 'Tools': '🔧', 'Info': 'ℹ️',
+    'Islami': '📖', 'Maker': '✨', 'SMM': '📊', 'Uploader': '📤', 'Sticker': '💬'
+  };
+  var icon = icons[x.folder] || '⚡';
+  var badge = x.subfolder || x.folder;
+  return '<div class="fx-card" data-id="' + esc(x.catalogId) + '">' +
+    '<div class="fx-card-icon">' + icon + '</div>' +
+    '<div class="fx-card-body">' +
+      '<div class="fx-card-title">' +
+        '<h3>' + esc(x.name) + '</h3>' +
+        '<span class="fx-badge">' + esc(badge) + '</span>' +
+      '</div>' +
+      '<div class="fx-card-desc">' + esc(x.desc || 'Tap untuk pakai tool ini') + '</div>' +
+    '</div>' +
+    '<div class="fx-card-arrow">›</div>' +
+  '</div>';
+}
+
+function openEp(id){
+  var x = endpoints.find(function(e){ return e.catalogId === id; });
+  if (!x) return;
+  if (x.redirect) { window.location.href = x.redirect; return; }
+  window.location.href = '/tool?id=' + encodeURIComponent(id);
+}
+
 function openEp(id){
   var x = endpoints.find(e => e.catalogId === id);
   if (!x) return;

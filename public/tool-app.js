@@ -418,16 +418,7 @@
           history.push({ role: 'ai', text: '[Gambar]' }); save();
         } else {
           var raw = await res.text();
-          var answer = raw;
-          try {
-            var j = JSON.parse(raw);
-            var keys = ['answer','result','response','message','text','reply','data','output','content','jawaban'];
-            for (var i=0;i<keys.length;i++){
-              var v = j[keys[i]];
-              if (typeof v === 'string' && v.length > 0) { answer = v; break; }
-            }
-            if (answer === raw) answer = JSON.stringify(j, null, 2);
-          } catch(e){}
+          var answer = extractAnswer(raw);
           bubble.textContent = answer;
           history.push({ role: 'ai', text: answer }); save();
         }
@@ -448,5 +439,42 @@
       this.style.height = Math.min(this.scrollHeight, 120) + 'px';
     });
   }
+
+
+function extractAnswer(raw){
+  if (typeof raw !== 'string') return String(raw || '');
+  try {
+    var j = JSON.parse(raw);
+    var found = deepSearch(j, 0);
+    if (found) return found;
+    return JSON.stringify(j, null, 2);
+  } catch(e) {
+    return raw;
+  }
+}
+
+function deepSearch(obj, depth){
+  if (depth > 5 || obj == null) return null;
+  if (typeof obj === 'string') {
+    if (obj.length > 3 && !/^https?:\/\//.test(obj)) return obj;
+    return null;
+  }
+  if (typeof obj === 'object') {
+    var priority = ['answer','result','response','reply','message','text','jawaban','output','content','data','value','msg'];
+    for (var i=0;i<priority.length;i++){
+      if (obj[priority[i]] !== undefined) {
+        var r = deepSearch(obj[priority[i]], depth+1);
+        if (r) return r;
+      }
+    }
+    // Fallback: cari value string manapun
+    var keys = Object.keys(obj);
+    for (var k=0;k<keys.length;k++){
+      var r2 = deepSearch(obj[keys[k]], depth+1);
+      if (r2 && r2.length > 5) return r2;
+    }
+  }
+  return null;
+}
 
 })();
