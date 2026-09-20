@@ -153,13 +153,11 @@
         return;
       }
 
-      setMsg('✅ Login berhasil! Membuka panel...', 'ok');
-      try { sessionStorage.setItem('admin_just_logged_in', '1'); } catch(e) {}
+      setMsg('✅ Login berhasil!', 'ok');
       setTimeout(function(){
         closeModal();
-        // Reload tanpa query
-        window.location.href = window.location.pathname;
-      }, 800);
+        window.location.href = '/admin.html';
+      }, 500);
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');
     } finally {
