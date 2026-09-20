@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
 <title>Admin Panel - JAVIN</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -21,7 +21,19 @@ h1{font-family:'Orbitron',sans-serif;font-size:16px;flex:1;text-align:center;pad
 .toolbar input{flex:1;min-width:140px;padding:10px 12px;background:#09090e;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:10px;font-size:13px;outline:none}
 .toolbar button{padding:10px 16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;border-radius:10px;font-weight:600;font-size:12px;cursor:pointer}
 .toolbar button.primary{background:linear-gradient(90deg,#7045ff,#a05cff);border:0}
-table{width:100%;border-collapse:collapse;font-size:12px;background:rgba(0,0,0,.3);border-radius:12px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:12px;background:rgba(0,0,0,.3);border-radius:12px;overflow:hidden;min-width:520px}
+.table-wrap{overflow-x:auto;border-radius:12px;margin-bottom:8px}
+@media(max-width:520px){
+  .wrap{padding:12px}
+  header h1{font-size:13px;padding-right:0}
+  .back{font-size:11px;padding:6px 10px}
+  .tab{padding:8px 12px;font-size:11px}
+  th,td{padding:8px 6px;font-size:10px}
+  .form-box input{width:100%;margin-right:0}
+  .toolbar button{padding:8px 12px;font-size:11px}
+  code{font-size:9px;padding:2px 5px}
+  .btn-sm{padding:4px 8px;font-size:10px}
+}
 th{background:rgba(112,69,255,.15);color:#c7b9ff;text-align:left;padding:10px 12px;font-size:11px;text-transform:uppercase}
 td{padding:10px 12px;border-top:1px solid rgba(255,255,255,.06);color:#ddd}
 code{background:rgba(0,0,0,.5);padding:3px 7px;border-radius:6px;color:#a9c9ff;font-size:11px}
@@ -38,6 +50,32 @@ code{background:rgba(0,0,0,.5);padding:3px 7px;border-radius:6px;color:#a9c9ff;f
 .result.err{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.3);color:#ff9aad}
 .empty{text-align:center;color:#666;padding:20px;font-style:italic}
 .loading{text-align:center;color:#888;padding:40px;font-size:14px}
+
+/* === Fix layout kepotong === */
+html,body{max-width:100vw;overflow-x:hidden}
+.wrap{max-width:1100px;margin:0 auto;padding:20px;width:100%}
+.tabs{display:flex;gap:6px;margin-bottom:16px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.tabs::-webkit-scrollbar{height:6px}
+.tabs::-webkit-scrollbar-thumb{background:rgba(169,140,255,.4);border-radius:3px}
+.tab{flex-shrink:0}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:12px;margin-bottom:14px;max-width:100%}
+.table-wrap::-webkit-scrollbar{height:8px}
+.table-wrap::-webkit-scrollbar-thumb{background:rgba(169,140,255,.5);border-radius:4px}
+table{min-width:600px}
+.form-box input{width:100%;margin:0 0 8px 0;display:block}
+.form-box button{width:100%;margin-top:4px}
+@media(max-width:520px){
+  .wrap{padding:12px 10px}
+  header{padding:10px 12px}
+  header h1{font-size:12px;letter-spacing:1px}
+  .back{font-size:11px;padding:6px 10px}
+  .tab{padding:8px 12px;font-size:11px}
+  .toolbar{flex-direction:column}
+  .toolbar input,.toolbar button{width:100%}
+  th,td{padding:8px 6px;font-size:10px;white-space:nowrap}
+  .btn-sm{padding:4px 8px;font-size:10px;margin:2px 2px 2px 0}
+  table{min-width:500px}
+}
 </style>
 </head>
 <body>
@@ -61,7 +99,7 @@ code{background:rgba(0,0,0,.5);padding:3px 7px;border-radius:6px;color:#a9c9ff;f
         <input id="userSearch" placeholder="Cari user ID...">
         <button onclick="loadUsers()">Refresh</button>
       </div>
-      <table><thead><tr><th>User ID</th><th>Limit</th><th>Hari ini</th><th>Total</th><th>Last Seen</th><th>Aksi</th></tr></thead><tbody id="userTbody"></tbody></table>
+      <div class="table-wrap"><table><thead><tr><th>User ID</th><th>Limit</th><th>Hari ini</th><th>Total</th><th>Last Seen</th><th>Aksi</th></tr></thead><tbody id="userTbody"></tbody></table></div>
       <div class="form-box">
         <h4>Set Limit User</h4>
         <input id="adminUserId" placeholder="User ID (JH-...)">
@@ -75,12 +113,12 @@ code{background:rgba(0,0,0,.5);padding:3px 7px;border-radius:6px;color:#a9c9ff;f
         <input id="logFilterUid" placeholder="Filter user ID">
         <button onclick="loadLogs()">Refresh</button>
       </div>
-      <table><thead><tr><th>Waktu</th><th>User</th><th>Endpoint</th><th>Status</th></tr></thead><tbody id="logTbody"></tbody></table>
+      <div class="table-wrap"><table><thead><tr><th>Waktu</th><th>User</th><th>Endpoint</th><th>Status</th></tr></thead><tbody id="logTbody"></tbody></table></div>
     </div>
 
     <div class="pane" data-pane="config">
       <div class="toolbar"><button onclick="loadConfig()">Refresh</button></div>
-      <table><thead><tr><th>Key</th><th>Value</th><th>Updated</th></tr></thead><tbody id="configTbody"></tbody></table>
+      <div class="table-wrap"><table><thead><tr><th>Key</th><th>Value</th><th>Updated</th></tr></thead><tbody id="configTbody"></tbody></table></div>
       <div class="form-box">
         <h4>Set Config</h4>
         <input id="configKey" placeholder="Key">
@@ -101,7 +139,7 @@ code{background:rgba(0,0,0,.5);padding:3px 7px;border-radius:6px;color:#a9c9ff;f
         <button onclick="genKey()">🎲 Generate</button>
         <div id="genKeyResult" class="result"></div>
       </div>
-      <table><thead><tr><th>Key</th><th>Label</th><th>Owner</th><th>Kuota</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="keysTbody"></tbody></table>
+      <div class="table-wrap"><table><thead><tr><th>Key</th><th>Label</th><th>Owner</th><th>Kuota</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="keysTbody"></tbody></table></div>
     </div>
 
     <div class="pane" data-pane="backup">
@@ -121,21 +159,40 @@ var $ = function(id){ return document.getElementById(id) };
 function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
 function fmtTime(ts){ if(!ts) return '-'; var d=new Date(Number(ts)); if(isNaN(d.getTime())) return '-'; return d.toLocaleString('id-ID',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
 
-// ==== INIT: cek session ====
-fetch('/api/admin/check', { credentials: 'same-origin' })
-  .then(function(r){ return r.json(); })
-  .then(function(j){
-    if (j && j.ok) {
-      $('loading').style.display = 'none';
-      $('content').style.display = 'block';
-      loadUsers();
-    } else {
-      $('loading').innerHTML = '<div style="color:#ff9aad">❌ Session tidak valid.<br><br><a href="/" style="color:#a98cff">← Login ulang di beranda</a></div>';
-    }
-  })
-  .catch(function(e){
-    $('loading').innerHTML = '<div style="color:#ff9aad">Error: ' + esc(e.message) + '</div>';
-  });
+// ==== INIT: cek URL param fresh ====
+(function(){
+  var urlParams = new URLSearchParams(window.location.search);
+  var freshFlag = urlParams.get('fresh') === '1';
+
+  if (!freshFlag) {
+    $('loading').innerHTML = '<div style="color:#ff9aad">🔒 Harus login dulu.<br><br>Redirect ke beranda...</div>';
+    setTimeout(function(){ window.location.href = '/'; }, 1000);
+    return;
+  }
+
+  // Bersihin URL param (biar refresh berikutnya harus login lagi)
+  try {
+    var url = new URL(window.location.href);
+    url.searchParams.delete('fresh');
+    window.history.replaceState({}, '', url.toString());
+  } catch(e) {}
+
+  // Cek session server juga
+  fetch('/api/admin/check', { credentials: 'same-origin' })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (j && j.ok) {
+        $('loading').style.display = 'none';
+        $('content').style.display = 'block';
+        loadUsers();
+      } else {
+        $('loading').innerHTML = '<div style="color:#ff9aad">❌ Session tidak valid.<br><br><a href="/" style="color:#a98cff">← Login ulang</a></div>';
+      }
+    })
+    .catch(function(e){
+      $('loading').innerHTML = '<div style="color:#ff9aad">Error: ' + esc(e.message) + '</div>';
+    });
+})();
 
 // ==== TABS ====
 document.querySelectorAll('.tab').forEach(function(t){

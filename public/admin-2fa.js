@@ -156,7 +156,8 @@
       setMsg('✅ Login berhasil!', 'ok');
       setTimeout(function(){
         closeModal();
-        window.location.href = '/admin.html';
+        // Redirect dengan token di URL (sessionStorage nggak selalu persist)
+        window.location.href = '/admin.html?fresh=1';
       }, 500);
     } catch(e) {
       setMsg('Network error: ' + e.message, 'err');
