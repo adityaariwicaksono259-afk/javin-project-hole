@@ -17,6 +17,38 @@ export async function onRequest(context) {
   const method = request.method.toUpperCase();
   const pathname = url.pathname;
 
+  // ==== MAINTENANCE MODE ====
+  const maintenanceMode = String(context.env.MAINTENANCE_MODE || '') === '1';
+  if (maintenanceMode) {
+    // Admin IP bypass
+    const mIp = request.headers.get('CF-Connecting-IP') ||
+                (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+                'unknown';
+    const mAdminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+    const mIsAdmin = mAdminIPs.includes(mIp);
+
+    // Halaman yang dibebaskan dari maintenance
+    const bypassPaths = ['/maintenance', '/.well-known', '/icon', '/manifest.json', '/service-worker.js', '/robots.txt'];
+
+    const isBypassed = bypassPaths.some(p => pathname.startsWith(p));
+
+    if (!mIsAdmin && !isBypassed) {
+      // API endpoint → return JSON
+      if (pathname.startsWith('/api/')) {
+        return new Response(JSON.stringify({
+          ok: false,
+          maintenance: true,
+          message: 'Server sedang maintenance. Coba lagi sebentar.'
+        }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json; charset=utf-8', 'Retry-After': '60' }
+        });
+      }
+      // Halaman → tampilkan maintenance page
+      return Response.redirect(url.origin + '/maintenance.html', 302);
+    }
+  }
+
   // ==== Ambil User-Agent (dipakai honeypot + Layer 16) ====
   const ua = (request.headers.get('User-Agent') || '').toLowerCase();
 

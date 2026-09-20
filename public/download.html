@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>Download APK — VinAPIay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Plus Jakarta Sans',sans-serif;color:#0f172a;background:#f0f7ff;background-image:radial-gradient(ellipse 800px 600px at 10% 0%,rgba(147,197,253,.5),transparent 60%),radial-gradient(ellipse 700px 500px at 90% 10%,rgba(196,181,253,.4),transparent 60%),radial-gradient(ellipse 900px 700px at 50% 100%,rgba(186,230,253,.5),transparent 60%);background-attachment:fixed;min-height:100vh;padding:20px}
+.wrap{max-width:520px;margin:0 auto}
+header{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+.back{color:#0f172a;text-decoration:none;background:#fff;padding:8px 14px;border-radius:999px;font-size:13px;font-weight:600;border:1px solid rgba(148,163,184,.25)}
+header h1{font-size:18px;font-weight:800;background:linear-gradient(135deg,#0EA5E9,#6366F1);-webkit-background-clip:text;background-clip:text;color:transparent}
+.card{background:rgba(255,255,255,.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.9);border-radius:22px;padding:24px;box-shadow:0 4px 24px rgba(30,64,175,.08);margin-bottom:16px;text-align:center}
+.app-icon{width:88px;height:88px;border-radius:22px;background:linear-gradient(135deg,#0EA5E9,#6366F1);display:flex;align-items:center;justify-content:center;font-size:44px;margin:0 auto 14px;box-shadow:0 8px 24px rgba(14,165,233,.3)}
+.app-name{font-size:24px;font-weight:800;margin-bottom:4px;letter-spacing:-.6px}
+.app-ver{font-size:13px;color:#64748b;margin-bottom:20px}
+.btn{display:block;width:100%;padding:16px;background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;text-decoration:none;border-radius:14px;font-size:15px;font-weight:800;box-shadow:0 6px 20px rgba(14,165,233,.3);transition:all .2s;margin-bottom:10px}
+.btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px rgba(14,165,233,.45)}
+.btn-alt{background:#f1f5f9;color:#475569;box-shadow:none;border:1px solid #e2e8f0}
+.btn-alt:hover{background:#e2e8f0;box-shadow:none}
+.info{background:rgba(255,255,255,.7);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:18px;font-size:13px;line-height:1.7;color:#475569}
+.info h3{font-size:14px;font-weight:800;color:#0f172a;margin-bottom:10px}
+.info ol{padding-left:20px;margin:0}
+.info li{margin-bottom:6px}
+.warn{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:#92400e;border-radius:14px;padding:14px;font-size:12px;line-height:1.5;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a href="/" class="back">← Kembali</a>
+    <h1>Download APK</h1>
+  </header>
+
+  <div class="card">
+    <div class="app-icon">💎</div>
+    <div class="app-name">VinAPIay</div>
+    <div class="app-ver" id="verInfo">Versi 1.0.0 · 1.4 MB · Android</div>
+    <a href="/download/vinapiay.apk" download="VinAPIay.apk" class="btn">⬇️ Download APK</a>
+    <a href="/" class="btn btn-alt">🌐 Buka Versi Web</a>
+  </div>
+
+  <div class="info">
+    <h3>📖 Cara Install</h3>
+    <ol>
+      <li>Tap tombol <b>Download APK</b> di atas</li>
+      <li>Tunggu download selesai</li>
+      <li>Buka file APK → tap <b>Install</b></li>
+      <li>Kalau muncul warning, tap <b>Setelan</b> → izinkan install dari sumber ini</li>
+      <li>Tap <b>Install</b> lagi</li>
+      <li>Icon <b>VinAPIay</b> muncul di home screen ✅</li>
+    </ol>
+    <div class="warn">
+      ⚠️ <b>Catatan:</b> Chrome/Play Protect kadang kasih warning "APK tidak dikenal" — ini normal buat app indie. Tetap lanjutkan install.
+    </div>
+  </div>
+
+  <div class="info">
+    <h3>🔄 Auto-Update</h3>
+    App ini bakal <b>otomatis update konten</b> (tool baru, fitur baru) tanpa perlu download ulang. Kamu cuma perlu download APK ulang kalau ada <b>perubahan icon atau nama app</b>.
+  </div>
+</div>
+
+<script>
+// Cek versi dari file metadata (opsional)
+fetch('/download/version.json').then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+  if (j && j.version) {
+    var el = document.getElementById('verInfo');
+    if (el) el.textContent = 'Versi ' + j.version + ' · ' + (j.size || '1.4 MB') + ' · Android';
+  }
+}).catch(function(){});
+</script>
+</body>
+</html>
