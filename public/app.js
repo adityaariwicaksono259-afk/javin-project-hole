@@ -8,7 +8,13 @@ function renderCats(cats){let sorted=cats.sort((a,b)=>(order.indexOf(a)<0?99:ord
 function render(){let q=$('#search').value.toLowerCase();let list=endpoints.filter(x=>(active==='ALL'||x.folder===active)&&(`${x.name} ${x.path} ${x.desc}`.toLowerCase().includes(q)));$('#grid').innerHTML=list.map(card).join('');document.querySelectorAll('.run').forEach(b=>b.onclick=()=>openEp(b.dataset.id));}
 $('#search').oninput=render;
 function card(x){return `<article class="card"><div class="badge">${esc(x.folder)} // ${esc(x.subfolder||'API')}</div><h3>${esc(x.name)}</h3><div class="desc">${esc(x.desc||'Javin endpoint')}</div><div class="path">${esc(x.m||'GET')} ${esc(x.path)}</div><button class="run" data-id="${x.catalogId}">OPEN ENDPOINT</button></article>`}
-function openEp(id){let x=endpoints.find(e=>e.catalogId===id);if(!x)return;if(x.redirect){window.location.href=x.redirect;return}let params=x.params||[];$('#modalBody').innerHTML=`<div class="eyebrow">${esc(x.folder)} // ${esc(x.subfolder||'API')}</div><h2>${esc(x.name)}</h2><p style="color:#888;font-size:13px">${esc(x.desc||'')}</p><div class="urlbox">${esc(x.m+' '+maskHost(x.ex))}</div><div id="form">${params.map(p=>`<div class="formrow"><label>${esc(p.n)} ${p.r?'*':''}<br><small>${esc(p.d||'')}</small></label><input data-p="${esc(p.n)}" placeholder="${esc(p.d||p.n)}"></div>`).join('')}</div><button class="execute" id="execute">EXECUTE REQUEST</button><div id="result"></div>`;$('#modal').classList.remove('hidden');$('#execute').onclick=()=>execute(x);}
+function openEp(id){
+  var x = endpoints.find(e => e.catalogId === id);
+  if (!x) return;
+  if (x.redirect) { window.location.href = x.redirect; return; }
+  window.location.href = '/tool?id=' + encodeURIComponent(id);
+}
+
 async function execute(x){
   var result=$('#result');
   result.innerHTML='<div class="result">MENGHUBUNGI SERVER...</div>';
