@@ -1,4 +1,48 @@
 
+// === Custom username di header ===
+(function(){
+  function updateHeaderName(){
+    var el = document.getElementById('headerName');
+    if (!el) return;
+    var saved = null;
+    try { saved = localStorage.getItem('javin_display_name'); } catch(e){}
+    if (saved && saved.trim()) {
+      el.textContent = saved.trim();
+      return;
+    }
+    // Default: Javin
+    el.textContent = 'Javin';
+    // Cek dari user ID
+    try {
+      var uid = localStorage.getItem('javin_user_id');
+      if (uid && /^JH-/.test(uid)) {
+        // skip — biar default Javin aja
+      }
+    } catch(e){}
+  }
+
+  // Click header name → prompt ganti
+  document.addEventListener('DOMContentLoaded', function(){
+    updateHeaderName();
+    var el = document.getElementById('headerName');
+    if (!el) return;
+    el.onclick = function(e){
+      e.preventDefault();
+      var current = el.textContent;
+      var newName = prompt('Ubah nama tampilan:', current);
+      if (newName === null) return;
+      newName = newName.trim().slice(0, 20);
+      if (!newName) {
+        try { localStorage.removeItem('javin_display_name'); } catch(e){}
+        el.textContent = 'Javin';
+        return;
+      }
+      try { localStorage.setItem('javin_display_name', newName); } catch(e){}
+      el.textContent = newName;
+    };
+  });
+})();
+
 // === Auto-hide splash screen ===
 (function(){
   function hideSplash(){
