@@ -39,6 +39,6 @@ export async function onRequestPost({ request, env }) {
   const token = payload + '.' + signature;
 
   return json({ ok: true, expires: expires }, 200, {
-    'Set-Cookie': 'javin_admin=' + token + '; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict'
+    'Set-Cookie': 'javin_admin=' + token + '; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Lax'
   });
 }

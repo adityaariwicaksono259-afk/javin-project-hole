@@ -196,7 +196,7 @@ export async function onRequestPost({ request, env }) {
     ok: true,
     message: 'Login berhasil.'
   }, 200, {
-    'Set-Cookie': 'javin_admin=' + token + '; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Strict'
+    'Set-Cookie': 'javin_admin=' + token + '; Path=/; Max-Age=28800; HttpOnly; Secure; SameSite=Lax'
   });
 }
 
