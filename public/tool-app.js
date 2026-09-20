@@ -150,13 +150,105 @@
 function finishResult(container, html){
   container.innerHTML = html;
   container.classList.add('show');
+
+  // Copy buttons
   container.querySelectorAll('[data-copy]').forEach(function(b){
     b.onclick = function(){
-      if (navigator.clipboard) navigator.clipboard.notify;
       if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(function(){ alert('✅ Copy!'); });
       else prompt('Copy:', b.dataset.copy);
     };
   });
+
+  // Play/Pause button
+  var btnPlay = container.querySelector('#btnPlay');
+  var audioEl = container.querySelector('#audioPlayer');
+  if (btnPlay && audioEl) {
+    btnPlay.onclick = function(){
+      if (audioEl.paused) {
+        audioEl.play().then(function(){
+          btnPlay.innerHTML = '⏸️ Pause';
+        }).catch(function(e){
+          alert('Gagal play: ' + e.message);
+        });
+      } else {
+        audioEl.pause();
+        btnPlay.innerHTML = '▶️ Play';
+      }
+    };
+    audioEl.onended = function(){ btnPlay.innerHTML = '▶️ Play'; };
+    audioEl.onerror = function(){
+      btnPlay.innerHTML = '⚠️ Error';
+      setTimeout(function(){ btnPlay.innerHTML = '▶️ Play'; }, 2000);
+    };
+  }
+
+  // Lirik toggle
+  var btnLyrics = container.querySelector('#btnLyrics');
+  var lyricsBox = container.querySelector('#lyricsBox');
+  if (btnLyrics && lyricsBox) {
+    btnLyrics.onclick = function(){
+      if (lyricsBox.style.display === 'none') {
+        lyricsBox.style.display = 'block';
+        btnLyrics.innerHTML = '📜 Sembunyikan Lirik';
+      } else {
+        lyricsBox.style.display = 'none';
+        btnLyrics.innerHTML = '📜 Lihat Lirik';
+      }
+    };
+  }
+
+  // Search lirik (kalau nggak ada lyrics di response)
+  var btnSearchLy = container.querySelector('#btnSearchLyrics');
+  if (btnSearchLy && lyricsBox) {
+    btnSearchLy.onclick = async function(){
+      btnSearchLy.disabled = true;
+      btnSearchLy.innerHTML = '⏳ Mencari lirik...';
+      lyricsBox.style.display = 'block';
+      lyricsBox.textContent = 'Memuat...';
+      try {
+        var q = btnSearchLy.dataset.title + (btnSearchLy.dataset.artist ? ' ' + btnSearchLy.dataset.artist : '');
+        var uid = '';
+        try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e){}
+        var url = '/api/proxy?id=ep100&q=' + encodeURIComponent(q) + (uid ? '&uid=' + encodeURIComponent(uid) : '');
+        var r = await fetch(url);
+        var txt = await r.text();
+        var result = txt;
+        try {
+          var j = JSON.parse(txt);
+          // Cari lirik di hasil
+          var found = extractLyrics(j);
+          if (found) result = found;
+        } catch(e) {}
+        lyricsBox.textContent = result || 'Lirik tidak ditemukan.';
+        btnSearchLy.innerHTML = '📜 Sembunyikan Lirik';
+      } catch(e) {
+        lyricsBox.textContent = '❌ Gagal: ' + e.message;
+        btnSearchLy.innerHTML = '📜 Coba Lagi';
+      } finally {
+        btnSearchLy.disabled = false;
+      }
+    };
+  }
+}
+
+function extractLyrics(j, depth){
+  if (depth === undefined) depth = 0;
+  if (depth > 5 || !j) return null;
+  if (typeof j === 'string') return j.length > 20 ? j : null;
+  if (Array.isArray(j)) {
+    for (var i=0;i<j.length;i++){ var r = extractLyrics(j[i], depth+1); if (r) return r; }
+    return null;
+  }
+  if (typeof j === 'object') {
+    var keys = ['lyrics','lirik','text','result','data','content','lyric'];
+    for (var i=0;i<keys.length;i++){
+      if (j[keys[i]] !== undefined) {
+        var r = extractLyrics(j[keys[i]], depth+1);
+        if (r && r.length > 20) return r;
+      }
+    }
+  }
+  return null;
 }
 
 // ==== RENDER DARI URL ====
@@ -235,9 +327,18 @@ function smartJsonRender(j){
       '<div class="result-text" style="font-family:monospace;font-size:11px">' + esc(JSON.stringify(j, null, 2)) + '</div></div>';
   }
 
-  // ==== Selalu tambah raw toggle ====
-  out += '<details style="margin-top:10px"><summary style="font-size:11px;color:#94a3b8;cursor:pointer;padding:6px 0">🔍 Lihat raw JSON</summary>' +
-    '<div class="result-text" style="font-family:monospace;font-size:10px;margin-top:8px;max-height:200px">' + esc(JSON.stringify(j, null, 2)) + '</div></details>';
+  // ==== Cari lirik dari berbagai kemungkinan field ====
+  var lyrics = d.lyrics || d.lirik || d.synced_lyrics || d.syncedLyrics || (d.result && (d.result.lyrics || d.result.lirik)) || null;
+  var trackTitle = d.title || d.name || (d.result && d.result.title) || '';
+  var trackArtist = d.artist || d.author || (d.result && d.result.artist) || '';
+
+  if (lyrics && typeof lyrics === 'string' && lyrics.trim().length > 3) {
+    out += '<button class="btn-action" id="btnLyrics" style="margin-top:10px">📜 Lihat Lirik</button>' +
+      '<div id="lyricsBox" style="display:none;margin-top:10px;background:#f8fafc;border-radius:14px;padding:16px;font-size:13px;line-height:1.8;color:#334155;white-space:pre-wrap;max-height:400px;overflow-y:auto">' + esc(lyrics.trim()) + '</div>';
+  } else if (trackTitle) {
+    out += '<button class="btn-action" id="btnSearchLyrics" style="margin-top:10px" data-title="' + esc(trackTitle) + '" data-artist="' + esc(trackArtist) + '">📜 Cari Lirik</button>' +
+      '<div id="lyricsBox" style="display:none;margin-top:10px;background:#f8fafc;border-radius:14px;padding:16px;font-size:13px;line-height:1.8;color:#334155;white-space:pre-wrap;max-height:400px;overflow-y:auto"></div>';
+  }
 
   return out;
 }
@@ -335,13 +436,21 @@ function renderDownloaderCard(d){
   var duration = d.duration || d.length || '';
   var downloads = [];
   if (d.download_url) downloads.push({ label: 'Download', url: d.download_url });
-  if (d.url && typeof d.url === 'string' && /^https?:/.test(d.url)) downloads.push({ label: 'Open URL', url: d.url });
+  // Open URL diganti jadi Play/Pause player di bawah
   if (d.audio) downloads.push({ label: 'Audio', url: typeof d.audio === 'string' ? d.audio : (d.audio.url || '') });
   if (d.video) downloads.push({ label: 'Video', url: typeof d.video === 'string' ? d.video : (d.video.url || '') });
 
   var dlBtns = downloads.filter(function(x){ return x.url; }).map(function(x){
     return '<a class="btn-action primary" href="' + esc(x.url) + '" target="_blank" rel="noopener">⬇️ ' + esc(x.label) + '</a>';
   }).join('');
+
+  // Player audio inline
+  var audioSrc = d.download_url || (d.url && typeof d.url === 'string' && /\.(mp3|m4a|ogg|wav)/i.test(d.url) ? d.url : null) || (d.audio && typeof d.audio === 'string' ? d.audio : null);
+  var playerHtml = '';
+  if (audioSrc) {
+    playerHtml = '<button class="btn-action primary" id="btnPlay" style="margin-top:4px">▶️ Play</button>' +
+      '<audio id="audioPlayer" src="' + esc(audioSrc) + '" preload="none" style="display:none"></audio>';
+  }
 
   var thumbHtml = thumb ? '<img src="' + esc(thumb) + '" style="width:100%;max-height:220px;object-fit:cover;border-radius:14px;margin-bottom:14px" onerror="this.style.display=\'none\'">' : '';
 
@@ -351,7 +460,7 @@ function renderDownloaderCard(d){
     '<div style="font-size:16px;font-weight:800;margin-bottom:4px">' + esc(title) + '</div>' +
     (artist ? '<div style="font-size:13px;color:#64748b;margin-bottom:4px">' + esc(artist) + '</div>' : '') +
     (duration ? '<div style="font-size:12px;color:#94a3b8;margin-bottom:12px">⏱️ ' + esc(duration) + '</div>' : '') +
-    (dlBtns ? '<div class="result-actions">' + dlBtns + '</div>' : '') +
+    (playerHtml || dlBtns ? '<div class="result-actions">' + playerHtml + dlBtns + '</div>' : '') +
     '</div>';
 }
 
