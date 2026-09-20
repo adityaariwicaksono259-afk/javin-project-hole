@@ -97,70 +97,309 @@
 
   // ===== RENDER RESULT =====
   function renderResult(container, ct, blob, text){
-    ct = (ct||'').toLowerCase();
-    var html = '';
+  ct = (ct||'').toLowerCase();
+  var html = '';
 
-    if (ct.indexOf('image/') !== -1) {
-      var u = URL.createObjectURL(blob);
-      html = '<div class="result-card"><div class="result-title">Hasil Gambar</div>' +
-        '<img class="result-media" src="' + u + '">' +
-        '<div class="result-actions"><a class="btn-action primary" href="' + u + '" download="javin-' + Date.now() + '.png">⬇️ Download</a>' +
-        '<button class="btn-action" data-copy="' + u + '">📋 Copy URL</button></div></div>';
-    } else if (ct.indexOf('video/') !== -1) {
-      var v = URL.createObjectURL(blob);
-      html = '<div class="result-card"><div class="result-title">Hasil Video</div>' +
-        '<video class="result-media" controls src="' + v + '"></video>' +
-        '<div class="result-actions"><a class="btn-action primary" href="' + v + '" download="javin.mp4">⬇️ Download</a></div></div>';
-    } else if (ct.indexOf('audio/') !== -1) {
-      var a = URL.createObjectURL(blob);
-      html = '<div class="result-card"><div class="result-title">Hasil Audio</div>' +
-        '<audio controls style="width:100%" src="' + a + '"></audio>' +
-        '<div class="result-actions"><a class="btn-action primary" href="' + a + '" download="javin.mp3">⬇️ Download</a></div></div>';
-    } else {
-      var txt = text || '';
-      var display = txt;
-      try {
-        var j = JSON.parse(txt);
-        var keys = ['answer','result','response','message','text','reply','data','output','content','jawaban'];
-        for (var i=0;i<keys.length;i++){
-          var v = j[keys[i]];
-          if (typeof v === 'string' && v.length > 2) { display = v; break; }
-          if (v && typeof v === 'object' && v.text) { display = v.text; break; }
-        }
-        if (display === txt) display = JSON.stringify(j, null, 2);
-      } catch(e) {}
-
-      // Deteksi URL gambar/video di response
-      var m = txt.match(/https?:\/\/[^\s"']+\.(jpg|jpeg|png|gif|webp|mp4|mp3)/i);
-      if (m) {
-        var url = m[0];
-        if (/\.(jpg|jpeg|png|gif|webp)$/i.test(url)) {
-          html = '<div class="result-card"><div class="result-title">Hasil Gambar</div>' +
-            '<img class="result-media" src="' + esc(url) + '" onerror="this.style.display=\'none\'">' +
-            '<div class="result-actions"><a class="btn-action primary" href="' + esc(url) + '" download>⬇️ Download</a>' +
-            '<button class="btn-action" data-copy="' + esc(url) + '">📋 Copy URL</button></div></div>';
-        } else if (/\.mp4$/i.test(url)) {
-          html = '<div class="result-card"><div class="result-title">Hasil Video</div>' +
-            '<video class="result-media" controls src="' + esc(url) + '"></video></div>';
-        } else {
-          html = '<div class="result-card"><div class="result-title">Hasil</div><div class="result-text">' + esc(display) + '</div></div>';
-        }
-      } else {
-        html = '<div class="result-card"><div class="result-title">Hasil</div><div class="result-text">' + esc(display) + '</div></div>';
-      }
-    }
-
-    container.innerHTML = html;
-    container.classList.add('show');
-    container.querySelectorAll('[data-copy]').forEach(function(b){
-      b.onclick = function(){
-        if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(function(){ alert('✅ Copy!'); });
-        else prompt('Copy:', b.dataset.copy);
-      };
-    });
+  // ==== MEDIA (dari content-type) ====
+  if (ct.indexOf('image/') !== -1) {
+    var u = URL.createObjectURL(blob);
+    html = '<div class="result-card"><div class="result-title">Hasil Gambar</div>' +
+      '<img class="result-media" src="' + u + '">' +
+      '<div class="result-actions"><a class="btn-action primary" href="' + u + '" download="javin-' + Date.now() + '.png">⬇️ Download</a>' +
+      '<button class="btn-action" data-copy="' + u + '">📋 Copy URL</button></div></div>';
+    return finishResult(container, html);
+  }
+  if (ct.indexOf('video/') !== -1) {
+    var v = URL.createObjectURL(blob);
+    html = '<div class="result-card"><div class="result-title">Hasil Video</div>' +
+      '<video class="result-media" controls src="' + v + '"></video>' +
+      '<div class="result-actions"><a class="btn-action primary" href="' + v + '" download="javin.mp4">⬇️ Download</a></div></div>';
+    return finishResult(container, html);
+  }
+  if (ct.indexOf('audio/') !== -1) {
+    var a = URL.createObjectURL(blob);
+    html = '<div class="result-card"><div class="result-title">Hasil Audio</div>' +
+      '<audio controls style="width:100%" src="' + a + '"></audio>' +
+      '<div class="result-actions"><a class="btn-action primary" href="' + a + '" download="javin.mp3">⬇️ Download</a></div></div>';
+    return finishResult(container, html);
   }
 
-  function renderError(c, msg){
+  // ==== JSON / TEXT ====
+  var txt = text || '';
+  var parsed = null;
+  try { parsed = JSON.parse(txt); } catch(e) {}
+
+  if (!parsed) {
+    // Bukan JSON — cek URL di dalam
+    var m = txt.match(/https?:\/\/[^\s"']+\.(jpg|jpeg|png|gif|webp|mp4|mp3)/i);
+    if (m) {
+      html = renderFromUrl(m[0], txt);
+    } else {
+      html = '<div class="result-card"><div class="result-title">Hasil</div>' +
+        '<div class="result-text">' + esc(txt) + '</div></div>';
+    }
+    return finishResult(container, html);
+  }
+
+  // ==== JSON parsed — smart render ====
+  html = smartJsonRender(parsed);
+  return finishResult(container, html);
+}
+
+// ==== FINISH — attach copy handlers ====
+function finishResult(container, html){
+  container.innerHTML = html;
+  container.classList.add('show');
+  container.querySelectorAll('[data-copy]').forEach(function(b){
+    b.onclick = function(){
+      if (navigator.clipboard) navigator.clipboard.notify;
+      if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(function(){ alert('✅ Copy!'); });
+      else prompt('Copy:', b.dataset.copy);
+    };
+  });
+}
+
+// ==== RENDER DARI URL ====
+function renderFromUrl(url, raw){
+  var isImg = /\.(jpg|jpeg|png|gif|webp)$/i.test(url);
+  var isVideo = /\.mp4$/i.test(url);
+  if (isImg) {
+    return '<div class="result-card"><div class="result-title">Hasil Gambar</div>' +
+      '<img class="result-media" src="' + esc(url) + '" onerror="this.style.display=\'none\'">' +
+      '<div class="result-actions"><a class="btn-action primary" href="' + esc(url) + '" download>⬇️ Download</a>' +
+      '<button class="btn-action" data-copy="' + esc(url) + '">📋 Copy URL</button></div></div>';
+  }
+  if (isVideo) {
+    return '<div class="result-card"><div class="result-title">Hasil Video</div>' +
+      '<video class="result-media" controls src="' + esc(url) + '"></video></div>';
+  }
+  return '<div class="result-card"><div class="result-title">Hasil</div>' +
+    '<div class="result-text">' + esc(raw) + '</div></div>';
+}
+
+// ==== SMART JSON RENDER ====
+function smartJsonRender(j){
+  var d = j.data || j.result || j.response || j;
+  var out = '';
+
+  // ==== Media URLs (image/video/audio) ====
+  var media = findMediaUrl(d);
+  if (media) {
+    if (media.type === 'image') {
+      out += '<div class="result-card"><div class="result-title">Hasil Gambar</div>' +
+        '<img class="result-media" src="' + esc(media.url) + '" onerror="this.style.display=\'none\'">' +
+        '<div class="result-actions"><a class="btn-action primary" href="' + esc(media.url) + '" download>⬇️ Download</a>' +
+        '<button class="btn-action" data-copy="' + esc(media.url) + '">📋 Copy URL</button></div></div>';
+    } else if (media.type === 'video') {
+      out += '<div class="result-card"><div class="result-title">Hasil Video</div>' +
+        '<video class="result-media" controls src="' + esc(media.url) + '"></video>' +
+        '<div class="result-actions"><a class="btn-action primary" href="' + esc(media.url) + '" download>⬇️ Download</a></div></div>';
+    } else if (media.type === 'audio') {
+      out += '<div class="result-card"><div class="result-title">Hasil Audio</div>' +
+        '<audio controls style="width:100%" src="' + esc(media.url) + '"></audio>' +
+        '<div class="result-actions"><a class="btn-action primary" href="' + esc(media.url) + '" download>⬇️ Download</a></div></div>';
+    }
+  }
+
+  // ==== Profile / Stalker card ====
+  if (isProfileData(d)) {
+    out += renderProfileCard(d);
+  }
+
+  // ==== Downloader / Media info ====
+  if (d.title && (d.download_url || d.url || d.audio || d.video)) {
+    out += renderDownloaderCard(d);
+  }
+
+  // ==== Search result list ====
+  if (Array.isArray(d) && d.length > 0) {
+    out += renderListCard(d);
+  } else if (d.results && Array.isArray(d.results)) {
+    out += renderListCard(d.results);
+  } else if (d.data && Array.isArray(d.data)) {
+    out += renderListCard(d.data);
+  }
+
+  // ==== Text answer (AI style) ====
+  if (!out) {
+    var txt = extractTextAnswer(j);
+    if (txt) {
+      out = '<div class="result-card"><div class="result-title">Hasil</div>' +
+        '<div class="result-text">' + esc(txt) + '</div></div>';
+    }
+  }
+
+  // ==== Fallback — pretty JSON ====
+  if (!out) {
+    out = '<div class="result-card"><div class="result-title">Hasil</div>' +
+      '<div class="result-text" style="font-family:monospace;font-size:11px">' + esc(JSON.stringify(j, null, 2)) + '</div></div>';
+  }
+
+  // ==== Selalu tambah raw toggle ====
+  out += '<details style="margin-top:10px"><summary style="font-size:11px;color:#94a3b8;cursor:pointer;padding:6px 0">🔍 Lihat raw JSON</summary>' +
+    '<div class="result-text" style="font-family:monospace;font-size:10px;margin-top:8px;max-height:200px">' + esc(JSON.stringify(j, null, 2)) + '</div></details>';
+
+  return out;
+}
+
+// ==== Cari media URL dalam objek ====
+function findMediaUrl(obj, depth){
+  if (depth === undefined) depth = 0;
+  if (depth > 4 || !obj) return null;
+  if (typeof obj === 'string') {
+    if (/^https?:\/\//.test(obj)) {
+      if (/\.(jpg|jpeg|png|gif|webp)$/i.test(obj)) return { url: obj, type: 'image' };
+      if (/\.(mp4|webm)$/i.test(obj)) return { url: obj, type: 'video' };
+      if (/\.(mp3|m4a|ogg|wav)$/i.test(obj)) return { url: obj, type: 'audio' };
+    }
+    return null;
+  }
+  if (Array.isArray(obj)) {
+    for (var i=0;i<obj.length;i++){ var r = findMediaUrl(obj[i], depth+1); if (r) return r; }
+    return null;
+  }
+  if (typeof obj === 'object') {
+    var priority = ['url','image','img','photo','thumbnail','thumb','avatar','avatar_url','picture','pic','cover','download','download_url','link','file','media'];
+    for (var i=0;i<priority.length;i++){
+      if (obj[priority[i]] !== undefined) {
+        var r = findMediaUrl(obj[priority[i]], depth+1);
+        if (r) return r;
+      }
+    }
+    var keys = Object.keys(obj);
+    for (var k=0;k<keys.length;k++){
+      var r2 = findMediaUrl(obj[keys[k]], depth+1);
+      if (r2) return r2;
+    }
+  }
+  return null;
+}
+
+// ==== Cek profile data ====
+function isProfileData(d){
+  if (!d || typeof d !== 'object') return false;
+  var hasUser = d.username || d.user || d.name || d.nickname || d.nama;
+  var hasStats = d.followers !== undefined || d.following !== undefined || d.posts !== undefined || d.followers_count !== undefined;
+  return hasUser && (hasStats || d.bio || d.avatar || d.avatar_url);
+}
+
+function renderProfileCard(d){
+  var name = d.name || d.nickname || d.nama || d.username || d.user;
+  var uname = d.username || d.user || '';
+  var avatar = d.avatar || d.avatar_url || d.profile_pic || d.pp || '';
+  var stats = [];
+  if (d.followers !== undefined) stats.push({ v: d.followers, l: 'Followers' });
+  if (d.followers_count !== undefined) stats.push({ v: d.followers_count, l: 'Followers' });
+  if (d.following !== undefined) stats.push({ v: d.following, l: 'Following' });
+  if (d.following_count !== undefined) stats.push({ v: d.following_count, l: 'Following' });
+  if (d.posts !== undefined) stats.push({ v: d.posts, l: 'Posts' });
+  if (d.posts_count !== undefined) stats.push({ v: d.posts_count, l: 'Posts' });
+  if (d.likes !== undefined) stats.push({ v: d.likes, l: 'Likes' });
+  if (d.hearts !== undefined) stats.push({ v: d.hearts, l: 'Hearts' });
+
+  var statsHtml = stats.slice(0,4).map(function(s){
+    return '<div style="text-align:center;padding:0 8px"><b style="display:block;font-size:16px;font-weight:800">' + esc(s.v) + '</b><small style="font-size:10px;opacity:.7;text-transform:uppercase">' + esc(s.l) + '</small></div>';
+  }).join('');
+
+  var info = '';
+  var infoFields = [
+    ['Bio', d.bio || d.desc || d.description],
+    ['Verified', d.verified !== undefined ? (d.verified ? '✅ Ya' : '❌ Tidak') : null],
+    ['Private', d.private !== undefined || d.is_private !== undefined ? (d.private || d.is_private ? '🔒 Ya' : '🌐 Tidak') : null],
+    ['Lokasi', d.location || d.city],
+    ['Bergabung', d.join_date || d.created_at || d.joined],
+    ['ID', d.id || d.user_id || d.uid]
+  ];
+  infoFields.forEach(function(f){
+    if (f[1]) info += '<div><b>' + esc(f[0]) + ':</b> ' + esc(f[1]) + '</div>';
+  });
+
+  var avatarHtml = avatar ? '<img src="' + esc(avatar) + '" style="width:90px;height:90px;border-radius:50%;border:3px solid rgba(255,255,255,.4);object-fit:cover;margin:0 auto 12px;display:block;background:rgba(255,255,255,.1)" onerror="this.style.display=\'none\'">' : '';
+
+  return '<div class="result-card" style="background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;border:0">' +
+    avatarHtml +
+    '<div style="text-align:center">' +
+    '<div style="font-size:20px;font-weight:800;margin-bottom:4px">' + esc(name) + '</div>' +
+    (uname && uname !== name ? '<div style="font-size:13px;opacity:.85;margin-bottom:16px">@' + esc(uname) + '</div>' : '<div style="margin-bottom:12px"></div>') +
+    '</div>' +
+    (statsHtml ? '<div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:12px 0;border-top:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.2)">' + statsHtml + '</div>' : '') +
+    (info ? '<div style="margin-top:14px;font-size:12px;line-height:1.7">' + info + '</div>' : '') +
+    '</div>';
+}
+
+// ==== Cek downloader data ====
+function renderDownloaderCard(d){
+  var title = d.title || d.name || d.filename || 'Media';
+  var artist = d.artist || d.author || d.channel || '';
+  var thumb = d.thumbnail || d.thumb || d.cover || d.image || '';
+  var duration = d.duration || d.length || '';
+  var downloads = [];
+  if (d.download_url) downloads.push({ label: 'Download', url: d.download_url });
+  if (d.url && typeof d.url === 'string' && /^https?:/.test(d.url)) downloads.push({ label: 'Open URL', url: d.url });
+  if (d.audio) downloads.push({ label: 'Audio', url: typeof d.audio === 'string' ? d.audio : (d.audio.url || '') });
+  if (d.video) downloads.push({ label: 'Video', url: typeof d.video === 'string' ? d.video : (d.video.url || '') });
+
+  var dlBtns = downloads.filter(function(x){ return x.url; }).map(function(x){
+    return '<a class="btn-action primary" href="' + esc(x.url) + '" target="_blank" rel="noopener">⬇️ ' + esc(x.label) + '</a>';
+  }).join('');
+
+  var thumbHtml = thumb ? '<img src="' + esc(thumb) + '" style="width:100%;max-height:220px;object-fit:cover;border-radius:14px;margin-bottom:14px" onerror="this.style.display=\'none\'">' : '';
+
+  return '<div class="result-card">' +
+    '<div class="result-title">Hasil</div>' +
+    thumbHtml +
+    '<div style="font-size:16px;font-weight:800;margin-bottom:4px">' + esc(title) + '</div>' +
+    (artist ? '<div style="font-size:13px;color:#64748b;margin-bottom:4px">' + esc(artist) + '</div>' : '') +
+    (duration ? '<div style="font-size:12px;color:#94a3b8;margin-bottom:12px">⏱️ ' + esc(duration) + '</div>' : '') +
+    (dlBtns ? '<div class="result-actions">' + dlBtns + '</div>' : '') +
+    '</div>';
+}
+
+// ==== Render list hasil search ====
+function renderListCard(arr){
+  var items = arr.slice(0, 20).map(function(item){
+    if (typeof item === 'string') {
+      return '<div style="padding:10px 12px;background:#f8fafc;border-radius:10px;font-size:13px;word-break:break-all">' + esc(item) + '</div>';
+    }
+    var title = item.title || item.name || item.username || item.id || '';
+    var sub = item.desc || item.description || item.bio || item.url || '';
+    var thumb = item.thumbnail || item.image || item.thumb || '';
+    var thumbHtml = thumb ? '<img src="' + esc(thumb) + '" style="width:50px;height:50px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display=\'none\'">' : '';
+    return '<div style="display:flex;gap:10px;padding:10px 12px;background:#f8fafc;border-radius:10px;align-items:center">' +
+      thumbHtml +
+      '<div style="flex:1;min-width:0">' +
+      '<div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:2px">' + esc(title) + '</div>' +
+      (sub ? '<div style="font-size:11px;color:#64748b;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(sub) + '</div>' : '') +
+      '</div></div>';
+  }).join('');
+  return '<div class="result-card"><div class="result-title">Hasil (' + arr.length + ')</div>' +
+    '<div style="display:flex;flex-direction:column;gap:8px">' + items + '</div></div>';
+}
+
+// ==== Extract text answer dari JSON ====
+function extractTextAnswer(j, depth){
+  if (depth === undefined) depth = 0;
+  if (depth > 5 || j == null) return null;
+  if (typeof j === 'string') return j.length > 2 ? j : null;
+  if (Array.isArray(j)) {
+    for (var i=0;i<j.length;i++){ var r = extractTextAnswer(j[i], depth+1); if (r) return r; }
+    return null;
+  }
+  if (typeof j === 'object') {
+    var keys = ['answer','result','response','reply','message','text','jawaban','output','content','msg'];
+    for (var i=0;i<keys.length;i++){
+      if (typeof j[keys[i]] === 'string' && j[keys[i]].length > 2) return j[keys[i]];
+    }
+    var ks = Object.keys(j);
+    for (var k=0;k<ks.length;k++){
+      var r2 = extractTextAnswer(j[ks[k]], depth+1);
+      if (r2 && r2.length > 10 && !/^https?:/.test(r2)) return r2;
+    }
+  }
+  return null;
+}
+
+function renderError(c, msg){
     c.innerHTML = '<div class="error-box">❌ ' + esc(msg) + '</div>';
     c.classList.add('show');
   }
