@@ -816,23 +816,6 @@ footer {
    ===================================================== */
 
 /* Header baru */
-.fx-header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(255,255,255,0.85);
-  backdrop-filter: saturate(180%) blur(24px);
-  -webkit-backdrop-filter: saturate(180%) blur(24px);
-  border-bottom: 1px solid rgba(148,163,184,0.12);
-  padding: 14px 18px;
-}
-.fx-header-row {
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
 .fx-logo {
   font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 22px;
@@ -845,39 +828,6 @@ footer {
   text-decoration: none;
   flex-shrink: 0;
   margin-right: 6px;
-}
-.fx-search {
-  flex: 1;
-  position: relative;
-  max-width: 400px;
-}
-.fx-search input {
-  width: 100%;
-  padding: 12px 16px 12px 42px;
-  background: rgba(255,255,255,0.9);
-  border: 1px solid rgba(148,163,184,0.2);
-  border-radius: 999px;
-  font-size: 14px;
-  font-family: inherit;
-  color: #0f172a;
-  outline: none;
-  transition: all .2s;
-}
-.fx-search input:focus {
-  border-color: #0EA5E9;
-  background: #fff;
-  box-shadow: 0 0 0 4px rgba(14,165,233,0.1);
-}
-.fx-search input::placeholder { color: #94a3b8; }
-.fx-search::before {
-  content: '🔍';
-  position: absolute;
-  left: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 14px;
-  opacity: 0.5;
-  pointer-events: none;
 }
 .fx-icon-btn {
   width: 44px;
@@ -1040,9 +990,7 @@ footer {
 
 /* Responsive */
 @media (max-width: 520px) {
-  .fx-header { padding: 12px 14px; }
   .fx-logo { font-size: 19px; }
-  .fx-search input { padding: 10px 14px 10px 40px; font-size: 13px; }
   .fx-icon-btn { width: 40px; height: 40px; font-size: 16px; border-radius: 12px; }
   .fx-cats { padding: 12px 14px 8px; }
   .fx-grid { padding: 6px 14px 60px; }
