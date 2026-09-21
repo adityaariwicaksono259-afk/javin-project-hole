@@ -223,61 +223,36 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 <script>
-// ==== AUTO-UPDATE (fixioo-style) ====
+// ==== KILL OLD SW + REGISTER NEW ====
 (function(){
   if (!('serviceWorker' in navigator)) return;
-
-  var refreshing = false;
-
-  // 1. Kalau SW baru ambil kendali → reload otomatis
-  navigator.serviceWorker.addEventListener('controllerchange', function(){
-    if (refreshing) return;
-    refreshing = true;
-    console.log('[AutoUpdate] Reload karena SW baru');
-    setTimeout(function(){ window.location.reload(); }, 200);
-  });
-
-  // 2. Register SW + cek update tiap 30 detik
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.register('/service-worker.js').then(function(reg){
-      console.log('[SW] Registered:', reg.scope);
-      
-      // Cek update langsung
-      reg.update();
-      
-      // Poll update tiap 30 detik
-      setInterval(function(){ reg.update(); }, 30000);
-      
-      // Listen kalau ada SW baru yang waiting
-      reg.addEventListener('updatefound', function(){
-        var newWorker = reg.installing;
-        if (!newWorker) return;
-        newWorker.addEventListener('statechange', function(){
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            console.log('[AutoUpdate] Update terdeteksi, aktivasi...');
-            newWorker.postMessage({ type: 'SKIP_WAITING' });
-          }
-        });
-      });
-    }).catch(function(e){
-      console.warn('[SW] Register failed:', e.message);
+  
+  // Unregister SEMUA SW lama
+  navigator.serviceWorker.getRegistrations().then(function(regs){
+    regs.forEach(function(reg){
+      if (reg.active && reg.active.scriptURL.indexOf('sw-v5') === -1) {
+        console.log('[KILL] Unregister old SW:', reg.active.scriptURL);
+        reg.unregister();
+      }
     });
   });
 
-  // 3. Cek update saat tab balik aktif
-  document.addEventListener('visibilitychange', function(){
-    if (document.visibilityState === 'visible') {
-      navigator.serviceWorker.getRegistration().then(function(reg){
-        if (reg) reg.update();
-      });
-    }
+  // Register SW baru
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('/sw-v5.js?v=' + Date.now()).then(function(reg){
+      console.log('[SW] Registered fresh:', reg.scope);
+      reg.update();
+      setInterval(function(){ reg.update(); }, 30000);
+    }).catch(function(e){ console.warn('[SW] Register failed:', e.message); });
   });
 
-  // 4. Listen message dari SW
-  navigator.serviceWorker.addEventListener('message', function(event){
-    if (event.data && event.data.type === 'SW_UPDATED') {
-      console.log('[AutoUpdate] Version:', event.data.version);
-    }
+  // Auto reload kalau ada controller baru
+  var refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', function(){
+    if (refreshing) return;
+    refreshing = true;
+    console.log('[AutoUpdate] Reloading...');
+    setTimeout(function(){ window.location.reload(); }, 200);
   });
 })();
 </script>
