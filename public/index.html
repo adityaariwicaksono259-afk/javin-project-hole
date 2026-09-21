@@ -280,4 +280,19 @@ if ('serviceWorker' in navigator) {
   });
 })();
 </script>
+
+<!-- Edit Name Modal -->
+<div id="editNameModal" class="enm-overlay" style="display:none">
+  <div class="enm-modal">
+    <div class="enm-icon">👤</div>
+    <div class="enm-title">Ubah Nama Tampilan</div>
+    <div class="enm-sub">Nama ini bakal muncul di profile card kamu</div>
+    <input type="text" id="enmInput" class="enm-input" placeholder="Masukkan nama..." maxlength="20" autocomplete="off">
+    <div class="enm-counter"><span id="enmCount">0</span>/20</div>
+    <div class="enm-buttons">
+      <button class="enm-btn ghost" id="enmCancel">Batal</button>
+      <button class="enm-btn primary" id="enmSave">Simpan</button>
+    </div>
+  </div>
+</div>
 </body></html>

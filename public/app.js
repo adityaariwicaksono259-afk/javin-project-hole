@@ -13,19 +13,67 @@
   }
 
   function openProfileEditor(){
-    var el = document.getElementById('headerName');
-    if (!el) return;
-    var current = el.textContent || 'Javin';
-    var newName = prompt('Ubah nama tampilan:', current);
-    if (newName === null) return;
-    newName = newName.trim().slice(0, 20);
-    if (!newName) {
-      try { localStorage.removeItem('javin_display_name'); } catch(e){}
-      updateHeaderName();
+    var modal = document.getElementById('editNameModal');
+    var input = document.getElementById('enmInput');
+    var counter = document.getElementById('enmCount');
+    var counterBox = counter ? counter.parentElement : null;
+
+    if (!modal || !input) {
+      // Fallback ke prompt kalau modal nggak ada
+      var current = localStorage.getItem('javin_display_name') || 'Javin';
+      var newName = prompt('Ubah nama tampilan:', current);
+      if (newName !== null && newName.trim()) {
+        localStorage.setItem('javin_display_name', newName.trim().slice(0, 20));
+        updateHeaderName();
+      }
       return;
     }
-    try { localStorage.setItem('javin_display_name', newName); } catch(e){}
-    updateHeaderName();
+
+    var current = localStorage.getItem('javin_display_name') || 'Javin';
+    input.value = current;
+    counter.textContent = current.length;
+    if (counterBox) counterBox.classList.toggle('warn', current.length > 18);
+
+    modal.style.display = 'flex';
+    setTimeout(function(){ input.focus(); input.select(); }, 150);
+
+    // Counter update
+    input.oninput = function(){
+      counter.textContent = input.value.length;
+      if (counterBox) counterBox.classList.toggle('warn', input.value.length > 18);
+    };
+
+    // Save
+    var saveBtn = document.getElementById('enmSave');
+    saveBtn.onclick = function(){
+      var val = input.value.trim().slice(0, 20);
+      if (!val) {
+        try { localStorage.removeItem('javin_display_name'); } catch(e){}
+      } else {
+        try { localStorage.setItem('javin_display_name', val); } catch(e){}
+      }
+      updateHeaderName();
+      modal.style.display = 'none';
+      input.oninput = null;
+    };
+
+    // Cancel
+    var cancelBtn = document.getElementById('enmCancel');
+    cancelBtn.onclick = function(){
+      modal.style.display = 'none';
+      input.oninput = null;
+    };
+
+    // Enter = save
+    input.onkeydown = function(e){
+      if (e.key === 'Enter') { e.preventDefault(); saveBtn.click(); }
+      if (e.key === 'Escape') { cancelBtn.click(); }
+    };
+
+    // Click overlay = close
+    modal.onclick = function(e){
+      if (e.target === modal) cancelBtn.click();
+    };
   }
 
   document.addEventListener('DOMContentLoaded', function(){

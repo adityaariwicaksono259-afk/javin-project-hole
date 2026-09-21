@@ -233,3 +233,151 @@ body.theme-dark .fx-profile-meta { color: #94a3b8; }
 .fx-search-row {
   margin-top: 6px;
 }
+
+/* ==== Edit Name Modal ==== */
+.enm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(15,23,42,0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: enmFade .25s ease;
+}
+@keyframes enmFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.enm-modal {
+  width: 100%;
+  max-width: 360px;
+  background: #fff;
+  border-radius: 22px;
+  padding: 26px 22px 20px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(15,23,42,0.35);
+  animation: enmSlide .3s cubic-bezier(.2,.9,.3,1.2);
+}
+@keyframes enmSlide {
+  from { opacity: 0; transform: translateY(24px) scale(.95); }
+  to { opacity: 1; transform: none; }
+}
+.enm-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(14,165,233,.15), rgba(99,102,241,.15));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+.enm-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+.enm-sub {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 18px;
+  line-height: 1.4;
+}
+.enm-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 14px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #0f172a;
+  text-align: center;
+  outline: none;
+  transition: all .2s;
+  font-weight: 600;
+}
+.enm-input:focus {
+  border-color: #0EA5E9;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(14,165,233,0.1);
+}
+.enm-counter {
+  font-size: 10px;
+  color: #94a3b8;
+  text-align: right;
+  margin-top: 6px;
+  margin-bottom: 18px;
+  font-family: 'SF Mono', monospace;
+  font-weight: 600;
+}
+.enm-counter.warn { color: #dc2626; }
+.enm-buttons {
+  display: flex;
+  gap: 8px;
+}
+.enm-btn {
+  flex: 1;
+  padding: 13px;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  border: 0;
+}
+.enm-btn.ghost {
+  background: #f1f5f9;
+  color: #64748b;
+}
+.enm-btn.ghost:hover { background: #e2e8f0; }
+.enm-btn.primary {
+  background: linear-gradient(135deg, #0EA5E9, #6366F1);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+}
+.enm-btn.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(14,165,233,0.45);
+}
+
+/* Dark mode */
+body.theme-dark .enm-modal { background: #1e293b; }
+body.theme-dark .enm-title { color: #f1f5f9; }
+body.theme-dark .enm-sub { color: #94a3b8; }
+body.theme-dark .enm-input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+body.theme-dark .enm-input:focus {
+  border-color: #0EA5E9;
+  background: #0a0f1a;
+}
+body.theme-dark .enm-btn.ghost {
+  background: #334155;
+  color: #cbd5e1;
+}
+
+/* ==== Fix search bar full width ==== */
+.fx-header-row {
+  width: 100% !important;
+}
+.fx-search-row {
+  width: 100% !important;
+  display: flex !important;
+  padding: 0 !important;
+}
+.fx-search-row input {
+  flex: 1 !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
