@@ -1,0 +1,78 @@
+/* ================================================
+   NATIVE APP FEEL — VinAPIay
+   ================================================ */
+
+/* Disable pull-to-refresh & bounce */
+html, body {
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: auto;
+  touch-action: manipulation;
+}
+
+body {
+  position: relative;
+  overflow-x: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Allow text select di input & textarea & pre */
+input, textarea, pre, code, .result-text, .chat-bubble.ai {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Disable image drag */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  pointer-events: none;
+}
+
+img.clickable {
+  pointer-events: auto;
+}
+
+/* Smooth scroll internal */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hide scrollbar (tapi tetap scrollable) */
+::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+* {
+  scrollbar-width: none;
+}
+
+/* Prevent zoom on double-tap */
+button, a, .fx-card, .fx-icon-btn, .btn-action {
+  touch-action: manipulation;
+}
+
+/* Prevent layout shift dari address bar hide */
+body {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+}
+
+/* Safe area untuk notch HP */
+.wrap, .fx-header, .fx-cats, .fx-grid, .fx-featured-wrap {
+  padding-left: max(14px, env(safe-area-inset-left));
+  padding-right: max(14px, env(safe-area-inset-right));
+}
+
+.fx-header {
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
+/* Prevent long press popup */
+a, button, img {
+  -webkit-touch-callout: none;
+}

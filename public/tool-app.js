@@ -35,6 +35,10 @@
     if (folder === 'canvas') return 'image';
     if (/remover|remove.*background|remini|upscale|hd quality|hd gambar|wink|enhance|pixel art|beautiful|hd image/i.test(txt)) return 'image';
 
+    // Roblox stalker — tipe khusus
+    if (ep.catalogId === 'ep015' || /roblox/i.test(name) && /stalker|profile/i.test(name)) {
+      return 'roblox-profile';
+    }
     if (folder === 'stalker' || /stalker|stalk|lacak|cek profil/i.test(name)) return 'stalker';
     // AI folder: cek dulu apakah ini list/search atau chat
     if (folder === 'ai') {
@@ -357,8 +361,12 @@ function smartJsonRender(j){
     }
   }
 
-  // ==== Profile / Stalker ====
-  if (isProfileData(d)) {
+  // ==== Roblox Profile ====
+  if (d.avatar && d.name && (d.friends !== undefined || d.games !== undefined)) {
+    out += renderRobloxProfile(d);
+  }
+  // ==== Profile / Stalker umum ====
+  else if (isProfileData(d)) {
     out += renderProfileCard(d);
   }
 
@@ -523,6 +531,70 @@ function isProfileData(d){
   var hasUser = d.username || d.user || d.name || d.nickname || d.nama;
   var hasStats = d.followers !== undefined || d.following !== undefined || d.posts !== undefined || d.followers_count !== undefined;
   return hasUser && (hasStats || d.bio || d.avatar || d.avatar_url);
+}
+
+// ==== Render Roblox Profile (kartu + daftar game) ====
+function renderRobloxProfile(d){
+  var avatar = d.avatar || '';
+  var name = d.name || d.displayName || 'Unknown';
+  var displayName = d.displayName || name;
+  var username = d.name || '';
+  var desc = d.description || 'Tidak ada deskripsi.';
+  var created = d.created ? new Date(d.created).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '-';
+  var friends = d.friends || 0;
+  var followers = d.followers || 0;
+  var followings = d.followings || 0;
+  var isBanned = d.isBanned || false;
+  var verified = d.hasVerifiedBadge || false;
+  var uid = d.id || '-';
+  var games = d.games || [];
+
+  // Avatar
+  var avatarHtml = avatar
+    ? '<img src="' + esc(avatar) + '" style="width:100px;height:100px;border-radius:50%;border:4px solid rgba(255,255,255,.4);object-fit:cover;margin:0 auto 12px;display:block;background:rgba(255,255,255,.1)" onerror="this.src=\'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%234a5568%22 width=%22100%22 height=%22100%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-family=%22sans-serif%22 font-size=%2240%22 fill=%22white%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E\'">'
+    : '';
+
+  // Stats
+  var statsHtml = '<div style="display:flex;justify-content:center;gap:18px;flex-wrap:wrap;padding:12px 0;border-top:1px solid rgba(255,255,255,.2);border-bottom:1px solid rgba(255,255,255,.2)">' +
+    '<div style="text-align:center"><b style="display:block;font-size:16px;font-weight:800">' + friends + '</b><small style="font-size:10px;opacity:.7;text-transform:uppercase">Teman</small></div>' +
+    '<div style="text-align:center"><b style="display:block;font-size:16px;font-weight:800">' + followers + '</b><small style="font-size:10px;opacity:.7;text-transform:uppercase">Pengikut</small></div>' +
+    '<div style="text-align:center"><b style="display:block;font-size:16px;font-weight:800">' + followings + '</b><small style="font-size:10px;opacity:.7;text-transform:uppercase">Mengikuti</small></div>' +
+    '</div>';
+
+  // Info tambahan
+  var infoHtml = '<div style="margin-top:14px;font-size:12px;line-height:1.7;text-align:left">' +
+    '<div><b style="opacity:.75">ID:</b> ' + uid + '</div>' +
+    '<div><b style="opacity:.75">Bergabung:</b> ' + created + '</div>' +
+    '<div><b style="opacity:.75">Status:</b> ' + (isBanned ? '🚫 Dibanned' : '✅ Aktif') + (verified ? ' · ✔️ Terverifikasi' : '') + '</div>' +
+    '<div><b style="opacity:.75">Deskripsi:</b> ' + esc(desc) + '</div>' +
+    '</div>';
+
+  // Daftar Game
+  var gamesHtml = '';
+  if (games.length > 0) {
+    gamesHtml = '<div style="margin-top:16px;text-align:left">' +
+      '<div style="font-size:13px;font-weight:800;color:#fff;margin-bottom:8px">🎮 DAFTAR TEMPAT / GAME POPULER</div>' +
+      '<div style="display:flex;flex-direction:column;gap:6px">' +
+      games.slice(0, 5).map(function(g, i){
+        var visits = g.placeVisits ? g.placeVisits.toLocaleString('id-ID') : '0';
+        return '<div style="background:rgba(0,0,0,.25);border-radius:8px;padding:8px 12px;font-size:12px">' +
+          '<div style="font-weight:700;margin-bottom:2px">' + (i+1) + '. ' + esc(g.name || 'Untitled') + '</div>' +
+          '<div style="opacity:.7;font-size:10px">👤 ' + visits + ' kunjungan</div>' +
+          '</div>';
+      }).join('') +
+      '</div>' +
+      (games.length > 5 ? '<div style="font-size:10px;opacity:.6;margin-top:6px">... dan ' + (games.length - 5) + ' lainnya</div>' : '') +
+      '</div>';
+  }
+
+  return '<div class="result-card" style="background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;border:0;padding:20px;text-align:center">' +
+    avatarHtml +
+    '<div style="font-size:20px;font-weight:800;margin-bottom:4px">' + esc(displayName) + '</div>' +
+    (displayName !== username ? '<div style="font-size:13px;opacity:.85;margin-bottom:12px">@' + esc(username) + '</div>' : '<div style="margin-bottom:12px"></div>') +
+    statsHtml +
+    infoHtml +
+    gamesHtml +
+    '</div>';
 }
 
 function renderProfileCard(d){
