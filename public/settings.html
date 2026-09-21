@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<title>Pengaturan — VinAPIay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css?v=3">
+<link rel="stylesheet" href="/native.css?v=1">
+<link rel="stylesheet" href="/settings.css?v=1">
+</head>
+<body>
+<header class="fx-header">
+  <div class="fx-header-row">
+    <a href="/" class="fx-icon-btn" id="btnBack">←</a>
+    <h1 style="flex:1;font-size:17px;font-weight:800;margin:0;padding-left:8px">Pengaturan</h1>
+    <button class="fx-icon-btn" id="btnClose" style="display:none">✕</button>
+  </div>
+</header>
+
+<div class="settings-wrap">
+  <div class="settings-group">
+    <div class="settings-group-title">UMUM &amp; TAMPILAN</div>
+
+    <div class="settings-item settings-item-col">
+      <div class="settings-label">
+        <span class="settings-icon">🎨</span>
+        <div>
+          <div class="settings-name">Tema Warna</div>
+          <div class="settings-sub" id="themeCurrent">Terang</div>
+        </div>
+      </div>
+      <div class="seg-control" id="themeSeg">
+        <button data-val="auto">💻 Sistem</button>
+        <button data-val="light" class="active">☀️ Terang</button>
+        <button data-val="dark">🌙 Gelap</button>
+      </div>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">✨</span>
+        <div>
+          <div class="settings-name">Tampilan UI/UX iOS</div>
+          <div class="settings-sub">Aktifkan gaya visual iOS, efek kaca glassmorphic, dan sudut membulat</div>
+        </div>
+      </div>
+      <label class="switch"><input type="checkbox" id="tglIos" checked><span class="slider"></span></label>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">🧊</span>
+        <div>
+          <div class="settings-name">Animasi Tombol 3D Smooth</div>
+          <div class="settings-sub">Efek kedalaman 3D tactile, pantulan pegas halus, dan elevasi saat tombol ditekan</div>
+        </div>
+      </div>
+      <label class="switch"><input type="checkbox" id="tgl3d" checked><span class="slider"></span></label>
+    </div>
+
+    <div class="settings-item settings-item-col">
+      <div class="settings-label">
+        <span class="settings-icon">🔍</span>
+        <div>
+          <div class="settings-name">Skala Tampilan</div>
+          <div class="settings-sub">Pilih kepadatan antarmuka &amp; ukuran teks layar</div>
+        </div>
+      </div>
+      <div class="seg-control" id="scaleSeg">
+        <button data-val="1" class="active">1x Standar</button>
+        <button data-val="1.2">1.2x Sedang</button>
+        <button data-val="1.4">1.4x Tinggi</button>
+      </div>
+    </div>
+
+    <div class="settings-item settings-item-col">
+      <div class="settings-label">
+        <span class="settings-icon">🌐</span>
+        <div>
+          <div class="settings-name">Bahasa</div>
+          <div class="settings-sub" id="langCurrent">Bahasa Indonesia</div>
+        </div>
+      </div>
+      <div class="seg-control" id="langSeg">
+        <button data-val="id" class="active">Indonesia</button>
+        <button data-val="en">English</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-group">
+    <div class="settings-group-title">APLIKASI &amp; SISTEM</div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">📲</span>
+        <div>
+          <div class="settings-name">Pasang Aplikasi</div>
+          <div class="settings-sub" id="installStatus">Siap Dipasang</div>
+        </div>
+      </div>
+      <button class="btn-mini" id="btnInstall">📥 Pasang Aplikasi</button>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">🔔</span>
+        <div>
+          <div class="settings-name">Notifikasi Sistem</div>
+          <div class="settings-sub" id="notifStatus">Belum diminta</div>
+        </div>
+      </div>
+      <button class="btn-mini" id="btnNotif">Minta Izin</button>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">📦</span>
+        <div>
+          <div class="settings-name">Status Pemasangan</div>
+          <div class="settings-sub" id="pwaStatus">Memeriksa...</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">🏷️</span>
+        <div>
+          <div class="settings-name">Versi Aplikasi</div>
+        </div>
+      </div>
+      <span class="settings-value" id="appVersion">v1.2.0</span>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">📡</span>
+        <div>
+          <div class="settings-name">Mode Koneksi</div>
+        </div>
+      </div>
+      <span class="settings-value status-online" id="connStatus">● Online</span>
+    </div>
+
+    <div class="settings-item">
+      <div class="settings-label">
+        <span class="settings-icon">🔄</span>
+        <div>
+          <div class="settings-name">Periksa Pembaruan</div>
+          <div class="settings-sub">Cek versi terbaru dari server</div>
+        </div>
+      </div>
+      <button class="btn-mini" id="btnCheckUpdate">🔄 Periksa</button>
+    </div>
+  </div>
+
+  <div class="settings-footer">
+    <div>VinAPIay · v1.2.0</div>
+    <div style="margin-top:4px;opacity:.6">© 2026 Javin</div>
+  </div>
+</div>
+
+<script src="/settings.js?v=1"></script>
+</body>
+</html>
