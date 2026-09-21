@@ -1,5 +1,5 @@
 // VinAPIay Service Worker — v3 (auto-update)
-const CACHE_VERSION = 'v3.1';
+const CACHE_VERSION = 'v5.0';
 const CACHE_NAME = 'vinapiay-' + CACHE_VERSION;
 
 const PRECACHE = [

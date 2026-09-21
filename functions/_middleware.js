@@ -480,6 +480,13 @@ export async function onRequest(context) {
   const response = await context.next();
   const newHeaders = new Headers(response.headers);
 
+  // ==== FORCE_HTML_FRESH — HTML & SW wajib fresh ====
+  if (pathname === '/' || pathname.endsWith('.html') || pathname === '/service-worker.js') {
+    newHeaders.set('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+    newHeaders.set('Pragma', 'no-cache');
+    newHeaders.set('Expires', '0');
+  }
+
   // ==== LAYER 1: Security headers ====
   newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
   newHeaders.set('X-Content-Type-Options', 'nosniff');
