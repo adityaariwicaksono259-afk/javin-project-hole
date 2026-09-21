@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test Search</title>
+<style>
+body { margin: 0; padding: 20px; font-family: sans-serif; background: #f0f7ff; }
+h1 { font-size: 14px; margin-bottom: 20px; }
+
+/* TEST 1: Simple */
+.test1 input {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* TEST 2: Dengan flex wrapper */
+.test2 {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+.test2 .item {
+  flex: 1;
+  padding: 10px;
+  background: white;
+  border-radius: 8px;
+}
+.test2 input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px 16px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+/* TEST 3: Persis kayak production */
+.test3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.test3 .prof {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 6px;
+  background: white;
+  border-radius: 999px;
+}
+.test3 .av {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,#0EA5E9,#6366F1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.test3 input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border: 2px solid #ccc;
+  border-radius: 14px;
+  font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<h1>TEST 1 — Simple</h1>
+<div class="test1">
+  <input type="text" placeholder="Search...">
+</div>
+
+<h1>TEST 2 — Flex wrapper</h1>
+<div class="test2">
+  <input type="text" placeholder="Search...">
+</div>
+
+<h1>TEST 3 — Persis Production</h1>
+<div class="test3">
+  <div class="prof">
+    <div class="av">J</div>
+    <div>
+      <div style="font-weight:800;font-size:13px">Javin</div>
+      <div style="font-size:10px;color:#64748b">JH-AGFBDH · 500/500</div>
+    </div>
+  </div>
+  <div style="width:44px;height:44px;border-radius:14px;background:white;display:flex;align-items:center;justify-content:center">⚙️</div>
+</div>
+<input type="text" placeholder="Cari tool..." class="fx-search-input-test" style="display:block;width:100%;padding:12px 16px;border:2px solid #ccc;border-radius:14px;font-size:14px;box-sizing:border-box">
+
+</body>
+</html>
