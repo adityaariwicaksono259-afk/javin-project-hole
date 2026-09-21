@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/style-v4.css">
-<link rel="stylesheet" href="/native-v4.css">
+<link rel="stylesheet" href="/native-v5.css">
 <meta name="theme-color" content="#f0f7ff">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="VinAPIay">
@@ -26,21 +26,21 @@
     <div class="splash-loader"><span></span><span></span><span></span></div>
   </div>
 </div>
-<header class="fx-header" style="position:sticky !important;top:0 !important;z-index:50 !important;padding:10px 14px 12px !important;margin:0 !important;width:100% !important;max-width:100vw !important;box-sizing:border-box !important;background:rgba(255,255,255,0.85) !important;backdrop-filter:saturate(180%) blur(20px) !important;-webkit-backdrop-filter:saturate(180%) blur(20px) !important;border-bottom:1px solid rgba(148,163,184,0.15) !important">
-  <div class="fx-hdr" style="display:flex !important;align-items:center !important;gap:8px !important;margin:0 0 10px 0 !important;width:100% !important;box-sizing:border-box !important">
-    <div class="fx-prof" id="profileCard" style="flex:1 1 auto !important;min-width:0 !important;display:flex !important;align-items:center !important;gap:10px !important;padding:6px 14px 6px 6px !important;background:rgba(255,255,255,0.9) !important;border:1px solid rgba(255,255,255,0.9) !important;border-radius:999px !important;cursor:pointer !important;box-shadow:0 2px 8px rgba(30,64,175,0.05) !important;box-sizing:border-box !important">
-      <div class="fx-av" id="profileAvatar" style="width:34px !important;height:34px !important;border-radius:50% !important;background:linear-gradient(135deg,#0EA5E9,#6366F1) !important;color:#fff !important;display:flex !important;align-items:center !important;justify-content:center !important;font-size:14px !important;font-weight:800 !important;flex-shrink:0 !important">J</div>
-      <div class="fx-pinfo" style="min-width:0 !important;flex:1 !important">
-        <div class="fx-pname" id="headerName" style="font-size:13px !important;font-weight:800 !important;color:#0f172a !important;line-height:1.2 !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important">Javin</div>
-        <div class="fx-pmeta" style="font-size:10px !important;color:#64748b !important;font-weight:600 !important;line-height:1.2 !important;overflow:hidden !important;text-overflow:ellipsis !important;white-space:nowrap !important;font-family:'SF Mono',monospace !important">
-          <span id="userId">–</span> · <span id="userLimit" class="u-limit" style="color:#0EA5E9 !important;font-weight:800 !important">–</span>
+<header class="fx-header">
+  <div class="fx-row-1">
+    <div class="fx-prof" id="profileCard">
+      <div class="fx-av" id="profileAvatar">J</div>
+      <div class="fx-pinfo">
+        <div class="fx-pname" id="headerName">Javin</div>
+        <div class="fx-pmeta">
+          <span id="userId">–</span> · <span id="userLimit" class="u-limit">–</span>
         </div>
       </div>
     </div>
-    <a href="/settings" class="fx-ibtn" style="width:44px !important;height:44px !important;flex-shrink:0 !important;border-radius:14px !important;background:rgba(255,255,255,0.9) !important;border:1px solid rgba(255,255,255,0.9) !important;display:flex !important;align-items:center !important;justify-content:center !important;font-size:18px !important;text-decoration:none !important;color:#0f172a !important;cursor:pointer !important;box-shadow:0 2px 8px rgba(30,64,175,0.05) !important;box-sizing:border-box !important">⚙️</a>
-    <button class="fx-ibtn" id="adminLaunch" style="width:44px !important;height:44px !important;flex-shrink:0 !important;border-radius:14px !important;background:rgba(255,255,255,0.9) !important;border:1px solid rgba(255,255,255,0.9) !important;display:flex !important;align-items:center !important;justify-content:center !important;font-size:18px !important;color:#0f172a !important;cursor:pointer !important;box-shadow:0 2px 8px rgba(30,64,175,0.05) !important;box-sizing:border-box !important">🛡️</button>
+    <a href="/settings" class="fx-ibtn">⚙️</a>
+    <button class="fx-ibtn" id="adminLaunch">🛡️</button>
   </div>
-  <input id="search" class="fx-search-input" type="text" placeholder="Cari tool..." autocomplete="off" style="display:block !important;width:100% !important;max-width:100% !important;min-width:0 !important;box-sizing:border-box !important;padding:12px 16px !important;margin:0 !important;background:rgba(255,255,255,0.9) !important;border:1px solid rgba(148,163,184,0.2) !important;border-radius:14px !important;font-size:14px !important;font-family:inherit !important;color:#0f172a !important;outline:none !important;-webkit-appearance:none !important;appearance:none !important">
+  <input id="search" class="fx-search-input" type="text" placeholder="Cari tool..." autocomplete="off">
 </header>
 <main>
 
