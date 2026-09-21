@@ -191,3 +191,45 @@ body.theme-dark .fx-profile-card {
 }
 body.theme-dark .fx-profile-name { color: #f1f5f9; }
 body.theme-dark .fx-profile-meta { color: #94a3b8; }
+
+/* ==== Fix search bar full width ==== */
+.fx-search-row {
+  width: 100%;
+  padding: 0 2px;
+}
+.fx-search-row input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ==== Profile card clickable ==== */
+.fx-profile-card {
+  cursor: pointer !important;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.fx-profile-card:active {
+  transform: scale(0.97);
+  transition: transform 0.1s;
+}
+
+/* ==== Layout header rapi ==== */
+.fx-header-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100%;
+}
+.fx-profile-card {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+/* ==== Search bar spacing ==== */
+.fx-header {
+  padding-bottom: 12px !important;
+}
+.fx-search-row {
+  margin-top: 6px;
+}

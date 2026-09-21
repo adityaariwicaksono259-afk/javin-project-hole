@@ -1,46 +1,49 @@
 
-// === Custom username di header ===
+// === Custom username + Profile card ===
 (function(){
   function updateHeaderName(){
     var el = document.getElementById('headerName');
+    var av = document.getElementById('profileAvatar');
     if (!el) return;
     var saved = null;
     try { saved = localStorage.getItem('javin_display_name'); } catch(e){}
-    if (saved && saved.trim()) {
-      el.textContent = saved.trim();
-      return;
-    }
-    // Default: Javin
-    el.textContent = 'Javin';
-    // Cek dari user ID
-    try {
-      var uid = localStorage.getItem('javin_user_id');
-      if (uid && /^JH-/.test(uid)) {
-        // skip — biar default Javin aja
-      }
-    } catch(e){}
+    var name = (saved && saved.trim()) ? saved.trim() : 'Javin';
+    el.textContent = name;
+    if (av) av.textContent = name.charAt(0).toUpperCase();
   }
 
-  // Click header name → prompt ganti
-  document.addEventListener('DOMContentLoaded', function(){
-    updateHeaderName();
+  function openProfileEditor(){
     var el = document.getElementById('headerName');
     if (!el) return;
-    el.onclick = function(e){
-      e.preventDefault();
-      var current = el.textContent;
-      var newName = prompt('Ubah nama tampilan:', current);
-      if (newName === null) return;
-      newName = newName.trim().slice(0, 20);
-      if (!newName) {
-        try { localStorage.removeItem('javin_display_name'); } catch(e){}
-        el.textContent = 'Javin';
-        return;
-      }
-      try { localStorage.setItem('javin_display_name', newName); } catch(e){}
-      el.textContent = newName;
-    };
+    var current = el.textContent || 'Javin';
+    var newName = prompt('Ubah nama tampilan:', current);
+    if (newName === null) return;
+    newName = newName.trim().slice(0, 20);
+    if (!newName) {
+      try { localStorage.removeItem('javin_display_name'); } catch(e){}
+      updateHeaderName();
+      return;
+    }
+    try { localStorage.setItem('javin_display_name', newName); } catch(e){}
+    updateHeaderName();
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    updateHeaderName();
+    // Click di SELURUH area profile card
+    var card = document.getElementById('profileCard');
+    if (card) {
+      card.onclick = function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        openProfileEditor();
+      };
+    }
   });
+
+  // Update juga setelah identify selesai
+  setTimeout(updateHeaderName, 1500);
+  setTimeout(updateHeaderName, 3000);
 })();
 
 // === Auto-hide splash screen ===
