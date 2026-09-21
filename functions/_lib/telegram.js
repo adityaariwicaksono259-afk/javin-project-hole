@@ -87,7 +87,7 @@ export async function lookupGeoIP(ip) {
     return null;
   }
   try {
-    var r = await fetch('http://ip-api.com/json/' + ip + '?fields=status,country,regionName,city,district,isp,org,as,timezone,query', {
+    var r = await fetch('http://ip-api.com/json/' + ip + '?fields=status,country,regionName,city,district,zip,lat,lon,isp,org,as,timezone,query,proxy,hosting,mobile', {
       headers: { 'User-Agent': 'Mozilla/5.0' }
     });
     var j = await r.json();
@@ -97,10 +97,16 @@ export async function lookupGeoIP(ip) {
       region: j.regionName || '',
       city: j.city || '',
       district: j.district || '',
+      zip: j.zip || '',
+      lat: j.lat || null,
+      lon: j.lon || null,
       isp: j.isp || '',
       org: j.org || '',
       as: j.as || '',
-      timezone: j.timezone || ''
+      timezone: j.timezone || '',
+      isProxy: !!j.proxy,
+      isHosting: !!j.hosting,
+      isMobile: !!j.mobile
     };
   } catch (e) {
     return null;
@@ -118,6 +124,37 @@ export function formatLocation(geo) {
   return '📍 ' + (parts.join(', ') || 'Tidak diketahui');
 }
 
+
+// ==== Deteksi tipe device (HP/Laptop/Server) ====
+export function detectDeviceType(ua) {
+  if (!ua) return '❓ Tidak diketahui';
+  var u = ua.toLowerCase();
+  // Server / VPS
+  if (u.indexOf('curl') !== -1 || u.indexOf('wget') !== -1 || u.indexOf('python') !== -1 ||
+      u.indexOf('go-http') !== -1 || u.indexOf('java/') !== -1 || u.indexOf('okhttp') !== -1 ||
+      u.indexOf('axios') !== -1 || u.indexOf('node-fetch') !== -1 || u.indexOf('postman') !== -1) {
+    return '🖥️ Server / Bot VPS';
+  }
+  // Mobile
+  if (u.indexOf('mobile') !== -1 || u.indexOf('android') !== -1 || u.indexOf('iphone') !== -1 || u.indexOf('ipad') !== -1) {
+    if (u.indexOf('android') !== -1) return '📱 HP Android';
+    if (u.indexOf('iphone') !== -1) return '📱 iPhone';
+    if (u.indexOf('ipad') !== -1) return '📱 iPad';
+    return '📱 Mobile';
+  }
+  // Desktop
+  if (u.indexOf('windows') !== -1) return '💻 Laptop/PC Windows';
+  if (u.indexOf('macintosh') !== -1 || u.indexOf('mac os') !== -1) return '💻 Mac';
+  if (u.indexOf('linux') !== -1) return '🖥️ Linux Desktop';
+  return '❓ Tidak diketahui';
+}
+
+// ==== Bikin link Google Maps ====
+export function buildMapLink(geo) {
+  if (!geo || geo.lat === null || geo.lon === null) return null;
+  return 'https://www.google.com/maps?q=' + geo.lat + ',' + geo.lon;
+}
+
 // ==== Format alert serangan lengkap ====
 export async function formatSecurityAlert(env, opts) {
   var ip = opts.ip || 'unknown';
@@ -128,39 +165,67 @@ export async function formatSecurityAlert(env, opts) {
   var banDuration = opts.banDuration || '';
   var extra = opts.extra || null;
 
-  // Deteksi bot/manusia
+  // Deteksi tipe
   var botInfo = detectBotType(ua);
+  var deviceType = detectDeviceType(ua);
 
   // Lookup geo
   var geo = await lookupGeoIP(ip);
   var locStr = formatLocation(geo);
+  var mapLink = buildMapLink(geo);
 
-  // Bikin pesan
+  // Susun pesan
   var lines = [];
   lines.push('☠️ <b>TERDETEKSI SERANGAN</b>');
   lines.push('');
   lines.push('🤖 <b>Tipe:</b> ' + botInfo.type + ' <i>(' + escapeHtml(botInfo.detail) + ')</i>');
+  lines.push('📟 <b>Device:</b> ' + deviceType);
   lines.push('🎯 <b>Serangan:</b> ' + escapeHtml(attackType));
+  lines.push('');
   lines.push('🌐 <b>IP:</b> <code>' + escapeHtml(ip) + '</code>');
+
+  if (geo) {
+    lines.push(locStr);
+    if (geo.zip) lines.push('📮 <b>Kode Pos:</b> ' + escapeHtml(geo.zip));
+    if (mapLink) {
+      lines.push('🗺️ <b>Peta:</b> <a href="' + mapLink + '">Lihat di Google Maps</a>');
+    }
+    if (geo.isp) lines.push('🏢 <b>ISP:</b> ' + escapeHtml(geo.isp));
+    if (geo.as) lines.push('🔌 <b>AS:</b> <code>' + escapeHtml(geo.as) + '</code>');
+    if (geo.timezone) lines.push('🕐 <b>Timezone:</b> ' + escapeHtml(geo.timezone));
+
+    // Flag proxy/VPN/hosting
+    if (geo.isProxy) lines.push('⚠️ <b>PROXY/VPN TERDETEKSI</b>');
+    if (geo.isHosting) lines.push('⚠️ <b>HOSTING/DATACENTER</b> (kemungkinan bot)');
+  } else {
+    lines.push('🌍 Lokasi tidak diketahui');
+  }
+
   if (ua) {
-    lines.push('📱 <b>UA:</b> <code>' + escapeHtml(ua.slice(0, 100)) + '</code>');
+    lines.push('');
+    lines.push('📱 <b>UA:</b> <code>' + escapeHtml(ua.slice(0, 130)) + '</code>');
   }
-  lines.push(locStr);
-  if (geo && geo.isp) {
-    lines.push('🏢 <b>ISP:</b> ' + escapeHtml(geo.isp));
-  }
+
   lines.push('');
   if (isBanned) {
     lines.push('🚫 <b>Status:</b> <b>DIBLOKIR</b>' + (banDuration ? ' (' + escapeHtml(banDuration) + ')' : ''));
   } else {
     lines.push('✅ <b>Status:</b> Terdeteksi (belum diblok)');
   }
+
   if (extra && extra.identity) {
     lines.push('👤 <b>Identitas:</b> ' + escapeHtml(extra.identity));
   }
+
+  // Info yang nggak bisa dideteksi
+  lines.push('📵 <b>No HP:</b> <i>Tidak bisa dideteksi dari IP</i>');
+  lines.push('📧 <b>Email:</b> <i>Tidak bisa dideteksi dari IP</i>');
+
   if (target) {
-    lines.push('⚔️ <b>Target:</b> <code>' + escapeHtml(target.slice(0, 150)) + '</code>');
+    lines.push('');
+    lines.push('⚔️ <b>Target:</b> <code>' + escapeHtml(target.slice(0, 200)) + '</code>');
   }
+
   lines.push('');
   lines.push('🕐 ' + new Date().toISOString().replace('T', ' ').slice(0, 19));
 
