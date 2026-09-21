@@ -411,10 +411,9 @@ function smartJsonRender(j){
     }
   }
 
-  // ==== Fallback ====
+  // ==== Fallback — render JSON jadi card rapi (BUKAN raw dump) ====
   if (!out) {
-    out = '<div class="result-card"><div class="result-title">Hasil</div>' +
-      '<div class="result-text" style="font-family:monospace;font-size:11px">' + esc(JSON.stringify(j, null, 2)) + '</div></div>';
+    out = renderUnknownJson(j);
   }
 
   // ==== Lyrics (cuma buat music tool) ====
@@ -430,10 +429,6 @@ function smartJsonRender(j){
     out += '<button class="btn-action" id="btnSearchLyrics" style="margin-top:10px" data-title="' + esc(trackTitle) + '" data-artist="' + esc(trackArtist) + '">📜 Cari Lirik</button>' +
       '<div id="lyricsBox" style="display:none;margin-top:10px;background:#f8fafc;border-radius:14px;padding:16px;font-size:13px;line-height:1.8;color:#334155;white-space:pre-wrap;max-height:400px;overflow-y:auto"></div>';
   }
-
-  // ==== Raw toggle ====
-  out += '<details style="margin-top:10px"><summary style="font-size:11px;color:#94a3b8;cursor:pointer;padding:6px 0">🔍 Lihat raw JSON</summary>' +
-    '<div class="result-text" style="font-family:monospace;font-size:10px;margin-top:8px;max-height:200px">' + esc(JSON.stringify(j, null, 2)) + '</div></details>';
 
   return out;
 }
@@ -713,6 +708,92 @@ function isJunkString(s){
   // Skip UUID-like
   if (/^[a-f0-9\-]{20,}$/i.test(s)) return true;
   return false;
+}
+
+// ==== Render JSON yang nggak dikenal — jadi card rapi ====
+function renderUnknownJson(j){
+  if (typeof j === 'string') {
+    return '<div class="result-card"><div class="result-title">Hasil</div>' +
+      '<div class="result-text">' + esc(j) + '</div></div>';
+  }
+
+  if (Array.isArray(j)) {
+    if (j.length === 0) {
+      return '<div class="result-card"><div class="result-title">Hasil</div>' +
+        '<div class="result-text" style="text-align:center;color:#94a3b8">📭 Tidak ada data</div></div>';
+    }
+    if (typeof j[0] !== 'object') {
+      return '<div class="result-card"><div class="result-title">Hasil</div>' +
+        '<div class="result-text">' + esc(j.join('\n')) + '</div></div>';
+    }
+    return renderListCard(j);
+  }
+
+  if (typeof j === 'object' && j !== null) {
+    var flat = {};
+    flattenObject(j, flat, '', 0);
+
+    var keys = Object.keys(flat);
+    if (keys.length === 0) {
+      return '<div class="result-card"><div class="result-title">Hasil</div>' +
+        '<div class="result-text" style="text-align:center;color:#94a3b8">📭 Data kosong</div></div>';
+    }
+
+    var html = keys.map(function(k){
+      var v = flat[k];
+      var label = k.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').replace(/\./g, ' \u203a ').trim();
+      label = label.charAt(0).toUpperCase() + label.slice(1);
+
+      if (typeof v === 'string' && /^https?:\/\//.test(v) && /\.(jpg|jpeg|png|gif|webp)$/i.test(v)) {
+        return '<div style="padding:8px 0;border-bottom:1px solid #f1f5f9"><div style="font-size:11px;color:#64748b;margin-bottom:4px">' + esc(label) + '</div>' +
+          '<img src="' + esc(v) + '" style="max-width:100%;border-radius:10px;max-height:200px" onerror="this.style.display=\'none\'"></div>';
+      }
+      if (typeof v === 'string' && /^https?:\/\//.test(v)) {
+        return '<div style="padding:8px 0;border-bottom:1px solid #f1f5f9"><div style="font-size:11px;color:#64748b;margin-bottom:4px">' + esc(label) + '</div>' +
+          '<a href="' + esc(v) + '" target="_blank" rel="noopener" style="color:#0EA5E9;text-decoration:none;font-weight:600;word-break:break-all;font-size:12px">' + esc(v.length > 80 ? v.slice(0, 77) + '...' : v) + '</a></div>';
+      }
+      if (typeof v === 'boolean') {
+        return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;gap:10px"><span style="color:#64748b;font-size:12px">' + esc(label) + '</span><span style="font-size:13px">' + (v ? '\u2705 Ya' : '\u274c Tidak') + '</span></div>';
+      }
+      var str = String(v);
+      if (str.length > 500) str = str.slice(0, 500) + '...';
+      return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;gap:10px"><span style="color:#64748b;font-size:12px;flex-shrink:0">' + esc(label) + '</span><span style="color:#0f172a;font-weight:600;font-size:12px;text-align:right;word-break:break-word">' + esc(str) + '</span></div>';
+    }).join('');
+
+    return '<div class="result-card"><div class="result-title">Hasil</div>' +
+      '<div>' + html + '</div></div>';
+  }
+
+  return '<div class="result-card"><div class="result-title">Hasil</div>' +
+    '<div class="result-text">' + esc(String(j)) + '</div></div>';
+}
+
+// ==== Flatten nested object jadi key-value flat ====
+function flattenObject(obj, out, prefix, depth){
+  if (depth > 3 || obj === null || obj === undefined) return;
+
+  if (typeof obj !== 'object') {
+    out[prefix] = obj;
+    return;
+  }
+
+  if (Array.isArray(obj)) {
+    if (obj.length === 0) return;
+    if (typeof obj[0] !== 'object') {
+      out[prefix] = obj.slice(0, 20).join(', ');
+      return;
+    }
+    obj.slice(0, 5).forEach(function(item, i){
+      flattenObject(item, out, prefix + ' [' + (i + 1) + ']', depth + 1);
+    });
+    return;
+  }
+
+  var keys = Object.keys(obj);
+  keys.forEach(function(k){
+    var newKey = prefix ? (prefix + '.' + k) : k;
+    flattenObject(obj[k], out, newKey, depth + 1);
+  });
 }
 
 function extractTextAnswer(j, depth){

@@ -1,0 +1,10 @@
+{
+  "version": "1.3.0",
+  "versionCode": 130,
+  "released": "2026-09-21",
+  "notes": "Native feel, profile card, settings page, zero JSON display",
+  "apk_url": "/download/vinapiay.apk",
+  "apk_size": "1.4 MB",
+  "min_android": "7.0",
+  "critical": false
+}

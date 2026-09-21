@@ -76,3 +76,118 @@ body {
 a, button, img {
   -webkit-touch-callout: none;
 }
+
+/* ==== Fix scroll & native feel ==== */
+html, body {
+  overscroll-behavior: none !important;
+  overscroll-behavior-y: none !important;
+  overflow-x: hidden;
+}
+body {
+  touch-action: pan-y !important;
+  -webkit-user-select: none;
+  user-select: none;
+  position: relative;
+}
+
+/* ==== Header layout baru ==== */
+.fx-header {
+  padding: 10px 14px 8px !important;
+}
+.fx-header-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.fx-search-row {
+  display: flex;
+}
+.fx-search-row input {
+  width: 100%;
+  padding: 11px 16px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid rgba(148,163,184,0.2);
+  border-radius: 999px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #0f172a;
+  outline: none;
+  transition: all .2s;
+}
+.fx-search-row input:focus {
+  border-color: #0EA5E9;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(14,165,233,0.1);
+}
+
+/* Profile card */
+.fx-profile-card {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 6px 6px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.9);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all .2s;
+  min-width: 0;
+  box-shadow: 0 2px 8px rgba(30,64,175,0.05);
+}
+.fx-profile-card:active {
+  transform: scale(0.98);
+}
+.fx-profile-avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0EA5E9, #6366F1);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.fx-profile-info {
+  min-width: 0;
+  flex: 1;
+}
+.fx-profile-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.2px;
+  line-height: 1.2;
+  margin-bottom: 1px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fx-profile-meta {
+  font-size: 10px;
+  color: #64748b;
+  font-weight: 600;
+  line-height: 1.2;
+  font-family: 'SF Mono', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fx-profile-meta .u-limit {
+  color: #0EA5E9;
+  font-weight: 800;
+}
+
+/* Dark mode */
+body.theme-dark .fx-search-row input,
+body.theme-dark .fx-profile-card {
+  background: rgba(30,41,59,0.85);
+  border-color: rgba(255,255,255,0.1);
+  color: #f1f5f9;
+}
+body.theme-dark .fx-profile-name { color: #f1f5f9; }
+body.theme-dark .fx-profile-meta { color: #94a3b8; }

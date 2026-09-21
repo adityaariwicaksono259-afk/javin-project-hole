@@ -222,47 +222,168 @@
     };
   }
 
+  // ==== Download APK ====
+  if ($('btnDownloadApk')) {
+    $('btnDownloadApk').onclick = function(){
+      var url = '/download/vinapiay.apk';
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'VinAPIay.apk';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast('⬇️ Download dimulai...');
+    };
+  }
+
   // ==== Cek Pembaruan ====
+  var CURRENT_VERSION = '1.3.0'; // nanti di-update dari version.json
+  var CURRENT_VERSION_CODE = 130;
+
+  async function fetchVersionInfo(){
+    try {
+      var r = await fetch('/version.json?_=' + Date.now(), { cache: 'no-store' });
+      var j = await r.json();
+      return j;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  // Load info awal
+  fetchVersionInfo().then(function(info){
+    if (!info) return;
+    if ($('appVersion')) $('appVersion').textContent = 'v' + info.version;
+    if ($('apkInfo')) $('apkInfo').textContent = 'Versi ' + info.version + ' · ' + (info.apk_size || '1.4 MB');
+    CURRENT_VERSION = info.version;
+    CURRENT_VERSION_CODE = info.versionCode || 0;
+    // Simpan versi terinstall
+    try {
+      if (!localStorage.getItem('vinapiay_installed_version')) {
+        localStorage.setItem('vinapiay_installed_version', info.version);
+        localStorage.setItem('vinapiay_installed_code', String(info.versionCode || 0));
+      }
+    } catch(e){}
+  });
+
   if ($('btnCheckUpdate')) {
     $('btnCheckUpdate').onclick = async function(){
-      this.disabled = true;
-      var orig = this.textContent;
-      this.textContent = '⏳ Memeriksa...';
+      var btn = this;
+      var orig = btn.textContent;
+      btn.disabled = true;
+      btn.textContent = '⏳ Memeriksa...';
+
       try {
-        // Cek service worker update
+        // Cek SW update dulu
+        var swUpdate = false;
         if ('serviceWorker' in navigator) {
           var reg = await navigator.serviceWorker.getRegistration();
           if (reg) {
             await reg.update();
-            if (reg.waiting) {
-              this.textContent = '✅ Update tersedia';
-              setTimeout(function(){
-                if (confirm('Update tersedia! Reload sekarang?')) {
-                  reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-                  setTimeout(function(){ location.reload(); }, 500);
-                }
-              }, 500);
-              return;
-            }
+            if (reg.waiting) swUpdate = true;
           }
         }
-        // Fallback: cek versi dari server
-        var r = await fetch('/download/version.json?_=' + Date.now(), { cache: 'no-store' });
-        var j = await r.json();
-        this.textContent = '✅ Terbaru';
-        if ($('appVersion') && j.version) $('appVersion').textContent = 'v' + j.version;
-        setTimeout(function(){
-          if ($('btnCheckUpdate')) $('btnCheckUpdate').textContent = '🔄 Periksa';
-        }, 2500);
+
+        // Fetch info versi terbaru
+        var info = await fetchVersionInfo();
+        if (!info) {
+          btn.textContent = '❌ Gagal';
+          toast('❌ Tidak bisa cek versi. Cek koneksi internet.');
+          setTimeout(function(){ btn.textContent = '🔄 Periksa'; btn.disabled = false; }, 2000);
+          return;
+        }
+
+        // Bandingkan versi
+        var installedVersion = '1.3.0';
+        var installedCode = 130;
+        try {
+          installedVersion = localStorage.getItem('vinapiay_installed_version') || '1.3.0';
+          installedCode = parseInt(localStorage.getItem('vinapiay_installed_code') || '130');
+        } catch(e){}
+
+        var serverCode = info.versionCode || 0;
+
+        if (serverCode > installedCode || swUpdate) {
+          // ADA UPDATE
+          btn.textContent = '✅ Update tersedia';
+          toast('✅ Update tersedia: v' + info.version);
+          setTimeout(function(){
+            var doUpdate = confirm(
+              '🎉 Update tersedia!\n\n' +
+              'Versi terinstall: v' + installedVersion + '\n' +
+              'Versi terbaru: v' + info.version + '\n\n' +
+              'Update sekarang?'
+            );
+            if (doUpdate) {
+              // Kalau SW update, tinggal reload
+              if (swUpdate && navigator.serviceWorker.controller) {
+                navigator.serviceWorker.getRegistration().then(function(reg){
+                  if (reg && reg.waiting) {
+                    reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                  }
+                  setTimeout(function(){
+                    toast('✅ Berhasil memperbarui!');
+                    try {
+                      localStorage.setItem('vinapiay_installed_version', info.version);
+                      localStorage.setItem('vinapiay_installed_code', String(info.versionCode));
+                    } catch(e){}
+                    setTimeout(function(){ location.reload(); }, 800);
+                  }, 500);
+                });
+              } else {
+                // Kalau cuma versi baru, redirect download APK
+                toast('✅ Membuka download APK...');
+                try {
+                  localStorage.setItem('vinapiay_installed_version', info.version);
+                  localStorage.setItem('vinapiay_installed_code', String(info.versionCode));
+                } catch(e){}
+                setTimeout(function(){
+                  window.location.href = '/download/vinapiay.apk';
+                }, 800);
+              }
+            } else {
+              btn.textContent = '🔄 Periksa';
+              btn.disabled = false;
+            }
+          }, 500);
+        } else {
+          // UDAH TERBARU
+          btn.textContent = '✅ Terbaru';
+          toast('✅ APK sudah versi terbaru (v' + info.version + ')');
+          setTimeout(function(){
+            btn.textContent = '🔄 Periksa';
+            btn.disabled = false;
+          }, 2500);
+        }
+
       } catch(e) {
-        this.textContent = '❌ Gagal';
+        btn.textContent = '❌ Error';
+        toast('❌ Error: ' + e.message);
         setTimeout(function(){
-          if ($('btnCheckUpdate')) $('btnCheckUpdate').textContent = '🔄 Periksa';
+          btn.textContent = '🔄 Periksa';
+          btn.disabled = false;
         }, 2000);
-      } finally {
-        if ($('btnCheckUpdate')) $('btnCheckUpdate').disabled = false;
       }
     };
+  }
+
+  // ==== Toast helper ====
+  function toast(msg){
+    var t = document.getElementById('vtoast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'vtoast';
+      t.style.cssText = 'position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(100px);background:rgba(15,23,42,.95);color:#fff;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:600;z-index:99999;transition:transform .3s ease,opacity .3s;box-shadow:0 8px 24px rgba(0,0,0,.3);max-width:90%;text-align:center';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.style.opacity = '1';
+    t.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function(){
+      t.style.opacity = '0';
+      t.style.transform = 'translateX(-50%) translateY(100px)';
+    }, 3000);
   }
 
   // ==== Online/Offline indicator ====
@@ -280,11 +401,6 @@
   updateConnStatus();
   window.addEventListener('online', updateConnStatus);
   window.addEventListener('offline', updateConnStatus);
-
-  // ==== Version ====
-  fetch('/download/version.json').then(function(r){ return r.json(); }).then(function(j){
-    if ($('appVersion') && j.version) $('appVersion').textContent = 'v' + j.version;
-  }).catch(function(){});
 
   // ==== Back button ====
   if ($('btnBack')) {
