@@ -357,26 +357,44 @@ function smartJsonRender(j){
     }
   }
 
-  // ==== Profile / Stalker card ====
+  // ==== Profile / Stalker ====
   if (isProfileData(d)) {
     out += renderProfileCard(d);
   }
 
-  // ==== Downloader / Media info ====
-  if (d.title && (d.download_url || d.url || d.audio || d.video)) {
+  // ==== Downloader (punya title + download url) ====
+  if (d.title && (d.download_url || d.download || d.url || d.audio || d.video)) {
+    out += renderDownloaderCard(d);
+  } else if (d.title && d.thumbnail && !out) {
+    // Minimal ada title + thumbnail
     out += renderDownloaderCard(d);
   }
 
-  // ==== Search result list ====
-  if (Array.isArray(d) && d.length > 0) {
-    out += renderListCard(d);
-  } else if (d.results && Array.isArray(d.results)) {
-    out += renderListCard(d.results);
-  } else if (d.data && Array.isArray(d.data)) {
-    out += renderListCard(d.data);
+  // ==== List result (search) ====
+  var arr = null;
+  if (Array.isArray(d)) arr = d;
+  else if (d.results && Array.isArray(d.results)) arr = d.results;
+  else if (d.data && Array.isArray(d.data)) arr = d.data;
+  else if (d.list && Array.isArray(d.list)) arr = d.list;
+  else if (d.items && Array.isArray(d.items)) arr = d.items;
+
+  if (arr && arr.length > 0 && !out) {
+    out += renderListCard(arr);
   }
 
-  // ==== Text answer (AI style) ====
+  // ==== Berita / Artikel (punya title + link/url) ====
+  if (d.title && (d.url || d.link) && !out) {
+    var items = Array.isArray(d.data) ? d.data : (Array.isArray(d.result) ? d.result : [d]);
+    out += renderBeritaCard(items);
+  }
+
+  // ==== Cuaca / Info (object dengan field aneh) ====
+  if (!out && typeof d === 'object' && !Array.isArray(d)) {
+    var infoHtml = renderInfoCard(d);
+    if (infoHtml) out += infoHtml;
+  }
+
+  // ==== Text answer (AI) ====
   if (!out) {
     var txt = extractTextAnswer(j);
     if (txt) {
@@ -385,13 +403,13 @@ function smartJsonRender(j){
     }
   }
 
-  // ==== Fallback — pretty JSON ====
+  // ==== Fallback ====
   if (!out) {
     out = '<div class="result-card"><div class="result-title">Hasil</div>' +
       '<div class="result-text" style="font-family:monospace;font-size:11px">' + esc(JSON.stringify(j, null, 2)) + '</div></div>';
   }
 
-  // ==== Lyrics — cuma kalau ini tool musik ====
+  // ==== Lyrics (cuma buat music tool) ====
   var isMusicTool = !!(d.duration || d.track || d.album || d.artist || (d.result && (d.result.duration || d.result.artist)));
   var lyrics = d.lyrics || d.lirik || d.synced_lyrics || (d.result && (d.result.lyrics || d.result.lirik)) || null;
   var trackTitle = d.title || (d.result && d.result.title) || '';
@@ -405,10 +423,68 @@ function smartJsonRender(j){
       '<div id="lyricsBox" style="display:none;margin-top:10px;background:#f8fafc;border-radius:14px;padding:16px;font-size:13px;line-height:1.8;color:#334155;white-space:pre-wrap;max-height:400px;overflow-y:auto"></div>';
   }
 
+  // ==== Raw toggle ====
+  out += '<details style="margin-top:10px"><summary style="font-size:11px;color:#94a3b8;cursor:pointer;padding:6px 0">🔍 Lihat raw JSON</summary>' +
+    '<div class="result-text" style="font-family:monospace;font-size:10px;margin-top:8px;max-height:200px">' + esc(JSON.stringify(j, null, 2)) + '</div></details>';
+
   return out;
 }
 
-// ==== Cari media URL dalam objek ====
+// ==== Render Berita/Artikel ====
+function renderBeritaCard(arr){
+  var items = arr.slice(0, 15).map(function(it){
+    if (typeof it === 'string') return '<div style="padding:10px;background:#f8fafc;border-radius:10px;font-size:13px">' + esc(it) + '</div>';
+    var title = it.title || it.judul || it.headline || '';
+    var link = it.url || it.link || it.href || '';
+    var thumb = it.thumbnail || it.image || it.thumb || it.gambar || '';
+    var date = it.date || it.tanggal || it.pubDate || it.published || '';
+    var thumbHtml = thumb ? '<img src="' + esc(thumb) + '" style="width:80px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0" onerror="this.style.display=\'none\'">' : '';
+    return '<a href="' + esc(link || '#') + '" target="_blank" rel="noopener" style="display:flex;gap:10px;padding:10px;background:#f8fafc;border-radius:10px;text-decoration:none;color:inherit;align-items:center">' +
+      thumbHtml +
+      '<div style="flex:1;min-width:0">' +
+      '<div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:3px">' + esc(title) + '</div>' +
+      (date ? '<div style="font-size:10px;color:#94a3b8">' + esc(date) + '</div>' : '') +
+      '</div></a>';
+  }).join('');
+  return '<div class="result-card"><div class="result-title">Berita</div>' +
+    '<div style="display:flex;flex-direction:column;gap:8px">' + items + '</div></div>';
+}
+
+// ==== Render Info Card (cuaca, doa, quran, dll) ====
+function renderInfoCard(d){
+  // Skip kalau terlalu banyak field
+  var keys = Object.keys(d);
+  if (keys.length > 15) return null;
+
+  var items = [];
+  keys.forEach(function(k){
+    var v = d[k];
+    if (v === null || v === undefined || v === '') return;
+    if (typeof v === 'object') {
+      // Nested object → recursive cari text
+      var nested = extractTextAnswer(v);
+      if (nested && nested.length < 500) items.push({ k: k, v: nested });
+      return;
+    }
+    if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+      var str = String(v);
+      if (str.length > 500) return;
+      items.push({ k: k, v: str });
+    }
+  });
+
+  if (items.length < 2) return null;
+
+  var html = items.map(function(it){
+    var label = it.k.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim();
+    label = label.charAt(0).toUpperCase() + label.slice(1);
+    return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;gap:10px"><span style="color:#64748b;font-size:12px;flex-shrink:0">' + esc(label) + '</span><span style="color:#0f172a;font-weight:600;font-size:13px;text-align:right;word-break:break-word">' + esc(it.v) + '</span></div>';
+  }).join('');
+
+  return '<div class="result-card"><div class="result-title">Detail</div>' +
+    '<div>' + html + '</div></div>';
+}
+
 function findMediaUrl(obj, depth){
   if (depth === undefined) depth = 0;
   if (depth > 4 || !obj) return null;

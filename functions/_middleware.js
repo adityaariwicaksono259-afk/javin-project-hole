@@ -1,5 +1,5 @@
 // Global Middleware — 24 Layer Security
-import { sendTelegram, escapeHtml } from './_lib/telegram.js';
+import { sendTelegram, escapeHtml, formatSecurityAlert } from './_lib/telegram.js';
 import { fingerprint, detectPattern } from './_lib/detect.js';
 function jsonResp(status, data, extraHeaders) {
   return new Response(JSON.stringify(data), {
@@ -65,13 +65,14 @@ export async function onRequest(context) {
       } catch (e) {}
 
       try {
-        await sendTelegram(context.env,
-          '🍯 <b>Honeypot Hit</b>\n' +
-          'IP: <code>' + escapeHtml(hip) + '</code>\n' +
-          'Path: <code>' + escapeHtml(pathname) + '</code>\n' +
-          'UA: <code>' + escapeHtml(ua.slice(0, 80)) + '</code>\n' +
-          'Time: ' + new Date().toISOString()
-        , { type: 'honeypot', throttleMs: 30000 });
+        var alertMsg = await formatSecurityAlert(context.env, {
+          ip: hip,
+          ua: ua,
+          attackType: '🍯 Honeypot Access (path mencurigakan)',
+          target: pathname,
+          isBanned: false
+        });
+        await sendTelegram(context.env, alertMsg, { type: 'honeypot', throttleMs: 30000 });
       } catch (e) {}
     }
     // Return 404 biar attacker ngira biasa
@@ -131,6 +132,22 @@ export async function onRequest(context) {
         if (blocked.until > Date.now()) {
           const waitMin = Math.ceil((blocked.until - Date.now()) / 60000);
           console.warn('[ANOMALY] Blocked IP hit:', __ip, 'Reason:', blocked.reason);
+
+          // Notif Telegram — user banned nyoba akses lagi
+          try {
+            var uaBanned = request.headers.get('User-Agent') || '';
+            var alertMsg3 = await formatSecurityAlert(context.env, {
+              ip: __ip,
+              ua: uaBanned,
+              attackType: '🔄 IP Banned Nyoba Akses Lagi',
+              target: pathname,
+              isBanned: true,
+              banDuration: waitMin + ' menit tersisa',
+              extra: { identity: 'Alasan ban: ' + blocked.reason }
+            });
+            await sendTelegram(context.env, alertMsg3, { type: 'banned-hit', throttleMs: 60000 });
+          } catch (e) {}
+
           return jsonResp(403, {
             ok: false,
             message: 'IP kamu diblok sementara. Coba lagi dalam ' + waitMin + ' menit.',
@@ -552,15 +569,19 @@ export async function onRequest(context) {
           'INSERT INTO audit_log (action, actor, target, detail, ip, created_at) VALUES (?, ?, ?, ?, ?, ?)'
         ).bind('ip_autoblock', 'system', __ip, 'Errors: ' + row.count, __ip, now).run();
 
-        // Notif Telegram
+        // Notif Telegram (format baru)
         try {
-          await sendTelegram(context.env,
-            '🚫 <b>IP Auto-Blocked</b>\n' +
-            'IP: <code>' + escapeHtml(__ip) + '</code>\n' +
-            'Errors: <b>' + row.count + '</b> in 5 min\n' +
-            'Duration: 1 jam\n' +
-            'Time: ' + new Date().toISOString()
-          , { type: 'autoblock', throttleMs: 60000 });
+          var uaAuto = (request.headers.get('User-Agent') || '').toLowerCase();
+          var alertMsg2 = await formatSecurityAlert(context.env, {
+            ip: __ip,
+            ua: uaAuto,
+            attackType: '🚫 Auto-Block (terlalu banyak error)',
+            target: pathname,
+            isBanned: true,
+            banDuration: '1 jam',
+            extra: { identity: 'Errors: ' + row.count + ' dalam 5 menit' }
+          });
+          await sendTelegram(context.env, alertMsg2, { type: 'autoblock', throttleMs: 60000 });
         } catch (e) {}
       }
 

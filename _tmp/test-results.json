@@ -1,0 +1,317 @@
+[
+  [
+    "ep001",
+    "c.ai",
+    "AI",
+    0,
+    "ERR"
+  ],
+  [
+    "ep002",
+    "chat Gpt3",
+    "AI",
+    200,
+    "JSON"
+  ],
+  [
+    "ep003",
+    "chat gpt4",
+    "AI",
+    0,
+    "ERR"
+  ],
+  [
+    "ep047",
+    "Animasu Completed",
+    "Anime",
+    200,
+    "JSON"
+  ],
+  [
+    "ep048",
+    "Animasu Details",
+    "Anime",
+    200,
+    "JSON"
+  ],
+  [
+    "ep049",
+    "Animasu Ongoing",
+    "Anime",
+    0,
+    "ERR"
+  ],
+  [
+    "ep108",
+    "FF News Feed",
+    "Berita",
+    200,
+    "JSON"
+  ],
+  [
+    "ep109",
+    "Kompas news",
+    "Berita",
+    200,
+    "JSON"
+  ],
+  [
+    "ep231",
+    "antara news",
+    "Berita",
+    0,
+    "ERR"
+  ],
+  [
+    "ep077",
+    "Brat Canvas",
+    "Canvas",
+    200,
+    "IMG"
+  ],
+  [
+    "ep078",
+    "Brat Patrick",
+    "Canvas",
+    200,
+    "IMG"
+  ],
+  [
+    "ep079",
+    "Bratvid Canvas",
+    "Canvas",
+    200,
+    "VID"
+  ],
+  [
+    "ep029",
+    "AIO Downloader",
+    "Downloader",
+    0,
+    "ERR"
+  ],
+  [
+    "ep031",
+    "capcut downloader ",
+    "Downloader",
+    200,
+    "JSON"
+  ],
+  [
+    "ep032",
+    "Facebook downloader ",
+    "Downloader",
+    200,
+    "JSON"
+  ],
+  [
+    "ep180",
+    "Asah Otak",
+    "Games",
+    0,
+    "ERR"
+  ],
+  [
+    "ep181",
+    "Cak Lontong",
+    "Games",
+    0,
+    "ERR"
+  ],
+  [
+    "ep182",
+    "Cerdas Cermat",
+    "Games",
+    0,
+    "ERR"
+  ],
+  [
+    "ep110",
+    "detik News",
+    "Info",
+    200,
+    "JSON"
+  ],
+  [
+    "ep111",
+    "Info Cuaca",
+    "Info",
+    200,
+    "JSON"
+  ],
+  [
+    "ep113",
+    "Metadata Channel",
+    "Info",
+    200,
+    "JSON"
+  ],
+  [
+    "ep114",
+    "AL-Quran",
+    "Islami",
+    200,
+    "JSON"
+  ],
+  [
+    "ep115",
+    "AL-Quran Full audio ",
+    "Islami",
+    200,
+    "JSON"
+  ],
+  [
+    "ep116",
+    "Doa Harian",
+    "Islami",
+    200,
+    "JSON"
+  ],
+  [
+    "ep262",
+    "brat",
+    "Maker",
+    0,
+    "ERR"
+  ],
+  [
+    "ep263",
+    "ephoto360",
+    "Maker",
+    0,
+    "ERR"
+  ],
+  [
+    "ep264",
+    "photooxy",
+    "Maker",
+    0,
+    "ERR"
+  ],
+  [
+    "ep240",
+    "arti nama",
+    "Primbon",
+    0,
+    "ERR"
+  ],
+  [
+    "ep241",
+    "cek potensi penyakit",
+    "Primbon",
+    0,
+    "ERR"
+  ],
+  [
+    "ep242",
+    "kecocokan nama pasangan",
+    "Primbon",
+    0,
+    "ERR"
+  ],
+  [
+    "ep095",
+    "quote bucin",
+    "Random",
+    200,
+    "JSON"
+  ],
+  [
+    "ep096",
+    "Random Anime",
+    "Random",
+    200,
+    "IMG"
+  ],
+  [
+    "ep097",
+    "Random PAP",
+    "Random",
+    0,
+    "ERR"
+  ],
+  [
+    "ep107",
+    "Cek Status Order",
+    "SMM",
+    200,
+    "JSON"
+  ],
+  [
+    "ep098",
+    "detik search ",
+    "Search",
+    200,
+    "JSON"
+  ],
+  [
+    "ep099",
+    "Lahelu search",
+    "Search",
+    200,
+    "JSON"
+  ],
+  [
+    "ep100",
+    "lyric",
+    "Search",
+    200,
+    "JSON"
+  ],
+  [
+    "ep250",
+    "github",
+    "Stalker",
+    0,
+    "ERR"
+  ],
+  [
+    "ep251",
+    "pinterest",
+    "Stalker",
+    0,
+    "ERR"
+  ],
+  [
+    "ep252",
+    "threads",
+    "Stalker",
+    0,
+    "ERR"
+  ],
+  [
+    "ep266",
+    "combot sticker",
+    "Sticker",
+    0,
+    "ERR"
+  ],
+  [
+    "ep009",
+    "github stalker",
+    "Tools",
+    200,
+    "JSON"
+  ],
+  [
+    "ep012",
+    "NGL Spam",
+    "Tools",
+    200,
+    "JSON"
+  ],
+  [
+    "ep013",
+    "remini",
+    "Tools",
+    0,
+    "ERR"
+  ],
+  [
+    "ep117",
+    "File Uploader",
+    "Uploader",
+    200,
+    "JSON"
+  ]
+]
