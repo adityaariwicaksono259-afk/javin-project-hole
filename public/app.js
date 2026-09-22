@@ -293,67 +293,179 @@ async function execute(x){
 $('#close').onclick=()=>$('#modal').classList.add('hidden');$('#modal').onclick=e=>{if(e.target.id==='modal')$('#modal').classList.add('hidden')};
 function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));}
 
-// === USER ID (fingerprint-based) ===
+// === USER ID — MULTI-LAYER PERSISTENCE ===
 (function(){
-  var KEY = 'javin_user_id';
-  var FP_KEY = 'javin_fp_cache';
+  var KEY_LOCAL = 'javin_user_id';
+  var KEY_COOKIE = 'javin_uid';
+  var KEY_IDB = 'javin_user_db';
+  var KEY_FP = 'javin_fp_cache';
 
-  // ==== Fingerprint generator ====
-  async function generateFingerprint(){
+  // ============ Helper: Cookie (expiry 10 tahun) ============
+  function setCookie(name, value, days) {
+    try {
+      var d = new Date();
+      d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = name + '=' + encodeURIComponent(value) + ';expires=' + d.toUTCString() + ';path=/;SameSite=Lax';
+    } catch(e) {}
+  }
+
+  function getCookie(name) {
+    try {
+      var m = document.cookie.match(new RegExp('(?:^|;\s*)' + name + '=([^;]+)'));
+      return m ? decodeURIComponent(m[1]) : null;
+    } catch(e) { return null; }
+  }
+
+  // ============ Helper: IndexedDB ============
+  function idbSet(key, value) {
+    return new Promise(function(resolve){
+      try {
+        if (!window.indexedDB) return resolve(false);
+        var req = indexedDB.open(KEY_IDB, 1);
+        req.onupgradeneeded = function(e) {
+          var db = e.target.result;
+          if (!db.objectStoreNames.contains('data')) {
+            db.createObjectStore('data');
+          }
+        };
+        req.onsuccess = function(e) {
+          var db = e.target.result;
+          try {
+            var tx = db.transaction('data', 'readwrite');
+            tx.objectStore('data').put(value, key);
+            tx.oncomplete = function(){ resolve(true); };
+            tx.onerror = function(){ resolve(false); };
+          } catch(err) { resolve(false); }
+        };
+        req.onerror = function(){ resolve(false); };
+      } catch(e) { resolve(false); }
+    });
+  }
+
+  function idbGet(key) {
+    return new Promise(function(resolve){
+      try {
+        if (!window.indexedDB) return resolve(null);
+        var req = indexedDB.open(KEY_IDB, 1);
+        req.onupgradeneeded = function(e) {
+          var db = e.target.result;
+          if (!db.objectStoreNames.contains('data')) {
+            db.createObjectStore('data');
+          }
+        };
+        req.onsuccess = function(e) {
+          var db = e.target.result;
+          try {
+            var tx = db.transaction('data', 'readonly');
+            var getReq = tx.objectStore('data').get(key);
+            getReq.onsuccess = function(){ resolve(getReq.result || null); };
+            getReq.onerror = function(){ resolve(null); };
+          } catch(err) { resolve(null); }
+        };
+        req.onerror = function(){ resolve(null); };
+      } catch(e) { resolve(null); }
+    });
+  }
+
+  // ============ Save ID ke semua layer ============
+  function saveIdToAll(uid) {
+    if (!uid) return;
+    try { localStorage.setItem(KEY_LOCAL, uid); } catch(e) {}
+    setCookie(KEY_COOKIE, uid, 3650);
+    idbSet('user_id', uid);
+    console.log('[UserID] Saved:', uid, 'to localStorage + cookie + IndexedDB');
+  }
+
+  // ============ Load ID dari layer manapun ============
+  async function loadIdFromAny() {
+    // 1. Coba localStorage
+    try {
+      var l = localStorage.getItem(KEY_LOCAL);
+      if (l && /^JH-[A-Z0-9]{6}$/.test(l)) {
+        console.log('[UserID] Found in localStorage');
+        return l;
+      }
+    } catch(e) {}
+
+    // 2. Coba cookie
+    var c = getCookie(KEY_COOKIE);
+    if (c && /^JH-[A-Z0-9]{6}$/.test(c)) {
+      console.log('[UserID] Found in cookie');
+      // Restore ke localStorage
+      try { localStorage.setItem(KEY_LOCAL, c); } catch(e) {}
+      return c;
+    }
+
+    // 3. Coba IndexedDB
+    var idb = await idbGet('user_id');
+    if (idb && /^JH-[A-Z0-9]{6}$/.test(idb)) {
+      console.log('[UserID] Found in IndexedDB');
+      try { localStorage.setItem(KEY_LOCAL, idb); } catch(e) {}
+      setCookie(KEY_COOKIE, idb, 3650);
+      return idb;
+    }
+
+    console.log('[UserID] No ID found in any layer');
+    return null;
+  }
+
+  // ============ Fingerprint Generator (STABIL) ============
+  async function generateFingerprint() {
     var parts = [];
 
-    // 1. User Agent + platform
+    // Stabil: UA + platform
     parts.push('ua=' + (navigator.userAgent || ''));
     parts.push('pl=' + (navigator.platform || ''));
     parts.push('lang=' + (navigator.language || ''));
-    parts.push('langs=' + ((navigator.languages || []).join(',') || ''));
+
+    // Stabil: Screen
+    parts.push('scr=' + screen.width + 'x' + screen.height);
+    parts.push('dep=' + screen.colorDepth);
+    parts.push('dpr=' + (window.devicePixelRatio || 1));
+
+    // Stabil: Hardware
     parts.push('cores=' + (navigator.hardwareConcurrency || 0));
     parts.push('mem=' + (navigator.deviceMemory || 0));
     parts.push('touch=' + (navigator.maxTouchPoints || 0));
 
-    // 2. Screen — stabil per device
-    parts.push('scr=' + screen.width + 'x' + screen.height);
-    parts.push('dep=' + screen.colorDepth);
-    parts.push('avail=' + screen.availWidth + 'x' + screen.availHeight);
-    parts.push('dpr=' + (window.devicePixelRatio || 1));
-
-    // 3. Timezone — stabil per region
+    // Stabil: Timezone
     try {
       parts.push('tz=' + (Intl.DateTimeFormat().resolvedOptions().timeZone || ''));
     } catch(e) { parts.push('tz='); }
 
-    // 4. WebGL — stabil per device (GPU info)
+    // Stabil: WebGL (GPU info — jarang berubah)
     try {
-      var gl = document.createElement('canvas').getContext('webgl') || document.createElement('canvas').getContext('experimental-webgl');
+      var gl = document.createElement('canvas').getContext('webgl');
       if (gl) {
         var dbg = gl.getExtension('WEBGL_debug_renderer_info');
         if (dbg) {
-          parts.push('gpu_v=' + (gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) || ''));
-          parts.push('gpu_r=' + (gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || ''));
+          parts.push('gpu=' + (gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || ''));
         }
       }
     } catch(e) {}
 
-    // Hash pakai SubtleCrypto
+    // Hash
     var raw = parts.join('||');
     var buf = new TextEncoder().encode(raw);
     var hashBuf = await crypto.subtle.digest('SHA-256', buf);
     var arr = Array.from(new Uint8Array(hashBuf));
-    return arr.map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+    return arr.map(function(b){ return b.toString(16).padStart(2, '0'); }).join('');
   }
 
-  async function ensureUserId(){
-    // Cek cache dulu
-    var cached = null;
-    try { cached = localStorage.getItem(KEY); } catch(e) {}
-    if (cached && /^JH-[A-Z0-9]{6}$/.test(cached)) {
-      return cached;
+  // ============ Ensure ID ============
+  async function ensureUserId() {
+    // 1. Coba load dari layer manapun
+    var existing = await loadIdFromAny();
+    if (existing) {
+      saveIdToAll(existing); // re-save ke semua layer
+      return existing;
     }
 
-    // Generate fingerprint & kirim ke server
+    // 2. Generate baru (dari fingerprint atau random)
+    var newId = null;
     try {
       var fp = await generateFingerprint();
-      try { localStorage.setItem(FP_KEY, fp); } catch(e) {}
+      try { localStorage.setItem(KEY_FP, fp); } catch(e) {}
 
       var r = await fetch('/api/user/identify', {
         method: 'POST',
@@ -362,31 +474,35 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
       });
       var j = await r.json();
       if (j.ok && j.uid) {
-        try { localStorage.setItem(KEY, j.uid); } catch(e) {}
-        return j.uid;
+        newId = j.uid;
       }
-    } catch(e) {}
+    } catch(e) {
+      console.warn('[UserID] Identify failed:', e.message);
+    }
 
-    // Fallback: bikin random ID lokal (kalau network error)
-    var rand = '';
-    var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-    for (var i = 0; i < 6; i++) rand += chars[Math.floor(Math.random() * chars.length)];
-    var fallbackId = 'JH-' + rand;
-    try { localStorage.setItem(KEY, fallbackId); } catch(e) {}
-    return fallbackId;
+    // 3. Fallback: random ID
+    if (!newId) {
+      var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      var rand = '';
+      for (var i = 0; i < 6; i++) rand += chars[Math.floor(Math.random() * chars.length)];
+      newId = 'JH-' + rand;
+    }
+
+    saveIdToAll(newId);
+    return newId;
   }
 
-  // Ekspos biar bisa dipakai fungsi lain
+  // Expose
   window.ensureUserId = ensureUserId;
 
-  // Render badge + trigger identify
-  ensureUserId().then(function(uid){
+  // Init: ensure + render
+  ensureUserId().then(function(uid) {
     var el = document.getElementById('userId');
     if (el) el.textContent = uid;
     if (window.refreshUserStatus) setTimeout(window.refreshUserStatus, 300);
   });
 
-  // Listener: kalau tab balik aktif, pastikan ID ada
+  // Visibility change: re-check ID
   document.addEventListener('visibilitychange', function(){
     if (document.visibilityState === 'visible') {
       ensureUserId().then(function(uid){
