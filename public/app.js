@@ -1091,6 +1091,105 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     }
   };
 
+  // ==== ANNOUNCEMENT MANAGER ====
+  async function loadAnnouncements() {
+    var tb = document.getElementById('annTbody');
+    if (!tb) return;
+    tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">Loading...</td></tr>';
+
+    try {
+      var r = await fetch('/api/announce/admin?_=' + Date.now());
+      if (r.status === 401) { tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">🔒 Session habis</td></tr>'; return; }
+      var j = await r.json();
+      if (!j.ok) { tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">' + escHtml(j.message || 'Gagal') + '</td></tr>'; return; }
+
+      var list = j.announcements || [];
+      if (!list.length) {
+        tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">Belum ada announcement</td></tr>';
+        return;
+      }
+
+      var now = Date.now();
+      tb.innerHTML = list.map(function(a) {
+        var expired = a.expires_at && a.expires_at < now;
+        var status = !a.active ? '❌ Nonaktif' : (expired ? '⏱️ Expired' : '✅ Aktif');
+        var statusColor = !a.active ? '#ef4444' : (expired ? '#f59e0b' : '#16a34a');
+        var typeEmoji = {info: 'ℹ️', success: '✅', warning: '⚠️', danger: '🚨', maintenance: '🔧'}[a.type] || 'ℹ️';
+
+        return '<tr>' +
+          '<td>#' + a.id + '</td>' +
+          '<td><div style="font-weight:700;color:#0f172a;margin-bottom:2px">' + escHtml(a.title) + '</div>' +
+          '<div style="font-size:11px;color:#64748b;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + escHtml(a.message) + '</div></td>' +
+          '<td>' + typeEmoji + ' ' + escHtml(a.type) + '</td>' +
+          '<td style="color:' + statusColor + ';font-weight:700">' + status + '</td>' +
+          '<td style="font-size:11px">' + fmtTime(a.created_at) + '</td>' +
+          '<td><button class="tbl-btn danger" data-del="' + a.id + '">🗑️</button></td>' +
+        '</tr>';
+      }).join('');
+
+      tb.querySelectorAll('[data-del]').forEach(function(b) {
+        b.onclick = async function() {
+          if (!confirm('Hapus announcement #' + b.dataset.del + '?')) return;
+          var r = await fetch('/api/announce/admin?id=' + b.dataset.del, { method: 'DELETE' });
+          var j = await r.json();
+          alert(j.message || 'OK');
+          loadAnnouncements();
+        };
+      });
+    } catch(e) {
+      tb.innerHTML = '<tr><td colspan="6" class="tbl-empty">Error: ' + escHtml(e.message) + '</td></tr>';
+    }
+  }
+
+  var btnCreateAnn = document.getElementById('btnCreateAnn');
+  if (btnCreateAnn) {
+    btnCreateAnn.onclick = async function() {
+      var title = document.getElementById('annTitle').value.trim();
+      var message = document.getElementById('annMessage').value.trim();
+      var type = document.getElementById('annType').value;
+      var expiresIn = parseInt(document.getElementById('annExpires').value) || 0;
+
+      if (!title || !message) {
+        alert('Judul dan pesan wajib diisi');
+        return;
+      }
+
+      btnCreateAnn.disabled = true;
+      btnCreateAnn.textContent = '⏳ Mengirim...';
+      var res = document.getElementById('annCreateResult');
+      res.textContent = '';
+
+      try {
+        var r = await fetch('/api/announce/admin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: title, message: message, type: type, expires_in: expiresIn })
+        });
+        var j = await r.json();
+        if (j.ok) {
+          res.style.color = '#16a34a';
+          res.textContent = '✅ ' + j.message + ' (ID: ' + j.id + ')';
+          document.getElementById('annTitle').value = '';
+          document.getElementById('annMessage').value = '';
+          document.getElementById('annExpires').value = '0';
+          loadAnnouncements();
+        } else {
+          res.style.color = '#dc2626';
+          res.textContent = '❌ ' + (j.message || 'Gagal');
+        }
+      } catch(e) {
+        res.style.color = '#dc2626';
+        res.textContent = '❌ ' + e.message;
+      } finally {
+        btnCreateAnn.disabled = false;
+        btnCreateAnn.textContent = '📢 Kirim Announcement';
+      }
+    };
+  }
+
+  var announceReload = document.getElementById('announceReload');
+  if (announceReload) announceReload.onclick = loadAnnouncements;
+
   // Patch tab click handler biar load keys pas diklik
   var origTabClick = null;
   tabs.forEach(function(t){
@@ -1114,6 +1213,14 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
       t.onclick = function(e) {
         if (currentClick3) currentClick3.call(t, e);
         loadBackup();
+      };
+    }
+
+    if (t.dataset.tab === 'announce') {
+      var currentClick4 = t.onclick;
+      t.onclick = function(e) {
+        if (currentClick4) currentClick4.call(t, e);
+        loadAnnouncements();
       };
     }
   });

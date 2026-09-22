@@ -107,6 +107,7 @@
     <button class="admin-tab" data-tab="config">Config</button>
     <button class="admin-tab" data-tab="keys">Premium Keys</button>
     <button class="admin-tab" data-tab="backup">Backup</button>
+    <button class="admin-tab" data-tab="announce">Announcement</button>
   </div>
   <div class="admin-tabpanes">
     <div class="admin-pane active" data-pane="users">
@@ -155,6 +156,35 @@
         <input id="configKey" placeholder="Key (mis. rate_limit)">
         <input id="configValue" placeholder="Value">
         <button id="configSave">Simpan</button>
+      </div>
+    </div>
+
+    <div class="admin-pane" data-pane="announce">
+      <div class="admin-toolbar">
+        <button class="ghost" id="announceReload">Refresh</button>
+      </div>
+      
+      <div class="admin-form-inline" style="margin-top:0;margin-bottom:14px">
+        <h4>Buat Announcement Baru</h4>
+        <input id="annTitle" placeholder="Judul (mis. Update v1.4.0)" maxlength="100">
+        <select id="annType" style="padding:10px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:13px;color:#0f172a;margin-bottom:8px;width:calc(50% - 8px)">
+          <option value="info">ℹ️ Info</option>
+          <option value="success">✅ Success</option>
+          <option value="warning">⚠️ Warning</option>
+          <option value="danger">🚨 Danger</option>
+          <option value="maintenance">🔧 Maintenance</option>
+        </select>
+        <input id="annExpires" type="number" min="0" max="720" placeholder="Expired (jam, 0=tidak expired)" value="0">
+        <textarea id="annMessage" placeholder="Pesan announcement..." maxlength="2000" style="width:100%;padding:10px 12px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;font-family:inherit;font-size:13px;color:#0f172a;box-sizing:border-box;min-height:100px;resize:vertical;margin-bottom:8px"></textarea>
+        <button id="btnCreateAnn">📢 Kirim Announcement</button>
+        <div id="annCreateResult" style="margin-top:10px;font-size:12px"></div>
+      </div>
+
+      <div class="admin-tbl-wrap">
+        <table class="admin-tbl">
+          <thead><tr><th>ID</th><th>Judul</th><th>Tipe</th><th>Status</th><th>Dibuat</th><th>Aksi</th></tr></thead>
+          <tbody id="annTbody"><tr><td colspan="6" class="tbl-empty">Loading...</td></tr></tbody>
+        </table>
       </div>
     </div>
 
@@ -260,4 +290,5 @@
   </div>
 </div>
 <script src="/update-banner.js?v=1" defer></script>
+<script src="/announce.js?v=1" defer></script>
 </body></html>
