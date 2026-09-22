@@ -22,14 +22,24 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <script>
-// Skip splash kalau udah pernah muncul di session ini
+// SPLASH: muncul cuma kalau terakhir buka > 5 menit yang lalu
 (function(){
   try {
-    if (sessionStorage.getItem('splash_shown') === '1') {
-      var s = document.getElementById('splashScreen');
-      if (s) { s.style.display = 'none'; s.classList.add('hide'); }
+    var KEY = 'splash_last_shown';
+    var MAX_AGE = 5 * 60 * 1000; // 5 menit
+    var now = Date.now();
+    var last = parseInt(localStorage.getItem(KEY) || '0');
+    var recent = (now - last) < MAX_AGE;
+    
+    if (recent) {
+      // Sembunyikan splash sebelum render
+      var style = document.createElement('style');
+      style.id = 'skip-splash';
+      style.textContent = '#splashScreen{display:none!important}';
+      document.head.appendChild(style);
     } else {
-      sessionStorage.setItem('splash_shown', '1');
+      // Update timestamp — splash muncul
+      try { localStorage.setItem(KEY, String(now)); } catch(e) {}
     }
   } catch(e) {}
 })();
