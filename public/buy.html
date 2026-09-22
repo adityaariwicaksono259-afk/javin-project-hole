@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>Beli Key Premium — VinAPIay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style-v4.css">
+<link rel="stylesheet" href="/native-v7.css">
+<link rel="stylesheet" href="/buy.css">
+</head>
+<body>
+
+<header class="fx-header" style="position:sticky;top:0;z-index:50;padding:10px 14px;background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(148,163,184,0.15)">
+  <div style="display:flex;align-items:center;gap:8px;width:100%">
+    <a href="/" style="width:44px;height:44px;border-radius:14px;background:#fff;border:1px solid rgba(148,163,184,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:#0f172a">←</a>
+    <h1 style="flex:1;font-size:17px;font-weight:800;margin:0;padding-left:8px">Beli Key</h1>
+    <a href="/my-orders" style="padding:8px 14px;background:#fff;border:1px solid rgba(148,163,184,0.15);border-radius:12px;font-size:12px;font-weight:700;color:#0f172a;text-decoration:none">Pesanan</a>
+  </div>
+</header>
+
+<div class="buy-wrap">
+
+  <!-- STEP 1: PILIH PAKET -->
+  <div id="stepPilih" class="buy-step active">
+    <div class="buy-hero">
+      <div class="buy-hero-icon">💎</div>
+      <div class="buy-hero-title">Beli Key Premium</div>
+      <div class="buy-hero-sub">Key buat aktifkan akun Alight Motion Premium</div>
+    </div>
+
+    <div id="pkgList" class="buy-pkg-list">
+      <div style="text-align:center;padding:20px;color:#94a3b8">Memuat paket...</div>
+    </div>
+
+    <div class="buy-info-box">
+      <div>🔑 <b>1 Key = 1x Generate</b> Premium APK</div>
+      <div>♾️ Key tidak expired (permanen)</div>
+      <div>💳 Bayar via QRIS (semua e-wallet & m-banking)</div>
+    </div>
+  </div>
+
+  <!-- STEP 2: BAYAR + UPLOAD -->
+  <div id="stepBayar" class="buy-step">
+    <button class="buy-back" onclick="backToPilih()">← Ganti Paket</button>
+
+    <div class="buy-order-info">
+      <div class="buy-order-row">
+        <span>Kode Order</span>
+        <b id="orderCode">-</b>
+      </div>
+      <div class="buy-order-row">
+        <span>Paket</span>
+        <b id="orderPkg">-</b>
+      </div>
+      <div class="buy-order-row total">
+        <span>Total</span>
+        <b id="orderTotal">-</b>
+      </div>
+    </div>
+
+    <div class="buy-qris-box">
+      <div class="buy-qris-title">📸 Scan QRIS</div>
+      <div class="buy-qris-sub">Transfer sesuai nominal persis</div>
+      <div id="qrisImg" class="buy-qris-img">
+        <div style="text-align:center;padding:40px;color:#94a3b8">Memuat QRIS...</div>
+      </div>
+    </div>
+
+    <div class="buy-upload-box">
+      <div class="buy-upload-title">📤 Upload Bukti Transfer</div>
+      <div class="buy-upload-sub">Screenshot bukti transfer dari e-wallet/m-banking</div>
+
+      <div id="dropZone" class="buy-drop">
+        <div class="buy-drop-icon">☁️</div>
+        <div class="buy-drop-text">Tap untuk pilih gambar</div>
+        <div class="buy-drop-sub">JPG, PNG, WEBP · Maks 5 MB</div>
+        <input type="file" id="fileInput" accept="image/*">
+      </div>
+
+      <div id="preview" class="buy-preview">
+        <img id="previewImg">
+        <button class="buy-preview-clear" id="btnClear">✕</button>
+      </div>
+
+      <button id="btnUpload" class="buy-submit" disabled>📤 Kirim Bukti</button>
+
+      <div id="resultBox" class="buy-result" style="display:none"></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: SUKSES -->
+  <div id="stepSukses" class="buy-step">
+    <div class="buy-success-icon">✅</div>
+    <div class="buy-success-title">Bukti Terkirim!</div>
+    <div class="buy-success-sub">Order kamu lagi diverifikasi admin. Biasanya 5-15 menit.</div>
+
+    <div class="buy-order-info">
+      <div class="buy-order-row">
+        <span>Kode Order</span>
+        <b id="succCode">-</b>
+      </div>
+      <div class="buy-order-row">
+        <span>Status</span>
+        <b style="color:#f59e0b">⏳ Menunggu Review</b>
+      </div>
+    </div>
+
+    <div class="buy-info-box">
+      <div>💡 Cek status di halaman <b>Pesanan</b></div>
+      <div>🔔 Kamu bakal dapet key di halaman itu begitu di-approve</div>
+    </div>
+
+    <a href="/my-orders" class="buy-submit" style="text-decoration:none;display:block;text-align:center;margin-top:10px">📋 Lihat Pesanan Saya</a>
+    <a href="/" class="buy-back-full" style="display:block;text-align:center;margin-top:8px;padding:14px;color:#64748b;text-decoration:none;font-weight:600">← Kembali ke Beranda</a>
+  </div>
+
+</div>
+
+<script src="/buy.js?v=1"></script>
+</body>
+</html>
