@@ -18,7 +18,24 @@ export async function onRequest(context) {
   const pathname = url.pathname;
 
   // ==== MAINTENANCE MODE ====
-  const maintenanceMode = String(context.env.MAINTENANCE_MODE || '') === '1';
+  // ==== MAINTENANCE MODE (dari env ATAU D1 config) ====
+  let maintenanceMode = String(context.env.MAINTENANCE_MODE || '') === '1';
+  
+  // Cek D1 config (lebih prioritas)
+  try {
+    const mdb = context.env.JAVIN_DB;
+    if (mdb) {
+      const mRow = await mdb.prepare("SELECT value FROM config WHERE key = 'maintenance_mode'").first();
+      if (mRow && mRow.value === '1') {
+        maintenanceMode = true;
+      } else if (mRow && mRow.value === '0') {
+        maintenanceMode = false;
+      }
+      // Kalau nggak ada row, pakai env
+    }
+  } catch (e) {
+    console.error('[MAINT] DB check error:', e.message);
+  }
   if (maintenanceMode) {
     // Admin IP bypass
     const mIp = request.headers.get('CF-Connecting-IP') ||
