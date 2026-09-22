@@ -255,6 +255,7 @@
     if (!info) return;
     if ($('appVersion')) $('appVersion').textContent = 'v' + info.version;
     if ($('apkInfo')) $('apkInfo').textContent = 'Versi ' + info.version + ' · ' + (info.apk_size || '1.4 MB');
+    if ($('footerVersion')) $('footerVersion').textContent = 'v' + info.version;
     CURRENT_VERSION = info.version;
     CURRENT_VERSION_CODE = info.versionCode || 0;
     // Simpan versi terinstall
