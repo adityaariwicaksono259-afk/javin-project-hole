@@ -27,9 +27,6 @@ export async function onRequestPost({ request, env }) {
   let cmd = text.split(/\s+/)[0].split('@')[0].toLowerCase();
   const args = text.slice(text.indexOf(cmd) + cmd.length).trim();
   console.log('[BOT-CMD]', cmd, '| args:', args, '| raw:', text);
-  const text = String(msg.text || '').trim();
-  const adminId = String(env.SHOP_ADMIN_CHAT_ID || '').trim();
-  const isAdmin = chatId === adminId;
 
   if (cmd === '/start' || cmd === '/help') {
     let help = '🤖 <b>JAVIN SECURITY BOT</b>\n\n' +
