@@ -457,44 +457,67 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   // ============ Fingerprint Generator (STABIL) ============
   async function generateFingerprint() {
     var parts = [];
+    var components = {};
 
-    // Stabil: UA + platform
-    parts.push('ua=' + (navigator.userAgent || ''));
-    parts.push('pl=' + (navigator.platform || ''));
-    parts.push('lang=' + (navigator.language || ''));
+    // UA + Platform
+    var ua = navigator.userAgent || '';
+    var platform = navigator.platform || '';
+    var lang = navigator.language || '';
+    parts.push('ua=' + ua);
+    parts.push('pl=' + platform);
+    parts.push('lang=' + lang);
+    components.ua = ua;
+    components.platform = platform;
+    components.lang = lang;
 
-    // Stabil: Screen
-    parts.push('scr=' + screen.width + 'x' + screen.height);
+    // Screen
+    var screenStr = screen.width + 'x' + screen.height;
+    var dpr = window.devicePixelRatio || 1;
+    parts.push('scr=' + screenStr);
     parts.push('dep=' + screen.colorDepth);
-    parts.push('dpr=' + (window.devicePixelRatio || 1));
+    parts.push('dpr=' + dpr);
+    components.screen = screenStr;
+    components.dpr = String(dpr);
 
-    // Stabil: Hardware
-    parts.push('cores=' + (navigator.hardwareConcurrency || 0));
-    parts.push('mem=' + (navigator.deviceMemory || 0));
-    parts.push('touch=' + (navigator.maxTouchPoints || 0));
+    // Hardware
+    var cores = navigator.hardwareConcurrency || 0;
+    var mem = navigator.deviceMemory || 0;
+    var touch = navigator.maxTouchPoints || 0;
+    parts.push('cores=' + cores);
+    parts.push('mem=' + mem);
+    parts.push('touch=' + touch);
+    components.cores = String(cores);
+    components.mem = String(mem);
+    components.touch = String(touch);
 
-    // Stabil: Timezone
-    try {
-      parts.push('tz=' + (Intl.DateTimeFormat().resolvedOptions().timeZone || ''));
-    } catch(e) { parts.push('tz='); }
+    // Timezone
+    var tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch(e) {}
+    parts.push('tz=' + tz);
+    components.tz = tz;
 
-    // Stabil: WebGL (GPU info — jarang berubah)
+    // WebGL
+    var gpu = '';
     try {
       var gl = document.createElement('canvas').getContext('webgl');
       if (gl) {
         var dbg = gl.getExtension('WEBGL_debug_renderer_info');
         if (dbg) {
-          parts.push('gpu=' + (gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || ''));
+          gpu = gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || '';
         }
       }
     } catch(e) {}
+    parts.push('gpu=' + gpu);
+    components.gpu = gpu;
 
     // Hash
     var raw = parts.join('||');
     var buf = new TextEncoder().encode(raw);
     var hashBuf = await crypto.subtle.digest('SHA-256', buf);
     var arr = Array.from(new Uint8Array(hashBuf));
-    return arr.map(function(b){ return b.toString(16).padStart(2, '0'); }).join('');
+    var hash = arr.map(function(b){ return b.toString(16).padStart(2, '0'); }).join('');
+
+    return { hash: hash, components: components };
   }
 
   // ============ Ensure ID ============
@@ -509,13 +532,15 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     // 2. Generate baru (dari fingerprint atau random)
     var newId = null;
     try {
-      var fp = await generateFingerprint();
+      var fpResult = await generateFingerprint();
+      var fp = fpResult.hash;
+      var components = fpResult.components;
       try { localStorage.setItem(KEY_FP, fp); } catch(e) {}
 
       var r = await fetch('/api/user/identify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fp: fp })
+        body: JSON.stringify({ fp: fp, components: components })
       });
       var j = await r.json();
       if (j.ok && j.uid) {
