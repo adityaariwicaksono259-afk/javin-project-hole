@@ -29,6 +29,7 @@ header h1{font-size:18px;font-weight:800;background:linear-gradient(135deg,#0EA5
 .warn{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:#92400e;border-radius:14px;padding:14px;font-size:12px;line-height:1.5;margin-top:12px}
 </style>
 <script src="/theme-loader.js"></script>
+<link rel="stylesheet" href="/native-feel.css?v=1">
 </head>
 <body>
 <div class="wrap">
@@ -75,5 +76,6 @@ fetch('/download/version.json').then(function(r){ return r.ok ? r.json() : null;
   }
 }).catch(function(){});
 </script>
+<script src="/update-banner.js?v=1" defer></script>
 </body>
 </html>
