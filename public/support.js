@@ -32,8 +32,6 @@
 
   // Title & contact auto-limit (HTML already maxlength)
   if ($('spTitle')) $('spTitle').addEventListener('input', checkValid);
-  if ($('spContact')) $('spContact').addEventListener('input', checkValid);
-
   function checkValid() {
     var valid = state.type && msgEl.value.trim().length >= 5;
     $('spSubmit').disabled = !valid;
@@ -66,7 +64,7 @@
           body: JSON.stringify({
             type: state.type,
             title: ($('spTitle').value || '').trim(),
-            userContact: ($('spContact').value || '').trim(),
+            userContact: '',
             message: msgEl.value.trim(),
             userId: uid,
             userName: uname
@@ -90,7 +88,6 @@
         setTimeout(function() {
           document.querySelectorAll('.sp-type').forEach(function(b){ b.classList.remove('active'); });
           if ($('spTitle')) $('spTitle').value = '';
-          if ($('spContact')) $('spContact').value = '';
           msgEl.value = '';
           state.type = '';
           countEl.textContent = '0 / 3000';

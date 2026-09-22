@@ -61,7 +61,7 @@
         document.querySelectorAll('.buy-pkg').forEach(function(x){ x.classList.remove('selected'); });
         el.classList.add('selected');
         state.selected = state.packages[parseInt(el.dataset.idx)];
-        setTimeout(function(){ createOrder(); }, 250);
+        updateOrderButton();
       };
     });
   }
@@ -108,6 +108,19 @@
     } catch(e) {
       alert('Error: ' + e.message);
       document.querySelectorAll('.buy-pkg').forEach(function(x){ x.classList.remove('selected'); });
+    }
+  }
+
+  // ==== Tombol Pesan Sekarang ====
+  function updateOrderButton() {
+    var btn = document.getElementById('btnOrderNow');
+    if (!btn) return;
+    if (state.selected) {
+      btn.disabled = false;
+      btn.textContent = '🛒 Pesan Sekarang — Rp ' + (state.selected.price || 0).toLocaleString('id-ID');
+    } else {
+      btn.disabled = true;
+      btn.textContent = '🛒 Pesan Sekarang';
     }
   }
 
@@ -216,6 +229,17 @@
       }
     };
   }
+
+  // Bind btnOrderNow
+  document.addEventListener('DOMContentLoaded', function() {
+    var btn = document.getElementById('btnOrderNow');
+    if (btn) {
+      btn.onclick = function() {
+        if (!state.selected) return;
+        createOrder();
+      };
+    }
+  });
 
   // Init
   loadPackages();
