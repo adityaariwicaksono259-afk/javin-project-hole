@@ -211,51 +211,8 @@
     <div class="a2fa-msg" id="a2faMsg"></div>
   </div>
 </div>
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.register('/service-worker.js').then(function(reg){
-      console.log('[SW] Registered:', reg.scope);
-    }).catch(function(e){
-      console.warn('[SW] Register failed:', e.message);
-    });
-  });
-}
-</script>
-<script>
-// ==== KILL OLD SW + REGISTER NEW ====
-(function(){
-  if (!('serviceWorker' in navigator)) return;
-  
-  // Unregister SEMUA SW lama
-  navigator.serviceWorker.getRegistrations().then(function(regs){
-    regs.forEach(function(reg){
-      if (reg.active && reg.active.scriptURL.indexOf('sw-v5') === -1) {
-        console.log('[KILL] Unregister old SW:', reg.active.scriptURL);
-        reg.unregister();
-      }
-    });
-  });
 
-  // Register SW baru
-  window.addEventListener('load', function(){
-    navigator.serviceWorker.register('/sw-v5.js?v=' + Date.now()).then(function(reg){
-      console.log('[SW] Registered fresh:', reg.scope);
-      reg.update();
-      setInterval(function(){ reg.update(); }, 30000);
-    }).catch(function(e){ console.warn('[SW] Register failed:', e.message); });
-  });
 
-  // Auto reload kalau ada controller baru
-  var refreshing = false;
-  navigator.serviceWorker.addEventListener('controllerchange', function(){
-    if (refreshing) return;
-    refreshing = true;
-    console.log('[AutoUpdate] Reloading...');
-    setTimeout(function(){ window.location.reload(); }, 200);
-  });
-})();
-</script>
 
 <!-- Edit Name Modal -->
 <div id="editNameModal" class="enm-overlay" style="display:none">
