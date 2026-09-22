@@ -19,6 +19,9 @@ export async function onRequestPost({ request, env }) {
   if (!msg || !msg.text) return new Response('ok');
 
   const chatId = String(msg.chat.id);
+  const text = String(msg.text || '').trim();
+  const adminId = String(env.SHOP_ADMIN_CHAT_ID || '').trim();
+  const isAdmin = chatId === adminId;
   
   // Normalize command: hapus @bot, trim
   let cmd = text.split(/\s+/)[0].split('@')[0].toLowerCase();
