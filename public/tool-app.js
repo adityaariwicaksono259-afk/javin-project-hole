@@ -185,8 +185,8 @@ function finishResult(container, html){
   // Copy buttons
   container.querySelectorAll('[data-copy]').forEach(function(b){
     b.onclick = function(){
-      if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(function(){ alert('✅ Copy!'); });
-      else prompt('Copy:', b.dataset.copy);
+      if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(function(){ showAlert('', '✅ Copy!', 'ℹ️'); });
+      else showPrompt('', 'Copy:', {icon: '✏️', value: b.dataset.copy});
     };
   });
 
@@ -199,7 +199,7 @@ function finishResult(container, html){
         audioEl.play().then(function(){
           btnPlay.innerHTML = '⏸️ Pause';
         }).catch(function(e){
-          alert('Gagal play: ' + e.message);
+          showAlert('', 'Gagal play: ' + e.message, 'ℹ️');
         });
       } else {
         audioEl.pause();
@@ -924,7 +924,7 @@ function renderError(c, msg){
       if (fileInput) fileInput.onchange = function(e){ if (e.target.files[0]) handleFile(e.target.files[0]); };
 
       function handleFile(f){
-        if (f.size > 5*1024*1024) { alert('Max 5 MB'); return; }
+        if (f.size > 5*1024*1024) { showAlert('', 'Max 5 MB', 'ℹ️'); return; }
         var r = new FileReader();
         r.onload = function(e){
           previewImg.src = e.target.result;

@@ -106,7 +106,7 @@
 
       goToStep('bayar');
     } catch(e) {
-      alert('Error: ' + e.message);
+      showAlert('', 'Error: ' + e.message, 'ℹ️');
       document.querySelectorAll('.buy-pkg').forEach(function(x){ x.classList.remove('selected'); });
     }
   }
@@ -150,11 +150,11 @@
   function handleFile(file) {
     if (!file) return;
     if (!/^image\//.test(file.type)) {
-      alert('File harus gambar (JPG/PNG/WEBP)');
+      showAlert('', 'File harus gambar (JPG/PNG/WEBP/GIF)', 'ℹ️');
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      alert('File max 5 MB');
+      showAlert('', 'File max 5 MB', 'ℹ️');
       return;
     }
 
@@ -202,7 +202,7 @@
   if (btnUpload) {
     btnUpload.onclick = async function() {
       if (!state.pickedFile) return;
-      if (!state.orderCode) { alert('Order belum dibuat'); return; }
+      if (!state.orderCode) { showAlert('', 'Order belum dibuat', 'ℹ️'); return; }
 
       btnUpload.disabled = true;
       btnUpload.textContent = '⏳ Mengirim...';

@@ -152,9 +152,9 @@
       if (!deferredPrompt) {
         // Kalau nggak ada prompt (udah installed atau browser nggak support)
         if (window.matchMedia('(display-mode: standalone)').matches) {
-          alert('✅ App sudah terpasang!');
+          showAlert('', '✅ App sudah terpasang!', 'ℹ️');
         } else {
-          alert('ℹ️ Browser ini nggak support install otomatis. Buka di Chrome/Safari, atau pakai "Add to Home Screen" dari menu browser.');
+          showAlert('', 'ℹ️ Browser ini nggak support install otomatis. Buka di Chrome/Safari, atau pakai "Add to Home Screen" dari menu browser.', 'ℹ️');
         }
         return;
       }
@@ -204,7 +204,7 @@
   if ($('btnNotif')) {
     $('btnNotif').onclick = async function(){
       if (!('Notification' in window)) {
-        alert('Browser ini nggak support notifikasi.');
+        showAlert('', 'Browser ini nggak support notifikasi.', 'ℹ️');
         return;
       }
       try {
@@ -217,7 +217,7 @@
           });
         }
       } catch(e) {
-        alert('Error: ' + e.message);
+        showAlert('', 'Error: ' + e.message, 'ℹ️');
       }
     };
   }
@@ -308,12 +308,12 @@
           btn.textContent = '✅ Update tersedia';
           toast('✅ Update tersedia: v' + info.version);
           setTimeout(function(){
-            var doUpdate = confirm(
+            var doUpdate = showConfirm('', 
               '🎉 Update tersedia!\n\n' +
               'Versi terinstall: v' + installedVersion + '\n' +
               'Versi terbaru: v' + info.version + '\n\n' +
               'Update sekarang?'
-            );
+            , {icon: '❓'});
             if (doUpdate) {
               // Kalau SW update, tinggal reload
               if (swUpdate && navigator.serviceWorker.controller) {

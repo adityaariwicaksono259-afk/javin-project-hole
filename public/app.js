@@ -21,7 +21,7 @@
     if (!modal || !input) {
       // Fallback ke prompt kalau modal nggak ada
       var current = localStorage.getItem('javin_display_name') || 'Javin';
-      var newName = prompt('Ubah nama tampilan:', current);
+      var newName = showPrompt('', 'Ubah nama tampilan:', {icon: '✏️', value: current});
       if (newName !== null && newName.trim()) {
         localStorage.setItem('javin_display_name', newName.trim().slice(0, 20));
         updateHeaderName();
@@ -624,9 +624,9 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   }
 
   async function doLogin(){
-    var u=prompt('Username admin:');
+    var u=showPrompt('', 'Username admin:', {icon: '✏️'});
     if(u===null)return false;
-    var p=prompt('Password admin:');
+    var p=showPrompt('', 'Password admin:', {icon: '✏️'});
     if(p===null)return false;
     try{
       var r=await fetch('/api/admin/login',{
@@ -636,9 +636,9 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
       });
       var j=await r.json();
       if(j.ok){loggedIn=true;return true}
-      alert(j.message||'Login gagal.');
+      showAlert('', j.message||'Login gagal.', 'ℹ️');
       return false;
-    }catch(e){alert('Error: '+e.message);return false}
+    }catch(e){showAlert('', 'Error: '+e.message, 'ℹ️');return false}
   }
 
   // ==== Tabs ====
@@ -665,7 +665,7 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     tb.innerHTML='<tr><td colspan="6" class="tbl-empty">Loading...</td></tr>';
     try{
       var r=await fetch('/api/admin/users');
-      if(r.status===401){loggedIn=false;alert('Session expired. Login ulang.');closePanel();return}
+      if(r.status===401){loggedIn=false;showAlert('', 'Session expired. Login ulang.', 'ℹ️');closePanel();return}
       var j=await r.json();
       if(!j.ok){tb.innerHTML='<tr><td colspan="6" class="tbl-empty">'+escHtml(j.message||'Gagal')+'</td></tr>';return}
       var filter=(document.getElementById('userSearch').value||'').toLowerCase();
@@ -691,10 +691,10 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
       });
       tb.querySelectorAll('[data-del]').forEach(function(b){
         b.onclick=async function(){
-          if(!confirm('Hapus user '+b.dataset.del+'? Log-nya ikut terhapus.'))return;
+          if(!showConfirm('', 'Hapus user '+b.dataset.del+'? Log-nya ikut terhapus.', {icon: '❓'}))return;
           var rr=await fetch('/api/admin/users?id='+encodeURIComponent(b.dataset.del),{method:'DELETE'});
           var jj=await rr.json();
-          alert(jj.message||'OK');
+          showAlert('', jj.message||'OK', 'ℹ️');
           loadUsers();
         };
       });
@@ -702,18 +702,18 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   }
 
   document.getElementById('adminAddLimit').onclick=async function(){
-    if(!loggedIn){alert('Login dulu.');return}
+    if(!loggedIn){showAlert('', 'Login dulu.', 'ℹ️');return}
     var uid=document.getElementById('adminUserId').value.trim();
     var extra=parseInt(document.getElementById('adminExtraLimit').value||'0');
-    if(!uid){alert('User ID wajib.');return}
-    if(isNaN(extra)||extra<1||extra>15){alert('Limit harus 1-15.');return}
+    if(!uid){showAlert('', 'User ID wajib.', 'ℹ️');return}
+    if(isNaN(extra)||extra<1||extra>15){showAlert('', 'Limit harus 1-15.', 'ℹ️');return}
     var r=await fetch('/api/admin/users',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({id:uid,extra_limit:extra})
     });
     var j=await r.json();
-    alert(j.message||'OK');
+    showAlert('', j.message||'OK', 'ℹ️');
     if(j.ok)loadUsers();
   };
   document.getElementById('userReload').onclick=loadUsers;
@@ -728,7 +728,7 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
       var uid=(document.getElementById('logFilterUid').value||'').trim();
       var url='/api/admin/logs?limit=200'+(uid?'&uid='+encodeURIComponent(uid):'');
       var r=await fetch(url);
-      if(r.status===401){loggedIn=false;alert('Session expired.');closePanel();return}
+      if(r.status===401){loggedIn=false;showAlert('', 'Session expired.', 'ℹ️');closePanel();return}
       var j=await r.json();
       if(!j.ok){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">'+escHtml(j.message||'Gagal')+'</td></tr>';return}
       var list=j.logs||[];
@@ -747,11 +747,11 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   document.getElementById('logReload').onclick=loadLogs;
   document.getElementById('logFilterUid').oninput=loadLogs;
   document.getElementById('logClear').onclick=async function(){
-    if(!loggedIn){alert('Login dulu.');return}
-    if(!confirm('Hapus SEMUA log?'))return;
+    if(!loggedIn){showAlert('', 'Login dulu.', 'ℹ️');return}
+    if(!showConfirm('', 'Hapus SEMUA log?', {icon: '❓'}))return;
     var r=await fetch('/api/admin/logs',{method:'DELETE'});
     var j=await r.json();
-    alert(j.message||'OK');
+    showAlert('', j.message||'OK', 'ℹ️');
     loadLogs();
   };
 
@@ -762,7 +762,7 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     tb.innerHTML='<tr><td colspan="4" class="tbl-empty">Loading...</td></tr>';
     try{
       var r=await fetch('/api/admin/config');
-      if(r.status===401){loggedIn=false;alert('Session expired.');closePanel();return}
+      if(r.status===401){loggedIn=false;showAlert('', 'Session expired.', 'ℹ️');closePanel();return}
       var j=await r.json();
       if(!j.ok){tb.innerHTML='<tr><td colspan="4" class="tbl-empty">'+escHtml(j.message||'Gagal')+'</td></tr>';return}
       var list=j.config||[];
@@ -785,17 +785,17 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   }
   document.getElementById('configReload').onclick=loadConfig;
   document.getElementById('configSave').onclick=async function(){
-    if(!loggedIn){alert('Login dulu.');return}
+    if(!loggedIn){showAlert('', 'Login dulu.', 'ℹ️');return}
     var key=document.getElementById('configKey').value.trim();
     var value=document.getElementById('configValue').value;
-    if(!key){alert('Key wajib.');return}
+    if(!key){showAlert('', 'Key wajib.', 'ℹ️');return}
     var r=await fetch('/api/admin/config',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({key:key,value:value})
     });
     var j=await r.json();
-    alert(j.message||'OK');
+    showAlert('', j.message||'OK', 'ℹ️');
     if(j.ok)loadConfig();
   };
 
@@ -811,7 +811,7 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
         if (r.status === 401) {
           loggedIn = false;
           closePanel();
-          alert('Session expired. Login ulang.');
+          showAlert('', 'Session expired. Login ulang.', 'ℹ️');
         }
       }
     } catch(e) {
@@ -961,27 +961,27 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
         b.onclick = function(){
           var k = b.dataset.copy;
           if (navigator.clipboard) {
-            navigator.clipboard.writeText(k).then(function(){ alert('✅ Copied: ' + k); });
+            navigator.clipboard.writeText(k).then(function(){ showAlert('', '✅ Copied: ' + k, 'ℹ️'); });
           } else {
-            prompt('Copy manual:', k);
+            showPrompt('', 'Copy manual:', {icon: '✏️', value: k});
           }
         };
       });
       tb.querySelectorAll('[data-revoke]').forEach(function(b){
         b.onclick = async function(){
-          if (!confirm('Revoke key ' + b.dataset.revoke + '? User tidak bisa pakai lagi.')) return;
+          if (!showConfirm('', 'Revoke key ' + b.dataset.revoke + '? User tidak bisa pakai lagi.', {icon: '❓'})) return;
           var rr = await fetch('/api/admin/premium-keys?key=' + encodeURIComponent(b.dataset.revoke) + '&mode=revoke', { method: 'DELETE' });
           var jj = await rr.json();
-          alert(jj.message || 'OK');
+          showAlert('', jj.message || 'OK', 'ℹ️');
           loadKeys();
         };
       });
       tb.querySelectorAll('[data-del]').forEach(function(b){
         b.onclick = async function(){
-          if (!confirm('HAPUS PERMANEN key ' + b.dataset.del + '?')) return;
+          if (!showConfirm('', 'HAPUS PERMANEN key ' + b.dataset.del + '?', {icon: '❓'})) return;
           var rr = await fetch('/api/admin/premium-keys?key=' + encodeURIComponent(b.dataset.del) + '&mode=delete', { method: 'DELETE' });
           var jj = await rr.json();
-          alert(jj.message || 'OK');
+          showAlert('', jj.message || 'OK', 'ℹ️');
           loadKeys();
         };
       });
@@ -999,8 +999,8 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
   if (btnGen) btnGen.onclick = async function(){
     var label = (document.getElementById('newKeyLabel').value || '').trim();
     var maxUses = parseInt(document.getElementById('newKeyMax').value) || 5;
-    if (!label) { alert('Isi nama pemilik dulu.'); return; }
-    if (maxUses < 1 || maxUses > 100) { alert('Kuota harus 1-100.'); return; }
+    if (!label) { showAlert('', 'Isi nama pemilik dulu.', 'ℹ️'); return; }
+    if (maxUses < 1 || maxUses > 100) { showAlert('', 'Kuota harus 1-100.', 'ℹ️'); return; }
     btnGen.disabled = true;
     btnGen.textContent = '⏳ Generating...';
     var res = document.getElementById('genKeyResult');
@@ -1062,7 +1062,7 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
 
   var btnBackupRun = document.getElementById('backupRun');
   if (btnBackupRun) btnBackupRun.onclick = async function () {
-    if (!confirm('Jalankan backup sekarang? File bakal dikirim ke Telegram.')) return;
+    if (!showConfirm('', 'Jalankan backup sekarang? File bakal dikirim ke Telegram.', {icon: '❓'})) return;
     var res = document.getElementById('backupResult');
     btnBackupRun.disabled = true;
     btnBackupRun.textContent = '⏳ Backup...';

@@ -105,7 +105,7 @@
             setTimeout(function(){ btn.textContent = '📋 Copy'; }, 2000);
           });
         } else {
-          prompt('Copy key:', k);
+          showPrompt('', 'Copy key:', {icon: '✏️', value: k});
         }
       };
     });

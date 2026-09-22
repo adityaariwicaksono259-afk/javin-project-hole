@@ -18,10 +18,10 @@
     banner.innerHTML = 
       '<div class="update-banner-icon">🎉</div>' +
       '<div class="update-banner-body">' +
-        '<div class="update-banner-title" id="ubTitle">Update Tersedia!</div>' +
-        '<div class="update-banner-sub" id="ubSub">Ketuk untuk refresh aplikasi</div>' +
+        '<div class="update-banner-title" id="ubTitle">Update Web Tersedia!</div>' +
+        '<div class="update-banner-sub" id="ubSub">Tap untuk refresh konten (nggak perlu download APK)</div>' +
       '</div>' +
-      '<button class="update-banner-btn" id="ubBtn">Refresh</button>' +
+      '<button class="update-banner-btn" id="ubBtn">🔄 Refresh</button>' +
       '<button class="update-banner-close" id="ubClose">✕</button>';
     
     document.body.appendChild(banner);
@@ -67,44 +67,41 @@
   }
 
   function doRefresh() {
-    // 1. Clear cache service worker
+    // 1. Clear cache service worker (konten)
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(regs) {
-        var promises = regs.map(function(reg) {
-          // Skip waiting untuk SW baru
+        regs.forEach(function(reg) {
           if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
-          // Unregister SW lama
-          return reg.update();
+          reg.update();
         });
-        return Promise.all(promises);
       });
     }
 
-    // 2. Clear cache storage
+    // 2. Clear cache storage (asset lama)
     if ('caches' in window) {
       caches.keys().then(function(keys) {
         keys.forEach(function(k) { caches.delete(k); });
       });
     }
 
-    // 3. Update timestamp
+    // 3. Update timestamp supaya nggak nanya lagi
     try { 
       localStorage.setItem(STORAGE_LAST_SEEN, lastVersion || '');
       localStorage.removeItem(STORAGE_DISMISSED);
     } catch(e) {}
 
-    // 4. Show loading & reload
+    // 4. Show loading
     var title = document.getElementById('ubTitle');
     var sub = document.getElementById('ubSub');
-    if (title) title.textContent = '🔄 Refresh...';
-    if (sub) sub.textContent = 'Memuat versi terbaru...';
+    if (title) title.textContent = '🔄 Memuat update...';
+    if (sub) sub.textContent = 'Bentar ya, lagi ambil versi terbaru...';
 
+    // 5. Reload dengan cache-buster (NO download APK!)
     setTimeout(function() {
-      // Reload dengan cache-buster
       var url = new URL(window.location.href);
       url.searchParams.set('_v', Date.now());
       window.location.replace(url.toString());
-    }, 800);
+    }, 600);
   }
 
   async function checkUpdate() {
