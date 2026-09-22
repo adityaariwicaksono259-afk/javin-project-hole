@@ -239,3 +239,27 @@ body.anim-3d .settings-item:active {
   .btn-mini { padding: 7px 11px; font-size: 10.5px; }
   .seg-control button { font-size: 11px; padding: 8px 4px; }
 }
+
+/* Settings link (buat support/inbox) */
+.settings-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.settings-link:hover {
+  background: rgba(14,165,233,0.04);
+}
+.settings-link .settings-value {
+  color: #94a3b8;
+  font-size: 20px;
+  font-weight: 400;
+  transition: color .2s;
+}
+.settings-link:hover .settings-value {
+  color: #0EA5E9;
+}
+.settings-link .settings-value.badge-active {
+  color: #0EA5E9;
+  font-size: 12px;
+  font-weight: 800;
+}

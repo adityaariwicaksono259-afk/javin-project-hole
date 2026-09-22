@@ -267,6 +267,63 @@ async function handleReject(env, callback, orderId) {
   );
 }
 
+// ==== APPROVE ORDER WEB ====
+async function handleWebApprove(env, callback, orderCode) {
+  const db = env.JAVIN_DB;
+  const order = await db.prepare('SELECT * FROM web_orders WHERE order_code = ?').bind(orderCode).first();
+  if (!order) { await answerCallback(env, callback.id, 'Order tidak ditemukan', true); return; }
+  if (order.status === 'approved') { await answerCallback(env, callback.id, 'Sudah di-approve sebelumnya', true); return; }
+
+  // Generate keys
+  const qty = order.package_qty;
+  const keys = [];
+  try {
+    for (let i = 0; i < qty; i++) {
+      const key = await generateKey(env, order.user_name || ('web_' + order.order_code));
+      keys.push(key);
+    }
+  } catch (e) {
+    await answerCallback(env, callback.id, 'Gagal generate: ' + e.message, true);
+    return;
+  }
+
+  const now = Date.now();
+  await db.prepare(
+    'UPDATE web_orders SET status = "approved", key_generated = ?, updated_at = ? WHERE order_code = ?'
+  ).bind(keys.join(','), now, orderCode).run();
+
+  await answerCallback(env, callback.id, '✅ Approved! ' + qty + ' key dibuat.');
+
+  try {
+    await editMessage(env, callback.message.chat.id, callback.message.message_id,
+      (callback.message.caption || '') + '\n\n✅ <b>APPROVED</b>\n\n🔑 Key: <code>' + keys.join('</code>\n<code>') + '</code>'
+    );
+  } catch(e) {}
+
+  // Kirim ke user via Telegram kalau ada
+  // (skip karena user datang dari web, bukan chat bot)
+}
+
+// ==== REJECT ORDER WEB ====
+async function handleWebReject(env, callback, orderCode) {
+  const db = env.JAVIN_DB;
+  const order = await db.prepare('SELECT * FROM web_orders WHERE order_code = ?').bind(orderCode).first();
+  if (!order) { await answerCallback(env, callback.id, 'Order tidak ditemukan', true); return; }
+
+  const now = Date.now();
+  await db.prepare(
+    'UPDATE web_orders SET status = "rejected", updated_at = ? WHERE order_code = ?'
+  ).bind(now, orderCode).run();
+
+  await answerCallback(env, callback.id, '❌ Rejected');
+
+  try {
+    await editMessage(env, callback.message.chat.id, callback.message.message_id,
+      (callback.message.caption || '') + '\n\n❌ <b>REJECTED</b>'
+    );
+  } catch(e) {}
+}
+
 async function handleCancel(env, callback, orderId) {
   const db = env.JAVIN_DB;
   await db.prepare(
@@ -303,6 +360,14 @@ async function handleUpdate(env, update) {
     }
     if (data.startsWith('cancel_')) {
       await handleCancel(env, cb, parseInt(data.slice(7)));
+      return;
+    }
+    if (data.startsWith('webap_')) {
+      await handleWebApprove(env, cb, data.slice(6));
+      return;
+    }
+    if (data.startsWith('webrj_')) {
+      await handleWebReject(env, cb, data.slice(6));
       return;
     }
     if (data === 'help') {

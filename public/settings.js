@@ -418,5 +418,44 @@
     };
   }
 
+  // ==== Inbox Badge (cek tiket belum dibalas) ====
+  async function loadInboxBadge() {
+    var badge = document.getElementById('inboxBadge');
+    if (!badge) return;
+
+    var uid = '';
+    try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e) {}
+    if (!uid) return;
+
+    try {
+      var r = await fetch('/api/support/my-tickets?user_id=' + encodeURIComponent(uid) + '&_=' + Date.now(), {
+        cache: 'no-store'
+      });
+      var ct = r.headers.get('content-type') || '';
+      if (ct.indexOf('application/json') === -1) return;
+
+      var j = await r.json();
+      if (!j.ok || !j.tickets) return;
+
+      var unread = j.tickets.filter(function(t) {
+        return t.status === 'replied' && t.admin_reply && t.admin_reply.trim();
+      }).length;
+
+      if (unread > 0) {
+        badge.textContent = '● ' + unread + ' baru ›';
+        badge.className = 'settings-value badge-active';
+      } else {
+        badge.textContent = '›';
+        badge.className = 'settings-value';
+      }
+    } catch(e) {}
+  }
+
+  loadInboxBadge();
+  setInterval(loadInboxBadge, 30000);
+  document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') loadInboxBadge();
+  });
+
   console.log('[Settings] Loaded');
 })();

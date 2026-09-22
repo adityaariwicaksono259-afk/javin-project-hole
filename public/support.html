@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>Support — VinAPIay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style-v4.css">
+<link rel="stylesheet" href="/native-v7.css">
+<style>
+.sp-wrap{max-width:560px;margin:0 auto;padding:20px 14px 80px}
+.sp-hero{text-align:center;padding:16px 0 24px}
+.sp-hero-icon{font-size:52px;margin-bottom:8px}
+.sp-hero-title{font-size:22px;font-weight:800;color:#0f172a;letter-spacing:-.5px;margin-bottom:6px}
+.sp-hero-sub{font-size:13px;color:#64748b;line-height:1.6}
+
+.sp-card{background:#fff;border:1px solid #e2e8f0;border-radius:18px;padding:20px;margin-bottom:14px}
+.sp-label{display:block;font-size:13px;font-weight:700;color:#0f172a;margin-bottom:10px}
+.sp-label small{color:#94a3b8;font-weight:500;font-size:11px}
+
+.sp-type-row{display:flex;gap:8px;margin-bottom:18px}
+.sp-type{flex:1;padding:14px 8px;border-radius:14px;border:2px solid #e2e8f0;background:#fff;text-align:center;cursor:pointer;transition:.2s;font-family:inherit}
+.sp-type:hover{border-color:#0EA5E9;transform:translateY(-1px)}
+.sp-type.active{border-color:#0EA5E9;background:linear-gradient(135deg,rgba(14,165,233,.06),rgba(99,102,241,.06));box-shadow:0 8px 20px rgba(14,165,233,.12)}
+.sp-type-icon{font-size:24px;margin-bottom:6px}
+.sp-type-name{font-size:12px;font-weight:700;color:#0f172a}
+.sp-type-desc{font-size:10px;color:#94a3b8;margin-top:2px}
+
+.sp-input{width:100%;padding:13px 16px;background:#f8fafc;border:2px solid #e2e8f0;border-radius:12px;font-size:14px;font-family:inherit;color:#0f172a;outline:none;transition:.2s;box-sizing:border-box;margin-bottom:14px}
+.sp-input:focus{border-color:#0EA5E9;background:#fff;box-shadow:0 0 0 4px rgba(14,165,233,.08)}
+.sp-input::placeholder{color:#94a3b8}
+textarea.sp-input{resize:vertical;min-height:120px;line-height:1.5}
+
+.sp-counter{font-size:10px;color:#94a3b8;text-align:right;margin-top:-10px;margin-bottom:12px;font-family:monospace}
+.sp-counter.warn{color:#f59e0b}
+.sp-counter.err{color:#dc2626}
+
+.sp-submit{width:100%;padding:16px;background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;border:0;border-radius:14px;font-family:inherit;font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 6px 20px rgba(14,165,233,.3);transition:.2s;margin-top:6px}
+.sp-submit:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 10px 28px rgba(14,165,233,.45)}
+.sp-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+
+.sp-result{margin-top:14px;padding:14px;border-radius:12px;font-size:13px;line-height:1.5;font-weight:600;display:none}
+.sp-result.show{display:block}
+.sp-result.ok{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:#16a34a}
+.sp-result.err{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);color:#dc2626}
+
+.sp-info{background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.15);border-radius:14px;padding:14px 16px;font-size:12px;color:#475569;line-height:1.7}
+.sp-info div{margin-bottom:4px}
+.sp-info div:last-child{margin-bottom:0}
+
+body.theme-dark .sp-hero-title{color:#f1f5f9}
+body.theme-dark .sp-card{background:rgba(30,41,59,.8);border-color:rgba(255,255,255,.08)}
+body.theme-dark .sp-type{background:rgba(15,23,42,.5);border-color:rgba(255,255,255,.1);color:#f1f5f9}
+body.theme-dark .sp-type-name{color:#f1f5f9}
+body.theme-dark .sp-input{background:rgba(15,23,42,.5);border-color:rgba(255,255,255,.1);color:#f1f5f9}
+body.theme-dark .sp-info{background:rgba(14,165,233,.08);color:#cbd5e1}
+</style>
+</head>
+<body>
+
+<header style="position:sticky;top:0;z-index:50;padding:10px 14px;background:rgba(255,255,255,0.9);backdrop-filter:blur(20px);border-bottom:1px solid rgba(148,163,184,0.15)">
+  <div style="display:flex;align-items:center;gap:8px;width:100%">
+    <a href="/settings" style="width:44px;height:44px;border-radius:14px;background:#fff;border:1px solid rgba(148,163,184,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:#0f172a">←</a>
+    <h1 style="flex:1;font-size:17px;font-weight:800;margin:0;padding-left:8px">Support</h1>
+  </div>
+</header>
+
+<div class="sp-wrap">
+  <div class="sp-hero">
+    <div class="sp-hero-icon">💬</div>
+    <div class="sp-hero-title">Bantuan & Support</div>
+    <div class="sp-hero-sub">Lapor bug, kasih saran, atau hubungi kami.<br>Pesan langsung masuk ke admin.</div>
+  </div>
+
+  <form id="spForm" class="sp-card" onsubmit="return false">
+    <label class="sp-label">Jenis Pesan <small>(pilih satu)</small></label>
+    <div class="sp-type-row">
+      <button type="button" class="sp-type" data-type="bug">
+        <div class="sp-type-icon">🐛</div>
+        <div class="sp-type-name">Bug</div>
+        <div class="sp-type-desc">Error/rusak</div>
+      </button>
+      <button type="button" class="sp-type" data-type="saran">
+        <div class="sp-type-icon">💡</div>
+        <div class="sp-type-name">Saran</div>
+        <div class="sp-type-desc">Ide baru</div>
+      </button>
+      <button type="button" class="sp-type" data-type="lainnya">
+        <div class="sp-type-icon">📨</div>
+        <div class="sp-type-name">Lainnya</div>
+        <div class="sp-type-desc">Pertanyaan</div>
+      </button>
+    </div>
+
+    <label class="sp-label">Judul <small>(opsional)</small></label>
+    <input type="text" id="spTitle" class="sp-input" placeholder="Contoh: Tombol beli error" maxlength="150" autocomplete="off">
+
+    <label class="sp-label">Kontak <small>(opsional)</small></label>
+    <input type="text" id="spContact" class="sp-input" placeholder="Email / Telegram / HP" maxlength="100" autocomplete="off">
+
+    <label class="sp-label">Pesan <small>(wajib)</small></label>
+    <textarea id="spMessage" class="sp-input" placeholder="Jelaskan sedetail mungkin: apa yang terjadi, di halaman mana, kapan..." maxlength="3000"></textarea>
+    <div class="sp-counter" id="spCount">0 / 3000</div>
+
+    <button type="submit" id="spSubmit" class="sp-submit" disabled>📤 Kirim Pesan</button>
+    <div class="sp-result" id="spResult"></div>
+  </form>
+
+  <div class="sp-info">
+    <div>⏱️ <b>Waktu respon:</b> biasanya < 24 jam</div>
+    <div>🔔 Admin bakal balas via kontak yang kamu kasih</div>
+    <div>🔒 ID kamu ikut terkirim (buat tracking)</div>
+  </div>
+</div>
+
+<script src="/support.js?v=1"></script>
+</body>
+</html>
