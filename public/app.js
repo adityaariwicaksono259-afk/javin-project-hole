@@ -142,19 +142,79 @@ function renderCats(cats){
 
 function render(){
   var searchEl = document.getElementById('search');
-  var q = (searchEl && searchEl.value ? searchEl.value : '').toLowerCase();
-  var list = endpoints.filter(function(x){
-    var matchCat = (active === 'ALL' || x.folder === active);
-    var hay = (x.name + ' ' + x.path + ' ' + (x.desc||'')).toLowerCase();
-    return matchCat && hay.indexOf(q) !== -1;
-  });
+  var q = (searchEl && searchEl.value ? searchEl.value : '').trim().toLowerCase();
+  var qClean = q.replace(/[\s_\-]/g, ''); // hapus spasi/underscore/dash
   var grid = document.getElementById('grid');
   if (!grid) return;
-  if (!list.length) {
-    grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada tool ditemukan</div>';
+
+  // Filter by kategori dulu
+  var pool = endpoints.filter(function(x){
+    return active === 'ALL' || x.folder === active;
+  });
+
+  // Kalau nggak ada query, tampil semua
+  if (!q) {
+    if (!pool.length) {
+      grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada tool</div>';
+      return;
+    }
+    grid.innerHTML = pool.map(card).join('');
+    document.querySelectorAll('.fx-card').forEach(function(el){
+      el.onclick = function(){ openEp(el.dataset.id); };
+    });
     return;
   }
-  grid.innerHTML = list.map(card).join('');
+
+  // ==== FUZZY SEARCH + RANKING ====
+  var scored = [];
+  pool.forEach(function(x){
+    var name = (x.name || '').toLowerCase();
+    var nameClean = name.replace(/[\s_\-]/g, '');
+    var sub = (x.subfolder || '').toLowerCase();
+    var subClean = sub.replace(/[\s_\-]/g, '');
+    var folder = (x.folder || '').toLowerCase();
+    var desc = (x.desc || '').toLowerCase();
+    var path = (x.path || '').toLowerCase();
+
+    var score = 0;
+
+    // Prioritas 1: match persis di nama (clean)
+    if (nameClean === qClean) score += 1000;
+    // Prioritas 2: nama startsWith query
+    else if (nameClean.indexOf(qClean) === 0) score += 800;
+    // Prioritas 3: nama contains query (clean)
+    else if (nameClean.indexOf(qClean) !== -1) score += 600;
+
+    // Prioritas 4: match persis di subfolder
+    if (subClean === qClean) score += 500;
+    else if (subClean.indexOf(qClean) === 0) score += 400;
+    else if (subClean.indexOf(qClean) !== -1) score += 300;
+
+    // Prioritas 5: match di folder
+    if (folder.indexOf(qClean) !== -1) score += 150;
+
+    // Prioritas 6: match di desc
+    if (desc.indexOf(q) !== -1 || desc.replace(/[\s_\-]/g, '').indexOf(qClean) !== -1) score += 50;
+
+    // Prioritas 7: match di path
+    if (path.indexOf(q) !== -1) score += 30;
+
+    // Bonus: yang namanya lebih pendek = lebih spesifik
+    if (score > 0) {
+      score += Math.max(0, 50 - nameClean.length);
+      scored.push({ ep: x, score: score });
+    }
+  });
+
+  // Sort by score desc
+  scored.sort(function(a, b){ return b.score - a.score; });
+
+  if (!scored.length) {
+    grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada hasil untuk "' + q + '"</div>';
+    return;
+  }
+
+  grid.innerHTML = scored.map(function(s){ return card(s.ep); }).join('');
   document.querySelectorAll('.fx-card').forEach(function(el){
     el.onclick = function(){ openEp(el.dataset.id); };
   });
