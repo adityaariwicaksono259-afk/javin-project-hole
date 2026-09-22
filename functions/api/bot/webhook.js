@@ -2,7 +2,10 @@
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 
 async function reply(env, chatId, text) {
-  return sendTelegram(env, text, { type: 'bot-reply', throttleMs: 0 });
+  console.log('[BOT-REPLY] Sending to chatId:', chatId, 'text:', text.slice(0, 60));
+  const res = await sendTelegram(env, text, { type: 'bot-reply', throttleMs: 1 });
+  console.log('[BOT-REPLY] Result:', JSON.stringify(res));
+  return res;
 }
 
 export async function onRequestPost({ request, env }) {
@@ -10,6 +13,8 @@ export async function onRequestPost({ request, env }) {
   try { update = await request.json(); }
   catch (e) { return new Response('bad', { status: 400 }); }
 
+  console.log('[BOT-WEBHOOK] Update:', JSON.stringify(update).slice(0, 300));
+  
   const msg = update.message;
   if (!msg || !msg.text) return new Response('ok');
 

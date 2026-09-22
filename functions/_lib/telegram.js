@@ -25,7 +25,7 @@ export async function sendTelegram(env, message, options) {
   if (!token || !chatId) return { ok: false, reason: 'not-configured' };
 
   const type = options.type || 'default';
-  const throttleMs = options.throttleMs || 10000;
+  const throttleMs = (typeof options.throttleMs === 'number') ? options.throttleMs : 10000;
   const now = Date.now();
   const last = lastSent.get(type) || 0;
   if (now - last < throttleMs) return { ok: false, reason: 'throttled' };
