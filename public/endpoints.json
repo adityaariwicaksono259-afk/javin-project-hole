@@ -1649,31 +1649,6 @@
     "subfolder": ""
   },
   {
-    "name": "bratvid2",
-    "m": "GET",
-    "path": "/bratvid2",
-    "desc": "generate bratvide versi 2",
-    "folder": "Canvas",
-    "subfolder": "bratvid2",
-    "outputType": "mp4",
-    "ex": "https://apii.nexadev.my.id/bratvid2?text=nexa+nich😱",
-    "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
-    "params": [
-      {
-        "n": "text",
-        "t": "string",
-        "r": 0,
-        "d": ""
-      }
-    ],
-    "id": "custom_1788025066_5178",
-    "updated_at": "2026-08-29T17:37:46+00:00",
-    "created_at": "2026-08-29T17:37:46+00:00",
-    "catalogId": "ep081"
-  },
-  {
     "id": "cv13",
     "name": "Fake Call",
     "m": "GET",
@@ -2505,36 +2480,6 @@
     "subfolder": ""
   },
   {
-    "catalogId": "ep118",
-    "name": "DeepSeek R1",
-    "m": "GET",
-    "path": "/api/ai/deepseekr1",
-    "folder": "AI",
-    "subfolder": "deepseekr1",
-    "desc": "DeepSeek R1",
-    "ex": "https://api.siputzx.my.id/api/ai/deepseekr1?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7",
-    "params": [
-      {
-        "n": "prompt",
-        "t": "string",
-        "r": 0,
-        "d": "prompt"
-      },
-      {
-        "n": "system",
-        "t": "string",
-        "r": 0,
-        "d": "system"
-      },
-      {
-        "n": "temperature",
-        "t": "string",
-        "r": 0,
-        "d": "temperature"
-      }
-    ]
-  },
-  {
     "catalogId": "ep119",
     "name": "gita",
     "m": "GET",
@@ -2620,71 +2565,6 @@
     "subfolder": "auratail-search",
     "desc": "auratail search",
     "ex": "https://api.siputzx.my.id/api/anime/auratail-search?query=war",
-    "params": [
-      {
-        "n": "query",
-        "t": "string",
-        "r": 0,
-        "d": "query"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep124",
-    "name": "oploverz download",
-    "m": "GET",
-    "path": "/api/anime/oploverz-download",
-    "folder": "Anime",
-    "subfolder": "oploverz-download",
-    "desc": "oploverz download",
-    "ex": "https://api.siputzx.my.id/api/anime/oploverz-download?url=https%3A%2F%2Foploverz.org%2Fanime%2Fcaptain-tsubasa-season-2-junior-youth-hen-1-episode-30-subtitle-indonesia%2F",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep125",
-    "name": "oploverz episode",
-    "m": "GET",
-    "path": "/api/anime/oploverz-episode",
-    "folder": "Anime",
-    "subfolder": "oploverz-episode",
-    "desc": "oploverz episode",
-    "ex": "https://api.siputzx.my.id/api/anime/oploverz-episode?url=https%3A%2F%2Foploverz.org%2Fmushoku-tensei-isekai-ittara-honki-dasu-s2%2F",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep126",
-    "name": "oploverz ongoing",
-    "m": "GET",
-    "path": "/api/anime/oploverz-ongoing",
-    "folder": "Anime",
-    "subfolder": "oploverz-ongoing",
-    "desc": "oploverz ongoing",
-    "ex": "https://api.siputzx.my.id/api/anime/oploverz-ongoing",
-    "params": []
-  },
-  {
-    "catalogId": "ep127",
-    "name": "oploverz search",
-    "m": "GET",
-    "path": "/api/anime/oploverz-search",
-    "folder": "Anime",
-    "subfolder": "oploverz-search",
-    "desc": "oploverz search",
-    "ex": "https://api.siputzx.my.id/api/anime/oploverz-search?query=romance",
     "params": [
       {
         "n": "query",
@@ -4068,24 +3948,6 @@
     "subfolder": "lahelu",
     "desc": "lahelu downloader",
     "ex": "https://api.siputzx.my.id/api/d/lahelu?url=https%3A%2F%2Flahelu.com%2Fpost%2FPMujNAfxy",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep175",
-    "name": "SaveFrom Downloader",
-    "m": "GET",
-    "path": "/api/d/savefrom",
-    "folder": "Downloader",
-    "subfolder": "savefrom",
-    "desc": "SaveFrom Downloader",
-    "ex": "https://api.siputzx.my.id/api/d/savefrom?url=https%3A%2F%2Fm.soundcloud.com%2Fteguh-hariyadi-652597010%2Fanji-dia",
     "params": [
       {
         "n": "url",
@@ -5509,108 +5371,6 @@
         "t": "string",
         "r": 0,
         "d": "channel"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep262",
-    "name": "brat",
-    "m": "GET",
-    "path": "/api/m/brat",
-    "folder": "Maker",
-    "subfolder": "brat",
-    "desc": "brat",
-    "ex": "https://api.siputzx.my.id/api/m/brat?text=Hello+world%21&isAnimated=false&delay=500",
-    "params": [
-      {
-        "n": "text",
-        "t": "string",
-        "r": 0,
-        "d": "text"
-      },
-      {
-        "n": "isAnimated",
-        "t": "string",
-        "r": 0,
-        "d": "isAnimated"
-      },
-      {
-        "n": "delay",
-        "t": "string",
-        "r": 0,
-        "d": "delay"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep263",
-    "name": "ephoto360",
-    "m": "GET",
-    "path": "/api/m/ephoto360",
-    "folder": "Maker",
-    "subfolder": "ephoto360",
-    "desc": "ephoto360",
-    "ex": "https://api.siputzx.my.id/api/m/ephoto360?url=https%3A%2F%2Fen.ephoto360.com%2Fcreate-a-cartoon-style-graffiti-text-effect-online-668.html&text1=siputzx",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url"
-      },
-      {
-        "n": "text1",
-        "t": "string",
-        "r": 0,
-        "d": "text1"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep264",
-    "name": "photooxy",
-    "m": "GET",
-    "path": "/api/m/photooxy",
-    "folder": "Maker",
-    "subfolder": "photooxy",
-    "desc": "photooxy",
-    "ex": "https://api.siputzx.my.id/api/m/photooxy?url=https%3A%2F%2Fphotooxy.com%2Flogo-and-text-effects%2Fshadow-text-effect-in-the-sky-394.html&text1=test",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url"
-      },
-      {
-        "n": "text1",
-        "t": "string",
-        "r": 0,
-        "d": "text1"
-      }
-    ]
-  },
-  {
-    "catalogId": "ep265",
-    "name": "textpro",
-    "m": "GET",
-    "path": "/api/m/textpro",
-    "folder": "Maker",
-    "subfolder": "textpro",
-    "desc": "textpro",
-    "ex": "https://api.siputzx.my.id/api/m/textpro?url=https%3A%2F%2Ftextpro.me%2Fcreate-artistic-3d-text-effects-from-corn-kernels-1177.html&text1=test",
-    "params": [
-      {
-        "n": "url",
-        "t": "string",
-        "r": 0,
-        "d": "url"
-      },
-      {
-        "n": "text1",
-        "t": "string",
-        "r": 0,
-        "d": "text1"
       }
     ]
   },
