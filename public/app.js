@@ -119,6 +119,16 @@ fetch('/endpoints.json').then(function(r){ return r.json(); }).then(function(dat
   var cats = Array.from(new Set(data.map(function(x){ return x.folder; })));
   renderCats(cats);
   render();
+  // Bind search input
+  setTimeout(function(){
+    var si = document.getElementById('search');
+    if (si && !si.__bound) {
+      si.__bound = true;
+      si.addEventListener('input', render);
+      si.addEventListener('keyup', render);
+      console.log('[Search] bound');
+    }
+  }, 300);
 });
 function renderCats(cats){
   var sorted = cats.sort((a,b) => {
@@ -141,83 +151,77 @@ function renderCats(cats){
 }
 
 function render(){
-  var searchEl = document.getElementById('search');
-  var q = (searchEl && searchEl.value ? searchEl.value : '').trim().toLowerCase();
-  var qClean = q.replace(/[\s_\-]/g, ''); // hapus spasi/underscore/dash
-  var grid = document.getElementById('grid');
-  if (!grid) return;
+  try {
+    var searchEl = document.getElementById('search');
+    var q = (searchEl && searchEl.value ? searchEl.value : '').trim().toLowerCase();
+    var qClean = q.replace(/[\s_-]+/g, '');
+    var grid = document.getElementById('grid');
+    if (!grid) return;
 
-  // Filter by kategori dulu
-  var pool = endpoints.filter(function(x){
-    return active === 'ALL' || x.folder === active;
-  });
-
-  // Kalau nggak ada query, tampil semua
-  if (!q) {
-    if (!pool.length) {
-      grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada tool</div>';
+    // Kalau ada query → search GLOBAL (nggak peduli kategori)
+    // Kalau nggak ada query → tampil by kategori
+    var pool = endpoints;
+    if (!q) {
+      pool = endpoints.filter(function(x){
+        return active === 'ALL' || x.folder === active;
+      });
+      if (!pool.length) {
+        grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada tool</div>';
+        return;
+      }
+      grid.innerHTML = pool.map(card).join('');
+      document.querySelectorAll('.fx-card').forEach(function(el){
+        el.onclick = function(){ openEp(el.dataset.id); };
+      });
       return;
     }
-    grid.innerHTML = pool.map(card).join('');
+
+    // ==== FUZZY SEARCH ====
+    var scored = [];
+    pool.forEach(function(x){
+      var name = (x.name || '').toLowerCase();
+      var nameClean = name.replace(/[\s_-]+/g, '');
+      var sub = (x.subfolder || '').toLowerCase();
+      var subClean = sub.replace(/[\s_-]+/g, '');
+      var folder = (x.folder || '').toLowerCase();
+      var desc = (x.desc || '').toLowerCase();
+      var path = (x.path || '').toLowerCase();
+
+      var score = 0;
+
+      if (nameClean === qClean) score += 1000;
+      else if (nameClean.indexOf(qClean) === 0) score += 800;
+      else if (nameClean.indexOf(qClean) !== -1) score += 600;
+
+      if (subClean === qClean) score += 500;
+      else if (subClean.indexOf(qClean) !== -1) score += 300;
+
+      if (folder.indexOf(qClean) !== -1) score += 150;
+      if (desc.indexOf(q) !== -1) score += 50;
+      if (path.indexOf(q) !== -1) score += 30;
+
+      if (score > 0) {
+        score += Math.max(0, 50 - nameClean.length);
+        scored.push({ ep: x, score: score });
+      }
+    });
+
+    scored.sort(function(a, b){ return b.score - a.score; });
+
+    if (!scored.length) {
+      grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada hasil untuk "' + q + '"</div>';
+      return;
+    }
+
+    grid.innerHTML = scored.map(function(s){ return card(s.ep); }).join('');
     document.querySelectorAll('.fx-card').forEach(function(el){
       el.onclick = function(){ openEp(el.dataset.id); };
     });
-    return;
+  } catch (err) {
+    console.error('[render] error:', err);
+    var grid2 = document.getElementById('grid');
+    if (grid2) grid2.innerHTML = '<div class="fx-empty">⚠️ Error: ' + (err.message || 'unknown') + '</div>';
   }
-
-  // ==== FUZZY SEARCH + RANKING ====
-  var scored = [];
-  pool.forEach(function(x){
-    var name = (x.name || '').toLowerCase();
-    var nameClean = name.replace(/[\s_\-]/g, '');
-    var sub = (x.subfolder || '').toLowerCase();
-    var subClean = sub.replace(/[\s_\-]/g, '');
-    var folder = (x.folder || '').toLowerCase();
-    var desc = (x.desc || '').toLowerCase();
-    var path = (x.path || '').toLowerCase();
-
-    var score = 0;
-
-    // Prioritas 1: match persis di nama (clean)
-    if (nameClean === qClean) score += 1000;
-    // Prioritas 2: nama startsWith query
-    else if (nameClean.indexOf(qClean) === 0) score += 800;
-    // Prioritas 3: nama contains query (clean)
-    else if (nameClean.indexOf(qClean) !== -1) score += 600;
-
-    // Prioritas 4: match persis di subfolder
-    if (subClean === qClean) score += 500;
-    else if (subClean.indexOf(qClean) === 0) score += 400;
-    else if (subClean.indexOf(qClean) !== -1) score += 300;
-
-    // Prioritas 5: match di folder
-    if (folder.indexOf(qClean) !== -1) score += 150;
-
-    // Prioritas 6: match di desc
-    if (desc.indexOf(q) !== -1 || desc.replace(/[\s_\-]/g, '').indexOf(qClean) !== -1) score += 50;
-
-    // Prioritas 7: match di path
-    if (path.indexOf(q) !== -1) score += 30;
-
-    // Bonus: yang namanya lebih pendek = lebih spesifik
-    if (score > 0) {
-      score += Math.max(0, 50 - nameClean.length);
-      scored.push({ ep: x, score: score });
-    }
-  });
-
-  // Sort by score desc
-  scored.sort(function(a, b){ return b.score - a.score; });
-
-  if (!scored.length) {
-    grid.innerHTML = '<div class="fx-empty"><div class="fx-empty-icon">🔍</div>Tidak ada hasil untuk "' + q + '"</div>';
-    return;
-  }
-
-  grid.innerHTML = scored.map(function(s){ return card(s.ep); }).join('');
-  document.querySelectorAll('.fx-card').forEach(function(el){
-    el.onclick = function(){ openEp(el.dataset.id); };
-  });
 }
 
 function card(x){
