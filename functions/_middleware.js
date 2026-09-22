@@ -382,7 +382,7 @@ export async function onRequest(context) {
 
   // ==== LAYER 21: Turnstile (kill switch TURNSTILE_ENABLED) ====
   const turnstileOn = String(context.env.TURNSTILE_ENABLED || '') === '1';
-  if (turnstileOn && pathname.startsWith('/api/') && pathname !== '/api/verify-turnstile' && pathname !== '/api/user/identify' && !pathname.startsWith('/api/buy/')) {
+  if (turnstileOn && pathname.startsWith('/api/') && pathname !== '/api/verify-turnstile' && pathname !== '/api/user/identify' && !pathname.startsWith('/api/buy/') && !pathname.startsWith('/api/bot/')) {
     const secret = context.env.ADMIN_SESSION_SECRET;
     const ip = request.headers.get('CF-Connecting-IP') ||
                (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
