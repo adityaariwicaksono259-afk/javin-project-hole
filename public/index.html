@@ -21,6 +21,48 @@
 <link rel="icon" type="image/png" href="/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
+<script id="inline-theme-apply">
+// Apply theme SEBELUM halaman render (biar nggak flicker)
+(function(){
+  try {
+    var raw = localStorage.getItem('vinapiay_settings');
+    var s = raw ? JSON.parse(raw) : { theme: 'light', uiIos: true, anim3d: true, scale: '1' };
+    var theme = s.theme || 'light';
+    var eff = theme;
+    if (theme === 'auto') {
+      eff = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.classList.add('preload');
+    document.documentElement.setAttribute('data-theme', eff);
+    // Set class saat body siap
+    function applyBody() {
+      if (!document.body) { setTimeout(applyBody, 10); return; }
+      document.body.classList.toggle('theme-dark', eff === 'dark');
+      document.body.classList.toggle('theme-light', eff === 'light');
+      document.body.classList.toggle('ui-ios', s.uiIos !== false);
+      document.body.classList.toggle('anim-3d', s.anim3d !== false);
+      document.body.classList.remove('scale-12', 'scale-14');
+      if (s.scale === '1.2') document.body.classList.add('scale-12');
+      if (s.scale === '1.4') document.body.classList.add('scale-14');
+      document.documentElement.classList.remove('preload');
+    }
+    applyBody();
+  } catch(e) {}
+})();
+</script>
+<script>
+// Skip splash kalau udah pernah muncul di session ini
+(function(){
+  try {
+    if (sessionStorage.getItem('splash_shown') === '1') {
+      var s = document.getElementById('splashScreen');
+      if (s) { s.style.display = 'none'; s.classList.add('hide'); }
+    } else {
+      sessionStorage.setItem('splash_shown', '1');
+    }
+  } catch(e) {}
+})();
+</script>
 </head><body>
 <div id="splashScreen">
   <div class="splash-inner">

@@ -137,3 +137,8 @@ body.theme-dark .fx-search-wrap input {
   border-color: rgba(255,255,255,0.1);
   color: #f1f5f9;
 }
+
+/* Prevent flicker saat theme load */
+html.preload body { opacity: 0; }
+html.preload { background: #f0f7ff; }
+html[data-theme="dark"].preload { background: #0f172a; }
