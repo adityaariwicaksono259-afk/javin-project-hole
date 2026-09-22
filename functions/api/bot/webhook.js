@@ -3,7 +3,7 @@ import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 
 async function reply(env, chatId, text) {
   console.log('[BOT-REPLY] Sending to chatId:', chatId, 'text:', text.slice(0, 60));
-  const res = await sendTelegram(env, text, { type: 'bot-reply', throttleMs: 1 });
+  const res = await sendTelegram(env, text, { type: 'bot-reply', throttleMs: 0 });
   console.log('[BOT-REPLY] Result:', JSON.stringify(res));
   return res;
 }
@@ -19,11 +19,16 @@ export async function onRequestPost({ request, env }) {
   if (!msg || !msg.text) return new Response('ok');
 
   const chatId = String(msg.chat.id);
+  
+  // Normalize command: hapus @bot, trim
+  let cmd = text.split(/\s+/)[0].split('@')[0].toLowerCase();
+  const args = text.slice(text.indexOf(cmd) + cmd.length).trim();
+  console.log('[BOT-CMD]', cmd, '| args:', args, '| raw:', text);
   const text = String(msg.text || '').trim();
   const adminId = String(env.SHOP_ADMIN_CHAT_ID || '').trim();
   const isAdmin = chatId === adminId;
 
-  if (text === '/start' || text === '/help') {
+  if (cmd === '/start' || cmd === '/help') {
     let help = '🤖 <b>JAVIN SECURITY BOT</b>\n\n' +
       'Bot ini otomatis ngirim notif:\n' +
       '• 🍯 Honeypot hit\n' +
@@ -43,7 +48,7 @@ export async function onRequestPost({ request, env }) {
     return new Response('ok');
   }
 
-  if (text === '/status') {
+  if (cmd === '/status') {
     await reply(env, chatId,
       '✅ <b>Server Online</b>\n\n' +
       '🕐 ' + new Date().toISOString().replace('T', ' ').slice(0, 19) + '\n' +
@@ -58,9 +63,9 @@ export async function onRequestPost({ request, env }) {
   }
 
   // ==== /maintenance ====
-  if (text.indexOf('/maintenance') === 0) {
+  if (cmd === '/maintenance') {
     const db = env.JAVIN_DB;
-    const args = text.slice(12).trim().toLowerCase();
+    // args udah di-normalize
 
     if (!args || (args !== 'on' && args !== 'off' && args !== 'status')) {
       let st = '❓ tidak diketahui';
@@ -116,7 +121,7 @@ export async function onRequestPost({ request, env }) {
     return new Response('ok');
   }
 
-  if (text === '/stats') {
+  if (cmd === '/stats') {
     try {
       const db = env.JAVIN_DB;
       const [users, keys, orders, blocked] = await Promise.all([
