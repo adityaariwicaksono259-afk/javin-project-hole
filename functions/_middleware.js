@@ -45,7 +45,7 @@ export async function onRequest(context) {
     const mIsAdmin = mAdminIPs.includes(mIp);
 
     // Halaman yang dibebaskan dari maintenance
-    const bypassPaths = ['/maintenance', '/.well-known', '/icon', '/manifest.json', '/service-worker.js', '/robots.txt'];
+    const bypassPaths = ['/maintenance', '/.well-known', '/icon', '/manifest.json', '/service-worker.js', '/robots.txt', '/api/bot/'];
 
     const isBypassed = bypassPaths.some(p => pathname.startsWith(p));
 
@@ -284,7 +284,7 @@ export async function onRequest(context) {
   }
 
   // ==== LAYER 44-49: Advanced Detection (log only, nggak block) ====
-  if (pathname.startsWith('/api/') && !__isWhitelisted) {
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/bot/') && !__isWhitelisted) {
     try {
       // Layer 44: Bot score heuristic
       let botScore = 0;
@@ -441,7 +441,7 @@ export async function onRequest(context) {
   }
 
   // ==== LAYER 6 + 24: Rate Limit (Global + Per-Endpoint) ====
-  if (pathname.startsWith('/api/')) {
+  if (pathname.startsWith('/api/') && !pathname.startsWith('/api/bot/')) {
     const db = context.env.JAVIN_DB;
     const ip = request.headers.get('CF-Connecting-IP') ||
                (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
