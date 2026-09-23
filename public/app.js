@@ -188,11 +188,31 @@ function renderCats(cats){
   document.querySelectorAll('.fx-cat').forEach(function(b){
     b.onclick = function(){
       active = b.dataset.c;
+      try { sessionStorage.setItem('javin_active_cat', active); } catch(e){}
       document.querySelectorAll('.fx-cat').forEach(function(x){ x.classList.remove('active'); });
       b.classList.add('active');
       render();
     };
   });
+
+  // ===== RESTORE kategori terakhir =====
+  try {
+    var savedCat = sessionStorage.getItem('javin_active_cat');
+    if (savedCat && savedCat !== 'ALL') {
+      // Cek apakah kategori masih ada
+      var exists = false;
+      document.querySelectorAll('.fx-cat').forEach(function(b){
+        if (b.dataset.c === savedCat) exists = true;
+      });
+      if (exists) {
+        active = savedCat;
+        document.querySelectorAll('.fx-cat').forEach(function(x){
+          x.classList.toggle('active', x.dataset.c === savedCat);
+        });
+        render();
+      }
+    }
+  } catch(e){}
 }
 
 function render(){

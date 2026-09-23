@@ -63,8 +63,20 @@
     if (folder === 'search' || /search|cari|pencarian/i.test(name)) return 'search';
     if (folder === 'games') return 'no-input';
 
-    var reqParams = (ep.params||[]).filter(function(p){ return p.r; });
-    if (reqParams.length === 0) return 'no-input';
+    // Fix: kalau ADA param (bahkan optional), tampilkan form
+    var allP = ep.params || [];
+    if (allP.length === 0) return 'no-input';
+    
+    // Deteksi IMG to prompt / tool yang butuh gambar
+    var nLow = (ep.name || '').toLowerCase();
+    var hasImageParam = allP.some(function(p){
+      var pn = (p.n || '').toLowerCase();
+      return ['image','img','url','photo','picture'].indexOf(pn) !== -1;
+    });
+    if (/img.*(prompt|to prom)|image.*prompt/i.test(nLow) && hasImageParam) {
+      return 'image';
+    }
+    
     return 'simple';
   }
 
@@ -117,13 +129,67 @@
         '<button class="submit" id="btnSubmit" disabled>🔎 Cari</button>';
     }
 
-    // Simple
+    // ===== Simple — enhanced =====
+    // Ambil default value dari `ep.ex` (URL contoh)
+    var defaults = {};
+    try {
+      if (ep.ex) {
+        var exUrl = ep.ex.indexOf('http') === 0 ? ep.ex : 'https://' + ep.ex;
+        var exParams = new URL(exUrl).searchParams;
+        exParams.forEach(function(v, k){ defaults[k.toLowerCase()] = v; });
+      }
+    } catch(e){}
+
+    // Daftar bahasa untuk dropdown
+    var LANGS = [
+      ['auto','🌐 Auto-detect'], ['id','🇮🇩 Indonesia'], ['en','🇬🇧 English'],
+      ['jv','🇮🇩 Jawa'], ['su','🇮🇩 Sunda'], ['ms','🇲🇾 Melayu'],
+      ['ja','🇯🇵 Jepang'], ['ko','🇰🇷 Korea'], ['zh','🇨🇳 Mandarin'],
+      ['ar','🇸🇦 Arab'], ['hi','🇮🇳 Hindi'], ['th','🇹🇭 Thai'],
+      ['vi','🇻🇳 Vietnam'], ['es','🇪🇸 Spanyol'], ['fr','🇫🇷 Prancis'],
+      ['de','🇩🇪 Jerman'], ['ru','🇷🇺 Rusia'], ['pt','🇵🇹 Portugis'],
+      ['it','🇮🇹 Italia'], ['tr','🇹🇷 Turki'], ['nl','🇳🇱 Belanda']
+    ];
+
+    function isLangParam(name){
+      return ['source','target','from','to','lang','bahasa','source_lang','target_lang'].indexOf(name.toLowerCase()) !== -1;
+    }
+    function isTextParam(name){
+      return ['text','q','query','prompt','message','pesan','kata','caption','input','content'].indexOf(name.toLowerCase()) !== -1;
+    }
+
     var fields = '';
     allParams.forEach(function(p){
-      var t = /url/i.test(p.n) ? 'url' : 'text';
-      fields += '<div class="field"><label>' + esc(p.n) + (p.r?' <span style="color:#dc2626">*</span>':'') + (p.d?' <small>(' + esc(p.d) + ')</small>':'') + '</label><input type="' + t + '" data-p="' + esc(p.n) + '" placeholder="' + esc(p.d||p.n) + '"' + (p.r?' data-required="1"':'') + '></div>';
+      var n = String(p.n || '').trim();
+      var nl = n.toLowerCase();
+      var label = esc(n) + (p.r ? ' <span style="color:#dc2626">*</span>' : '') + (p.d && p.d !== n ? ' <small>(' + esc(p.d) + ')</small>' : '');
+      var defVal = defaults[nl] || '';
+
+      if (isLangParam(nl)) {
+        // Dropdown bahasa
+        var opts = LANGS.map(function(l){
+          var sel = (l[0] === defVal || (!defVal && l[0] === 'auto')) ? ' selected' : '';
+          return '<option value="' + l[0] + '"' + sel + '>' + l[1] + '</option>';
+        }).join('');
+        fields += '<div class="field"><label>' + label + '</label>' +
+          '<select data-p="' + esc(n) + '" style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:14px;background:#fff">' + opts + '</select></div>';
+      }
+      else if (isTextParam(nl)) {
+        // Textarea
+        fields += '<div class="field"><label>' + label + '</label>' +
+          '<textarea data-p="' + esc(n) + '" placeholder="' + esc(p.d || 'Masukkan ' + n) + '" rows="4" style="width:100%;padding:12px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:14px;font-family:inherit;resize:vertical"' +
+          (p.r ? ' data-required="1"' : '') + '>' + esc(defVal) + '</textarea></div>';
+      }
+      else {
+        var t = /url/i.test(n) ? 'url' : 'text';
+        fields += '<div class="field"><label>' + label + '</label>' +
+          '<input type="' + t + '" data-p="' + esc(n) + '" value="' + esc(defVal) + '" placeholder="' + esc(p.d || n) + '"' +
+          (p.r ? ' data-required="1"' : '') + '></div>';
+      }
     });
-    return fields + '<button class="submit" id="btnSubmit"' + (reqParams.length === 0 ? '' : ' disabled') + '>🚀 Kirim</button>';
+
+    // Tombol selalu enabled (user bisa isi sebagian)
+    return fields + '<button class="submit" id="btnSubmit">🚀 Kirim</button>';
   }
 
   // ===== RENDER RESULT =====
@@ -340,6 +406,12 @@ function renderFromUrl(url, raw){
 // ==== SMART JSON RENDER ====
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
+
+  // ==== Deteksi TikWM response ====
+  if (window.KazeTikTok && window.KazeTikTok.isTikWM(j)) {
+    return window.KazeTikTok.render(j);
+  }
+
   var out = '';
 
   // ==== Media URLs (image/video/audio) ====
@@ -484,8 +556,73 @@ function renderInfoCard(d){
     return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;gap:10px"><span style="color:#64748b;font-size:12px;flex-shrink:0">' + esc(label) + '</span><span style="color:#0f172a;font-weight:600;font-size:13px;text-align:right;word-break:break-word">' + esc(it.v) + '</span></div>';
   }).join('');
 
-  return '<div class="result-card"><div class="result-title">Detail</div>' +
-    '<div>' + html + '</div></div>';
+  // Kalau ada key yang isinya URL video/audio/gambar → render media
+  var mediaItems = [];
+  var textItems = [];
+  items.forEach(function(it){
+    var k = it.k.toLowerCase();
+    var v = it.v;
+    var isUrl = /^https?:\/\//.test(v);
+    if (isUrl) {
+      var low = v.toLowerCase();
+      var type = null;
+      if (/\.(mp4|webm|mov|m4v)/i.test(low) || low.indexOf('mime_type=video') !== -1 || low.indexOf('/video/') !== -1 || low.indexOf('videoplayback') !== -1) type = 'video';
+      else if (/\.(mp3|m4a|ogg|wav|aac)/i.test(low) || low.indexOf('mime_type=audio') !== -1 || low.indexOf('audio/') !== -1) type = 'audio';
+      else if (/\.(jpg|jpeg|png|gif|webp)/i.test(low) || low.indexOf('image/') !== -1) type = 'image';
+
+      if (type) {
+        var label = k.replace(/_/g, ' ').replace(/wm|no wm|nowm/gi, function(m){ return m.toUpperCase(); });
+        label = label.charAt(0).toUpperCase() + label.slice(1);
+        mediaItems.push({ label: label, url: v, type: type });
+        return;
+      }
+    }
+    // Deteksi boolean "photo: true" — kalau ada gambar lain, tanda ada foto
+    if (k.indexOf('photo') !== -1 && (v === 'true' || v === '1')) {
+      // skip, biar gak nampilin "Photo true" sebagai baris
+      return;
+    }
+    // Kalau key mengandung "video" atau "wm" tapi value bukan URL → skip
+    if ((k.indexOf('video') !== -1 || k.indexOf('wm') !== -1) && !isUrl) {
+      return;
+    }
+    textItems.push(it);
+  });
+
+  var finalHtml = '';
+
+  // Render media items
+  mediaItems.forEach(function(m){
+    finalHtml += '<div class="result-card" style="margin-bottom:12px">';
+    finalHtml += '<div class="result-title">' + esc(m.label) + '</div>';
+    if (m.type === 'video') {
+      finalHtml += '<video class="result-media" controls preload="metadata" src="' + esc(m.url) + '"></video>';
+    } else if (m.type === 'audio') {
+      finalHtml += '<audio controls style="width:100%;margin:8px 0" src="' + esc(m.url) + '"></audio>';
+    } else if (m.type === 'image') {
+      finalHtml += '<img class="result-media" src="' + esc(m.url) + '" onerror="this.style.display=\'none\'">';
+    }
+    finalHtml += '<div class="result-actions">';
+    finalHtml += '<a class="btn-action primary" href="' + esc(m.url) + '" download target="_blank" rel="noopener">⬇️ Download</a>';
+    finalHtml += '<button class="btn-action" data-copy="' + esc(m.url) + '">📋 Copy URL</button>';
+    finalHtml += '</div></div>';
+  });
+
+  // Render detail teks (kalau ada)
+  if (textItems.length >= 1) {
+    var htmlText = textItems.map(function(it){
+      var label = it.k.replace(/_/g, ' ').replace(/([A-Z])/g, ' $1').trim();
+      label = label.charAt(0).toUpperCase() + label.slice(1);
+      return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f1f5f9;gap:10px"><span style="color:#64748b;font-size:12px;flex-shrink:0">' + esc(label) + '</span><span style="color:#0f172a;font-weight:600;font-size:13px;text-align:right;word-break:break-word">' + esc(it.v) + '</span></div>';
+    }).join('');
+    finalHtml += '<div class="result-card"><div class="result-title">Detail</div><div>' + htmlText + '</div></div>';
+  }
+
+  if (!finalHtml) {
+    finalHtml = '<div class="result-card"><div class="result-title">Detail</div><div>' + html + '</div></div>';
+  }
+
+  return finalHtml;
 }
 
 function findMediaUrl(obj, depth){
@@ -493,9 +630,17 @@ function findMediaUrl(obj, depth){
   if (depth > 4 || !obj) return null;
   if (typeof obj === 'string') {
     if (/^https?:\/\//.test(obj)) {
-      if (/\.(jpg|jpeg|png|gif|webp)$/i.test(obj)) return { url: obj, type: 'image' };
-      if (/\.(mp4|webm)$/i.test(obj)) return { url: obj, type: 'video' };
-      if (/\.(mp3|m4a|ogg|wav)$/i.test(obj)) return { url: obj, type: 'audio' };
+      var s = obj.toLowerCase();
+      // Deteksi tipe dari ekstensi ATAU mime_type ATAU path
+      if (/\.(jpg|jpeg|png|gif|webp|bmp|avif)/i.test(s) || s.indexOf('image/') !== -1 || s.indexOf('.jpg?') !== -1 || s.indexOf('.png?') !== -1) {
+        return { url: obj, type: 'image' };
+      }
+      if (/\.(mp4|webm|mov|m4v)/i.test(s) || s.indexOf('mime_type=video') !== -1 || s.indexOf('video_mp4') !== -1 || s.indexOf('/video/') !== -1 || s.indexOf('videoplayback') !== -1) {
+        return { url: obj, type: 'video' };
+      }
+      if (/\.(mp3|m4a|ogg|wav|aac)/i.test(s) || s.indexOf('mime_type=audio') !== -1 || s.indexOf('audio_') !== -1 || s.indexOf('audio/') !== -1) {
+        return { url: obj, type: 'audio' };
+      }
     }
     return null;
   }
@@ -993,7 +1138,33 @@ function renderError(c, msg){
         try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e){}
         if (uid) q += '&uid=' + encodeURIComponent(uid);
 
-        var res = await fetch('/api/proxy?' + q);
+        // ==== TIKWM INTERCEPT (khusus TikTok) ====
+    var __u = '';
+    try {
+      var __params = new URLSearchParams(q);
+      __u = __params.get('url') || __params.get('q') || '';
+    } catch(e){}
+    
+    if (/tiktok\.com|vt\.tiktok\.com|vm\.tiktok\.com/i.test(__u)) {
+      try {
+        var __twRes = await fetch('/api/proxy?raw=https://www.tikwm.com/api/?url=' + encodeURIComponent(__u));
+        var __twData = await __twRes.json();
+        if (__twData && __twData.data && __twData.data.author) {
+          // Sukses → render pakai KazeTikTok
+          resultWrap.innerHTML = '<div class="result-card"><div class="result-title">Memuat...</div></div>';
+          if (window.KazeTikTok && window.KazeTikTok.isTikWM(__twData)) {
+            resultWrap.innerHTML = window.KazeTikTok.render(__twData);
+            if (typeof bindResultActions === 'function') bindResultActions(resultWrap);
+            return;
+          }
+        }
+      } catch(e) {
+        console.warn('[TikWM] gagal, fallback ke nexadev', e.message);
+      }
+    }
+    // ==== END TIKWM ====
+    
+    var res = await fetch('/api/proxy?' + q);
         var ct = res.headers.get('content-type') || '';
 
         if (!res.ok) {

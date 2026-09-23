@@ -7,7 +7,10 @@ const ALLOWED_HOSTS = new Set([
   'api.nexaadev.my.id',
   'clooud.my.id',
   'api.siputzx.my.id',
-  'api.qrserver.com'
+  'api.qrserver.com',
+  'www.tikwm.com',
+  'tikwm.com',
+  'api.tikwm.com'
 ]);
 
 const MAX_BODY = 6 * 1024 * 1024;
@@ -145,6 +148,46 @@ export async function onRequest(context) {
       }
     } catch (e) {
       // fail-open
+    }
+  }
+
+  // ==== MODE RAW (langsung fetch URL luar, dalam whitelist) ====
+  const rawUrl = reqUrl.searchParams.get('raw');
+  if (rawUrl) {
+    let rawHost = null;
+    try { rawHost = new URL(rawUrl).hostname; } catch(e){}
+    if (!rawHost || !ALLOWED_HOSTS.has(rawHost)) {
+      return jsonRes(403, { ok: false, message: 'Host gak diizinkan: ' + rawHost });
+    }
+    try {
+      const rawRes = await fetch(rawUrl, {
+        method: 'GET',
+        redirect: 'follow',
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+          'Accept': 'application/json, text/plain, */*',
+          'Accept-Language': 'id-ID,id;q=0.9,en;q=0.8',
+          'Referer': 'https://www.tikwm.com/'
+        }
+      });
+      const rawBuf = await rawRes.arrayBuffer();
+      if (rawBuf.byteLength > MAX_BODY) {
+        return jsonRes(502, { ok: false, message: 'Response terlalu besar.' });
+      }
+      await logRequest(db, { user_id: userId, endpoint_id: 'raw', status: rawRes.status });
+      const rawCt = rawRes.headers.get('content-type') || 'application/json';
+      return new Response(rawBuf, {
+        status: rawRes.status,
+        headers: {
+          'Content-Type': rawCt,
+          'Cache-Control': 'no-store',
+          'X-Content-Type-Options': 'nosniff',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+    } catch (rawErr) {
+      await logRequest(db, { user_id: userId, endpoint_id: 'raw', status: 502 });
+      return jsonRes(502, { ok: false, message: 'Gagal akses upstream: ' + rawErr.message });
     }
   }
 
