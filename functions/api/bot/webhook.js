@@ -1,5 +1,6 @@
 // Webhook untuk bot SECURITY
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
+import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
 
 async function reply(env, chatId, text) {
   console.log('[BOT-REPLY] Sending to chatId:', chatId, 'text:', text.slice(0, 60));
@@ -16,7 +17,19 @@ export async function onRequestPost({ request, env }) {
   console.log('[BOT-WEBHOOK] Update:', JSON.stringify(update).slice(0, 300));
   
   const msg = update.message;
-  if (!msg || !msg.text) return new Response('ok');
+  if (!msg) return new Response('ok');
+
+  // ==== HANDLE FILE UPLOAD (audio dari admin) ====
+  if (msg.audio || msg.voice || (msg.document && /audio|mp3|m4a|ogg|wav|aac/i.test(msg.document.mime_type || ''))) {
+    const chatId0 = String(msg.chat.id);
+    const adminId0 = String(env.SHOP_ADMIN_CHAT_ID || '').trim();
+    if (chatId0 === adminId0) {
+      await handleSoundFile(msg, env, reply);
+    }
+    return new Response('ok');
+  }
+
+  if (!msg.text) return new Response('ok');
 
   const chatId = String(msg.chat.id);
   const text = String(msg.text || '').trim();
@@ -41,7 +54,13 @@ export async function onRequestPost({ request, env }) {
         '<code>/maintenance on</code> — Aktifkan maintenance\n' +
         '<code>/maintenance off</code> — Matikan\n' +
         '<code>/maintenance status</code> — Cek status\n' +
-        '<code>/stats</code> — Statistik server';
+        '<code>/stats</code> — Statistik server\n' +
+        '\n🎵 <b>SOUND</b>\n' +
+        '<code>/addsound</code> — Panduan upload sound\n' +
+        '<code>/listsound</code> — Liat semua sound\n' +
+        '<code>/setsound &lt;id&gt;</code> — Ganti sound aktif\n' +
+        '<code>/delsound &lt;id&gt;</code> — Hapus sound\n' +
+        '<code>/soundstatus</code> — Liat sound aktif';
     }
 
     await reply(env, chatId, help);
@@ -141,6 +160,13 @@ export async function onRequestPost({ request, env }) {
     } catch (e) {
       await reply(env, chatId, '❌ Error: ' + e.message);
     }
+    return new Response('ok');
+  }
+
+  // ==== SOUND COMMANDS ====
+  const soundCmds = ['/addsound', '/listsound', '/setsound', '/delsound', '/soundstatus'];
+  if (soundCmds.includes(cmd)) {
+    await handleSoundCommand(cmd, args, chatId, env, reply);
     return new Response('ok');
   }
 

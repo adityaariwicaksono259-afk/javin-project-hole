@@ -12,3 +12,12 @@ node_modules/
 *.bak-*-*
 functions/*.bak*
 _tmp/
+
+# BETOx1 — media backup & generated
+public/bg-original.mp4
+public/bg-ambient.mp3
+public/*.bak
+public/*.bak-*
+functions/**/*.bak
+functions/**/*.bak-*
+functions/**/*.bak2-*
