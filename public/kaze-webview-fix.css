@@ -1,0 +1,38 @@
+/* ===== KAZE WebView Fix ===== */
+
+/* Matiin overscroll glow Android (putih/biru saat scroll mentok) */
+html, body {
+  overscroll-behavior: none !important;
+  overscroll-behavior-x: none !important;
+  overscroll-behavior-y: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Warna dasar gelap */
+html {
+  background: #0a0a0a !important;
+  background-color: #0a0a0a !important;
+}
+body {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Matiin efek tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none;
+}
+
+/* Matiin pull-to-refresh WebView */
+body {
+  overscroll-behavior-y: contain !important;
+}
+
+/* Video anti-flicker */
+video {
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}

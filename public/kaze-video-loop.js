@@ -96,4 +96,22 @@ if (document.readyState === 'loading') {
   setTimeout(setup, 300);
 }
 
+
+  // ==== WebView autoplay unlock ====
+  var userGestureUnlock = false;
+  function unlockAndPlay(){
+    if (userGestureUnlock) return;
+    userGestureUnlock = true;
+    videos.forEach(function(v){
+      v.muted = true;
+      v.volume = 0;
+      var p = v.play();
+      if (p && p.catch) p.catch(function(){});
+    });
+  }
+  document.addEventListener('touchstart', unlockAndPlay, { once: true, passive: true });
+  document.addEventListener('click', unlockAndPlay, { once: true, passive: true });
+  // Fallback timeout
+  setTimeout(unlockAndPlay, 500);
+
 })();
