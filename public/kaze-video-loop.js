@@ -1,93 +1,49 @@
-/* ===== KAZE Video Loop v2 — Crossfade ===== */
+/* ===== KAZE Video Loop — Self Contained ===== */
 (function(){
 'use strict';
 
 function setup(){
-  var container = document.getElementById('betoBgLayer');
-  if (!container) { setTimeout(setup, 200); return; }
-  
+  var bgLayer = document.getElementById('betoBgLayer');
+  if (!bgLayer) {
+    bgLayer = document.createElement('div');
+    bgLayer.id = 'betoBgLayer';
+    document.body.insertBefore(bgLayer, document.body.firstChild);
+  }
+
   // Hapus video lama
-  var old = container.querySelectorAll('video');
-  old.forEach(function(v){ v.remove(); });
+  var olds = bgLayer.querySelectorAll('video');
+  olds.forEach(function(v){ v.remove(); });
 
-  // Buat 2 video
-  var vA = document.createElement('video');
-  var vB = document.createElement('video');
-  [vA, vB].forEach(function(v, i){
-    v.id = 'betoBgVideo' + (i === 0 ? 'A' : 'B');
-    v.src = '/bg.mp4';
+  var v = document.createElement('video');
+  v.id = 'betoBgVideo';
+  v.src = '/bg.mp4';
+  v.muted = true;
+  v.loop = true;
+  v.autoplay = true;
+  v.playsInline = true;
+  v.setAttribute('muted', '');
+  v.setAttribute('loop', '');
+  v.setAttribute('autoplay', '');
+  v.setAttribute('playsinline', '');
+  v.setAttribute('webkit-playsinline', '');
+  v.setAttribute('preload', 'auto');
+  bgLayer.appendChild(v);
+
+  function play(){
     v.muted = true;
-    v.playsInline = true;
-    v.setAttribute('playsinline', '');
-    v.setAttribute('webkit-playsinline', '');
-    v.preload = 'auto';
-    v.style.cssText = [
-      'position:absolute',
-      'top:0','left:0',
-      'width:100%','height:100%',
-      'object-fit:cover',
-      'opacity:' + (i === 0 ? '1' : '0'),
-      'transition:opacity .6s ease',
-      'pointer-events:none'
-    ].join(';');
-    container.appendChild(v);
+    v.play().catch(function(){});
+  }
+  play();
+  v.addEventListener('loadeddata', play);
+  document.addEventListener('touchstart', play, { once: true, passive: true });
+  document.addEventListener('click', play, { once: true, passive: true });
+  setInterval(function(){ if (v.paused) play(); }, 2000);
+  v.addEventListener('error', function(){
+    v.load();
+    setTimeout(play, 500);
   });
 
-  var videos = [vA, vB];
-  var current = 0;
-  var switching = false;
-
-  function startVideo(v){
-    v.currentTime = 0;
-    var p = v.play();
-    if (p && p.catch) p.catch(function(){});
-  }
-
-  // Preload vB & pause di frame awal
-  vB.addEventListener('loadeddata', function(){
-    vB.pause();
-    vB.currentTime = 0;
-  });
-
-  // Monitor video aktif
-  function watch(){
-    var act = videos[current];
-    if (act.duration) {
-      var remain = act.duration - act.currentTime;
-      if (remain < 0.6 && !switching) {
-        crossfade();
-      }
-    }
-    requestAnimationFrame(watch);
-  }
-
-  function crossfade(){
-    switching = true;
-    var from = videos[current];
-    var to = videos[1 - current];
-    
-    startVideo(to);
-    to.style.opacity = '1';
-    from.style.opacity = '0';
-    
-    setTimeout(function(){
-      current = 1 - current;
-      switching = false;
-      // Pause video lama biar hemat
-      from.pause();
-    }, 600);
-  }
-
-  // Start
-  vA.addEventListener('loadeddata', function(){
-    startVideo(vA);
-    watch();
-  }, { once: true });
-
-  // Fallback kalau loadeddata gak fire
-  setTimeout(function(){
-    if (vA.readyState === 0) vA.load();
-  }, 500);
+  console.log('BETOx1: video ready');
 }
 
 if (document.readyState === 'loading') {
@@ -95,23 +51,6 @@ if (document.readyState === 'loading') {
 } else {
   setTimeout(setup, 300);
 }
-
-
-  // ==== WebView autoplay unlock ====
-  var userGestureUnlock = false;
-  function unlockAndPlay(){
-    if (userGestureUnlock) return;
-    userGestureUnlock = true;
-    videos.forEach(function(v){
-      v.muted = true;
-      v.volume = 0;
-      var p = v.play();
-      if (p && p.catch) p.catch(function(){});
-    });
-  }
-  document.addEventListener('touchstart', unlockAndPlay, { once: true, passive: true });
-  document.addEventListener('click', unlockAndPlay, { once: true, passive: true });
-  // Fallback timeout
-  setTimeout(unlockAndPlay, 500);
+setTimeout(setup, 1500);
 
 })();

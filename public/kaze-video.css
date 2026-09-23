@@ -1,0 +1,103 @@
+/* ===== KAZE Video Background — Clean ===== */
+
+/* Base */
+html {
+  background: #06111f !important;
+  color-scheme: dark;
+}
+
+body {
+  background: transparent !important;
+  margin: 0;
+  padding: 0;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Video layer — fix di belakang */
+#betoBgLayer {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+
+#betoBgVideo {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  pointer-events: none !important;
+  opacity: 0.95 !important;
+  filter: saturate(1.2) brightness(0.95) !important;
+}
+
+/* Cukup header & main yang di atas video — jangan pakai body>* */
+header, .fx-header {
+  position: relative;
+  z-index: 50 !important;
+}
+
+main {
+  position: relative;
+  z-index: 2 !important;
+}
+
+/* Tema biru gelap untuk card */
+.fx-card {
+  background: #0a1929 !important;
+  border: 1px solid rgba(34, 211, 238, 0.15) !important;
+}
+
+.fx-card-title h3,
+.fx-card-title { color: #e0f2fe !important; }
+
+.fx-card-desc { color: #94a3b8 !important; }
+
+.fx-badge {
+  background: rgba(34, 211, 238, 0.15) !important;
+  color: #22d3ee !important;
+}
+
+#search, .fx-search-wrap input {
+  background: rgba(10, 25, 41, 0.95) !important;
+  border: 1px solid rgba(34, 211, 238, 0.2) !important;
+  color: #e0f2fe !important;
+}
+
+#search::placeholder { color: #64748b !important; }
+
+.fx-header, header {
+  background: rgba(6, 17, 31, 0.9) !important;
+  border-bottom: 1px solid rgba(34, 211, 238, 0.15) !important;
+}
+
+.fx-cat {
+  background: rgba(10, 25, 41, 0.85) !important;
+  color: #94a3b8 !important;
+  border: 1px solid rgba(34, 211, 238, 0.15) !important;
+}
+
+.fx-cat.active {
+  background: linear-gradient(135deg, #0EA5E9, #22d3ee) !important;
+  color: #06111f !important;
+  font-weight: 700 !important;
+}
+
+.fx-featured {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(34, 211, 238, 0.12)) !important;
+  border: 1px solid rgba(34, 211, 238, 0.3) !important;
+}
+
+:root, html, body {
+  --bg: #06111f !important;
+  --bg-body: #06111f !important;
+  --color-bg: #06111f !important;
+}

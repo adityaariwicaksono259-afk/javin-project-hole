@@ -27,3 +27,9 @@ public/_frames/
 public/_video_backup/
 public/bg-original*.mp4
 public/bg-lama*.mp4
+
+# BETOx1 — experiment backups
+public/app.html
+public/iframe-wrapper.html
+public/index.html.original-*
+public/*.bak-*
