@@ -407,6 +407,61 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Character.AI ====
+  if (window.KazeCharacter && window.KazeCharacter.isCharacterArray(j)) {
+    return window.KazeCharacter.render(j);
+  }
+
+  // ==== Deteksi Cuaca ====
+  if (window.KazeCuaca && window.KazeCuaca.isCuaca(j)) {
+    return window.KazeCuaca.render(j);
+  }
+
+  // ==== Deteksi Social Profile (IG, TikTok, Threads, GitHub) ====
+  if (window.KazeSocial && window.KazeSocial.isSocialProfile(j)) {
+    return window.KazeSocial.render(j);
+  }
+
+  // ==== Deteksi Roblox ====
+  if (window.KazeRoblox && window.KazeRoblox.isRoblox(j)) {
+    return window.KazeRoblox.render(j);
+  }
+
+  // ==== Deteksi Twitter ====
+  if (window.KazeTwitter && window.KazeTwitter.isTwitter(j)) {
+    return window.KazeTwitter.render(j);
+  }
+
+  // ==== Deteksi Facebook ====
+  if (window.KazeFacebook && window.KazeFacebook.isFB(j)) {
+    return window.KazeFacebook.render(j);
+  }
+
+  // ==== Deteksi YouTube ====
+  if (window.KazeYouTube && window.KazeYouTube.isYT(j)) {
+    return window.KazeYouTube.render(j);
+  }
+
+  // ==== Deteksi SoundCloud ====
+  if (window.KazeSoundCloud && window.KazeSoundCloud.isSoundCloud(j)) {
+    return window.KazeSoundCloud.render(j);
+  }
+
+  // ==== Deteksi Pinterest ====
+  if (window.KazePinterest) {
+    if (window.KazePinterest.isPinArray(j)) {
+      return window.KazePinterest.renderGrid(j);
+    }
+    if (window.KazePinterest.isPinProfile(j)) {
+      return window.KazePinterest.renderProfile(j);
+    }
+  }
+
+  // ==== Deteksi Spotify ====
+  if (window.KazeSpotify && window.KazeSpotify.isSpotify(j)) {
+    return window.KazeSpotify.render(j);
+  }
+
   // ==== Deteksi TikWM response ====
   if (window.KazeTikTok && window.KazeTikTok.isTikWM(j)) {
     return window.KazeTikTok.render(j);
