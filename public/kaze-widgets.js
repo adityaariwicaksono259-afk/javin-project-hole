@@ -8,7 +8,7 @@
 });
 
 var CONFIG = {
-  videoUrl: '/bg.mp4',
+  videoUrl: '',
   soundApiUrl: '/api/sound/current',
   accent: '#22d3ee',
   accentDim: 'rgba(14,165,233,.4)',
@@ -21,7 +21,7 @@ var css = document.createElement('style');
 css.id = 'betoStyle';
 css.textContent = `
 #betoBgLayer{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
-#betoBgVideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.95;filter:saturate(1.2) brightness(.95)}
+#betoBgVideo{position:absolute;top:-5%;left:-5%;width:110%;height:110%;object-fit:cover;opacity:.95;filter:saturate(1.2) brightness(.95)}
 #betoBgOverlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.2));animation:betoBgShift 20s ease-in-out infinite alternate}
 @keyframes betoBgShift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(20deg) brightness(1.05)}}
 #bgCanvas{position:absolute;inset:0;width:100%;height:100%;opacity:.35}
@@ -55,10 +55,29 @@ if (CONFIG.videoUrl) {
   var vid = document.createElement('video');
   vid.id = 'betoBgVideo';
   vid.autoplay = true; vid.muted = true; vid.loop = true; vid.playsInline = true;
+  vid.style.transition = 'opacity .4s ease';
   var src = document.createElement('source');
   src.src = CONFIG.videoUrl; src.type = 'video/mp4';
   vid.appendChild(src);
   bgLayer.appendChild(vid);
+
+  // Smooth loop: fade out-in 400ms sebelum habis
+  vid.addEventListener('loadedmetadata', function(){
+    vid.addEventListener('timeupdate', function(){
+      var t = vid.currentTime;
+      var d = vid.duration;
+      if (!d) return;
+      if (d - t < 0.4) {
+        // Fade out
+        vid.style.opacity = Math.max(0, (d - t) / 0.4);
+      } else if (t < 0.4) {
+        // Fade in
+        vid.style.opacity = Math.min(1, t / 0.4);
+      } else if (vid.style.opacity !== '1') {
+        vid.style.opacity = '1';
+      }
+    });
+  });
 }
 
 var ov = document.createElement('div');

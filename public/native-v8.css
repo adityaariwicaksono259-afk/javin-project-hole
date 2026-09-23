@@ -236,3 +236,16 @@ body.theme-dark .enm-btn.ghost {
   background: rgba(51,65,85,0.8);
   color: #cbd5e1;
 }
+
+/* ===== BETOx1 FIX — anti putih scroll ===== */
+html.preload,
+html.preload body,
+html[data-theme="light"].preload,
+html[data-theme="dark"].preload,
+html[data-theme="light"].preload body,
+html[data-theme="dark"].preload body,
+html, body {
+  background: #0a0a0a !important;
+  background-color: #0a0a0a !important;
+}
+html.preload { opacity: 1 !important; }

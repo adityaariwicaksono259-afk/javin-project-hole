@@ -21,3 +21,9 @@ public/*.bak-*
 functions/**/*.bak
 functions/**/*.bak-*
 functions/**/*.bak2-*
+
+# BETOx1 — file debug & backup video
+public/_frames/
+public/_video_backup/
+public/bg-original*.mp4
+public/bg-lama*.mp4
