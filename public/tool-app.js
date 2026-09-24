@@ -40,6 +40,10 @@
       return 'roblox-profile';
     }
     if (folder === 'stalker' || /stalker|stalk|lacak|cek profil/i.test(name)) return 'stalker';
+
+    // Priority: Character.AI renderer (biar masuk smartJsonRender, bukan search handler)
+    if (/^c\.?ai/i.test(name) || /character\.?ai/i.test(name)) return 'simple';
+
     // AI folder: cek dulu apakah ini list/search atau chat
     if (folder === 'ai') {
       var descL = (ep.desc || '').toLowerCase();
