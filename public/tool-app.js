@@ -171,6 +171,26 @@
       var label = esc(n) + (p.r ? ' <span style="color:#dc2626">*</span>' : '') + (p.d && p.d !== n ? ' <small>(' + esc(p.d) + ')</small>' : '');
       var defVal = defaults[nl] || '';
 
+      // ===== FLAG PARAMS — auto-hide =====
+      var FLAG_PARAMS = ['ongoing','completed','popular','schedule','latest','recent','upcoming','airing','finished','movie','tv','ova','ona','special','all'];
+      var dLower = String(p.d || '').toLowerCase();
+      if (FLAG_PARAMS.indexOf(nl) !== -1 || /^nilai\s*1\.?$|^value\s*1\.?$|^isi\s*1\.?$|^1\.?$/i.test(dLower)) {
+        fields += '<input type="hidden" data-p="' + esc(n) + '" value="1">';
+        return;
+      }
+      if (nl === 'page' || nl === 'halaman') {
+        fields += '<div class="field"><label>Halaman</label><input type="number" min="1" data-p="' + esc(n) + '" value="' + esc(defVal || '1') + '" placeholder="Default 1"></div>';
+        return;
+      }
+      if (nl === 'search' || nl === 'q' || nl === 'query' || nl === 'kata' || nl === 'keyword') {
+        fields += '<div class="field"><label>Kata Kunci</label><input type="text" data-p="' + esc(n) + '" value="' + esc(defVal) + '" placeholder="Contoh: one piece"></div>';
+        return;
+      }
+      if (nl === 'details' || nl === 'detail' || nl === 'stream' || nl === 'url' || nl === 'link') {
+        fields += '<div class="field"><label>URL / Link</label><input type="url" data-p="' + esc(n) + '" value="' + esc(defVal) + '" placeholder="https://..."></div>';
+        return;
+      }
+
       // Cuaca: hint khusus
       if (/cuaca|weather/i.test(nl) && ep.name && /cuaca|weather/i.test(ep.name.toLowerCase())) {
         // handled di bawah
