@@ -22,19 +22,26 @@ function isYTSearch(d){
   return !!(f.videoId && f.url && f.thumbnail);
 }
 
+var __scPlayState = {};
+
 function renderSC(arr){
   var h = '';
   h += '<div style="display:flex;align-items:baseline;justify-content:space-between;padding:6px 2px 14px">';
   h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">SoundCloud</div>';
   h += '<div style="font-size:11px;color:#64748b;font-family:ui-monospace,monospace">' + arr.length + ' track</div>';
   h += '</div>';
-  arr.forEach(function(t){
+  arr.forEach(function(t, idx){
     var title = t.permalink || t.title || 'Unknown';
     var url = t.permalink_url || '';
     var img = t.artwork_url || '';
     var dur = t.duration ? fmtDur(t.duration/1000) : '';
     var plays = t.playback_count || 0;
-    h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:12px;align-items:center">';
+    var uid = 'sc-' + idx + '-' + Math.random().toString(36).slice(2, 7);
+
+    h += '<div id="' + uid + '" style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;margin-bottom:8px;overflow:hidden">';
+
+    // Header row
+    h += '<div style="padding:12px;display:flex;gap:12px;align-items:center">';
     if (img) {
       h += '<img src="' + esc(img) + '" style="width:56px;height:56px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#06111f" onerror="this.style.display=\'none\'">';
     } else {
@@ -42,16 +49,43 @@ function renderSC(arr){
     }
     h += '<div style="min-width:0;flex:1">';
     h += '<div style="font-size:12.5px;font-weight:600;color:#e0f2fe;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + esc(title) + '</div>';
-    h += '<div style="font-size:10.5px;color:#64748b;margin-top:4px;display:flex;gap:10px">';
+    h += '<div style="font-size:10.5px;color:#64748b;margin-top:4px;display:flex;gap:10px;flex-wrap:wrap">';
     if (dur) h += '<span>⏱ ' + dur + '</span>';
     if (plays) h += '<span>▶ ' + fmtNum(plays) + '</span>';
     if (t.comment_count) h += '<span>💬 ' + fmtNum(t.comment_count) + '</span>';
     h += '</div></div>';
-    if (url) h += '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="padding:8px 12px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);border-radius:8px;color:#22d3ee;font-size:11px;font-weight:600;text-decoration:none;flex-shrink:0">Buka</a>';
+    h += '</div>';
+
+    // Buttons row
+    h += '<div style="display:flex;gap:6px;padding:0 12px 12px">';
+    if (url) {
+      h += '<button onclick="window.__scToggle(\'' + uid + '\',\'' + encodeURIComponent(url) + '\')" style="flex:1;padding:9px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border:0;border-radius:8px;color:#06111f;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">▶ Play</button>';
+      h += '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="padding:9px 14px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);border-radius:8px;color:#22d3ee;font-size:12px;font-weight:600;text-decoration:none">Buka</a>';
+    }
+    h += '</div>';
+
+    // Player container (hidden by default)
+    h += '<div id="' + uid + '-player" style="display:none;padding:0 12px 12px"></div>';
+
     h += '</div>';
   });
   return h;
 }
+
+// Global toggle function
+window.__scToggle = function(uid, encodedUrl){
+  var playerEl = document.getElementById(uid + '-player');
+  if (!playerEl) return;
+  if (playerEl.style.display === 'none') {
+    var url = decodeURIComponent(encodedUrl);
+    var embed = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) + '&color=%2322d3ee&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false';
+    playerEl.innerHTML = '<iframe width="100%" height="120" scrolling="no" frameborder="no" allow="autoplay" src="' + embed + '" style="border-radius:10px;background:#06111f"></iframe>';
+    playerEl.style.display = 'block';
+  } else {
+    playerEl.innerHTML = '';
+    playerEl.style.display = 'none';
+  }
+};
 
 function renderYT(arr){
   var h = '';
