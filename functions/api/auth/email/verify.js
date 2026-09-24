@@ -51,10 +51,10 @@ export async function onRequestGet({ request, env }) {
   }
 
   var sessionToken = generateSessionToken();
-  var expiresAt = now + 30 * 24 * 60 * 60 * 1000;
+  var expiresAt = now + 365 * 24 * 60 * 60 * 1000;
   await db.prepare('INSERT INTO auth_sessions (token, user_id, created_at, expires_at, last_used) VALUES (?, ?, ?, ?, ?)').bind(sessionToken, userId, now, expiresAt, now).run();
 
-  var cookieVal = 'javin_session=' + sessionToken + '; Path=/; Max-Age=' + (30*24*60*60) + '; HttpOnly; Secure; SameSite=Lax';
+  var cookieVal = 'javin_session=' + sessionToken + '; Path=/; Max-Age=' + (365*24*60*60) + '; HttpOnly; Secure; SameSite=Lax';
 
   if (wantJson) {
     return new Response(JSON.stringify({

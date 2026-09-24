@@ -30,7 +30,7 @@ export async function onRequestPost({ request, env }) {
   } catch(e){}
 
   // Set cookie baru
-  var cookieVal = 'javin_session=' + token + '; Path=/; Max-Age=' + (30*24*60*60) + '; HttpOnly; Secure; SameSite=Lax';
+  var cookieVal = 'javin_session=' + token + '; Path=/; Max-Age=' + (365*24*60*60) + '; HttpOnly; Secure; SameSite=Lax';
 
   return json({
     ok: true,

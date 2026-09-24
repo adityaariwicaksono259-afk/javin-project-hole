@@ -44,7 +44,7 @@ export async function onRequestPost({ request, env }) {
   }
 
   var token = generateSessionToken();
-  var expiresAt = now + 30 * 24 * 60 * 60 * 1000;
+  var expiresAt = now + 365 * 24 * 60 * 60 * 1000;
   await db.prepare(
     'INSERT INTO auth_sessions (token, user_id, created_at, expires_at, last_used) VALUES (?, ?, ?, ?, ?)'
   ).bind(token, userId, now, expiresAt, now).run();
@@ -61,7 +61,7 @@ export async function onRequestPost({ request, env }) {
       extra_limit: 30
     }
   }, 200, {
-    'Set-Cookie': 'javin_session=' + token + '; Path=/; Max-Age=' + (30*24*60*60) + '; HttpOnly; Secure; SameSite=Lax'
+    'Set-Cookie': 'javin_session=' + token + '; Path=/; Max-Age=' + (365*24*60*60) + '; HttpOnly; Secure; SameSite=Lax'
   });
 }
 

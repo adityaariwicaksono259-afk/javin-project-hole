@@ -418,6 +418,16 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Anime List ====
+  if (window.KazeAnime && window.KazeAnime.isAnimeList(j)) {
+    return window.KazeAnime.render(j);
+  }
+
+  // ==== Deteksi Chat AI ====
+  if (window.KazeChat && window.KazeChat.isChatResponse(j)) {
+    return window.KazeChat.render(j);
+  }
+
   // ==== Deteksi Character.AI ====
   if (window.KazeCharacter && window.KazeCharacter.isCharacterArray(j)) {
     return window.KazeCharacter.render(j);
