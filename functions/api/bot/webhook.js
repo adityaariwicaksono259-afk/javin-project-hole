@@ -55,6 +55,8 @@ export async function onRequestPost({ request, env }) {
         '<code>/maintenance off</code> — Matikan\n' +
         '<code>/maintenance status</code> — Cek status\n' +
         '<code>/stats</code> — Statistik server\n' +
+        '<code>/tambahlimit &lt;id&gt; &lt;jumlah&gt;</code> — Tambah limit user\n' +
+        '<code>/resetlimit [id]</code> — Reset limit user\n' +
         '\n🎵 <b>SOUND</b>\n' +
         '<code>/addsound</code> — Panduan upload sound\n' +
         '<code>/listsound</code> — Liat semua sound\n' +
