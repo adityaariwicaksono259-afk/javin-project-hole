@@ -72,15 +72,52 @@ function renderSC(arr){
   return h;
 }
 
-// Global toggle function
+// Load SoundCloud Widget API sekali
+(function loadSCApi(){
+  if (window.SC && window.SC.Widget) return;
+  if (window.__scApiLoading) return;
+  window.__scApiLoading = true;
+  var s = document.createElement('script');
+  s.src = 'https://w.soundcloud.com/player/api.js';
+  s.async = true;
+  s.onload = function(){ window.__scApiReady = true; console.log('SC API ready'); };
+  s.onerror = function(){ console.warn('SC API gagal load'); };
+  document.head.appendChild(s);
+})();
+
+// Global toggle — play sekali klik
 window.__scToggle = function(uid, encodedUrl){
   var playerEl = document.getElementById(uid + '-player');
   if (!playerEl) return;
+
   if (playerEl.style.display === 'none') {
     var url = decodeURIComponent(encodedUrl);
-    var embed = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) + '&color=%2322d3ee&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false';
-    playerEl.innerHTML = '<iframe width="100%" height="120" scrolling="no" frameborder="no" allow="autoplay" src="' + embed + '" style="border-radius:10px;background:#06111f"></iframe>';
+    var iframeId = uid + '-iframe';
+    var embed = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(url)
+      + '&color=%2322d3ee&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&visual=false';
+    playerEl.innerHTML = '<iframe id="' + iframeId + '" width="100%" height="130" scrolling="no" frameborder="no" allow="autoplay" src="' + embed + '" style="border-radius:10px;background:#06111f"></iframe>';
     playerEl.style.display = 'block';
+
+    // Trigger play setelah iframe ready
+    var attempts = 0;
+    var tryPlay = function(){
+      attempts++;
+      var iframe = document.getElementById(iframeId);
+      if (!iframe) return;
+      if (window.SC && window.SC.Widget) {
+        try {
+          var widget = SC.Widget(iframe);
+          widget.bind(SC.Widget.Events.READY, function(){
+            widget.play();
+          });
+          // Fallback: coba play setelah 500ms
+          setTimeout(function(){ try { widget.play(); } catch(e){} }, 500);
+        } catch(e) {}
+      } else if (attempts < 20) {
+        setTimeout(tryPlay, 200);
+      }
+    };
+    setTimeout(tryPlay, 100);
   } else {
     playerEl.innerHTML = '';
     playerEl.style.display = 'none';
