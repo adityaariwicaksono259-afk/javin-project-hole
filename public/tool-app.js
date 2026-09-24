@@ -129,7 +129,9 @@
 
     if (type === 'search') {
       var q = allParams[0] || { n: 'q', d: 'Kata kunci' };
-      return '<div class="field"><label>' + esc(q.n) + ' <span style="color:#dc2626">*</span></label><input type="text" id="searchInput" data-p="' + esc(q.n) + '" placeholder="' + esc(q.d||'Cari...') + '"></div>' +
+      return '<div class="field"><label>' + esc(q.n) + ' <span style="color:#dc2626">*</span></label><input type="text" id="searchInput" data-p="' + esc(q.n) + '" placeholder="' + esc(/cuaca|weather/i.test(ep.name||'') ? 'Kota Semarang / Kota Bandung' : (q.d||'Cari...')) + '">' +
+        (ep && /cuaca|weather/i.test(ep.name||'') ? '<div style="font-size:11px;color:#64748b;margin-top:6px;line-height:1.5">Tip: Ketik <code style="background:rgba(34,211,238,.1);padding:1px 5px;border-radius:3px">Kota</code> + nama, contoh: <code style="background:rgba(34,211,238,.1);padding:1px 5px;border-radius:3px">Kota Semarang</code></div>' : '') +
+        '</div>' +
         '<button class="submit" id="btnSubmit" disabled>🔎 Cari</button>';
     }
 
@@ -169,6 +171,11 @@
       var label = esc(n) + (p.r ? ' <span style="color:#dc2626">*</span>' : '') + (p.d && p.d !== n ? ' <small>(' + esc(p.d) + ')</small>' : '');
       var defVal = defaults[nl] || '';
 
+      // Cuaca: hint khusus
+      if (/cuaca|weather/i.test(nl) && ep.name && /cuaca|weather/i.test(ep.name.toLowerCase())) {
+        // handled di bawah
+      }
+      
       if (isLangParam(nl)) {
         // Dropdown bahasa
         var opts = LANGS.map(function(l){
