@@ -438,6 +438,13 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Search (SoundCloud / YouTube) ====
+  if (window.KazeSearch) {
+    if (window.KazeSearch.isSCSearch(j) || window.KazeSearch.isYTSearch(j)) {
+      return window.KazeSearch.render(j);
+    }
+  }
+
   // ==== Deteksi Anime List ====
   if (window.KazeAnime && window.KazeAnime.isAnimeList(j)) {
     return window.KazeAnime.render(j);
