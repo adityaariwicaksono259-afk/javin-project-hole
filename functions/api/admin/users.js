@@ -67,18 +67,23 @@ export async function onRequestPost({ request, env }) {
       return json({ ok: false, message: 'Limit harus antara 0-100000.' }, 400);
     }
 
-    const existing = await db.prepare('SELECT id FROM users WHERE id = ?').bind(id).first();
+    const existing = await db.prepare('SELECT id, extra_limit FROM users WHERE id = ?').bind(id).first();
 
     if (existing) {
-      await db.prepare('UPDATE users SET extra_limit = ? WHERE id = ?').bind(extra, id).run();
+      // TAMBAH ke extra_limit yang ada
+      const current = existing.extra_limit || 0;
+      const newLimit = Math.max(0, current + extra);
+      await db.prepare('UPDATE users SET extra_limit = ?, last_seen = ? WHERE id = ?')
+        .bind(newLimit, Date.now(), id).run();
+      return json({ ok: true, message: 'Limit +' + extra + ' (total: ' + newLimit + ')' });
     } else {
       const now = Date.now();
+      const newLimit = Math.max(0, extra);
       await db.prepare(
         'INSERT INTO users (id, extra_limit, created_at, last_seen, total_request) VALUES (?, ?, ?, ?, 0)'
-      ).bind(id, extra, now, now).run();
+      ).bind(id, newLimit, now, now).run();
+      return json({ ok: true, message: 'User dibuat. Limit: ' + newLimit });
     }
-
-    return json({ ok: true, message: 'User diupdate.' });
   } catch (e) {
     console.error('[ERROR]', e.message);
     return json({ ok: false, message: 'Terjadi kesalahan internal.' }, 500);
