@@ -15,7 +15,11 @@ export async function onRequestGet({ request, env }) {
 
   var url = new URL(request.url);
   var token = String(url.searchParams.get('token') || '').trim();
-  if (!token || !/^[a-f0-9]{64}$/.test(token)) return htmlError('Token tidak valid.');
+  var wantJson = url.searchParams.get('format') === 'json';
+  if (!token || !/^[a-f0-9]{64}$/.test(token)) {
+    if (wantJson) return new Response(JSON.stringify({ ok: false, message: 'Token tidak valid' }), { status: 400, headers: { 'Content-Type': 'application/json' } });
+    return htmlError('Token tidak valid.');
+  }
 
   var now = Date.now();
   var row = await db.prepare('SELECT * FROM email_magic_tokens WHERE token = ? LIMIT 1').bind(token).first();
@@ -52,7 +56,23 @@ export async function onRequestGet({ request, env }) {
 
   var cookieVal = 'javin_session=' + sessionToken + '; Path=/; Max-Age=' + (30*24*60*60) + '; HttpOnly; Secure; SameSite=Lax';
 
-  return new Response(htmlSuccess(userCode), {
+  if (wantJson) {
+    return new Response(JSON.stringify({
+      ok: true,
+      user_code: userCode,
+      session_token: sessionToken,
+      expires_at: expiresAt
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Set-Cookie': cookieVal,
+        'Cache-Control': 'no-store'
+      }
+    });
+  }
+
+  return new Response(htmlSuccess(userCode, sessionToken), {
     status: 200,
     headers: {
       'Content-Type': 'text/html; charset=utf-8',
@@ -62,13 +82,13 @@ export async function onRequestGet({ request, env }) {
   });
 }
 
-function htmlSuccess(code) {
+function htmlSuccess(code, token) {
   var s = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login berhasil</title>';
   s += '<style>body{margin:0;padding:0;background:#06111f;color:#e0f2fe;font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}';
   s += '.box{max-width:400px;padding:40px 28px}.icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0EA5E9,#22d3ee);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#06111f;font-weight:700}';
   s += 'h1{font-size:20px;margin:0 0 8px;color:#e0f2fe}p{color:#94a3b8;font-size:14px;line-height:1.5;margin:0}';
   s += '.code{font-family:monospace;color:#22d3ee;background:rgba(34,211,238,.1);padding:4px 10px;border-radius:6px;font-size:13px;display:inline-block;margin-top:12px}</style>';
-  s += '<script>try{localStorage.setItem("javin_user_id","' + code + '")}catch(e){}setTimeout(function(){location.replace("/")},800);<\/script>';
+  s += '<script>try{localStorage.setItem("javin_user_id","' + code + '");localStorage.setItem("javin_session_token","' + token + '");}catch(e){}setTimeout(function(){location.replace("/")},800);<\/script>';
   s += '</head><body><div class="box"><div class="icon">OK</div><h1>Login berhasil</h1><p>Mengarahkan...</p><div class="code">' + code + '</div></div></body></html>';
   return s;
 }
