@@ -71,12 +71,24 @@ function isAnimeList(d){
   return !!detectAnimeArray(d);
 }
 
+function getInitials(t){
+  if (!t) return '?';
+  var parts = String(t).trim().split(/\s+/);
+  if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+  return (parts[0][0] + parts[1][0]).toUpperCase();
+}
+
 function renderItem(item){
   var it = normalize(item);
   var h = '';
   h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">';
   h += '<a href="' + esc(it.link) + '" target="_blank" rel="noopener" style="display:block;position:relative;aspect-ratio:2/3;overflow:hidden;background:#06111f;text-decoration:none">';
-  if (it.image) h += '<img src="' + esc(it.image) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display=\'none\'">';
+  if (it.image) {
+    h += '<img src="' + esc(it.image) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display=\'none\'">';
+  } else {
+    // Placeholder cantik: gradient + inisial judul
+    h += '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,rgba(34,211,238,.12),rgba(14,165,233,.04));color:#22d3ee;font-size:32px;font-weight:700;letter-spacing:-1px;text-shadow:0 2px 20px rgba(34,211,238,.3)">' + esc(getInitials(it.title)) + '</div>';
+  }
   if (it.type) h += '<div style="position:absolute;top:6px;left:6px;background:rgba(6,17,31,.85);padding:3px 8px;border-radius:6px;font-size:9px;font-weight:600;color:#22d3ee;border:1px solid rgba(34,211,238,.3)">' + esc(it.type) + '</div>';
   if (it.rating && it.rating !== 'null') h += '<div style="position:absolute;top:6px;right:6px;background:rgba(251,191,36,.9);padding:3px 7px;border-radius:6px;font-size:10px;font-weight:700;color:#06111f">★ ' + esc(it.rating) + '</div>';
   h += '<div style="position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(180deg,transparent,rgba(6,17,31,.9));pointer-events:none"></div>';
