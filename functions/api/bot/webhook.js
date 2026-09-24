@@ -140,6 +140,71 @@ export async function onRequestPost({ request, env }) {
     return new Response('ok');
   }
 
+  // ==== /tambahlimit <user_id> <jumlah> ====
+  if (cmd === '/tambahlimit' || cmd === '/addlimit') {
+    const parts = args.trim().split(/\s+/);
+    if (parts.length < 2) {
+      await reply(env, chatId,
+        '📝 <b>Cara pakai:</b>\n' +
+        '<code>/tambahlimit &lt;user_id&gt; &lt;jumlah&gt;</code>\n\n' +
+        '<b>Contoh:</b>\n' +
+        '<code>/tambahlimit JH-2VVRLB 50</code>\n' +
+        '<code>/tambahlimit JH-2VVRLB -10</code> (kurangi)'
+      );
+      return new Response('ok');
+    }
+    const targetId = parts[0];
+    const amount = parseInt(parts[1]);
+    if (isNaN(amount)) {
+      await reply(env, chatId, '❌ Jumlah harus angka.');
+      return new Response('ok');
+    }
+    try {
+      const db = env.JAVIN_DB;
+      const row = await db.prepare('SELECT id, extra_limit FROM users WHERE id = ?').bind(targetId).first();
+      let newLimit;
+      if (row) {
+        newLimit = (row.extra_limit || 0) + amount;
+        if (newLimit < 0) newLimit = 0;
+        await db.prepare('UPDATE users SET extra_limit = ?, last_seen = ? WHERE id = ?')
+          .bind(newLimit, Date.now(), targetId).run();
+      } else {
+        newLimit = Math.max(0, amount);
+        await db.prepare(
+          'INSERT INTO users (id, extra_limit, created_at, last_seen, total_request) VALUES (?, ?, ?, ?, 0)'
+        ).bind(targetId, newLimit, Date.now(), Date.now()).run();
+      }
+      await reply(env, chatId,
+        '✅ <b>LIMIT UPDATED</b>\n\n' +
+        'User: <code>' + escapeHtml(targetId) + '</code>\n' +
+        'Perubahan: <b>' + (amount >= 0 ? '+' : '') + amount + '</b>\n' +
+        'Total extra_limit: <b>' + newLimit + '</b>'
+      );
+    } catch (e) {
+      await reply(env, chatId, '❌ Error: ' + e.message);
+    }
+    return new Response('ok');
+  }
+
+  // ==== /resetlimit [user_id] ====
+  if (cmd === '/resetlimit') {
+    try {
+      const db = env.JAVIN_DB;
+      const target = args.trim();
+      if (target) {
+        await db.prepare('UPDATE users SET total_request = 0 WHERE id = ?').bind(target).run();
+        await reply(env, chatId, '✅ Reset limit user <code>' + escapeHtml(target) + '</code>');
+      } else {
+        const r = await db.prepare('UPDATE users SET total_request = 0').run();
+        const count = (r.meta && r.meta.changes) || '?';
+        await reply(env, chatId, '✅ Reset <b>' + count + '</b> user');
+      }
+    } catch (e) {
+      await reply(env, chatId, '❌ Error: ' + e.message);
+    }
+    return new Response('ok');
+  }
+
   if (cmd === '/stats') {
     try {
       const db = env.JAVIN_DB;
