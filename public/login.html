@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Login — Javin Tools</title>
+<meta name="theme-color" content="#06111f">
+<meta name="color-scheme" content="dark">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#06111f;color:#e0f2fe;font-family:'Inter',system-ui,sans-serif;overflow:hidden}
+body{
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 30% 30%,rgba(34,211,238,.08),transparent 50%),
+             radial-gradient(circle at 70% 70%,rgba(14,165,233,.06),transparent 50%),
+             #06111f;
+  padding:20px;
+}
+.card{
+  width:100%;max-width:400px;
+  background:#0a1929;
+  border:1px solid rgba(34,211,238,.15);
+  border-radius:20px;
+  padding:40px 32px;
+  text-align:center;
+  animation:fadeUp .6s ease;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.logo{
+  width:64px;height:64px;
+  margin:0 auto 24px;
+  border-radius:16px;
+  background:linear-gradient(135deg,#0EA5E9,#22d3ee);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;font-weight:800;color:#06111f;
+  letter-spacing:-1px;
+  box-shadow:0 8px 24px rgba(34,211,238,.25);
+}
+h1{font-size:20px;font-weight:700;color:#e0f2fe;margin-bottom:8px;letter-spacing:-.3px}
+.subtitle{font-size:13px;color:#64748b;margin-bottom:32px;line-height:1.5}
+.gbtn-wrap{display:flex;justify-content:center;margin-bottom:20px;min-height:44px}
+.gbtn-wrap > div { width:100% !important; }
+.footer{font-size:11px;color:#475569;line-height:1.6;margin-top:16px}
+.loading{display:none;font-size:13px;color:#94a3b8;margin-top:16px}
+.loading.show{display:block}
+.error{
+  display:none;font-size:12px;color:#f87171;
+  background:rgba(239,68,68,.08);
+  border:1px solid rgba(239,68,68,.2);
+  border-radius:8px;padding:10px 12px;margin-top:16px;line-height:1.5;
+}
+.error.show{display:block}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">J</div>
+  <h1>Login untuk melanjutkan</h1>
+  <div class="subtitle">Gunakan akun Google Anda untuk masuk ke Javin Tools</div>
+  <div class="gbtn-wrap" id="gbtnWrap"></div>
+  <div class="loading" id="loading">Memproses login...</div>
+  <div class="error" id="error"></div>
+  <div class="footer">Dengan masuk, Anda setuju dengan Syarat & Ketentuan</div>
+</div>
+
+<script>
+var GOOGLE_CLIENT_ID = '924436722019-h93q5n13uumnudfcfe9o6ek0n5kikgkt.apps.googleusercontent.com';
+
+var errorEl = document.getElementById('error');
+var loadingEl = document.getElementById('loading');
+var gbtnWrap = document.getElementById('gbtnWrap');
+
+function showError(msg){
+  errorEl.textContent = msg;
+  errorEl.classList.add('show');
+}
+
+// Cek kalau udah login → redirect ke home
+fetch('/api/auth/me')
+  .then(function(r){ return r.json(); })
+  .then(function(j){
+    if (j && j.ok && j.logged_in) {
+      try {
+        localStorage.setItem('javin_user_id', j.user.user_code);
+        localStorage.setItem('javin_user_name', j.user.name || '');
+        localStorage.setItem('javin_user_avatar', j.user.avatar || '');
+      } catch(e){}
+      location.replace('/');
+    }
+  })
+  .catch(function(){});
+
+// Load Google
+window.addEventListener('load', function(){
+  var s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.async = true; s.defer = true;
+  s.onload = initGSI;
+  s.onerror = function(){ showError('Gagal memuat Google Sign-In.'); };
+  document.head.appendChild(s);
+});
+
+function initGSI(){
+  if (!window.google || !google.accounts) {
+    showError('Google Sign-In tidak tersedia.');
+    return;
+  }
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true
+  });
+  google.accounts.id.renderButton(gbtnWrap, {
+    theme: 'filled_black',
+    size: 'large',
+    text: 'continue_with',
+    shape: 'pill',
+    logo_alignment: 'left',
+    width: 300
+  });
+}
+
+async function handleCredential(response){
+  if (!response || !response.credential) {
+    showError('Login dibatalkan.');
+    return;
+  }
+  loadingEl.classList.add('show');
+  gbtnWrap.style.display = 'none';
+
+  try {
+    var r = await fetch('/api/auth/google', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id_token: response.credential })
+    });
+    var j = await r.json();
+
+    if (!j.ok) {
+      loadingEl.classList.remove('show');
+      gbtnWrap.style.display = 'block';
+      showError('Login gagal: ' + (j.message || 'unknown'));
+      return;
+    }
+
+    try {
+      localStorage.setItem('javin_user_id', j.user.user_code);
+      localStorage.setItem('javin_user_name', j.user.name || '');
+      localStorage.setItem('javin_user_avatar', j.user.avatar || '');
+      localStorage.setItem('javin_user_email', j.user.email || '');
+    } catch(e){}
+
+    setTimeout(function(){ location.replace('/'); }, 400);
+  } catch (e) {
+    loadingEl.classList.remove('show');
+    gbtnWrap.style.display = 'block';
+    showError('Koneksi gagal. Coba lagi.');
+  }
+}
+</script>
+</body>
+</html>
