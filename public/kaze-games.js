@@ -14,6 +14,10 @@ function isGameResponse(d){
   if (dd.data && dd.data.image && dd.data.jawaban) return true;
   // Tebak Warna (ishihara)
   if (dd.plate && dd.correct && dd.image) return true;
+  // Tebak Surah (audio + text)
+  if (dd.audio && dd.text && dd.number) return true;
+  // Tebak JKT (gambar + jawaban)
+  if (dd.gambar && dd.jawaban) return true;
   // Tebak Kimia
   if (dd.unsur && dd.lambang) return true;
 
@@ -103,6 +107,20 @@ function renderGame(d){
   if (dd.unsur && dd.lambang) {
     soal = 'Apa lambang unsur dari: ' + dd.unsur + '?';
     jawaban = dd.lambang;
+  }
+  // Tebak Surah (audio)
+  if (dd.audio && dd.text && dd.number) {
+    audioUrl = dd.audio;
+    soal = 'Surah apakah ini?';
+    jawaban = '';
+  }
+  // Tebak JKT (pakai 'gambar' bukan 'img')
+  if (dd.gambar && dd.jawaban && !img) {
+    img = dd.gambar;
+  }
+  // Lengkapi Kalimat (pakai 'pertanyaan')
+  if (dd.pertanyaan && !soal) {
+    soal = dd.pertanyaan;
   }
 
   var uid = 'g-' + Math.random().toString(36).slice(2, 9);
