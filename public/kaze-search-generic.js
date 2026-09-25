@@ -117,6 +117,79 @@ function renderLahelu(arr){
   return h;
 }
 
+// Deteksi News List (FF News, detik News)
+function isNewsList(d){
+  if (!d || typeof d !== 'object') return false;
+  if (d.success !== true && d.status !== 'success' && d.status !== 200) return false;
+  if (!Array.isArray(d.data) || d.data.length === 0) return false;
+  var f = d.data[0];
+  return !!(f && f.title && f.url && (f.thumbnail !== undefined || f.category || f.time));
+}
+
+function renderNewsList(d){
+  var arr = d.data || [];
+  var h = '';
+  h += '<div style="display:flex;align-items:baseline;justify-content:space-between;padding:6px 2px 14px">';
+  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">📰 Berita</div>';
+  h += '<div style="font-size:11px;color:#64748b">' + arr.length + ' artikel</div>';
+  h += '</div>';
+
+  arr.slice(0, 30).forEach(function(item){
+    var title = item.title || 'Untitled';
+    var url = item.url || '';
+    var img = item.thumbnail || item.image || '';
+    var cat = item.category || '';
+    var time = item.time || item.date || '';
+    var desc = item.description || '';
+
+    h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;overflow:hidden;margin-bottom:10px;display:flex;gap:12px;padding:12px">';
+    if (img) {
+      h += '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="width:80px;height:80px;border-radius:8px;overflow:hidden;background:#06111f;flex-shrink:0;display:block">';
+      h += '<img src="' + esc(img) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.parentNode.style.display=\'none\'">';
+      h += '</a>';
+    }
+    h += '<div style="min-width:0;flex:1">';
+    if (cat) h += '<div style="font-size:9px;color:#22d3ee;text-transform:uppercase;letter-spacing:.4px;font-weight:700;margin-bottom:4px">' + esc(cat) + '</div>';
+    h += '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="text-decoration:none">';
+    h += '<div style="font-size:12.5px;font-weight:600;color:#e0f2fe;line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">' + esc(title) + '</div>';
+    h += '</a>';
+    if (desc) {
+      var clean = String(desc).replace(/<[^>]+>/g, '').slice(0, 100);
+      h += '<div style="font-size:11px;color:#94a3b8;line-height:1.4;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + esc(clean) + '</div>';
+    }
+    if (time) h += '<div style="font-size:10px;color:#64748b;margin-top:6px">🕐 ' + esc(time) + '</div>';
+    h += '</div></div>';
+  });
+
+  return h;
+}
+
+// Deteksi Wink / single image result (resultUrl)
+function isWinkResult(d){
+  if (!d || typeof d !== 'object') return false;
+  return !!(d.resultUrl && d.status === true && /^https?:\/\//.test(d.resultUrl));
+}
+
+function renderWinkResult(d){
+  var url = d.resultUrl;
+  var h = '';
+  h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.12);border-radius:16px;overflow:hidden;margin-bottom:10px">';
+  h += '<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(34,211,238,.04);border-bottom:1px solid rgba(34,211,238,.08)">';
+  h += '<div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:16px;color:#06111f;font-weight:800">✨</div>';
+  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">Hasil AI Image</div>';
+  h += '</div>';
+  h += '<div style="padding:12px">';
+  h += '<div style="border-radius:12px;overflow:hidden;background:#06111f">';
+  h += '<img src="' + esc(url) + '" style="width:100%;display:block;max-height:500px;object-fit:contain" onerror="this.parentNode.innerHTML=\'<div style=&quot;padding:40px;text-align:center;color:#64748b;font-size:12px&quot;>Gagal load gambar</div>\'">';
+  h += '</div>';
+  h += '<div style="display:flex;gap:8px;margin-top:12px">';
+  h += '<a href="' + esc(url) + '" download target="_blank" rel="noopener" style="flex:1;text-align:center;padding:10px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);color:#06111f;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none">⬇️ Download</a>';
+  h += '<button class="kz-copy-btn" data-copy="' + encodeURIComponent(url) + '" style="padding:10px 14px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);color:#7dd3fc;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">Copy URL</button>';
+  h += '</div>';
+  h += '</div></div>';
+  return h;
+}
+
 // Deteksi MCPDL (data.results[] dengan highlight.title)
 function isMCPDL(d){
   if (!d || typeof d !== 'object') return false;
@@ -316,6 +389,12 @@ function render(d){
   if (isMCPDL(d)) {
     return renderMCPDL(d);
   }
+  if (isNewsList(d)) {
+    return renderNewsList(d);
+  }
+  if (isWinkResult(d)) {
+    return renderWinkResult(d);
+  }
   if (isSearchResults(d)) {
     var dd = d.data || d;
     return renderSearchList(dd.results || dd.data, dd.query || dd.source || 'Search');
@@ -335,6 +414,8 @@ window.KazeSearchGeneric = {
   isLaheluList: isLaheluList,
   isMangatoonList: isMangatoonList,
   isMCPDL: isMCPDL,
+  isNewsList: isNewsList,
+  isWinkResult: isWinkResult,
   render: render
 };
 console.log('BETOx1: KazeSearchGeneric siap');

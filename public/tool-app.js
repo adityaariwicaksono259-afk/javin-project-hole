@@ -482,7 +482,10 @@ function smartJsonRender(j){
       || ksg.isSearchResults(j)
       || ksg.isGenericSearch(j)
       || (ksg.isLaheluList && ksg.isLaheluList(j))
-      || (ksg.isMangatoonList && ksg.isMangatoonList(j));
+      || (ksg.isMangatoonList && ksg.isMangatoonList(j))
+      || (ksg.isMCPDL && ksg.isMCPDL(j))
+      || (ksg.isNewsList && ksg.isNewsList(j))
+      || (ksg.isWinkResult && ksg.isWinkResult(j));
     if (ksgMatch) {
       var out = ksg.render(j);
       if (out) return out;
