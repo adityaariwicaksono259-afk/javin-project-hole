@@ -21,6 +21,125 @@ function isDramaList(d){
 }
 
 // Quotes (otakotaku)
+// Deteksi Translate
+function isTranslate(d){
+  if (!d || typeof d !== 'object') return false;
+  var dd = d.data || d;
+  return !!(dd && typeof dd.translatedText === 'string' && dd.translatedText.length > 0 && !dd.name);
+}
+
+function renderTranslate(d){
+  var dd = d.data || d;
+  var txt = dd.translatedText || '';
+  var h = '';
+  h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.12);border-radius:16px;overflow:hidden">';
+  h += '<div style="display:flex;align-items:center;gap:10px;padding:14px 16px;background:rgba(34,211,238,.04);border-bottom:1px solid rgba(34,211,238,.08)">';
+  h += '<div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:16px;color:#06111f;font-weight:800">文</div>';
+  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">Hasil Terjemahan</div>';
+  h += '</div>';
+  h += '<div style="padding:16px">';
+  h += '<div style="font-size:15px;color:#e0f2fe;line-height:1.7;font-weight:500">' + esc(txt) + '</div>';
+  h += '</div>';
+  h += '<div style="padding:10px 16px;border-top:1px solid rgba(34,211,238,.06);background:rgba(0,0,0,.15)">';
+  h += '<button class="kz-copy-btn" data-copy="' + encodeURIComponent(txt) + '" style="padding:7px 14px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);color:#7dd3fc;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;font-family:inherit">Copy</button>';
+  h += '</div></div>';
+  return h;
+}
+
+// Deteksi Country Info
+function isCountryInfo(d){
+  if (!d || typeof d !== 'object') return false;
+  var dd = d.data || d;
+  return !!(dd && dd.name && dd.capital && dd.flag && dd.phoneCode);
+}
+
+function renderCountry(d){
+  var dd = d.data || d;
+  var h = '';
+  h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.12);border-radius:16px;overflow:hidden;margin-bottom:12px">';
+
+  // Header dengan flag
+  h += '<div style="display:flex;align-items:center;gap:14px;padding:16px;background:linear-gradient(135deg,rgba(34,211,238,.08),rgba(14,165,233,.04));border-bottom:1px solid rgba(34,211,238,.1)">';
+  if (dd.flag) {
+    h += '<img src="' + esc(dd.flag) + '" style="width:64px;height:auto;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.3)">';
+  }
+  h += '<div>';
+  h += '<div style="font-size:18px;font-weight:700;color:#e0f2fe">' + esc(dd.name) + '</div>';
+  if (dd.continent && dd.continent.name) {
+    h += '<div style="font-size:12px;color:#94a3b8;margin-top:4px">' + esc(dd.continent.emoji || '') + ' ' + esc(dd.continent.name) + '</div>';
+  }
+  h += '</div></div>';
+
+  h += '<div style="padding:16px">';
+  var rows = [];
+  if (dd.capital) rows.push({label:'🏛️ Ibu Kota', val: dd.capital});
+  if (dd.phoneCode) rows.push({label:'📞 Kode Telp', val: dd.phoneCode});
+  if (dd.area && dd.area.squareKilometers) rows.push({label:'📐 Luas', val: dd.area.squareKilometers.toLocaleString() + ' km²'});
+  if (dd.coordinates) rows.push({label:'📍 Koordinat', val: dd.coordinates.latitude + ', ' + dd.coordinates.longitude});
+
+  rows.forEach(function(r){
+    h += '<div style="display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid rgba(34,211,238,.08)">';
+    h += '<div style="font-size:12px;color:#94a3b8">' + r.label + '</div>';
+    h += '<div style="font-size:12px;color:#e0f2fe;font-weight:600;text-align:right;word-break:break-word">' + esc(String(r.val)) + '</div>';
+    h += '</div>';
+  });
+
+  // Languages
+  if (dd.languages && dd.languages.native && dd.languages.native.length) {
+    h += '<div style="margin-top:12px"><div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:6px">Bahasa</div>';
+    h += '<div style="display:flex;flex-wrap:wrap;gap:5px">';
+    dd.languages.native.forEach(function(l){
+      h += '<span style="padding:3px 9px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2);border-radius:6px;color:#7dd3fc;font-size:11px;font-weight:500">' + esc(l) + '</span>';
+    });
+    h += '</div></div>';
+  }
+
+  // Famous
+  if (dd.famousFor) {
+    h += '<div style="margin-top:12px;padding:10px 12px;background:rgba(34,211,238,.05);border-radius:8px"><div style="font-size:10px;color:#22d3ee;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:4px">Terkenal dengan</div><div style="font-size:12px;color:#cbd5e1;line-height:1.5">' + esc(dd.famousFor) + '</div></div>';
+  }
+
+  h += '</div>';
+
+  if (dd.googleMapsLink) {
+    h += '<div style="padding:10px 16px;border-top:1px solid rgba(34,211,238,.06)">';
+    h += '<a href="' + esc(dd.googleMapsLink) + '" target="_blank" rel="noopener" style="display:block;padding:10px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);border-radius:8px;color:#22d3ee;text-align:center;font-size:12px;font-weight:600;text-decoration:none">🗺️ Buka di Google Maps</a>';
+    h += '</div>';
+  }
+
+  h += '</div>';
+  return h;
+}
+
+// Deteksi Kodepos
+function isKodepos(d){
+  if (!d || typeof d !== 'object') return false;
+  if (!Array.isArray(d.data) || d.data.length === 0) return false;
+  var f = d.data[0];
+  return !!(f && f.kodepos && f.kota && f.provinsi);
+}
+
+function renderKodepos(d){
+  var arr = d.data || [];
+  var h = '';
+  h += '<div style="display:flex;align-items:baseline;justify-content:space-between;padding:6px 2px 14px">';
+  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">📮 Kode Pos</div>';
+  h += '<div style="font-size:11px;color:#64748b">' + arr.length + ' hasil</div>';
+  h += '</div>';
+
+  arr.forEach(function(item){
+    h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.12);border-radius:12px;padding:12px 14px;margin-bottom:8px">';
+    h += '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">';
+    h += '<div style="font-family:ui-monospace,monospace;font-size:15px;font-weight:700;color:#22d3ee;letter-spacing:.5px">' + esc(item.kodepos) + '</div>';
+    h += '</div>';
+    h += '<div style="font-size:12px;color:#e0f2fe;line-height:1.5">' + esc(item.desa) + '</div>';
+    h += '<div style="font-size:11px;color:#94a3b8;margin-top:3px">' + esc(item.kecamatan) + '</div>';
+    h += '<div style="font-size:10.5px;color:#64748b;margin-top:3px">' + esc(item.kota) + ' · ' + esc(item.provinsi) + '</div>';
+    h += '</div>';
+  });
+  return h;
+}
+
 // Deteksi ramalan jodoh
 function isRamalanJodoh(d){
   if (!d || typeof d !== 'object') return false;
@@ -201,6 +320,9 @@ function renderQuote(d){
 }
 
 function render(d){
+  if (isTranslate(d)) return renderTranslate(d);
+  if (isCountryInfo(d)) return renderCountry(d);
+  if (isKodepos(d)) return renderKodepos(d);
   if (isArtiNama(d)) return renderArti(d);
   if (isRamalanJodoh(d)) return renderRamalan(d);
   if (isQuoteList(d)) return renderQuote(d);
@@ -213,6 +335,9 @@ window.KazeMisc = {
   isDramaList: isDramaList,
   isQuoteList: isQuoteList,
   isRamalanJodoh: isRamalanJodoh,
+  isTranslate: isTranslate,
+  isCountryInfo: isCountryInfo,
+  isKodepos: isKodepos,
   render: render
 };
 console.log('BETOx1: KazeMisc siap');

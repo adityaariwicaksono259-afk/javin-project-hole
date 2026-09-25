@@ -438,6 +438,13 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Primbon ====
+  if (window.KazePrimbon) {
+    if (window.KazePrimbon.isPrimbonAnalisa(j) || window.KazePrimbon.isPrimbonJodoh(j)) {
+      return window.KazePrimbon.render(j);
+    }
+  }
+
   // ==== Deteksi Lyric ====
   if (window.KazeLyric && window.KazeLyric.isLyricData(j)) {
     return window.KazeLyric.render(j);
@@ -451,7 +458,7 @@ function smartJsonRender(j){
   // ==== Deteksi Misc (Arti Nama, Drama, Quote) ====
   if (window.KazeMisc) {
     var km = window.KazeMisc;
-    if (km.isArtiNama(j) || km.isQuoteList(j) || km.isDramaList(j) || (km.isRamalanJodoh && km.isRamalanJodoh(j))) {
+    if (km.isTranslate(j) || km.isCountryInfo(j) || km.isKodepos(j) || km.isArtiNama(j) || km.isQuoteList(j) || km.isDramaList(j) || (km.isRamalanJodoh && km.isRamalanJodoh(j))) {
       var out = km.render(j);
       if (out) return out;
     }
