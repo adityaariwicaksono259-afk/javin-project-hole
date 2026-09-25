@@ -84,8 +84,17 @@ export async function onRequestPost({ request }) {
     { name: 'tmpfiles', label: '1 jam', fn: uploadTmpfiles }
   ];
 
+  // Kalau file > 2 MB, langsung ke tmpfiles (paling cepat)
+  // File >2MB sering timeout di freeimage/litterbox
+  var orderedProviders = providers;
+  if (file.size > 2 * 1024 * 1024) {
+    orderedProviders = [providers[2], providers[1], providers[0]]; // tmpfiles → litterbox → freeimage
+  } else {
+    orderedProviders = [providers[2], providers[0], providers[1]]; // tmpfiles dulu (paling reliable)
+  }
+
   const errs = [];
-  for (const p of providers) {
+  for (const p of orderedProviders) {
     try {
       const url = await p.fn(buf, fname, file.type);
       return jsonRes(200, {

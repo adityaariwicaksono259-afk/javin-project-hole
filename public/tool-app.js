@@ -1236,7 +1236,7 @@ function renderError(c, msg){
       if (fileInput) fileInput.onchange = function(e){ if (e.target.files[0]) handleFile(e.target.files[0]); };
 
       function handleFile(f){
-        if (f.size > 5*1024*1024) { showAlert('', 'Max 5 MB', 'ℹ️'); return; }
+        if (f.size > 3*1024*1024) { showAlert('', 'Max 3 MB. Kompres dulu foto-nya.', 'ℹ️'); return; }
         var r = new FileReader();
         r.onload = function(e){
           previewImg.src = e.target.result;
