@@ -438,6 +438,11 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Doa Harian ====
+  if (window.KazeDoa && window.KazeDoa.isDoaList(j)) {
+    return window.KazeDoa.render(j);
+  }
+
   // ==== Deteksi Search (SoundCloud / YouTube) ====
   if (window.KazeSearch) {
     if (window.KazeSearch.isSCSearch(j) || window.KazeSearch.isYTSearch(j)) {
