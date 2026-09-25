@@ -438,6 +438,11 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Komik ====
+  if (window.KazeKomik && window.KazeKomik.isKomikList(j)) {
+    return window.KazeKomik.render(j);
+  }
+
   // ==== Deteksi Downloader Generik ====
   if (window.KazeDownloader && window.KazeDownloader.isDownloader(j)) {
     return window.KazeDownloader.render(j);
