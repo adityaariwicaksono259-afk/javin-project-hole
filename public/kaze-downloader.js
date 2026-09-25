@@ -51,25 +51,45 @@ function renderDownloader(d){
     h += '</div>';
   }
 
-  // Handle array (IG stories)
+  // Handle array (IG stories, dll)
   if (Array.isArray(dd) && dd.length > 0) {
     h += '<div style="padding:0 16px 14px">';
-    h += '<div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">' + dd.length + ' media</div>';
+    h += '<div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:700">' + dd.length + ' Media</div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">';
     dd.forEach(function(item, i){
       var url = pickVideoUrl(item);
-      var type = item.type || 'media';
+      var type = (item.type || 'media').toLowerCase();
       var thumb = item.thumbnail || item.image || '';
+      var isVideo = type === 'mp4' || type === 'video' || type === 'mov' || /\.(mp4|mov|webm)/i.test(url);
+      var isImage = type === 'jpg' || type === 'jpeg' || type === 'png' || type === 'webp' || type === 'image' || /\.(jpg|jpeg|png|webp|gif)/i.test(url);
       if (!url) return;
-      h += '<div style="display:flex;gap:10px;align-items:center;padding:8px 10px;background:rgba(34,211,238,.06);border:1px solid rgba(34,211,238,.15);border-radius:8px;margin-bottom:6px">';
-      if (thumb) {
-        h += '<img src="' + esc(thumb) + '" style="width:40px;height:40px;border-radius:6px;object-fit:cover;flex-shrink:0">';
+
+      h += '<div style="background:rgba(34,211,238,.04);border:1px solid rgba(34,211,238,.15);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">';
+
+      // Preview (media)
+      var previewSrc = thumb || (isImage ? url : '');
+      if (previewSrc) {
+        h += '<div style="position:relative;width:100%;aspect-ratio:9/16;background:#06111f;overflow:hidden">';
+        h += '<img src="' + esc(previewSrc) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display=\'none\'">';
+        h += '<div style="position:absolute;top:6px;left:6px;background:rgba(6,17,31,.85);padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;color:#22d3ee;border:1px solid rgba(34,211,238,.3)">' + (isVideo ? '🎬 VIDEO' : '🖼️ FOTO') + '</div>';
+        h += '</div>';
       } else {
-        h += '<div style="width:40px;height:40px;border-radius:6px;background:rgba(34,211,238,.12);flex-shrink:0;display:flex;align-items:center;justify-content:center;color:#22d3ee;font-size:14px">' + (type === 'mp4' ? '🎬' : '🖼️') + '</div>';
+        // Video preview placeholder (tanpa thumbnail)
+        h += '<div style="position:relative;width:100%;aspect-ratio:9/16;background:linear-gradient(135deg,rgba(34,211,238,.15),rgba(14,165,233,.05));display:flex;align-items:center;justify-content:center">';
+        h += '<div style="width:48px;height:48px;border-radius:50%;background:rgba(34,211,238,.15);border:2px solid rgba(34,211,238,.3);display:flex;align-items:center;justify-content:center;font-size:20px;color:#22d3ee">▶</div>';
+        h += '<div style="position:absolute;top:6px;left:6px;background:rgba(6,17,31,.85);padding:2px 7px;border-radius:5px;font-size:9px;font-weight:700;color:#22d3ee;border:1px solid rgba(34,211,238,.3)">🎬 VIDEO</div>';
+        h += '</div>';
       }
-      h += '<div style="flex:1;min-width:0"><div style="font-size:11px;font-weight:600;color:#e0f2fe">' + esc(type.toUpperCase()) + ' #' + (i+1) + '</div></div>';
-      h += '<a href="' + esc(url) + '" download target="_blank" rel="noopener" style="padding:7px 12px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border-radius:8px;color:#06111f;font-size:11px;font-weight:700;text-decoration:none;flex-shrink:0">Download</a>';
+
+      // Info + button
+      h += '<div style="padding:8px 10px;display:flex;flex-direction:column;gap:8px">';
+      h += '<div style="font-size:10px;color:#64748b;font-weight:600;text-align:center">' + (isVideo ? 'Video' : 'Foto') + ' #' + (i+1) + '</div>';
+      h += '<a href="' + esc(url) + '" download target="_blank" rel="noopener" style="padding:8px 12px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border-radius:8px;color:#06111f;font-size:11px;font-weight:700;text-decoration:none;text-align:center">⬇ Download</a>';
+      h += '</div>';
+
       h += '</div>';
     });
+    h += '</div>';
     h += '</div>';
   } else {
     // AIO special: video + audio + videoWM
