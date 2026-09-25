@@ -39,7 +39,7 @@ function renderDoa(d){
 
     // Arab
     if (arab) {
-      h += '<div dir="rtl" style="font-family:\\'Noto Naskh Arabic\\', \\'Amiri\\', serif;font-size:20px;line-height:2;color:#e0f2fe;text-align:right;padding:10px 4px 14px;letter-spacing:0">' + esc(arab) + '</div>';
+      h += '<div dir="rtl" style="font-size:22px;line-height:2.1;color:#e0f2fe;text-align:right;padding:10px 4px 16px;letter-spacing:0;font-weight:500">' + esc(arab) + '</div>';
     }
 
     // Latin
