@@ -479,6 +479,11 @@ function smartJsonRender(j){
     return window.KazeDownloader.render(j);
   }
 
+  // ==== Deteksi Sound Effect Detail ====
+  if (window.KazeSfx && window.KazeSfx.isSfxDetail(j)) {
+    return window.KazeSfx.render(j);
+  }
+
   // ==== Deteksi Search Generic ====
   if (window.KazeSearchGeneric) {
     var ksg = window.KazeSearchGeneric;

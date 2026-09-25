@@ -68,6 +68,34 @@ function renderGame(d){
   var index = dd.index || '';
   var nama = dd.name || '';
   var deskripsi = dd.deskripsi || '';
+  var audioUrl = '';
+  var extraLabel = '';
+
+  // Tebak Lagu
+  if (dd.lagu && dd.judul) {
+    audioUrl = dd.lagu;
+    soal = dd.judul + (dd.artis ? ' - ' + dd.artis : '');
+    jawaban = dd.judul;
+    extraLabel = 'Tebak judul lagu ini';
+  }
+  // Tebak Logo (nested)
+  if (dd.data && dd.data.image && dd.data.jawaban) {
+    img = dd.data.image;
+    jawaban = dd.data.jawaban;
+    soal = 'Logo apakah ini?';
+  }
+  // Tebak Warna
+  if (dd.plate && dd.correct && dd.image) {
+    img = dd.image;
+    jawaban = dd.correct;
+    soal = 'Warna apa yang kamu lihat? (Ishihara test plate #' + dd.plate + ')';
+  }
+  // Tebak Kimia
+  if (dd.unsur && dd.lambang) {
+    soal = 'Apa lambang unsur dari: ' + dd.unsur + '?';
+    jawaban = dd.lambang;
+  }
+
   var uid = 'g-' + Math.random().toString(36).slice(2, 9);
   var ansEncoded = encodeURIComponent(JSON.stringify({ jawaban: jawaban, nama: nama }));
 
@@ -81,6 +109,14 @@ function renderGame(d){
   h += '</div>';
   // Body
   h += '<div style="padding:16px">';
+  // Audio (Tebak Lagu)
+  if (typeof audioUrl !== 'undefined' && audioUrl) {
+    h += '<div style="margin-bottom:14px;padding:10px;background:rgba(34,211,238,.06);border-radius:10px">';
+    h += '<div style="font-size:11px;color:#22d3ee;font-weight:600;margin-bottom:8px">🎵 Dengarkan audio:</div>';
+    h += '<audio controls preload="metadata" style="width:100%" src="' + esc(audioUrl) + '"></audio>';
+    h += '</div>';
+  }
+
   if (img) {
     h += '<div style="border-radius:12px;overflow:hidden;background:#06111f;margin-bottom:14px">';
     h += '<img src="' + esc(img) + '" style="width:100%;display:block;max-height:340px;object-fit:contain">';
