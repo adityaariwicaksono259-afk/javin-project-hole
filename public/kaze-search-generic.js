@@ -117,6 +117,53 @@ function renderLahelu(arr){
   return h;
 }
 
+// Deteksi MCPDL (data.results[] dengan highlight.title)
+function isMCPDL(d){
+  if (!d || typeof d !== 'object') return false;
+  var dd = d.data || d;
+  if (!dd || typeof dd !== 'object') return false;
+  if (!Array.isArray(dd.results) || dd.results.length === 0) return false;
+  var f = dd.results[0];
+  return !!(f.slug && f.highlight && f.highlight.title);
+}
+
+function renderMCPDL(d){
+  var arr = (d.data && d.data.results) || [];
+  var h = '';
+  h += '<div style="display:flex;align-items:baseline;justify-content:space-between;padding:6px 2px 14px">';
+  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">MCPDL</div>';
+  h += '<div style="font-size:11px;color:#64748b">' + arr.length + ' hasil</div>';
+  h += '</div>';
+
+  arr.forEach(function(item){
+    var title = item.title || 'Untitled';
+    var slug = item.slug || '';
+    var url = slug ? 'https://mcpedl.org/' + slug + '/' : '';
+    var img = item.image || '';
+    var desc = item.summary || item.introduction || '';
+    var downloads = item.downloadCount || 0;
+    var updated = item.updated_at ? new Date(item.updated_at).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '';
+
+    h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:12px">';
+    if (img) {
+      h += '<img src="' + esc(img) + '" style="width:70px;height:70px;border-radius:8px;object-fit:cover;flex-shrink:0;background:#06111f">';
+    }
+    h += '<div style="min-width:0;flex:1">';
+    h += '<div style="font-size:12.5px;font-weight:600;color:#e0f2fe;line-height:1.3">' + esc(title) + '</div>';
+    if (desc) {
+      var clean = String(desc).replace(/<[^>]+>/g, '').slice(0, 140);
+      h += '<div style="font-size:11px;color:#94a3b8;line-height:1.5;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + esc(clean) + '</div>';
+    }
+    var meta = [];
+    if (downloads) meta.push('⬇️ ' + downloads.toLocaleString());
+    if (updated) meta.push('🕐 ' + updated);
+    if (meta.length) h += '<div style="font-size:10px;color:#64748b;margin-top:6px;display:flex;gap:10px">' + meta.map(function(m){return '<span>' + esc(m) + '</span>'}).join('') + '</div>';
+    if (url) h += '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;padding:6px 12px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border-radius:8px;color:#06111f;font-size:11px;font-weight:700;text-decoration:none">⬇️ Buka MCPDL</a>';
+    h += '</div></div>';
+  });
+  return h;
+}
+
 // Deteksi search dengan "results" (brave, duckduckgo)
 function isSearchResults(d){
   if (!d || typeof d !== 'object') return false;
@@ -164,7 +211,9 @@ function renderSearchList(arr, source){
 
   arr.forEach(function(item){
     var title = item.title || item.name || 'Untitled';
-    var url = item.url || item.link || '';
+    var url = item.url || item.link || item.displayUrl || '';
+    // Brave: url di imageUrl, gak ada page URL
+    if (!url && item.imageUrl) url = '';
     var image = item.image || item.thumbnail || item.imageUrl || item.img || '';
     var desc = item.description || item.snippet || item.desc || item.content || '';
     var author = item.author || item.channel || item.user || item.postedBy || '';
@@ -264,6 +313,9 @@ function render(d){
   if (isMangatoonList(d)) {
     return renderMangatoon(d);
   }
+  if (isMCPDL(d)) {
+    return renderMCPDL(d);
+  }
   if (isSearchResults(d)) {
     var dd = d.data || d;
     return renderSearchList(dd.results || dd.data, dd.query || dd.source || 'Search');
@@ -282,6 +334,7 @@ window.KazeSearchGeneric = {
   isImageArray: isImageArray,
   isLaheluList: isLaheluList,
   isMangatoonList: isMangatoonList,
+  isMCPDL: isMCPDL,
   render: render
 };
 console.log('BETOx1: KazeSearchGeneric siap');

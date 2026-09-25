@@ -438,6 +438,11 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Lyric ====
+  if (window.KazeLyric && window.KazeLyric.isLyricData(j)) {
+    return window.KazeLyric.render(j);
+  }
+
   // ==== Deteksi Jadwal TV ====
   if (window.KazeJadwal && window.KazeJadwal.isJadwalTV(j)) {
     return window.KazeJadwal.render(j);
