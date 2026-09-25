@@ -12,6 +12,8 @@ function isArtiNama(d){
 // Drama list (dramabox, reelshort)
 function isDramaList(d){
   if (!d || typeof d !== 'object') return false;
+  // Handle service dramabox / reelshort (langsung)
+  if (d.service === 'dramabox' || d.service === 'reelshort') return true;
   var arr = d.books || d.data;
   if (!Array.isArray(arr) || arr.length === 0) return false;
   var f = arr[0];
@@ -41,37 +43,80 @@ function renderArti(d){
   return h;
 }
 
+function renderDramaCard(item){
+  var title = item.title || 'Untitled';
+  var cover = item.cover || item.thumbnail || '';
+  var url = item.url || item.link || '';
+  var category = item.category || '';
+  var views = item.views || '';
+  var chapterCount = item.chapterCount || '';
+  var score = item.score || '';
+
+  var h = '';
+  h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">';
+  h += '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:block;position:relative;aspect-ratio:2/3;background:#06111f;overflow:hidden;text-decoration:none">';
+  if (cover) h += '<img src="' + esc(cover) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">';
+  if (score) h += '<div style="position:absolute;top:6px;right:6px;background:rgba(251,191,36,.9);padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;color:#06111f">★ ' + esc(score) + '</div>';
+  h += '</a>';
+  h += '<div style="padding:8px;display:flex;flex-direction:column;gap:5px;flex:1">';
+  h += '<div style="font-size:11.5px;font-weight:600;color:#e0f2fe;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px">' + esc(title) + '</div>';
+  var meta = [];
+  if (category) meta.push(category);
+  if (chapterCount) meta.push(chapterCount + ' eps');
+  if (meta.length) h += '<div style="font-size:9.5px;color:#64748b">' + esc(meta.join(' · ')) + '</div>';
+  if (views) h += '<div style="font-size:9.5px;color:#64748b">👁 ' + esc(views) + '</div>';
+  h += '</div></div>';
+  return h;
+}
+
 function renderDrama(d){
   var arr = d.books || d.data || [];
+  var similar = d.similar || [];
+  var keyword = d.keyword || '';
+  var total = d.total || 0;
   var h = '';
-  h += '<div style="display:flex;align-items:baseline;justify-content:space-between;padding:6px 2px 14px">';
-  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">Drama</div>';
-  h += '<div style="font-size:11px;color:#64748b">' + arr.length + ' judul</div>';
-  h += '</div>';
-  h += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">';
-  arr.slice(0, 20).forEach(function(item){
-    var title = item.title || 'Untitled';
-    var cover = item.cover || item.thumbnail || '';
-    var url = item.url || item.link || '';
-    var category = item.category || '';
-    var views = item.views || '';
-    var chapterCount = item.chapterCount || '';
-    var score = item.score || '';
-    h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;overflow:hidden;display:flex;flex-direction:column">';
-    h += '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="display:block;position:relative;aspect-ratio:2/3;background:#06111f;overflow:hidden;text-decoration:none">';
-    if (cover) h += '<img src="' + esc(cover) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">';
-    if (score) h += '<div style="position:absolute;top:6px;right:6px;background:rgba(251,191,36,.9);padding:2px 7px;border-radius:5px;font-size:10px;font-weight:700;color:#06111f">★ ' + esc(score) + '</div>';
-    h += '</a>';
-    h += '<div style="padding:8px;display:flex;flex-direction:column;gap:5px;flex:1">';
-    h += '<div style="font-size:11.5px;font-weight:600;color:#e0f2fe;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px">' + esc(title) + '</div>';
-    var meta = [];
-    if (category) meta.push(category);
-    if (chapterCount) meta.push(chapterCount + ' eps');
-    if (meta.length) h += '<div style="font-size:9.5px;color:#64748b">' + esc(meta.join(' · ')) + '</div>';
-    if (views) h += '<div style="font-size:9.5px;color:#64748b">👁 ' + esc(views) + '</div>';
-    h += '</div></div>';
-  });
-  h += '</div>';
+
+  // Kalau hasil kosong tapi ada similar
+  if (arr.length === 0 && similar.length > 0) {
+    h += '<div style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;padding:14px 16px;margin-bottom:14px">';
+    h += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">';
+    h += '<div style="font-size:18px">💡</div>';
+    h += '<div style="font-size:13px;font-weight:700;color:#fbbf24">Tidak ada hasil untuk "' + esc(keyword) + '"</div>';
+    h += '</div>';
+    h += '<div style="font-size:11px;color:#fcd34d;line-height:1.6">Coba kata kunci lain atau lihat rekomendasi di bawah.</div>';
+    h += '</div>';
+
+    h += '<div style="font-size:11px;color:#22d3ee;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:700">✨ Mungkin Kamu Suka</div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">';
+    similar.slice(0, 20).forEach(function(item){ h += renderDramaCard(item); });
+    h += '</div>';
+    return h;
+  }
+
+  // Kalau ada hasil utama
+  if (arr.length > 0) {
+    h += '<div style="font-size:11px;color:#22d3ee;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:700">Hasil (' + arr.length + ')</div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px">';
+    arr.slice(0, 20).forEach(function(item){ h += renderDramaCard(item); });
+    h += '</div>';
+  }
+
+  // Similar sebagai tambahan
+  if (similar.length > 0 && arr.length > 0) {
+    h += '<div style="font-size:11px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;font-weight:700">Mungkin Kamu Suka Juga</div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px">';
+    similar.slice(0, 12).forEach(function(item){ h += renderDramaCard(item); });
+    h += '</div>';
+  }
+
+  if (arr.length === 0 && similar.length === 0) {
+    h += '<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:12px;padding:16px;text-align:center">';
+    h += '<div style="font-size:20px;margin-bottom:8px">🔍</div>';
+    h += '<div style="font-size:13px;font-weight:600;color:#f87171">Tidak ada hasil</div>';
+    h += '<div style="font-size:11px;color:#94a3b8;margin-top:6px">Coba kata kunci lain</div>';
+    h += '</div>';
+  }
+
   return h;
 }
 
