@@ -14,6 +14,59 @@ function isGenericSearch(d){
   return !!(f.title && (f.url || f.link));
 }
 
+// Deteksi Mangatoon (data.komik / data.novel)
+function isMangatoonList(d){
+  if (!d || typeof d !== 'object') return false;
+  var dd = d.data || d;
+  if (!dd || typeof dd !== 'object') return false;
+  var hasKomik = Array.isArray(dd.komik) && dd.komik[0] && Array.isArray(dd.komik[0].items) && dd.komik[0].items.length > 0;
+  var hasNovel = Array.isArray(dd.novel) && dd.novel[0] && Array.isArray(dd.novel[0].items) && dd.novel[0].items.length > 0;
+  return !!(hasKomik || hasNovel);
+}
+
+function renderMangatoon(d){
+  var dd = d.data || d;
+  var komikItems = (dd.komik && dd.komik[0] && dd.komik[0].items) || [];
+  var novelItems = (dd.novel && dd.novel[0] && dd.novel[0].items) || [];
+  var h = '';
+
+  if (komikItems.length > 0) {
+    h += '<div style="font-size:11px;color:#22d3ee;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:10px;padding:6px 2px 0">📚 Komik (' + komikItems.length + ')</div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">';
+    komikItems.forEach(function(item){
+      var title = item.title || 'Untitled';
+      var link = item.link || '';
+      var img = item.image || '';
+      h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:10px;overflow:hidden;display:flex;flex-direction:column">';
+      h += '<a href="' + esc(link) + '" target="_blank" rel="noopener" style="display:block;aspect-ratio:2/3;background:#06111f;overflow:hidden;text-decoration:none">';
+      if (img) h += '<img src="' + esc(img) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">';
+      h += '</a>';
+      h += '<div style="padding:8px"><div style="font-size:11px;font-weight:600;color:#e0f2fe;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:28px">' + esc(title) + '</div></div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+
+  if (novelItems.length > 0) {
+    h += '<div style="font-size:11px;color:#22d3ee;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:10px;padding:6px 2px 0">📖 Novel (' + novelItems.length + ')</div>';
+    h += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px">';
+    novelItems.forEach(function(item){
+      var title = item.title || 'Untitled';
+      var link = item.link || '';
+      var img = item.image || '';
+      h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:10px;overflow:hidden;display:flex;flex-direction:column">';
+      h += '<a href="' + esc(link) + '" target="_blank" rel="noopener" style="display:block;aspect-ratio:2/3;background:#06111f;overflow:hidden;text-decoration:none">';
+      if (img) h += '<img src="' + esc(img) + '" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block">';
+      h += '</a>';
+      h += '<div style="padding:8px"><div style="font-size:11px;font-weight:600;color:#e0f2fe;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:28px">' + esc(title) + '</div></div>';
+      h += '</div>';
+    });
+    h += '</div>';
+  }
+
+  return h;
+}
+
 // Deteksi Lahelu (data.postInfos[])
 function isLaheluList(d){
   if (!d || typeof d !== 'object') return false;
@@ -208,6 +261,9 @@ function render(d){
     var dd = d.data || d;
     return renderLahelu(dd.postInfos);
   }
+  if (isMangatoonList(d)) {
+    return renderMangatoon(d);
+  }
   if (isSearchResults(d)) {
     var dd = d.data || d;
     return renderSearchList(dd.results || dd.data, dd.query || dd.source || 'Search');
@@ -225,6 +281,7 @@ window.KazeSearchGeneric = {
   isSoundList: isSoundList,
   isImageArray: isImageArray,
   isLaheluList: isLaheluList,
+  isMangatoonList: isMangatoonList,
   render: render
 };
 console.log('BETOx1: KazeSearchGeneric siap');
