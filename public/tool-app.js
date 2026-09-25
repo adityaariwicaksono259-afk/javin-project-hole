@@ -465,7 +465,13 @@ function smartJsonRender(j){
   // ==== Deteksi Search Generic ====
   if (window.KazeSearchGeneric) {
     var ksg = window.KazeSearchGeneric;
-    if (ksg.isImageArray(j) || ksg.isSoundList(j) || ksg.isSearchResults(j) || ksg.isGenericSearch(j)) {
+    var ksgMatch = ksg.isImageArray(j)
+      || ksg.isSoundList(j)
+      || ksg.isSearchResults(j)
+      || ksg.isGenericSearch(j)
+      || (ksg.isLaheluList && ksg.isLaheluList(j))
+      || (ksg.isMangatoonList && ksg.isMangatoonList(j));
+    if (ksgMatch) {
       var out = ksg.render(j);
       if (out) return out;
     }
