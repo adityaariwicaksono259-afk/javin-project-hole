@@ -438,6 +438,20 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Downloader Generik ====
+  if (window.KazeDownloader && window.KazeDownloader.isDownloader(j)) {
+    return window.KazeDownloader.render(j);
+  }
+
+  // ==== Deteksi Search Generic ====
+  if (window.KazeSearchGeneric) {
+    var ksg = window.KazeSearchGeneric;
+    if (ksg.isImageArray(j) || ksg.isSoundList(j) || ksg.isSearchResults(j) || ksg.isGenericSearch(j)) {
+      var out = ksg.render(j);
+      if (out) return out;
+    }
+  }
+
   // ==== Deteksi Games (Tebak-tebakan) ====
   if (window.KazeGames && window.KazeGames.isGameResponse(j)) {
     return window.KazeGames.render(j);
