@@ -438,6 +438,11 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Games (Tebak-tebakan) ====
+  if (window.KazeGames && window.KazeGames.isGameResponse(j)) {
+    return window.KazeGames.render(j);
+  }
+
   // ==== Deteksi Doa Harian ====
   if (window.KazeDoa && window.KazeDoa.isDoaList(j)) {
     return window.KazeDoa.render(j);
