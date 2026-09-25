@@ -289,7 +289,7 @@ function renderSearchList(arr, source){
     if (!url && item.imageUrl) url = '';
     var image = item.image || item.thumbnail || item.imageUrl || item.img || '';
     var desc = item.description || item.snippet || item.desc || item.content || '';
-    var author = item.author || item.channel || item.user || item.postedBy || '';
+    var author = item.author || item.artist || item.channel || item.user || item.postedBy || '';
     var date = item.published || item.date || item.ago || '';
     var views = item.views || item.views_count || '';
     var meta = item.source || '';
