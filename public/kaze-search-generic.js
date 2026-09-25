@@ -6,7 +6,10 @@ function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':
 function isGenericSearch(d){
   if (!d || typeof d !== 'object') return false;
   if (d.status === false) return false;
-  var arr = Array.isArray(d) ? d : (Array.isArray(d.data) ? d.data : null);
+  var arr = Array.isArray(d) ? d : (
+    Array.isArray(d.data) ? d.data :
+    Array.isArray(d.result) ? d.result : null
+  );
   if (!arr || arr.length === 0) return false;
   var f = arr[0];
   if (!f || typeof f !== 'object') return false;
@@ -284,14 +287,15 @@ function renderSearchList(arr, source){
 
   arr.forEach(function(item){
     var title = item.title || item.name || 'Untitled';
-    var url = item.url || item.link || item.displayUrl || '';
-    // Brave: url di imageUrl, gak ada page URL
-    if (!url && item.imageUrl) url = '';
+    var url = item.url || item.link || item.displayUrl || item.videoId ? (item.url || item.link || ('https://youtube.com/watch?v=' + item.videoId)) : '';
+    // Brave: url cuma di imageUrl, gak ada page URL
+    if (!url && item.imageUrl && !item.link) url = '';
     var image = item.image || item.thumbnail || item.imageUrl || item.img || '';
     var desc = item.description || item.snippet || item.desc || item.content || '';
     var author = item.author || item.artist || item.channel || item.user || item.postedBy || '';
     var date = item.published || item.date || item.ago || '';
     var views = item.views || item.views_count || '';
+    var duration = item.duration || '';
     var meta = item.source || '';
 
     h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;gap:12px">';
@@ -312,6 +316,7 @@ function renderSearchList(arr, source){
     if (author) metaRow.push('👤 ' + author);
     if (meta) metaRow.push('🌐 ' + meta);
     if (views) metaRow.push('👁 ' + views);
+    if (duration) metaRow.push('⏱ ' + duration);
     if (date) metaRow.push('🕐 ' + date);
     if (metaRow.length) h += '<div style="font-size:10px;color:#64748b;margin-top:6px;display:flex;flex-wrap:wrap;gap:8px">' + metaRow.map(function(m){return '<span>' + esc(m) + '</span>'}).join('') + '</div>';
     h += '</div></div>';
@@ -400,7 +405,9 @@ function render(d){
     return renderSearchList(dd.results || dd.data, dd.query || dd.source || 'Search');
   }
   if (isGenericSearch(d)) {
-    var arr2 = Array.isArray(d) ? d : d.data;
+    var arr2 = Array.isArray(d) ? d :
+      (Array.isArray(d.data) ? d.data :
+        (Array.isArray(d.result) ? d.result : []));
     return renderSearchList(arr2, d.source || 'Search');
   }
   return '';
