@@ -2,6 +2,42 @@
 'use strict';
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 
+// Deteksi Capcut (caption + data.url, tanpa downloads)
+function isCapcut(d){
+  if (!d || typeof d !== 'object') return false;
+  if (d.status !== true) return false;
+  if (!d.caption || !d.data) return false;
+  return !!(d.data.url && !d.data.video);
+}
+
+function renderCapcut(d){
+  var caption = d.caption || '';
+  var videoUrl = d.data.url;
+  var h = '';
+  h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.12);border-radius:16px;overflow:hidden;margin-bottom:10px">';
+  h += '<div style="display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(34,211,238,.04);border-bottom:1px solid rgba(34,211,238,.08)">';
+  h += '<div style="width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🎬</div>';
+  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">CapCut Video</div>';
+  h += '</div>';
+
+  if (caption) {
+    h += '<div style="padding:12px 16px 0">';
+    h += '<div style="font-size:12px;color:#94a3b8;line-height:1.5">' + esc(caption) + '</div>';
+    h += '</div>';
+  }
+
+  h += '<div style="padding:12px 16px">';
+  h += '<video controls preload="metadata" src="' + esc(videoUrl) + '" style="width:100%;border-radius:12px;background:#000;display:block"></video>';
+  h += '</div>';
+
+  h += '<div style="padding:0 16px 14px">';
+  h += '<a href="' + esc(videoUrl) + '" download target="_blank" rel="noopener" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border-radius:10px;color:#06111f;font-size:13px;font-weight:700;text-decoration:none">⬇️ Download Video</a>';
+  h += '</div>';
+
+  h += '</div>';
+  return h;
+}
+
 // Deteksi response downloader generik (AIO, capcut, tiktok v2)
 function isDownloader(d){
   if (!d || typeof d !== 'object') return false;
@@ -163,6 +199,6 @@ function renderDownloader(d){
   return h;
 }
 
-window.KazeDownloader = { isDownloader: isDownloader, render: renderDownloader };
+window.KazeDownloader = { isDownloader: isDownloader, isCapcut: isCapcut, render: renderDownloader, renderCapcut: renderCapcut };
 console.log('BETOx1: KazeDownloader siap');
 })();

@@ -469,6 +469,11 @@ function smartJsonRender(j){
     return window.KazeKomik.render(j);
   }
 
+  // ==== Deteksi Capcut ====
+  if (window.KazeDownloader && window.KazeDownloader.isCapcut && window.KazeDownloader.isCapcut(j)) {
+    return window.KazeDownloader.renderCapcut(j);
+  }
+
   // ==== Deteksi Downloader Generik ====
   if (window.KazeDownloader && window.KazeDownloader.isDownloader(j)) {
     return window.KazeDownloader.render(j);
@@ -507,6 +512,11 @@ function smartJsonRender(j){
     if (window.KazeSearch.isSCSearch(j) || window.KazeSearch.isYTSearch(j)) {
       return window.KazeSearch.render(j);
     }
+  }
+
+  // ==== Deteksi Anime Detail ====
+  if (window.KazeAnimeDetail && window.KazeAnimeDetail.isAnimeDetail(j)) {
+    return window.KazeAnimeDetail.render(j);
   }
 
   // ==== Deteksi Anime List ====
