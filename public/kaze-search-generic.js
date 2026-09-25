@@ -70,12 +70,16 @@ function renderMangatoon(d){
   return h;
 }
 
-// Deteksi Lahelu (data.postInfos[])
+// Deteksi Lahelu (data.postInfos[] ATAU data[] langsung)
 function isLaheluList(d){
   if (!d || typeof d !== 'object') return false;
   var dd = d.data || d;
   if (!dd || typeof dd !== 'object') return false;
-  return !!(Array.isArray(dd.postInfos) && dd.postInfos.length > 0 && dd.postInfos[0].title && dd.postInfos[0].postId);
+  // Format 1: data.postInfos[]
+  if (Array.isArray(dd.postInfos) && dd.postInfos.length > 0 && dd.postInfos[0].postId) return true;
+  // Format 2: data[] langsung (postId + userId + hashtags)
+  if (Array.isArray(dd) && dd.length > 0 && dd[0].postId && dd[0].userId && (dd[0].hashtags || dd[0].totalUpvotes !== undefined)) return true;
+  return false;
 }
 
 function renderLahelu(arr){
@@ -386,7 +390,8 @@ function render(d){
   }
   if (isLaheluList(d)) {
     var dd = d.data || d;
-    return renderLahelu(dd.postInfos);
+    var posts = Array.isArray(dd.postInfos) ? dd.postInfos : (Array.isArray(dd) ? dd : []);
+    return renderLahelu(posts);
   }
   if (isMangatoonList(d)) {
     return renderMangatoon(d);
