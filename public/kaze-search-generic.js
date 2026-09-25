@@ -14,6 +14,56 @@ function isGenericSearch(d){
   return !!(f.title && (f.url || f.link));
 }
 
+// Deteksi Lahelu (data.postInfos[])
+function isLaheluList(d){
+  if (!d || typeof d !== 'object') return false;
+  var dd = d.data || d;
+  if (!dd || typeof dd !== 'object') return false;
+  return !!(Array.isArray(dd.postInfos) && dd.postInfos.length > 0 && dd.postInfos[0].title && dd.postInfos[0].postId);
+}
+
+function renderLahelu(arr){
+  var h = '';
+  h += '<div style="display:flex;align-items:baseline;justify-content:space-between;padding:6px 2px 14px">';
+  h += '<div style="font-size:12px;font-weight:600;color:#e0f2fe">Lahelu</div>';
+  h += '<div style="font-size:11px;color:#64748b">' + arr.length + ' post</div>';
+  h += '</div>';
+
+  arr.slice(0, 20).forEach(function(p){
+    var title = p.title || '';
+    var hashtags = (p.hashtags || []).map(function(h){ return '#' + h; }).join(' ');
+    var img = '';
+    // Cari gambar dari content
+    if (Array.isArray(p.content)) {
+      for (var i = 0; i < p.content.length; i++) {
+        if (p.content[i].type === 1 && p.content[i].value && /^https?:\/\//.test(p.content[i].value)) {
+          img = p.content[i].value; break;
+        }
+      }
+    }
+    var postUrl = 'https://lahelu.com/post/' + (p.postId || '');
+    var upvotes = p.totalUpvotes || 0;
+    var comments = p.totalComments || 0;
+
+    h += '<div style="background:#0a1929;border:1px solid rgba(34,211,238,.1);border-radius:12px;margin-bottom:10px;overflow:hidden">';
+    if (img) {
+      h += '<a href="' + esc(postUrl) + '" target="_blank" rel="noopener" style="display:block;width:100%;max-height:280px;overflow:hidden;background:#06111f">';
+      h += '<img src="' + esc(img) + '" loading="lazy" style="width:100%;height:auto;display:block">';
+      h += '</a>';
+    }
+    h += '<div style="padding:10px 12px">';
+    if (title) h += '<div style="font-size:12.5px;color:#e0f2fe;line-height:1.5;margin-bottom:6px">' + esc(title.slice(0, 200)) + '</div>';
+    if (hashtags) h += '<div style="font-size:10.5px;color:#22d3ee;line-height:1.4;margin-bottom:8px">' + esc(hashtags) + '</div>';
+    h += '<div style="display:flex;gap:14px;font-size:11px;color:#64748b">';
+    h += '<span>👍 ' + upvotes + '</span>';
+    h += '<span>💬 ' + comments + '</span>';
+    h += '<a href="' + esc(postUrl) + '" target="_blank" rel="noopener" style="margin-left:auto;color:#22d3ee;text-decoration:none;font-weight:600">Buka →</a>';
+    h += '</div></div></div>';
+  });
+
+  return h;
+}
+
 // Deteksi search dengan "results" (brave, duckduckgo)
 function isSearchResults(d){
   if (!d || typeof d !== 'object') return false;
@@ -154,6 +204,10 @@ function render(d){
   if (isSoundList(d)) {
     return renderSoundList(d.data.sounds);
   }
+  if (isLaheluList(d)) {
+    var dd = d.data || d;
+    return renderLahelu(dd.postInfos);
+  }
   if (isSearchResults(d)) {
     var dd = d.data || d;
     return renderSearchList(dd.results || dd.data, dd.query || dd.source || 'Search');
@@ -170,6 +224,7 @@ window.KazeSearchGeneric = {
   isSearchResults: isSearchResults,
   isSoundList: isSoundList,
   isImageArray: isImageArray,
+  isLaheluList: isLaheluList,
   render: render
 };
 console.log('BETOx1: KazeSearchGeneric siap');

@@ -6,7 +6,7 @@ function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':
 function normalize(item){
   return {
     title: item.title || item.name || 'Unknown',
-    image: item.image || item.thumbnail || item.cover || '',
+    image: item.image || item.thumbnail || item.cover || item.imageUrl || item.image_url || '',
     link: item.link || item.url || '',
     episode: item.latestEpisode || item.episode || item.totalEpisode || '',
     type: Array.isArray(item.type) ? item.type[0] : (item.type || ''),
@@ -29,9 +29,17 @@ function detectAnimeArray(d){
   if (Array.isArray(dd.animeList) && dd.animeList.length > 0 && dd.animeList[0].title) {
     return { items: dd.animeList, source: dd.source || 'Anime', subtitle: dd.page ? 'Hal ' + dd.page : '' };
   }
-  // 2. anime array (Samehadaku Latest)
+  // 2. anime array (Samehadaku Latest) — thumbnail
   if (Array.isArray(dd.anime) && dd.anime.length > 0 && dd.anime[0].title && dd.anime[0].thumbnail) {
-    return { items: dd.anime, source: 'Samehadaku Latest', subtitle: 'Baru rilis' };
+    return { items: dd.anime, source: 'Anime', subtitle: 'Baru rilis' };
+  }
+  // 2b. anime array (otakotaku) — imageUrl
+  if (Array.isArray(dd.anime) && dd.anime.length > 0 && dd.anime[0].title && dd.anime[0].imageUrl) {
+    return { items: dd.anime, source: 'Otakotaku', subtitle: dd.headline ? 'Hasil pencarian' : 'Anime' };
+  }
+  // 2c. anime array dengan url + imageUrl (fallback)
+  if (Array.isArray(dd.anime) && dd.anime.length > 0 && dd.anime[0].title && (dd.anime[0].imageUrl || dd.anime[0].image)) {
+    return { items: dd.anime, source: 'Anime', subtitle: '' };
   }
   // 3. results (Animasu Search)
   if (Array.isArray(dd.results) && dd.results.length > 0 && dd.results[0].title && dd.results[0].image) {
