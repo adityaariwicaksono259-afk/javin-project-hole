@@ -21,6 +21,9 @@ function isGameResponse(d){
   // Tebak Kimia
   if (dd.unsur && dd.lambang) return true;
 
+  // Lengkapi Kalimat (pertanyaan + jawaban)
+  if (dd.pertanyaan && dd.jawaban) return true;
+
   // Format standar: punya jawaban/nama
   var hasAns = dd.jawaban !== undefined || dd.nama;
   if (!hasAns) return false;
@@ -108,11 +111,13 @@ function renderGame(d){
     soal = 'Apa lambang unsur dari: ' + dd.unsur + '?';
     jawaban = dd.lambang;
   }
-  // Tebak Surah (audio)
+  // Tebak Surah (audio) — self-judge mode (tanpa jawaban)
+  var isSurahMode = false;
   if (dd.audio && dd.text && dd.number) {
     audioUrl = dd.audio;
     soal = 'Surah apakah ini?';
     jawaban = '';
+    isSurahMode = true;
   }
   // Tebak JKT (pakai 'gambar' bukan 'img')
   if (dd.gambar && dd.jawaban && !img) {
@@ -158,11 +163,15 @@ function renderGame(d){
   if (deskripsi) {
     h += '<div style="font-size:11px;color:#64748b;margin-bottom:12px;font-style:italic">💡 ' + esc(deskripsi) + '</div>';
   }
-  // Input + tombol
-  h += '<div class="kz-input-wrap" style="display:flex;gap:8px">';
-  h += '<input type="text" class="kz-ans-input" placeholder="Ketik jawaban..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="flex:1;padding:12px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(34,211,238,.2);border-radius:10px;color:#e0f2fe;font-size:14px;font-family:inherit;outline:none;min-width:0">';
-  h += '<button class="kz-check-btn" style="padding:12px 20px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border:0;border-radius:10px;color:#06111f;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">Jawab</button>';
-  h += '</div>';
+  // Input + tombol (bedakan mode surah)
+  if (isSurahMode) {
+    h += '<button class="kz-reveal-surah" data-uid="' + uid + '" style="width:100%;padding:12px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border:0;border-radius:10px;color:#06111f;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Lihat Jawaban</button>';
+  } else {
+    h += '<div class="kz-input-wrap" style="display:flex;gap:8px">';
+    h += '<input type="text" class="kz-ans-input" placeholder="Ketik jawaban..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="flex:1;padding:12px 14px;background:rgba(0,0,0,.3);border:1px solid rgba(34,211,238,.2);border-radius:10px;color:#e0f2fe;font-size:14px;font-family:inherit;outline:none;min-width:0">';
+    h += '<button class="kz-check-btn" style="padding:12px 20px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border:0;border-radius:10px;color:#06111f;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;flex-shrink:0">Jawab</button>';
+    h += '</div>';
+  }
   h += '</div>';
   h += '<div class="kz-result" style="display:none"></div>';
   h += '</div>';
@@ -173,9 +182,31 @@ function renderGame(d){
 document.addEventListener('click', function(e){
   var btn = e.target.closest('.kz-check-btn');
   if (btn) { var g = btn.closest('.kz-game'); if (g) checkGame(g); return; }
+  var rev = e.target.closest('.kz-reveal-surah');
+  if (rev) { var g2 = rev.closest('.kz-game'); if (g2) revealSurah(g2); return; }
   var nxt = e.target.closest('.kz-new-btn');
   if (nxt) { newQuestion(); return; }
 });
+
+// Reveal jawaban untuk Tebak Surah (self-judge)
+function revealSurah(game){
+  var btn = game.querySelector('.kz-reveal-surah');
+  var result = game.querySelector('.kz-result');
+  if (!result || !btn) return;
+  btn.style.display = 'none';
+
+  var h = '';
+  h += '<div style="padding:16px;background:rgba(34,211,238,.08);border-top:1px solid rgba(34,211,238,.2)">';
+  h += '<div style="font-size:12px;color:#22d3ee;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Apakah kamu sudah tahu?</div>';
+  h += '<div style="font-size:12px;color:#cbd5e1;line-height:1.5;margin-bottom:12px">Kalau belum, coba dengar lagi audio di atas. Kalau sudah tahu, lanjut soal baru.</div>';
+  h += '<div style="display:flex;gap:8px">';
+  h += '<button class="kz-new-btn" style="flex:1;padding:11px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border:0;border-radius:10px;color:#06111f;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Soal Baru</button>';
+  h += '</div>';
+  h += '</div>';
+
+  result.innerHTML = h;
+  result.style.display = 'block';
+}
 
 document.addEventListener('keydown', function(e){
   if (e.key !== 'Enter') return;
