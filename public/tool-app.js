@@ -438,6 +438,15 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Misc (Arti Nama, Drama, Quote) ====
+  if (window.KazeMisc) {
+    var km = window.KazeMisc;
+    if (km.isArtiNama(j) || km.isQuoteList(j) || km.isDramaList(j)) {
+      var out = km.render(j);
+      if (out) return out;
+    }
+  }
+
   // ==== Deteksi Komik ====
   if (window.KazeKomik && window.KazeKomik.isKomikList(j)) {
     return window.KazeKomik.render(j);
