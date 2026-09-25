@@ -7,13 +7,22 @@ function isGameResponse(d){
   if (!d || typeof d !== 'object') return false;
   var dd = d.data || d;
   if (!dd || typeof dd !== 'object') return false;
-  // Wajib ada kunci jawaban atau nama
+
+  // Tebak Lagu (audio + judul)
+  if (dd.lagu && dd.judul) return true;
+  // Tebak Logo (nested data.data)
+  if (dd.data && dd.data.image && dd.data.jawaban) return true;
+  // Tebak Warna (ishihara)
+  if (dd.plate && dd.correct && dd.image) return true;
+  // Tebak Kimia
+  if (dd.unsur && dd.lambang) return true;
+
+  // Format standar: punya jawaban/nama
   var hasAns = dd.jawaban !== undefined || dd.nama;
   if (!hasAns) return false;
-  // Kombinasi valid:
-  if (dd.soal) return true;                    // Asah Otak, dll
-  if (dd.img && dd.jawaban) return true;       // Tebak Gambar
-  if (dd.img && dd.name) return true;          // Tebak Bendera
+  if (dd.soal) return true;
+  if (dd.img && dd.jawaban) return true;
+  if (dd.img && dd.name) return true;
   return false;
 }
 
