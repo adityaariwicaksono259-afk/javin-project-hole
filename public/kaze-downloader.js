@@ -13,6 +13,10 @@ function isDownloader(d){
     var hasUrl = d.data.url || d.data.video || d.data.videoUrl || d.data.originalVideoUrl || d.data.audio;
     var hasCaption = d.caption || d.data.caption || d.title;
     if (hasUrl && hasCaption) return true;
+    // AIO: data.video + data.audio (no caption)
+    if (d.data.video && d.data.audio && d.data.videoWM) return true;
+    // AIO variant tanpa videoWM
+    if (d.data.video && d.data.audio && !d.data.url) return true;
   }
   // TikTok v2: data.original + data.aweme_link
   if (d.data && d.data.original && d.data.itemId) return true;
@@ -68,7 +72,37 @@ function renderDownloader(d){
     });
     h += '</div>';
   } else {
-    // Object dengan single url
+    // AIO special: video + audio + videoWM
+    if (dd.video && dd.audio && (dd.videoWM || !dd.url)) {
+      // Video preview
+      h += '<div style="padding:0 16px 12px">';
+      h += '<video controls preload="metadata" src="' + esc(dd.video) + '" style="width:100%;border-radius:12px;background:#000;display:block"></video>';
+      h += '</div>';
+      // Multi-download
+      h += '<div style="padding:0 16px 14px">';
+      h += '<div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;font-weight:700">Pilih Format</div>';
+      if (dd.video) {
+        h += '<a href="' + esc(dd.video) + '" download target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:linear-gradient(135deg,rgba(14,165,233,.15),rgba(34,211,238,.08));border:1px solid rgba(34,211,238,.3);border-radius:10px;margin-bottom:6px;text-decoration:none">';
+        h += '<span style="font-size:16px">🎬</span><span style="flex:1;font-size:12.5px;font-weight:600;color:#e0f2fe">Video (No WM)</span><span style="color:#22d3ee;font-size:11px;font-weight:700">↓</span></a>';
+      }
+      if (dd.videoWM) {
+        h += '<a href="' + esc(dd.videoWM) + '" download target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(34,211,238,.04);border:1px solid rgba(34,211,238,.15);border-radius:10px;margin-bottom:6px;text-decoration:none">';
+        h += '<span style="font-size:16px">💧</span><span style="flex:1;font-size:12.5px;font-weight:600;color:#cbd5e1">Video (Watermark)</span><span style="color:#22d3ee;font-size:11px;font-weight:700">↓</span></a>';
+      }
+      if (dd.audio) {
+        h += '<a href="' + esc(dd.audio) + '" download target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(34,211,238,.04);border:1px solid rgba(34,211,238,.15);border-radius:10px;margin-bottom:6px;text-decoration:none">';
+        h += '<span style="font-size:16px">🎵</span><span style="flex:1;font-size:12.5px;font-weight:600;color:#cbd5e1">Audio MP3</span><span style="color:#22d3ee;font-size:11px;font-weight:700">↓</span></a>';
+      }
+      if (dd.photo && dd.photo !== false) {
+        h += '<a href="' + esc(dd.photo) + '" download target="_blank" rel="noopener" style="display:flex;align-items:center;gap:10px;padding:11px 14px;background:rgba(34,211,238,.04);border:1px solid rgba(34,211,238,.15);border-radius:10px;text-decoration:none">';
+        h += '<span style="font-size:16px">🖼️</span><span style="flex:1;font-size:12.5px;font-weight:600;color:#cbd5e1">Foto</span><span style="color:#22d3ee;font-size:11px;font-weight:700">↓</span></a>';
+      }
+      h += '</div>';
+      h += '</div>';
+      return h;
+    }
+
+    // Object dengan single url (default)
     var mainUrl = pickVideoUrl(dd);
     var thumb2 = dd.thumbnail || dd.image || dd.cover || dd.origin_cover || '';
     var title = dd.title || '';
