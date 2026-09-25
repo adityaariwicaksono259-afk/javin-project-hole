@@ -438,10 +438,15 @@ function renderFromUrl(url, raw){
 function smartJsonRender(j){
   var d = j.data || j.result || j.response || j;
 
+  // ==== Deteksi Jadwal TV ====
+  if (window.KazeJadwal && window.KazeJadwal.isJadwalTV(j)) {
+    return window.KazeJadwal.render(j);
+  }
+
   // ==== Deteksi Misc (Arti Nama, Drama, Quote) ====
   if (window.KazeMisc) {
     var km = window.KazeMisc;
-    if (km.isArtiNama(j) || km.isQuoteList(j) || km.isDramaList(j)) {
+    if (km.isArtiNama(j) || km.isQuoteList(j) || km.isDramaList(j) || (km.isRamalanJodoh && km.isRamalanJodoh(j))) {
       var out = km.render(j);
       if (out) return out;
     }

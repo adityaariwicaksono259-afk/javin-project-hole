@@ -21,6 +21,56 @@ function isDramaList(d){
 }
 
 // Quotes (otakotaku)
+// Deteksi ramalan jodoh
+function isRamalanJodoh(d){
+  if (!d || typeof d !== 'object') return false;
+  if (!d.status || !d.data) return false;
+  var dd = d.data;
+  return !!(dd.result && dd.result.orang_pertama && dd.result.orang_kedua && dd.result.hasil_ramalan);
+}
+
+function renderRamalan(d){
+  var dd = d.data.result;
+  var p1 = dd.orang_pertama || {};
+  var p2 = dd.orang_kedua || {};
+  var list = dd.hasil_ramalan || [];
+  var desc = dd.deskripsi || '';
+
+  var h = '';
+  // Header
+  h += '<div style="background:linear-gradient(135deg,rgba(236,72,153,.15),rgba(168,85,247,.1));border:1px solid rgba(236,72,153,.3);border-radius:16px;padding:18px;margin-bottom:14px">';
+  h += '<div style="text-align:center;font-size:26px;margin-bottom:12px">💕</div>';
+  h += '<div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center">';
+  h += '<div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#f9a8d4">' + esc(p1.nama || '-') + '</div>';
+  if (p1.tanggal_lahir) h += '<div style="font-size:10px;color:#94a3b8;margin-top:4px;line-height:1.4">' + esc(p1.tanggal_lahir) + '</div>';
+  h += '</div>';
+  h += '<div style="font-size:24px">💞</div>';
+  h += '<div style="text-align:center"><div style="font-size:14px;font-weight:700;color:#f9a8d4">' + esc(p2.nama || '-') + '</div>';
+  if (p2.tanggal_lahir) h += '<div style="font-size:10px;color:#94a3b8;margin-top:4px;line-height:1.4">' + esc(p2.tanggal_lahir) + '</div>';
+  h += '</div>';
+  h += '</div></div>';
+
+  // Hasil
+  if (list.length) {
+    h += '<div style="font-size:11px;color:#f472b6;text-transform:uppercase;letter-spacing:.6px;font-weight:700;margin-bottom:10px">Hasil Ramalan</div>';
+    list.forEach(function(r, i){
+      var txt = String(r);
+      // Highlight kategori kaya "Gonto", "Lungguh"
+      h += '<div style="background:#0a1929;border:1px solid rgba(236,72,153,.15);border-radius:10px;padding:12px 14px;margin-bottom:8px;display:flex;gap:10px">';
+      h += '<div style="width:22px;height:22px;border-radius:50%;background:rgba(236,72,153,.15);color:#f472b6;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (i+1) + '</div>';
+      h += '<div style="font-size:12px;color:#cbd5e1;line-height:1.55">' + esc(txt) + '</div>';
+      h += '</div>';
+    });
+  }
+
+  // Deskripsi
+  if (desc) {
+    h += '<div style="font-size:11px;color:#64748b;font-style:italic;margin-top:10px;line-height:1.5;padding:10px 12px;background:rgba(0,0,0,.2);border-radius:8px">' + esc(desc) + '</div>';
+  }
+
+  return h;
+}
+
 function isQuoteList(d){
   if (!d || typeof d !== 'object') return false;
   if (!Array.isArray(d.data) || d.data.length === 0) return false;
@@ -152,6 +202,7 @@ function renderQuote(d){
 
 function render(d){
   if (isArtiNama(d)) return renderArti(d);
+  if (isRamalanJodoh(d)) return renderRamalan(d);
   if (isQuoteList(d)) return renderQuote(d);
   if (isDramaList(d)) return renderDrama(d);
   return '';
@@ -161,6 +212,7 @@ window.KazeMisc = {
   isArtiNama: isArtiNama,
   isDramaList: isDramaList,
   isQuoteList: isQuoteList,
+  isRamalanJodoh: isRamalanJodoh,
   render: render
 };
 console.log('BETOx1: KazeMisc siap');
