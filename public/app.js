@@ -606,3 +606,49 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
 
 
 
+
+// === USER LIMIT BADGE ===
+(function(){
+  var lastFetch = 0;
+  var MIN_GAP = 300;
+
+  async function refreshUserStatus(force){
+    var now = Date.now();
+    if(!force && now - lastFetch < MIN_GAP) return;
+    lastFetch = now;
+
+    var uid = (typeof localStorage !== 'undefined') ? localStorage.getItem('javin_user_id') : null;
+    if(!uid) return;
+
+    var el = document.getElementById('userLimit');
+    if(!el) return;
+
+    try{
+      var r = await fetch('/api/user/me?uid=' + encodeURIComponent(uid) + '&t=' + Date.now(), {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      var j = await r.json();
+      if(!j.ok) return;
+      var remain = Number(j.remaining) || 0;
+      var limit = Number(j.limit) || 0;
+      el.textContent = remain + '/' + limit;
+      var pct = limit > 0 ? (remain / limit) : 0;
+      if(remain <= 0) el.style.color = '#f87171';
+      else if(pct > 0.5) el.style.color = '#4ade80';
+      else if(pct > 0.2) el.style.color = '#fbbf24';
+      else el.style.color = '#f87171';
+    }catch(e){}
+  }
+
+  window.refreshUserStatus = refreshUserStatus;
+
+  setTimeout(function(){ refreshUserStatus(true); }, 400);
+  setInterval(function(){ refreshUserStatus(true); }, 8000);
+
+  document.addEventListener('visibilitychange', function(){
+    if(document.visibilityState === 'visible') refreshUserStatus(true);
+  });
+
+  window.addEventListener('focus', function(){ refreshUserStatus(true); });
+})();
