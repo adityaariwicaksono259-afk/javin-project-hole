@@ -1,6 +1,7 @@
 // Webhook untuk bot SECURITY
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
+import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup } from '../../_lib/bot-admin.js';
 
 async function reply(env, chatId, text) {
   console.log('[BOT-REPLY] Sending to chatId:', chatId, 'text:', text.slice(0, 60));
@@ -50,13 +51,22 @@ export async function onRequestPost({ request, env }) {
       'Ketik /status untuk cek server.';
 
     if (isAdmin) {
-      help += '\n\n🛡️ <b>ADMIN COMMANDS</b>\n' +
+      help += '\n\n🛡️ <b>ADMIN PANEL</b>\n' +
+        '<code>/admin</code> — Menu admin panel\n' +
+        '<code>/users</code> — List user (atau <code>/users &lt;id&gt;</code>)\n' +
+        '<code>/userdel &lt;id&gt;</code> — Hapus user\n' +
+        '<code>/keys</code> — Premium keys (<code>gen N</code>, <code>revoke</code>, <code>del</code>)\n' +
+        '<code>/logs [n]</code> — Log terakhir\n' +
+        '<code>/logsclear</code> — Hapus semua log\n' +
+        '<code>/config</code> — Config server (<code>KEY=VALUE</code> untuk set)\n' +
+        '<code>/backup</code> — Backup database\n' +
+        '<code>/tambahlimit &lt;id&gt; &lt;jumlah&gt;</code> — Tambah limit user\n' +
+        '<code>/resetlimit [id]</code> — Reset limit user\n' +
+        '\n🔧 <b>MAINTENANCE</b>\n' +
         '<code>/maintenance on</code> — Aktifkan maintenance\n' +
         '<code>/maintenance off</code> — Matikan\n' +
         '<code>/maintenance status</code> — Cek status\n' +
         '<code>/stats</code> — Statistik server\n' +
-        '<code>/tambahlimit &lt;id&gt; &lt;jumlah&gt;</code> — Tambah limit user\n' +
-        '<code>/resetlimit [id]</code> — Reset limit user\n' +
         '\n🎵 <b>SOUND</b>\n' +
         '<code>/addsound</code> — Panduan upload sound\n' +
         '<code>/listsound</code> — Liat semua sound\n' +
@@ -227,6 +237,44 @@ export async function onRequestPost({ request, env }) {
     } catch (e) {
       await reply(env, chatId, '❌ Error: ' + e.message);
     }
+    return new Response('ok');
+  }
+
+  // ==== ADMIN PANEL COMMANDS ====
+  if (cmd === '/admin') {
+    await cmdAdmin(env, chatId, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/users') {
+    await cmdUsers(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/userinfo') {
+    await cmdUsers(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/userdel') {
+    await cmdUserDel(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/keys') {
+    await cmdKeys(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/logs') {
+    await cmdLogs(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/logsclear') {
+    await cmdLogsClear(env, chatId, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/config') {
+    await cmdConfig(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/backup') {
+    await cmdBackup(env, chatId, reply);
     return new Response('ok');
   }
 
