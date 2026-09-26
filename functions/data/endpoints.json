@@ -5433,17 +5433,5 @@
     "ex": "/upload.html",
     "redirect": "/upload.html",
     "params": []
-  },
-  {
-    "catalogId": "ep290",
-    "name": "Alight Motion Kit",
-    "m": "GET",
-    "path": "/api/presets",
-    "folder": "Tools",
-    "subfolder": "alightmotion",
-    "desc": "Koleksi lengkap Alight Motion: preset XML siap pakai, efek, dan shape. Semua bisa langsung di-download tanpa app premium.",
-    "ex": "https://am.zervida.my.id/api/presets",
-    "params": [],
-    "needKey": false
   }
 ]
