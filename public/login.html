@@ -13,9 +13,9 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#06111f;color:#e0f2fe;font-family:'Inter',system-ui,sans-serif;overflow-x:hidden}
 body{display:flex;align-items:center;justify-content:center;background:#06111f;padding:20px;min-height:100vh;position:relative;overflow:hidden}
-#loginBgVideo{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;pointer-events:none;transform:scale(1.05);filter:brightness(1.1) saturate(1.15)}
-#loginBgOverlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(6,17,31,.3),rgba(6,17,31,.5));z-index:1;pointer-events:none}
-.card{position:relative;z-index:2}
+
+
+
 .card{width:100%;max-width:420px;background:rgba(10,25,41,.88);border:1px solid rgba(34,211,238,.2);border-radius:20px;padding:36px 28px;text-align:center;animation:fadeUp .6s ease;box-shadow:0 20px 60px rgba(0,0,0,.5);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .logo{width:64px;height:64px;margin:0 auto 24px;border-radius:18px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#06111f;letter-spacing:-1px;box-shadow:0 8px 24px rgba(34,211,238,.3)}
@@ -44,13 +44,62 @@ h1{font-size:20px;font-weight:700;color:#e0f2fe;margin-bottom:8px;letter-spacing
 .step{display:none}
 .step.active{display:block}
 .back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);color:#22d3ee;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:16px}
+
+/* ===== BACKGROUND VIDEO ===== */
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: #06111f;
+  overflow-x: hidden;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+}
+
+#loginBgVideo {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  pointer-events: none;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+#loginBgOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg, rgba(6,17,31,.35), rgba(6,17,31,.6));
+  z-index: -1;
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+}
 </style>
 </head>
 <body>
-<video id="loginBgVideo" autoplay muted loop playsinline>
+<video id="loginBgVideo" autoplay muted loop playsinline webkit-playsinline preload="auto">
   <source src="/login-bg.mp4" type="video/mp4">
 </video>
 <div id="loginBgOverlay"></div>
+
 <div class="card">
   <div class="logo">J</div>
   <h1 id="title">Login untuk melanjutkan</h1>
@@ -238,6 +287,30 @@ async function verifyCode(){
     showError(error2, 'Koneksi gagal. Coba lagi.');
   }
 }
+</script>
+<script>
+(function(){
+  var v = document.getElementById('loginBgVideo');
+  if (!v) return;
+  v.muted = true;
+  v.volume = 0;
+  var playPromise = v.play();
+  if (playPromise && playPromise.catch) {
+    playPromise.catch(function(){
+      var kick = function(){
+        v.muted = true;
+        v.play().catch(function(){});
+        document.removeEventListener('touchstart', kick);
+        document.removeEventListener('click', kick);
+      };
+      document.addEventListener('touchstart', kick, { once: true, passive: true });
+      document.addEventListener('click', kick, { once: true, passive: true });
+    });
+  }
+  setInterval(function(){
+    if (v.paused) v.play().catch(function(){});
+  }, 3000);
+})();
 </script>
 </body>
 </html>
