@@ -1,4 +1,4 @@
-/* ===== KAZE Video Loop — Self Contained ===== */
+/* ===== KAZE Image Background — Self Contained ===== */
 (function(){
 'use strict';
 
@@ -10,47 +10,38 @@ function setup(){
     document.body.insertBefore(bgLayer, document.body.firstChild);
   }
 
-  // Hapus video lama
-  var olds = bgLayer.querySelectorAll('video');
-  olds.forEach(function(v){ v.remove(); });
+  // Hapus elemen lama (video & image)
+  var olds = bgLayer.querySelectorAll('video, img');
+  olds.forEach(function(el){ el.remove(); });
 
-  var v = document.createElement('video');
-  v.id = 'betoBgVideo';
-  v.src = '/bg.mp4';
-  v.muted = true;
-  v.loop = true;
-  v.autoplay = true;
-  v.playsInline = true;
-  v.setAttribute('muted', '');
-  v.setAttribute('loop', '');
-  v.setAttribute('autoplay', '');
-  v.setAttribute('playsinline', '');
-  v.setAttribute('webkit-playsinline', '');
-  v.setAttribute('preload', 'auto');
-  bgLayer.appendChild(v);
+  // Buat image element
+  var img = document.createElement('img');
+  img.id = 'betoBgImage';
+  img.src = '/bg-main.jpg';
+  img.alt = '';
+  img.loading = 'eager';
+  img.decoding = 'async';
+  img.style.position = 'absolute';
+  img.style.top = '0';
+  img.style.left = '0';
+  img.style.width = '100%';
+  img.style.height = '100%';
+  img.style.objectFit = 'cover';
+  img.style.pointerEvents = 'none';
+  img.style.userSelect = 'none';
+  img.style.webkitUserDrag = 'none';
+  img.draggable = false;
 
-  function play(){
-    v.muted = true;
-    v.play().catch(function(){});
-  }
-  play();
-  v.addEventListener('loadeddata', play);
-  document.addEventListener('touchstart', play, { once: true, passive: true });
-  document.addEventListener('click', play, { once: true, passive: true });
-  setInterval(function(){ if (v.paused) play(); }, 2000);
-  v.addEventListener('error', function(){
-    v.load();
-    setTimeout(play, 500);
-  });
+  bgLayer.appendChild(img);
 
-  console.log('BETOx1: video ready');
+  console.log('BETOx1: image background ready');
 }
 
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(setup, 300); });
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(setup, 100); });
 } else {
-  setTimeout(setup, 300);
+  setTimeout(setup, 100);
 }
-setTimeout(setup, 1500);
+setTimeout(setup, 800);
 
 })();

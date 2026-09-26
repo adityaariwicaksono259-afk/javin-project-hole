@@ -62,7 +62,7 @@ body {
   position: relative;
 }
 
-#loginBgVideo {
+#loginBgImage {
   position: fixed;
   top: 0;
   left: 0;
@@ -71,10 +71,8 @@ body {
   object-fit: cover;
   z-index: 0;
   pointer-events: none;
-  transform: translateZ(0);
-  -webkit-transform: translateZ(0);
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 #loginBgOverlay {
@@ -95,9 +93,7 @@ body {
 </style>
 </head>
 <body>
-<video id="loginBgVideo" autoplay muted loop playsinline webkit-playsinline preload="auto">
-  <source src="/login-bg.mp4" type="video/mp4">
-</video>
+<img id="loginBgImage" src="/login-bg.jpg" alt="" loading="eager">
 <div id="loginBgOverlay"></div>
 
 <div class="card">
@@ -287,30 +283,6 @@ async function verifyCode(){
     showError(error2, 'Koneksi gagal. Coba lagi.');
   }
 }
-</script>
-<script>
-(function(){
-  var v = document.getElementById('loginBgVideo');
-  if (!v) return;
-  v.muted = true;
-  v.volume = 0;
-  var playPromise = v.play();
-  if (playPromise && playPromise.catch) {
-    playPromise.catch(function(){
-      var kick = function(){
-        v.muted = true;
-        v.play().catch(function(){});
-        document.removeEventListener('touchstart', kick);
-        document.removeEventListener('click', kick);
-      };
-      document.addEventListener('touchstart', kick, { once: true, passive: true });
-      document.addEventListener('click', kick, { once: true, passive: true });
-    });
-  }
-  setInterval(function(){
-    if (v.paused) v.play().catch(function(){});
-  }, 3000);
-})();
 </script>
 </body>
 </html>
