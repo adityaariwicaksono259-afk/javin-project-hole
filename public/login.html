@@ -12,110 +12,114 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:#06111f;color:#e0f2fe;font-family:'Inter',system-ui,sans-serif;overflow-x:hidden}
-body{
-  display:flex;align-items:center;justify-content:center;
-  background:radial-gradient(circle at 30% 30%,rgba(34,211,238,.08),transparent 50%),
-             radial-gradient(circle at 70% 70%,rgba(14,165,233,.06),transparent 50%),
-             #06111f;
-  padding:20px;min-height:100vh;
-}
-.card{
-  width:100%;max-width:400px;
-  background:#0a1929;
-  border:1px solid rgba(34,211,238,.15);
-  border-radius:20px;
-  padding:40px 28px;
-  text-align:center;
-  animation:fadeUp .6s ease;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);
-}
+body{display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 30% 30%,rgba(34,211,238,.08),transparent 50%),radial-gradient(circle at 70% 70%,rgba(14,165,233,.06),transparent 50%),#06111f;padding:20px;min-height:100vh}
+.card{width:100%;max-width:420px;background:#0a1929;border:1px solid rgba(34,211,238,.15);border-radius:20px;padding:36px 28px;text-align:center;animation:fadeUp .6s ease;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-.logo{
-  width:64px;height:64px;margin:0 auto 24px;border-radius:18px;
-  background:linear-gradient(135deg,#0EA5E9,#22d3ee);
-  display:flex;align-items:center;justify-content:center;
-  font-size:28px;font-weight:800;color:#06111f;letter-spacing:-1px;
-  box-shadow:0 8px 24px rgba(34,211,238,.3);
-}
+.logo{width:64px;height:64px;margin:0 auto 24px;border-radius:18px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:#06111f;letter-spacing:-1px;box-shadow:0 8px 24px rgba(34,211,238,.3)}
 h1{font-size:20px;font-weight:700;color:#e0f2fe;margin-bottom:8px;letter-spacing:-.3px}
 .subtitle{font-size:13px;color:#64748b;margin-bottom:28px;line-height:1.5}
 .field{text-align:left;margin-bottom:14px}
 .field label{display:block;font-size:11px;font-weight:600;color:#94a3b8;margin-bottom:8px;letter-spacing:.3px;text-transform:uppercase}
-.field input{
-  width:100%;padding:14px 16px;
-  background:rgba(0,0,0,.3);
-  border:1px solid rgba(34,211,238,.2);
-  border-radius:12px;
-  color:#e0f2fe;font-size:15px;font-family:inherit;
-  outline:none;transition:all .2s;
-}
+.field input{width:100%;padding:14px 16px;background:rgba(0,0,0,.3);border:1px solid rgba(34,211,238,.2);border-radius:12px;color:#e0f2fe;font-size:15px;font-family:inherit;outline:none;transition:all .2s}
 .field input:focus{border-color:#22d3ee;box-shadow:0 0 0 3px rgba(34,211,238,.1)}
 .field input::placeholder{color:#475569}
-.btn-primary{
-  width:100%;padding:14px;border:0;margin-top:6px;
-  background:linear-gradient(135deg,#0EA5E9,#22d3ee);
-  color:#06111f;font-size:14px;font-weight:700;
-  border-radius:12px;cursor:pointer;font-family:inherit;
-  transition:transform .15s,box-shadow .15s;
-  box-shadow:0 4px 16px rgba(34,211,238,.25);
-  letter-spacing:.2px;
-}
+.field input.otp{font-family:monospace;font-size:20px;text-align:center;letter-spacing:8px;font-weight:700}
+.btn-primary{width:100%;padding:14px;border:0;margin-top:6px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);color:#06111f;font-size:14px;font-weight:700;border-radius:12px;cursor:pointer;font-family:inherit;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 16px rgba(34,211,238,.25);letter-spacing:.2px}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(34,211,238,.35)}
 .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none}
+.btn-secondary{width:100%;padding:12px;border:1px solid rgba(34,211,238,.3);margin-top:10px;background:transparent;color:#22d3ee;font-size:13px;font-weight:600;border-radius:12px;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-secondary:hover{background:rgba(34,211,238,.08)}
 .footer{font-size:11px;color:#475569;line-height:1.6;margin-top:20px}
 .loading{display:none;font-size:13px;color:#94a3b8;padding:16px 0}
 .loading.show{display:block}
-.error{
-  display:none;font-size:12px;color:#f87171;
-  background:rgba(239,68,68,.08);
-  border:1px solid rgba(239,68,68,.2);
-  border-radius:10px;padding:12px 14px;margin-top:16px;line-height:1.5;text-align:left;
-}
+.error{display:none;font-size:12px;color:#f87171;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:12px 14px;margin-top:16px;line-height:1.5;text-align:left}
 .error.show{display:block}
-.success{
-  display:none;font-size:13px;color:#22d3ee;
-  background:rgba(34,211,238,.08);
-  border:1px solid rgba(34,211,238,.25);
-  border-radius:10px;padding:14px 16px;margin-top:16px;line-height:1.6;text-align:left;
-}
+.success{display:none;font-size:12px;color:#22d3ee;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.25);border-radius:10px;padding:14px 16px;margin-top:16px;line-height:1.6;text-align:left}
 .success.show{display:block}
-.success b{color:#7dd3fc;display:block;margin-bottom:4px;font-size:14px}
+.success b{color:#7dd3fc;display:block;margin-bottom:4px;font-size:13px}
 .success .hint{color:#94a3b8;font-size:12px;margin-top:6px}
+.step{display:none}
+.step.active{display:block}
+.back-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;background:rgba(34,211,238,.08);border:1px solid rgba(34,211,238,.2);color:#22d3ee;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:16px}
 </style>
 </head>
 <body>
 <div class="card">
   <div class="logo">J</div>
-  <h1>Login untuk melanjutkan</h1>
-  <div class="subtitle">Masuk dengan email — kami akan kirim link login ke inbox Anda</div>
+  <h1 id="title">Login untuk melanjutkan</h1>
+  <div class="subtitle" id="subtitle">Masuk dengan email Anda</div>
 
-  <div class="field">
-    <label>Email</label>
-    <input type="email" id="emailInput" placeholder="nama@email.com" autocomplete="email" inputmode="email" autofocus>
+  <!-- STEP 1: INPUT EMAIL -->
+  <div class="step active" id="step1">
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="emailInput" placeholder="nama@email.com" autocomplete="email" inputmode="email" autofocus>
+    </div>
+    <button class="btn-primary" id="btnSend">Kirim Kode / Link</button>
+    <div class="loading" id="loading1">Mengirim...</div>
+    <div class="success" id="success1"></div>
+    <div class="error" id="error1"></div>
   </div>
-  <button class="btn-primary" id="btnSendEmail">Kirim Link Login</button>
 
-  <div class="loading" id="loadingEmail">Mengirim link...</div>
-  <div class="success" id="successEmail"></div>
-  <div class="error" id="error"></div>
+  <!-- STEP 2: INPUT KODE -->
+  <div class="step" id="step2">
+    <button class="back-btn" id="btnBack">← Ganti Email</button>
+    <div class="field">
+      <label>Kode Verifikasi</label>
+      <input type="text" id="codeInput" class="otp" placeholder="000000" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" inputmode="text" maxlength="300">
+    </div>
+    <div style="font-size:11px;color:#64748b;line-height:1.5;margin-bottom:12px;text-align:left">
+      <b style="color:#22d3ee">Email terdaftar:</b> masukkan <b>6 digit OTP</b><br>
+      <b style="color:#22d3ee">Email baru:</b> copy <b>link</b> dari email, paste di sini
+    </div>
+    <button class="btn-primary" id="btnVerify">Verifikasi</button>
+    <div class="loading" id="loading2">Verifikasi...</div>
+    <div class="error" id="error2"></div>
+  </div>
 
-  <div class="footer">Link berlaku 15 menit. Cek folder spam kalau tidak masuk.</div>
+  <div class="footer">Javin Tools v2.0 · Powered by Cloudflare</div>
 </div>
 
 <script>
-var errorEl = document.getElementById('error');
-var successEl = document.getElementById('successEmail');
-var loadingEl = document.getElementById('loadingEmail');
+var step1 = document.getElementById('step1');
+var step2 = document.getElementById('step2');
+var title = document.getElementById('title');
+var subtitle = document.getElementById('subtitle');
 var emailInput = document.getElementById('emailInput');
-var btnSend = document.getElementById('btnSendEmail');
+var codeInput = document.getElementById('codeInput');
+var btnSend = document.getElementById('btnSend');
+var btnVerify = document.getElementById('btnVerify');
+var btnBack = document.getElementById('btnBack');
+var loading1 = document.getElementById('loading1');
+var loading2 = document.getElementById('loading2');
+var error1 = document.getElementById('error1');
+var error2 = document.getElementById('error2');
+var success1 = document.getElementById('success1');
 
-function showError(msg){
-  successEl.classList.remove('show');
-  errorEl.textContent = msg;
-  errorEl.classList.add('show');
+var savedEmail = '';
+
+function showError(el, msg){
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function(){ el.classList.remove('show'); }, 8000);
 }
 
-// Kalau udah login → langsung masuk
+function goStep(n){
+  step1.classList.toggle('active', n === 1);
+  step2.classList.toggle('active', n === 2);
+  if (n === 2) {
+    title.textContent = 'Masukkan Kode';
+    subtitle.textContent = 'Cek email Anda';
+    setTimeout(function(){ codeInput.focus(); }, 200);
+  } else {
+    title.textContent = 'Login untuk melanjutkan';
+    subtitle.textContent = 'Masuk dengan email Anda';
+    error2.classList.remove('show');
+    codeInput.value = '';
+  }
+}
+
+// Cek udah login
 fetch('/api/auth/me', { credentials: 'same-origin' })
   .then(function(r){ return r.json(); })
   .then(function(j){
@@ -130,21 +134,20 @@ fetch('/api/auth/me', { credentials: 'same-origin' })
   })
   .catch(function(){});
 
-btnSend.addEventListener('click', sendMagicLink);
-emailInput.addEventListener('keydown', function(e){
-  if (e.key === 'Enter') sendMagicLink();
-});
+// ===== STEP 1: Kirim OTP/Link =====
+btnSend.addEventListener('click', sendCode);
+emailInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') sendCode(); });
 
-async function sendMagicLink(){
+async function sendCode(){
   var email = (emailInput.value || '').trim().toLowerCase();
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    showError('Masukkan email yang valid.');
+    showError(error1, 'Masukkan email yang valid.');
     return;
   }
-  errorEl.classList.remove('show');
-  successEl.classList.remove('show');
+  error1.classList.remove('show');
+  success1.classList.remove('show');
   btnSend.disabled = true;
-  loadingEl.classList.add('show');
+  loading1.classList.add('show');
 
   try {
     var r = await fetch('/api/auth/email/send', {
@@ -153,21 +156,79 @@ async function sendMagicLink(){
       body: JSON.stringify({ email: email })
     });
     var j = await r.json();
-    loadingEl.classList.remove('show');
+    loading1.classList.remove('show');
     btnSend.disabled = false;
 
     if (!j.ok) {
-      showError(j.message || 'Gagal kirim link. Coba lagi.');
+      showError(error1, j.message || 'Gagal kirim kode.');
       return;
     }
 
-    successEl.innerHTML = '<b>Link terkirim!</b>Cek inbox <b style="display:inline">' + email + '</b><div class="hint">Klik link di email untuk masuk. Cek folder <b style="display:inline">Spam</b> kalau tidak muncul dalam 1 menit.</div>';
-    successEl.classList.add('show');
-    emailInput.value = '';
-  } catch (e) {
-    loadingEl.classList.remove('show');
+    savedEmail = email;
+
+    if (j.mode === 'otp') {
+      success1.innerHTML = '<b>✓ Kode OTP terkirim!</b>Cek inbox <b style="display:inline">' + email + '</b><div class="hint">Masukkan 6 digit kode di langkah berikutnya.</div>';
+    } else {
+      success1.innerHTML = '<b>✓ Link verifikasi terkirim!</b>Cek inbox <b style="display:inline">' + email + '</b><div class="hint">Copy link dari email, paste di langkah berikutnya.</div>';
+    }
+    success1.classList.add('show');
+
+    setTimeout(function(){ goStep(2); }, 1200);
+  } catch(e) {
+    loading1.classList.remove('show');
     btnSend.disabled = false;
-    showError('Koneksi gagal. Coba lagi.');
+    showError(error1, 'Koneksi gagal. Coba lagi.');
+  }
+}
+
+// ===== STEP 2: Verifikasi =====
+btnVerify.addEventListener('click', verifyCode);
+codeInput.addEventListener('keydown', function(e){ if (e.key === 'Enter') verifyCode(); });
+
+btnBack.addEventListener('click', function(){ goStep(1); });
+
+async function verifyCode(){
+  var code = (codeInput.value || '').trim();
+  if (!code) {
+    showError(error2, 'Masukkan kode terlebih dahulu.');
+    return;
+  }
+  if (!savedEmail) {
+    showError(error2, 'Email hilang. Kembali ke langkah 1.');
+    return;
+  }
+  error2.classList.remove('show');
+  btnVerify.disabled = true;
+  loading2.classList.add('show');
+
+  try {
+    var r = await fetch('/api/auth/email/verify-code', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ email: savedEmail, code: code })
+    });
+    var j = await r.json();
+    loading2.classList.remove('show');
+    btnVerify.disabled = false;
+
+    if (!j.ok) {
+      showError(error2, j.message || 'Kode salah.');
+      return;
+    }
+
+    try {
+      localStorage.setItem('javin_user_id', j.user.user_code);
+      localStorage.setItem('javin_user_name', j.user.name || '');
+      localStorage.setItem('javin_user_avatar', j.user.avatar || '');
+      if (j.session_token) localStorage.setItem('javin_session_token', j.session_token);
+    } catch(e){}
+
+    setTimeout(function(){ location.replace('/'); }, 400);
+  } catch(e) {
+    loading2.classList.remove('show');
+    btnVerify.disabled = false;
+    showError(error2, 'Koneksi gagal. Coba lagi.');
   }
 }
 </script>
