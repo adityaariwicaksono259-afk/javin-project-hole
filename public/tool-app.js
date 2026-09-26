@@ -502,6 +502,11 @@ function smartJsonRender(j){
     }
   }
 
+  // ==== Deteksi Alight Motion Kit ====
+  if (window.KazeAM && window.KazeAM.isAMPresets(j)) {
+    return window.KazeAM.render(j);
+  }
+
   // ==== Deteksi Gempa BMKG ====
   if (window.KazeGempa && window.KazeGempa.isGempa(j)) {
     return window.KazeGempa.render(j);

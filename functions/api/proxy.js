@@ -10,7 +10,8 @@ const ALLOWED_HOSTS = new Set([
   'api.qrserver.com',
   'www.tikwm.com',
   'tikwm.com',
-  'api.tikwm.com'
+  'api.tikwm.com',
+  'am.zervida.my.id'
 ]);
 
 const MAX_BODY = 6 * 1024 * 1024;
