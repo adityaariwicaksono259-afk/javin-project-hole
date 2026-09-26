@@ -14,6 +14,62 @@ const ALLOWED_HOSTS = new Set([
   'am.zervida.my.id'
 ]);
 
+// ===== Signature Verification =====
+const SIG_MAX_AGE_MS = 5 * 60 * 1000; // 5 menit
+
+async function hmacHex(secret, payload){
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function verifySignature(request, env){
+  const clientId = request.headers.get('X-Client-Id') || '';
+  const timestamp = request.headers.get('X-Timestamp') || '';
+  const signature = request.headers.get('X-Signature') || '';
+
+  if (!clientId || !timestamp || !signature) {
+    return { ok: false, reason: 'missing_headers' };
+  }
+
+  // Timestamp check
+  const ts = parseInt(timestamp, 10);
+  if (!ts || Math.abs(Date.now() - ts) > SIG_MAX_AGE_MS) {
+    return { ok: false, reason: 'expired' };
+  }
+
+  const db = env.JAVIN_DB;
+  if (!db) return { ok: false, reason: 'no_db' };
+
+  // Ambil secret dari DB
+  const row = await db.prepare(
+    'SELECT client_secret, blocked FROM clients WHERE client_id = ? LIMIT 1'
+  ).bind(clientId).first();
+
+  if (!row) return { ok: false, reason: 'unknown_client' };
+  if (row.blocked) return { ok: false, reason: 'blocked' };
+
+  // Hitung expected signature
+  const url = new URL(request.url);
+  const path = url.pathname;
+  const payload = request.method.toUpperCase() + '\n' + path + '\n' + timestamp;
+  const expected = await hmacHex(row.client_secret, payload);
+
+  if (expected !== signature) {
+    return { ok: false, reason: 'bad_signature' };
+  }
+
+  // Update last_used
+  try {
+    await db.prepare('UPDATE clients SET last_used = ? WHERE client_id = ?').bind(Date.now(), clientId).run();
+  } catch(e){}
+
+  return { ok: true, clientId: clientId };
+}
+
 const MAX_BODY = 6 * 1024 * 1024;
 const DEFAULT_LIMIT = 15;
 const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
@@ -189,6 +245,24 @@ export async function onRequest(context) {
     } catch (rawErr) {
       await logRequest(db, { user_id: userId, endpoint_id: 'raw', status: 502 });
       return jsonRes(502, { ok: false, message: 'Gagal akses upstream: ' + rawErr.message });
+    }
+  }
+
+  // ==== VERIFY SIGNATURE (soft mode — log only) ====
+  // Buat enforce, ganti SIG_ENFORCE = true
+  const SIG_ENFORCE = false;
+  try {
+    const sigResult = await verifySignature(request, env);
+    if (!sigResult.ok) {
+      console.warn('[SIG]', sigResult.reason, '| id=', id, '| ua=', (request.headers.get('User-Agent') || '').slice(0, 50));
+      if (SIG_ENFORCE) {
+        return jsonRes(403, { ok: false, message: 'Invalid signature. Refresh halaman.' });
+      }
+    }
+  } catch(e) {
+    console.warn('[SIG] error:', e.message);
+    if (SIG_ENFORCE) {
+      return jsonRes(403, { ok: false, message: 'Signature check error.' });
     }
   }
 
