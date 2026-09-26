@@ -502,6 +502,11 @@ function smartJsonRender(j){
     }
   }
 
+  // ==== Deteksi Gempa BMKG ====
+  if (window.KazeGempa && window.KazeGempa.isGempa(j)) {
+    return window.KazeGempa.render(j);
+  }
+
   // ==== Deteksi Quiz Multi-Choice (Cerdas Cermat) ====
   if (window.KazeQuiz && window.KazeQuiz.isQuizMulti(j)) {
     return window.KazeQuiz.render(j);
