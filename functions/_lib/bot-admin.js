@@ -272,3 +272,114 @@ export async function cmdBackup(env, chatId, reply){
     await reply(env, chatId, '❌ Error: ' + esc(e.message));
   }
 }
+
+// ============ ANNOUNCEMENT ============
+export async function cmdAnnounce(env, chatId, args, reply){
+  const db = env.JAVIN_DB;
+  const arg = (args || '').trim();
+
+  try {
+    // Format: /announce add <type> <title> | <message>
+    if (arg.indexOf('add ') === 0) {
+      const rest = arg.slice(4).trim();
+      // Parse type dulu (info/success/warning/danger/maintenance)
+      const typeMatch = rest.match(/^(info|success|warning|danger|maintenance)\s+/i);
+      let type = 'info';
+      let payload = rest;
+      if (typeMatch) {
+        type = typeMatch[1].toLowerCase();
+        payload = rest.slice(typeMatch[0].length).trim();
+      }
+
+      // Split by " | " jadi title + message
+      const parts = payload.split('|');
+      if (parts.length < 2) {
+        await reply(env, chatId,
+          '⚠️ Format: <code>/announce add [type] Judul | Pesan</code>\n\n' +
+          'Type: info, success, warning, danger, maintenance\n\n' +
+          'Contoh:\n' +
+          '<code>/announce add info Server Update | Maintenance jam 12 malam ya'
+        );
+        return;
+      }
+
+      const title = parts[0].trim();
+      const message = parts.slice(1).join('|').trim();
+
+      if (!title || !message) {
+        await reply(env, chatId, '⚠️ Judul & pesan gak boleh kosong.');
+        return;
+      }
+
+      await db.prepare(
+        'INSERT INTO announcements (title, message, type, active, created_at, expires_at) VALUES (?, ?, ?, 1, ?, NULL)'
+      ).bind(title, message, type, Date.now()).run();
+
+      await reply(env, chatId,
+        '✅ <b>ANNOUNCEMENT DIBUAT</b>\n\n' +
+        '🏷️ Type: <b>' + esc(type) + '</b>\n' +
+        '📌 Title: ' + esc(title) + '\n' +
+        '💬 Message: ' + esc(message.slice(0, 200))
+      );
+      return;
+    }
+
+    // Format: /announce del <id>
+    if (arg.indexOf('del ') === 0) {
+      const id = parseInt(arg.slice(4).trim());
+      if (!id) { await reply(env, chatId, '⚠️ Pakai: <code>/announce del &lt;id&gt;</code>'); return; }
+      await db.prepare('DELETE FROM announcements WHERE id = ?').bind(id).run();
+      await reply(env, chatId, '🗑️ Announcement #' + id + ' dihapus.');
+      return;
+    }
+
+    // Format: /announce off <id>
+    if (arg.indexOf('off ') === 0) {
+      const id = parseInt(arg.slice(4).trim());
+      if (!id) { await reply(env, chatId, '⚠️ Pakai: <code>/announce off &lt;id&gt;</code>'); return; }
+      await db.prepare('UPDATE announcements SET active = 0 WHERE id = ?').bind(id).run();
+      await reply(env, chatId, '⏸️ Announcement #' + id + ' dinonaktifkan.');
+      return;
+    }
+
+    // Format: /announce on <id>
+    if (arg.indexOf('on ') === 0) {
+      const id = parseInt(arg.slice(3).trim());
+      if (!id) { await reply(env, chatId, '⚠️ Pakai: <code>/announce on &lt;id&gt;</code>'); return; }
+      await db.prepare('UPDATE announcements SET active = 1 WHERE id = ?').bind(id).run();
+      await reply(env, chatId, '▶️ Announcement #' + id + ' diaktifkan.');
+      return;
+    }
+
+    // Default: list announcements
+    const rows = await db.prepare(
+      'SELECT id, title, message, type, active, created_at, expires_at FROM announcements ORDER BY created_at DESC LIMIT 20'
+    ).all();
+    const list = rows.results || [];
+
+    if (!list.length) {
+      await reply(env, chatId,
+        '📭 Belum ada announcement.\n\n' +
+        '<b>Cara pakai:</b>\n' +
+        '<code>/announce add [type] Judul | Pesan</code>\n' +
+        '<code>/announce del &lt;id&gt;</code>\n' +
+        '<code>/announce off &lt;id&gt;</code>\n' +
+        '<code>/announce on &lt;id&gt;</code>\n\n' +
+        'Type: info · success · warning · danger · maintenance'
+      );
+      return;
+    }
+
+    let h = '📢 <b>ANNOUNCEMENTS</b> (' + list.length + ')\n\n';
+    list.forEach(function(a){
+      const icon = { info: 'ℹ️', success: '✅', warning: '⚠️', danger: '🚨', maintenance: '🔧' }[a.type] || 'ℹ️';
+      const st = a.active ? '🟢' : '⚪';
+      h += st + ' #' + a.id + ' ' + icon + ' <b>' + esc(a.title) + '</b>\n';
+      h += '   ' + esc(String(a.message).slice(0, 80)) + '\n';
+    });
+    h += '\n💡 <code>/announce add ...</code> · <code>/announce del &lt;id&gt;</code>';
+    await reply(env, chatId, h);
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}

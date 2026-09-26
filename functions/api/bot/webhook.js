@@ -1,7 +1,7 @@
 // Webhook untuk bot SECURITY
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
-import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup } from '../../_lib/bot-admin.js';
+import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup, cmdAnnounce } from '../../_lib/bot-admin.js';
 
 async function reply(env, chatId, text) {
   console.log('[BOT-REPLY] Sending to chatId:', chatId, 'text:', text.slice(0, 60));
@@ -60,6 +60,7 @@ export async function onRequestPost({ request, env }) {
         '<code>/logsclear</code> — Hapus semua log\n' +
         '<code>/config</code> — Config server (<code>KEY=VALUE</code> untuk set)\n' +
         '<code>/backup</code> — Backup database\n' +
+        '<code>/announce</code> — Manage announcement\n' +
         '<code>/tambahlimit &lt;id&gt; &lt;jumlah&gt;</code> — Tambah limit user\n' +
         '<code>/resetlimit [id]</code> — Reset limit user\n' +
         '\n🔧 <b>MAINTENANCE</b>\n' +
@@ -275,6 +276,10 @@ export async function onRequestPost({ request, env }) {
   }
   if (cmd === '/backup') {
     await cmdBackup(env, chatId, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/announce') {
+    await cmdAnnounce(env, chatId, args, reply);
     return new Response('ok');
   }
 

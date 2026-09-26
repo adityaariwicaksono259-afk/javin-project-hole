@@ -1,4 +1,3 @@
-import { verifyAdmin } from '../admin/auth.js';
 
 function json(data, status) {
   return new Response(JSON.stringify(data, null, 2), {
@@ -25,15 +24,10 @@ async function tgCall(env, method, body) {
 export async function onRequestGet({ request, env }) {
   const url = new URL(request.url);
   const secret = url.searchParams.get('secret');
-  let authorized = false;
 
-  if (secret && secret === env.ADMIN_SESSION_SECRET) authorized = true;
-  else {
-    const auth = await verifyAdmin(request, env);
-    if (auth.ok) authorized = true;
+  if (!secret || secret !== env.ADMIN_SESSION_SECRET) {
+    return json({ ok: false, message: 'Kasih ?secret=... di URL' }, 403);
   }
-
-  if (!authorized) return json({ ok: false, message: 'Login admin dulu.' }, 403);
 
   const action = url.searchParams.get('action') || 'info';
 

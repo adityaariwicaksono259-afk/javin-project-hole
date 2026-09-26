@@ -334,20 +334,9 @@ export async function onRequest(context) {
         }
       }
 
-      // Layer 47: Origin strict check (buat POST admin)
-      if (pathname.startsWith('/api/admin/') && method === 'POST') {
-        if (!origin && !referer) {
-          console.warn('[ORIGIN-MISSING]', __ip, pathname);
-        }
-      }
-
       // Layer 48: Fetch metadata check
       const secFetchSite = request.headers.get('Sec-Fetch-Site');
       const secFetchDest = request.headers.get('Sec-Fetch-Dest');
-      if (secFetchSite && secFetchSite === 'cross-site' && pathname.startsWith('/api/admin/')) {
-        console.warn('[SEC-FETCH] Cross-site request to admin:', __ip);
-      }
-
       // Layer 49: Auto-blacklist pattern (kombinasi event)
       // Note: ini otomatis jalan dari Layer 25 (auto-ban)
       // Kalau IP udah:
@@ -358,25 +347,6 @@ export async function onRequest(context) {
 
     } catch (e) {
       console.error('[ADVANCED] Error:', e.message);
-    }
-  }
-
-  // ==== LAYER 4: CSRF check ====
-  if (pathname.startsWith('/api/admin/') && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
-    if (!pathname.endsWith('/login')) {
-      const origin = request.headers.get('Origin') || '';
-      const referer = request.headers.get('Referer') || '';
-      const allowedHosts = ['jvin.pages.dev', 'localhost', '127.0.0.1'];
-      const isAllowed = (u) => {
-        try {
-          const parsed = new URL(u);
-          return allowedHosts.some(h => parsed.hostname === h || parsed.hostname.endsWith('.' + h));
-        } catch (e) { return false; }
-      };
-      const ok = (origin && isAllowed(origin)) || (referer && isAllowed(referer));
-      if (!ok) {
-        return jsonResp(403, { ok: false, message: 'Origin tidak diizinkan.' });
-      }
     }
   }
 
@@ -455,7 +425,6 @@ export async function onRequest(context) {
     let MAX_REQ = 60;
     if (pathname.startsWith('/api/imgtourl')) MAX_REQ = 10;
     else if (pathname.startsWith('/api/premium/')) MAX_REQ = 5;
-    else if (pathname.startsWith('/api/admin/')) MAX_REQ = 20;
     else if (pathname.startsWith('/api/javin')) MAX_REQ = 30;
     else if (pathname.startsWith('/api/user/')) MAX_REQ = 30;
     else if (pathname.startsWith('/api/proxy')) MAX_REQ = 60;
