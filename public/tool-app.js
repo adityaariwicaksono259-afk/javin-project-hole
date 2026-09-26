@@ -502,6 +502,11 @@ function smartJsonRender(j){
     }
   }
 
+  // ==== Deteksi Quiz Multi-Choice (Cerdas Cermat) ====
+  if (window.KazeQuiz && window.KazeQuiz.isQuizMulti(j)) {
+    return window.KazeQuiz.render(j);
+  }
+
   // ==== Deteksi Games (Tebak-tebakan) ====
   if (window.KazeGames && window.KazeGames.isGameResponse(j)) {
     return window.KazeGames.render(j);
