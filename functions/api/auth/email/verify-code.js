@@ -35,8 +35,8 @@ export async function onRequestPost({ request, env }) {
   const email = String(body.email || '').trim().toLowerCase();
   const code = String(body.code || '').trim();
 
-  if (!email) return json({ ok: false, message: 'Email wajib' }, 400);
-  if (!code) return json({ ok: false, message: 'Kode wajib' }, 400);
+  if (!email) return json({ ok: false, message: 'Email wajib diisi untuk login JVaPii.' }, 400);
+  if (!code) return json({ ok: false, message: 'Kode wajib diisi untuk login JVaPii.' }, 400);
 
   const now = Date.now();
   let userCode = null;

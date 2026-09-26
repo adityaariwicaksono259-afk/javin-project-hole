@@ -83,7 +83,7 @@ export async function onRequestGet({ request, env }) {
 }
 
 function htmlSuccess(code, token) {
-  var s = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login berhasil</title>';
+  var s = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login Berhasil — JVaPii</title>';
   s += '<style>body{margin:0;padding:0;background:#06111f;color:#e0f2fe;font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}';
   s += '.box{max-width:400px;padding:40px 28px}.icon{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0EA5E9,#22d3ee);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#06111f;font-weight:700}';
   s += 'h1{font-size:20px;margin:0 0 8px;color:#e0f2fe}p{color:#94a3b8;font-size:14px;line-height:1.5;margin:0}';
@@ -94,12 +94,12 @@ function htmlSuccess(code, token) {
 }
 
 function htmlError(msg) {
-  var s = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login gagal</title>';
+  var s = '<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login Gagal — JVaPii</title>';
   s += '<style>body{margin:0;padding:0;background:#06111f;color:#e0f2fe;font-family:-apple-system,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;text-align:center}';
   s += '.box{max-width:400px;padding:40px 28px}.icon{width:72px;height:72px;border-radius:50%;background:rgba(239,68,68,.15);border:2px solid rgba(239,68,68,.4);margin:0 auto 20px;display:flex;align-items:center;justify-content:center;font-size:36px;color:#f87171;font-weight:700}';
   s += 'h1{font-size:20px;margin:0 0 8px;color:#e0f2fe}p{color:#94a3b8;font-size:14px;line-height:1.5;margin:0 0 20px}';
   s += 'a{display:inline-block;padding:12px 24px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);color:#06111f;text-decoration:none;border-radius:8px;font-weight:600;font-size:14px}</style>';
-  s += '</head><body><div class="box"><div class="icon">X</div><h1>Login gagal</h1><p>' + msg + '</p><a href="/login.html">Kembali ke Login</a></div></body></html>';
+  s += '</head><body><div class="box"><div class="icon">X</div><h1>Login Gagal</h1><p>' + msg + '</p><a href="/login.html">Kembali ke Login JVaPii</a></div></body></html>';
   return new Response(s, {
     status: 400,
     headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' }

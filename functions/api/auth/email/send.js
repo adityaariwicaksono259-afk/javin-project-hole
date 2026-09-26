@@ -69,7 +69,7 @@ export async function onRequestPost({ request, env }) {
       const htmlContent =
         '<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px;background:#0a1929;color:#e0f2fe;border-radius:12px">' +
         '<h2 style="color:#22d3ee;margin:0 0 16px">Kode Login</h2>' +
-        '<p style="color:#94a3b8;line-height:1.6;margin:0 0 20px">Masukkan kode ini di aplikasi Javin:</p>' +
+        '<p style="color:#94a3b8;line-height:1.6;margin:0 0 20px">Masukkan kode ini di aplikasi JVaPii:</p>' +
         '<div style="background:#06111f;border:1px solid rgba(34,211,238,.3);border-radius:10px;padding:24px;text-align:center;margin:0 0 20px">' +
         '<div style="font-family:monospace;font-size:38px;font-weight:700;color:#22d3ee;letter-spacing:8px">' + otp + '</div>' +
         '</div>' +
@@ -84,9 +84,9 @@ export async function onRequestPost({ request, env }) {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          sender: { name: 'Javin Tools', email: fromEmail },
+          sender: { name: 'JVaPii', email: fromEmail },
           to: [{ email: email }],
-          subject: '🔐 Kode Login Javin: ' + otp,
+          subject: '🔐 Kode Login JVaPii: ' + otp,
           htmlContent: htmlContent
         })
       });
@@ -119,7 +119,7 @@ export async function onRequestPost({ request, env }) {
       const htmlContent =
         '<div style="font-family:sans-serif;max-width:500px;margin:0 auto;padding:24px;background:#0a1929;color:#e0f2fe;border-radius:12px">' +
         '<h2 style="color:#22d3ee;margin:0 0 16px">Verifikasi Email</h2>' +
-        '<p style="color:#94a3b8;line-height:1.6;margin:0 0 20px">Copy link di bawah, lalu paste di aplikasi Javin untuk daftar:</p>' +
+        '<p style="color:#94a3b8;line-height:1.6;margin:0 0 20px">Copy link di bawah, lalu paste di aplikasi JVaPii untuk daftar:</p>' +
         '<div style="background:#06111f;border:1px solid rgba(34,211,238,.3);border-radius:10px;padding:14px;word-break:break-all;font-family:monospace;font-size:12px;color:#7dd3fc;margin:0 0 20px">' + link + '</div>' +
         '<p style="color:#64748b;font-size:12px;margin:0;line-height:1.5">Link berlaku <b>15 menit</b>.</p>' +
         '</div>';
@@ -132,9 +132,9 @@ export async function onRequestPost({ request, env }) {
           'Accept': 'application/json'
         },
         body: JSON.stringify({
-          sender: { name: 'Javin Tools', email: fromEmail },
+          sender: { name: 'JVaPii', email: fromEmail },
           to: [{ email: email }],
-          subject: '🔗 Link Verifikasi Javin',
+          subject: '🔗 Link Verifikasi JVaPii',
           htmlContent: htmlContent
         })
       });

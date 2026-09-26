@@ -33,3 +33,6 @@ public/app.html
 public/iframe-wrapper.html
 public/index.html.original-*
 public/*.bak-*
+
+# Login video backup
+public/login-bg-original.mp4
