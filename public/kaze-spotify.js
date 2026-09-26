@@ -16,6 +16,8 @@ function isSpotify(d){
   // Format ep039: data.thumbnail + data.title + data.preview/url
   var dd = d.data || d;
   if (dd && dd.thumbnail && dd.title && (dd.preview || dd.url) && /scdn\.co|spotify/i.test(dd.thumbnail)) return true;
+  // Format ep041 (spotify play): data.cover + data.title + data.artist + data.mp3_url
+  if (dd && dd.cover && dd.title && dd.mp3_url) return true;
   return false;
 }
 
@@ -63,9 +65,22 @@ function renderSpotifySingle(dd){
 function renderSpotify(d){
   var dd = d.data || d;
 
-  // Kalau format ep039 (single track, no tracks array)
+  // Kalau format ep039 (single track dengan thumbnail)
   if (!Array.isArray(dd.tracks) && dd.thumbnail && dd.title) {
     return renderSpotifySingle(dd);
+  }
+  // Kalau format ep041 (spotify play: cover + title + mp3_url)
+  if (!Array.isArray(dd.tracks) && dd.cover && dd.title && dd.mp3_url) {
+    return renderSpotifySingle({
+      thumbnail: dd.cover,
+      title: dd.title,
+      artist: dd.artist || '',
+      duration: dd.duration || '',
+      preview: '',
+      url: dd.mp3_url,
+      album: dd.album || '',
+      year: dd.year || ''
+    });
   }
 
   var tracks = dd.tracks || [];
