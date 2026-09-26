@@ -216,17 +216,9 @@ document.addEventListener('keydown', function(e){
   if (game) checkGame(game);
 });
 
-function checkGame(game){
-  var input = game.querySelector('.kz-ans-input');
+function showGameResult(game, userAns, correct){
   var result = game.querySelector('.kz-result');
-  if (!input || !result) return;
-  var userAns = (input.value || '').trim();
-  if (!userAns) { input.focus(); return; }
-
-  var encoded = game.getAttribute('data-ans') || '';
-  var data = {};
-  try { data = JSON.parse(decodeURIComponent(encoded)); } catch(e){}
-  var correct = data.jawaban !== undefined ? data.jawaban : (data.nama || '');
+  if (!result) return;
   var isCorrect = checkAnswer(userAns, correct);
 
   var wrap = game.querySelector('.kz-input-wrap');
@@ -257,13 +249,49 @@ function checkGame(game){
     }
     h += '</div></div>';
   }
-  // Soal Baru
   h += '<div style="padding:12px 16px;background:rgba(0,0,0,.15);border-top:1px solid rgba(34,211,238,.06)">';
   h += '<button class="kz-new-btn" style="width:100%;padding:11px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border:0;border-radius:10px;color:#06111f;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Soal Baru</button>';
   h += '</div>';
 
   result.innerHTML = h;
   result.style.display = 'block';
+}
+
+function checkGame(game){
+  var input = game.querySelector('.kz-ans-input');
+  var result = game.querySelector('.kz-result');
+  if (!input || !result) return;
+  var userAns = (input.value || '').trim();
+  if (!userAns) { input.focus(); return; }
+
+  // Cek apakah ini mode surah
+  var surahNumEl = game.querySelector('.kz-surah-num');
+  if (surahNumEl && surahNumEl.value) {
+    var num = surahNumEl.value;
+    var wrap = game.querySelector('.kz-input-wrap');
+    if (wrap) {
+      wrap.innerHTML = '<div style="text-align:center;padding:12px;color:#22d3ee;font-size:12px">⏳ Cek jawaban...</div>';
+    }
+    fetch('https://api.alquran.cloud/v1/ayah/' + num)
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        var correct = '';
+        if (j && j.data && j.data.surah) {
+          correct = j.data.surah.englishName || j.data.surah.name || '';
+        }
+        showGameResult(game, userAns, correct);
+      })
+      .catch(function(){
+        showGameResult(game, userAns, 'Tidak diketahui');
+      });
+    return;
+  }
+
+  var encoded = game.getAttribute('data-ans') || '';
+  var data = {};
+  try { data = JSON.parse(decodeURIComponent(encoded)); } catch(e){}
+  var correct = data.jawaban !== undefined ? data.jawaban : (data.nama || '');
+  showGameResult(game, userAns, correct);
 }
 
 // Trigger fetch soal baru = klik tombol submit utama
