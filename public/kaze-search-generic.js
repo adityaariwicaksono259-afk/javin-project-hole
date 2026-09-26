@@ -337,7 +337,7 @@ function renderSoundList(arr){
 
   arr.forEach(function(s, i){
     var title = s.title || s.name || 'Sound';
-    var url = s.url || s.audio || s.shareUrl || '';
+    var url = s.soundUrl || s.audio || s.mp3 || s.url || s.shareUrl || '';
     var img = s.image || s.thumbnail || '';
     var uid = 'sf-' + i + '-' + Math.random().toString(36).slice(2, 7);
 
