@@ -19,8 +19,9 @@ function presetUrl(name){ return AM_BASE + '/preset/' + encodeURIComponent(name)
 function loadAMTab(tab){
   if (__amLoaded[tab]) return;
   __amLoaded[tab] = true;
-  var url = tab === 'effects' ? AM_BASE + '/runtime/effect-index.json' : AM_BASE + '/runtime/shape-index.json';
+  var rawUrl = tab === 'effects' ? AM_BASE + '/runtime/effect-index.json' : AM_BASE + '/runtime/shape-index.json';
   var targetId = tab === 'effects' ? 'am-effects-content' : 'am-shapes-content';
+  var url = '/api/proxy?raw=' + encodeURIComponent(rawUrl);
   fetch(url)
     .then(function(r){ return r.json(); })
     .then(function(data){
@@ -206,13 +207,16 @@ function openPlayerOverlay(){
   ov.appendChild(hd);
 
   // Iframe
-  var fr = document.createElement('iframe');
-  fr.id = 'amPlayerFrame';
-  fr.src = PLAYER_URL;
-  fr.style.cssText = 'flex:1;width:100%;border:0;background:#fff;display:block';
-  fr.setAttribute('allow', 'fullscreen; autoplay; clipboard-write; camera; microphone; geolocation');
-  fr.setAttribute('allowfullscreen', 'true');
-  ov.appendChild(fr);
+  // Info card
+  var body = document.createElement('div');
+  body.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;gap:20px';
+  body.innerHTML =
+    '<div style="font-size:64px">🎬</div>' +
+    '<div style="font-size:18px;font-weight:700;color:#e0f2fe">AM Preset Player</div>' +
+    '<div style="font-size:13px;color:#94a3b8;line-height:1.6;max-width:340px">Player preset Alight Motion dengan preview video, timeline, dan layer viewer. Dibuka di tab baru karena situs penyedia blokir embed.</div>' +
+    '<a id="amPlayerOpen" href="' + PLAYER_URL + '" target="_blank" rel="noopener" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#0EA5E9,#22d3ee);border-radius:12px;color:#06111f;font-weight:700;font-size:14px;text-decoration:none;box-shadow:0 6px 24px rgba(34,211,238,.3)">Buka AM Preset Player →</a>' +
+    '<div style="font-size:11px;color:#475569;margin-top:8px">Buka di tab baru → gak ganggu web ini</div>';
+  ov.appendChild(body);
 
   document.body.appendChild(ov);
 
@@ -221,7 +225,7 @@ function openPlayerOverlay(){
     ov.remove();
   };
   document.getElementById('amPlayerReload').onclick = function(){
-    fr.src = fr.src;
+    location.reload();
   };
 
   // ESC buat close (desktop)
