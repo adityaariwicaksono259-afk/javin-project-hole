@@ -44,11 +44,12 @@ function renderSpotifySingle(dd){
   h += '<div style="font-size:12px;color:#64748b;margin-bottom:2px">' + esc(artist) + '</div>';
   if (duration) h += '<div style="font-size:11px;color:#94a3b8">⏱ ' + esc(duration) + '</div>';
   h += '</div></div>';
-  // Audio preview kalau ada
-  if (preview) {
+  // Audio player (pakai preview kalau ada, fallback ke url full)
+  var audioSrc = preview || fullUrl || '';
+  if (audioSrc) {
     h += '<div style="margin-top:12px">';
-    h += '<div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:6px">Preview 30 Detik</div>';
-    h += '<audio controls preload="metadata" style="width:100%" src="' + esc(preview) + '"></audio>';
+    h += '<div style="font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:6px">' + (preview ? 'Preview' : 'Player') + '</div>';
+    h += '<audio controls preload="metadata" style="width:100%" src="' + esc(audioSrc) + '"></audio>';
     h += '</div>';
   }
   // Full download
