@@ -65,7 +65,7 @@
     }
     if (folder === 'downloader' || /downloader|download/i.test(name)) return 'downloader';
     if (folder === 'search' || /search|cari|pencarian/i.test(name)) return 'search';
-    if (folder === 'games') return 'no-input';
+    if (folder === 'games' && (!ep.params || ep.params.length === 0)) return 'no-input';
 
     // Fix: kalau ADA param (bahkan optional), tampilkan form
     var allP = ep.params || [];
