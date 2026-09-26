@@ -182,3 +182,95 @@ document.addEventListener('click', function(e){
 window.KazeAM = { isAMPresets: isAMPresets, render: renderAMPresets };
 console.log('BETOx1: KazeAM v2 siap');
 })();
+
+/* ===== KazeAM Player — Full Screen Iframe ===== */
+(function(){
+'use strict';
+
+var PLAYER_URL = 'https://am.zervida.my.id/runtime/preset.html';
+
+function openPlayerOverlay(){
+  if (document.getElementById('amPlayerOverlay')) return;
+
+  var ov = document.createElement('div');
+  ov.id = 'amPlayerOverlay';
+  ov.style.cssText = 'position:fixed;inset:0;z-index:2147483647;background:#0a0a0a;display:flex;flex-direction:column';
+
+  // Header
+  var hd = document.createElement('div');
+  hd.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:#0a1929;border-bottom:1px solid rgba(34,211,238,.2);flex-shrink:0';
+  hd.innerHTML =
+    '<button id="amPlayerBack" style="padding:7px 12px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:#22d3ee;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">← Kembali</button>' +
+    '<div style="flex:1;font-size:13px;font-weight:600;color:#e0f2fe;text-align:center">🎬 AM Preset Player</div>' +
+    '<button id="amPlayerReload" style="padding:7px 10px;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.3);color:#22d3ee;border-radius:8px;font-size:12px;cursor:pointer;font-family:inherit">↻</button>';
+  ov.appendChild(hd);
+
+  // Iframe
+  var fr = document.createElement('iframe');
+  fr.id = 'amPlayerFrame';
+  fr.src = PLAYER_URL;
+  fr.style.cssText = 'flex:1;width:100%;border:0;background:#fff;display:block';
+  fr.setAttribute('allow', 'fullscreen; autoplay; clipboard-write; camera; microphone; geolocation');
+  fr.setAttribute('allowfullscreen', 'true');
+  ov.appendChild(fr);
+
+  document.body.appendChild(ov);
+
+  // Handlers
+  document.getElementById('amPlayerBack').onclick = function(){
+    ov.remove();
+  };
+  document.getElementById('amPlayerReload').onclick = function(){
+    fr.src = fr.src;
+  };
+
+  // ESC buat close (desktop)
+  var escHandler = function(e){
+    if (e.key === 'Escape') {
+      ov.remove();
+      document.removeEventListener('keydown', escHandler);
+    }
+  };
+  document.addEventListener('keydown', escHandler);
+
+  // Cleanup on remove
+  var origRemove = ov.remove.bind(ov);
+  ov.remove = function(){
+    document.removeEventListener('keydown', escHandler);
+    origRemove();
+  };
+}
+
+// Auto-inject tombol ke dalam KazeAM card
+function injectPlayerButton(){
+  var kit = document.getElementById('am-kit');
+  if (!kit) return false;
+  if (kit.querySelector('.kz-am-player-btn')) return true;
+
+  var tabRow = kit.querySelector('div[style*="display:flex"][style*="overflow-x:auto"]');
+  if (!tabRow) return false;
+
+  var btn = document.createElement('button');
+  btn.className = 'kz-am-player-btn';
+  btn.style.cssText = 'flex:1;padding:12px 8px;border:0;background:transparent;color:#fbbf24;font-weight:700;font-size:12px;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;white-space:nowrap';
+  btn.textContent = '🎬 Player';
+  btn.onclick = openPlayerOverlay;
+  tabRow.appendChild(btn);
+  return true;
+}
+
+// Trigger inject ketika KazeAM render
+var origRender = window.KazeAM.render;
+window.KazeAM.render = function(d){
+  var html = origRender(d);
+  setTimeout(injectPlayerButton, 100);
+  setTimeout(injectPlayerButton, 500);
+  setTimeout(injectPlayerButton, 1500);
+  return html;
+};
+
+// Expose manual
+window.KazeAM.openPlayer = openPlayerOverlay;
+
+console.log('BETOx1: KazeAM Player overlay siap');
+})();
