@@ -36,3 +36,8 @@ public/*.bak-*
 
 # Login video backup
 public/login-bg-original.mp4
+
+# Login video backups
+public/login-bg-lama.mp4
+public/login-bg-original-2.mp4
+public/login-bg-original.mp4
