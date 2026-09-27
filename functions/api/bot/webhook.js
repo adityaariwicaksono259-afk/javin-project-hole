@@ -11,6 +11,14 @@ async function reply(env, chatId, text) {
 }
 
 export async function onRequestPost({ request, env }) {
+  // Verifikasi secret token dari Telegram (jika di-set)
+  const secretToken = request.headers.get('X-Telegram-Bot-Api-Secret-Token') || '';
+  const expectedSecret = env.TELEGRAM_WEBHOOK_SECRET || '';
+  if (expectedSecret && secretToken !== expectedSecret) {
+    console.warn('[BOT-WEBHOOK] Invalid secret token');
+    return new Response('forbidden', { status: 403 });
+  }
+
   let update;
   try { update = await request.json(); }
   catch (e) { return new Response('bad', { status: 400 }); }
@@ -41,6 +49,13 @@ export async function onRequestPost({ request, env }) {
   let cmd = text.split(/\s+/)[0].split('@')[0].toLowerCase();
   const args = text.slice(text.indexOf(cmd) + cmd.length).trim();
   console.log('[BOT-CMD]', cmd, '| args:', args, '| raw:', text);
+
+  // Batasi command publik — hanya admin yang bisa akses command lain
+  const publicCommands = ['/start', '/help', '/status'];
+  if (!isAdmin && !publicCommands.includes(cmd)) {
+    await reply(env, chatId, '⛔ Akses ditolak.');
+    return new Response('ok');
+  }
 
   if (cmd === '/start' || cmd === '/help') {
     let help = '🤖 <b>JAVIN SECURITY BOT</b>\n\n' +
