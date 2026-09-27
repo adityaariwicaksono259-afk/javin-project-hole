@@ -1,11 +1,19 @@
-// SUPPORT FORM — VinAPIay
+// SUPPORT FORM — JVaPii
 (function(){
+  'use strict';
   var $ = function(id){ return document.getElementById(id); };
-  var state = { type: '', title: '', contact: '', message: '' };
+  var state = { type: '' };
 
-  // Type selection
-  document.querySelectorAll('.sp-type').forEach(function(btn) {
-    btn.onclick = function() {
+  var typeLabels = {
+    bug: '🐛 Bug',
+    error: '⚠️ Error',
+    saran: '💡 Saran',
+    pembelian: '💰 Pembelian'
+  };
+
+  // ===== Kategori selection =====
+  document.querySelectorAll('.sp-type').forEach(function(btn){
+    btn.onclick = function(){
       document.querySelectorAll('.sp-type').forEach(function(b){ b.classList.remove('active'); });
       btn.classList.add('active');
       state.type = btn.dataset.type;
@@ -13,96 +21,133 @@
     };
   });
 
-  // Message counter
+  // ===== Message counter =====
   var msgEl = $('spMessage');
   var countEl = $('spCount');
-  if (msgEl) {
-    msgEl.addEventListener('input', function() {
+  if (msgEl && countEl) {
+    msgEl.addEventListener('input', function(){
       var len = msgEl.value.length;
       countEl.textContent = len + ' / 3000';
       countEl.className = 'sp-counter';
       if (len > 2800) countEl.classList.add('warn');
-      if (len > 2950) {
-        countEl.classList.remove('warn');
-        countEl.classList.add('err');
-      }
+      if (len > 2950) { countEl.classList.remove('warn'); countEl.classList.add('err'); }
       checkValid();
     });
   }
 
-  // Title & contact auto-limit (HTML already maxlength)
-  if ($('spTitle')) $('spTitle').addEventListener('input', checkValid);
-  function checkValid() {
-    var valid = state.type && msgEl.value.trim().length >= 5;
+  var titleEl = $('spTitle');
+  if (titleEl) titleEl.addEventListener('input', checkValid);
+
+  function checkValid(){
+    var valid = state.type && msgEl && msgEl.value.trim().length >= 5;
     $('spSubmit').disabled = !valid;
   }
 
-  // Submit
-  var form = $('spForm');
-  if (form) {
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
-      if ($('spSubmit').disabled) return;
+  // ===== Submit =====
+  var btn = $('spSubmit');
+  if (btn) btn.onclick = submit;
 
-      var btn = $('spSubmit');
-      btn.disabled = true;
-      btn.textContent = '⏳ Mengirim...';
+  async function submit(){
+    var message = msgEl.value.trim();
+    if (!state.type) { alert('Pilih kategori dulu.'); return; }
+    if (message.length < 5) { alert('Pesan minimal 5 karakter.'); return; }
 
-      var resultEl = $('spResult');
-      resultEl.className = 'sp-result';
-      resultEl.style.display = 'none';
+    var uid = '';
+    var uname = '';
+    try {
+      uid = localStorage.getItem('javin_user_id') || '';
+      uname = localStorage.getItem('javin_user_name') || '';
+    } catch(e){}
 
-      try {
-        var uid = '';
-        try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e) {}
-        var uname = '';
-        try { uname = localStorage.getItem('javin_display_name') || ''; } catch(e) {}
+    var payload = {
+      type: state.type,
+      userId: uid,
+      userName: uname,
+      userContact: ($('spContact').value || '').trim(),
+      title: ($('spTitle').value || '').trim(),
+      message: message
+    };
 
-        var r = await fetch('/api/support/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: state.type,
-            title: ($('spTitle').value || '').trim(),
-            userContact: '',
-            message: msgEl.value.trim(),
-            userId: uid,
-            userName: uname
-          })
-        });
+    btn.disabled = true;
+    btn.textContent = '⏳ Mengirim...';
 
-        var ct = r.headers.get('content-type') || '';
-        if (ct.indexOf('application/json') === -1) {
-          var raw = await r.text();
-          throw new Error('Server error (' + r.status + '): ' + raw.slice(0, 80));
-        }
+    try {
+      var r = await fetch('/api/support/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      var j = await r.json();
 
-        var j = await r.json();
-        if (!j.ok) throw new Error(j.message || 'Gagal kirim');
-
-        // Success
-        resultEl.className = 'sp-result show ok';
-        resultEl.textContent = '✅ ' + j.message + '\n\nTiket ID: #' + j.ticket_id + '\n\nKamu bisa cek balasan admin di halaman Inbox.';
-
-        // Reset form
-        setTimeout(function() {
-          document.querySelectorAll('.sp-type').forEach(function(b){ b.classList.remove('active'); });
-          if ($('spTitle')) $('spTitle').value = '';
-          msgEl.value = '';
-          state.type = '';
-          countEl.textContent = '0 / 3000';
-          checkValid();
-        }, 500);
-
-      } catch(e) {
-        resultEl.className = 'sp-result show err';
-        resultEl.textContent = '❌ ' + e.message;
-      } finally {
+      if (!j.ok) {
+        alert('❌ ' + (j.message || 'Gagal kirim. Coba lagi.'));
         btn.disabled = false;
-        btn.textContent = '📤 Kirim Pesan';
+        btn.textContent = '🚀 Kirim Laporan';
+        return;
       }
+
+      // Tampil chat view
+      $('spForm').style.display = 'none';
+      $('spChat').classList.add('show');
+
+      $('spChatUserMsg').textContent = message;
+      $('spChatBotTitle').textContent = (j.auto_reply_emoji || '🤖') + ' ' + (j.auto_reply_title || 'Bot JVaPii');
+      $('spChatBotMsg').textContent = j.auto_reply || 'Terima kasih, laporan Anda telah diterima.';
+
+      // Update history
+      loadHistory();
+
+      // Scroll ke atas
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch(e) {
+      alert('❌ Koneksi gagal. Coba lagi.');
+      btn.disabled = false;
+      btn.textContent = '🚀 Kirim Laporan';
+    }
+  }
+
+  // ===== Load history =====
+  async function loadHistory(){
+    var uid = '';
+    try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e){}
+    if (!uid) return;
+
+    var card = $('spHistoryCard');
+    var box = $('spHistory');
+    if (!card || !box) return;
+
+    try {
+      var r = await fetch('/api/support/my-tickets?user_id=' + encodeURIComponent(uid) + '&t=' + Date.now(), { cache: 'no-store' });
+      var j = await r.json();
+      if (!j.ok || !j.tickets || !j.tickets.length) return;
+
+      card.style.display = 'block';
+      var h = '';
+      j.tickets.slice(0, 10).forEach(function(t){
+        var d = new Date(t.created_at);
+        var dateStr = d.toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        var typeLabel = t.type || 'lainnya';
+        var emoji = { bug: '🐛', error: '⚠️', saran: '💡', pembelian: '💰' }[typeLabel] || '📨';
+        h += '<div class="sp-ticket">';
+        h += '<div class="sp-ticket-head">';
+        h += '<span class="sp-ticket-id">#' + t.id + '</span>';
+        h += '<span class="sp-ticket-badge ' + typeLabel + '">' + emoji + ' ' + typeLabel.toUpperCase() + '</span>';
+        h += '</div>';
+        if (t.title) h += '<div class="sp-ticket-title">' + escHtml(t.title) + '</div>';
+        h += '<div class="sp-ticket-preview">' + escHtml(t.message || '') + '</div>';
+        h += '<div class="sp-ticket-date">' + dateStr + '</div>';
+        h += '</div>';
+      });
+      box.innerHTML = h;
+    } catch(e) {}
+  }
+
+  function escHtml(s){
+    return String(s || '').replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
     });
   }
 
-  checkValid();
+  // Init
+  loadHistory();
 })();
