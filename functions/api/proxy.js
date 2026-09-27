@@ -159,6 +159,46 @@ async function getUserStatus(db, userId) {
   return { used: used, limit: limit, remaining: Math.max(0, limit - used) };
 }
 
+
+const IP_RATE_LIMIT = 30;
+const IP_RATE_WINDOW_MS = 60 * 1000;
+
+async function checkIpRateLimit(db, ip) {
+  if (!db || !ip) return { allowed: true, remaining: IP_RATE_LIMIT };
+
+  const now = Date.now();
+  const windowStart = now - IP_RATE_WINDOW_MS;
+
+  try {
+    const row = await db.prepare(
+      'SELECT window_start, count FROM ip_rate_limit WHERE ip = ? LIMIT 1'
+    ).bind(ip).first();
+
+    if (!row || row.window_start < windowStart) {
+      await db.prepare(
+        'INSERT INTO ip_rate_limit (ip, window_start, count) VALUES (?, ?, 1) ON CONFLICT(ip) DO UPDATE SET window_start = ?, count = 1'
+      ).bind(ip, now, now).run();
+      return { allowed: true, remaining: IP_RATE_LIMIT - 1 };
+    }
+
+    if (row.count >= IP_RATE_LIMIT) {
+      return {
+        allowed: false,
+        remaining: 0,
+        retry_after_ms: (row.window_start + IP_RATE_WINDOW_MS) - now
+      };
+    }
+
+    await db.prepare(
+      'UPDATE ip_rate_limit SET count = count + 1 WHERE ip = ?'
+    ).bind(ip).run();
+
+    return { allowed: true, remaining: IP_RATE_LIMIT - row.count - 1 };
+  } catch (e) {
+    return { allowed: true, remaining: IP_RATE_LIMIT };
+  }
+}
+
 export async function onRequest(context) {
   const request = context.request;
   const env = context.env;
@@ -176,6 +216,21 @@ export async function onRequest(context) {
   }
 
   const db = env.JAVIN_DB;
+
+  // ==== Cek rate limit per IP ====
+  const clientIP = request.headers.get('CF-Connecting-IP') ||
+                   (request.headers.get('X-Forwarded-For') || '').split(',')[0].trim() ||
+                   'unknown';
+
+  const ipCheck = await checkIpRateLimit(db, clientIP);
+  if (!ipCheck.allowed) {
+    const retrySec = Math.ceil(ipCheck.retry_after_ms / 1000);
+    return jsonRes(429, {
+      ok: false,
+      message: 'Terlalu banyak request dari IP kamu. Coba lagi dalam ' + retrySec + ' detik.',
+      retry_after: retrySec
+    });
+  }
 
   // ==== Cek limit user ====
   if (userId && db) {
