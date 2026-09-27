@@ -1084,37 +1084,41 @@ footer {
 /* ==========================================================
    JAVIN-LIST-UI-V1
    HANYA UNTUK BAR/LIST ENDPOINT
-   JANGAN UBAH BAGIAN LAIN
    ========================================================== */
 
+.fx-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 100% !important;
+  gap: 0 !important;
+}
+
 .fx-grid .fx-card {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  min-height: 92px;
-  box-sizing: border-box;
-  padding: 17px 18px;
-  margin: 0 0 14px;
-  border-radius: 24px;
-  border: 1px solid rgba(14, 165, 233, 0.42);
-  background:
-    linear-gradient(
-      135deg,
-      rgba(4, 23, 38, 0.96),
-      rgba(5, 27, 43, 0.91)
-    );
+  position: relative !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: 92px !important;
+  box-sizing: border-box !important;
+  padding: 17px 18px !important;
+  margin: 0 0 14px !important;
+  border-radius: 24px !important;
+  border: 1px solid rgba(14, 165, 233, 0.42) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(4, 23, 38, 0.96),
+    rgba(5, 27, 43, 0.91)
+  ) !important;
   box-shadow:
     0 8px 24px rgba(0, 0, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.035);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  overflow: hidden;
+    inset 0 1px 0 rgba(255, 255, 255, 0.035) !important;
+  overflow: hidden !important;
   transition:
     transform .18s ease,
     border-color .18s ease,
-    box-shadow .18s ease,
-    background .18s ease;
+    box-shadow .18s ease !important;
 }
 
 .fx-grid .fx-card::before {
@@ -1126,123 +1130,93 @@ footer {
   width: 3px;
   border-radius: 0 4px 4px 0;
   background: rgba(14, 165, 233, 0.65);
-  opacity: .65;
+}
+
+.fx-grid .fx-card-body {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  padding-left: 4px !important;
+}
+
+.fx-grid .fx-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  margin-bottom: 7px !important;
+}
+
+.fx-grid .fx-card-title h3 {
+  margin: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 19px !important;
+  line-height: 1.15 !important;
+  font-weight: 700 !important;
+  color: #f4f9ff !important;
+}
+
+.fx-grid .fx-badge {
+  flex: 0 0 auto !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(14, 165, 233, 0.16) !important;
+  color: #20c8f5 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+.fx-grid .fx-card-desc {
+  display: -webkit-box !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  color: rgba(205, 220, 233, 0.72) !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  -webkit-line-clamp: 1 !important;
+  -webkit-box-orient: vertical !important;
+}
+
+.fx-grid .fx-card-arrow {
+  flex: 0 0 auto !important;
+  width: 34px !important;
+  margin-left: 12px !important;
+  text-align: center !important;
+  color: rgba(240, 248, 255, 0.88) !important;
+  font-size: 30px !important;
+  line-height: 1 !important;
 }
 
 .fx-grid .fx-card:hover {
   transform: translateY(-2px);
-  border-color: rgba(14, 165, 233, 0.72);
+  border-color: rgba(14, 165, 233, 0.72) !important;
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.28),
-    0 0 18px rgba(14, 165, 233, 0.10);
+    0 0 18px rgba(14, 165, 233, 0.10) !important;
 }
 
-.fx-grid .fx-card:active {
-  transform: scale(.985);
-}
-
-.fx-grid .fx-card-body {
-  min-width: 0;
-  flex: 1 1 auto;
-  padding-left: 4px;
-}
-
-.fx-grid .fx-card-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  margin-bottom: 7px;
-}
-
-.fx-grid .fx-card-title h3 {
-  margin: 0;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 19px;
-  line-height: 1.15;
-  font-weight: 700;
-  letter-spacing: -.25px;
-  color: #f4f9ff;
-}
-
-.fx-grid .fx-badge {
-  flex: 0 0 auto;
-  padding: 5px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(14, 165, 233, 0.24);
-  background: rgba(14, 165, 233, 0.16);
-  color: #20c8f5;
-  font-size: 11px;
-  line-height: 1;
-  font-weight: 800;
-  letter-spacing: .2px;
-}
-
-.fx-grid .fx-card-desc {
-  display: -webkit-box;
-  margin: 0;
-  overflow: hidden;
-  color: rgba(205, 220, 233, 0.72);
-  font-size: 14px;
-  line-height: 1.4;
-  font-weight: 500;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-
-.fx-grid .fx-card-arrow {
-  flex: 0 0 auto;
-  width: 34px;
-  margin-left: 12px;
-  text-align: center;
-  color: rgba(240, 248, 255, 0.88);
-  font-size: 30px;
-  line-height: 1;
-  font-weight: 400;
-  transition:
-    transform .18s ease,
-    color .18s ease;
-}
-
-.fx-grid .fx-card:hover .fx-card-arrow {
-  color: #20c8f5;
-  transform: translateX(3px);
-}
-
-/* Mobile */
 @media (max-width: 600px) {
   .fx-grid .fx-card {
-    min-height: 86px;
-    padding: 15px 15px;
-    margin-bottom: 12px;
-    border-radius: 22px;
-  }
-
-  .fx-grid .fx-card-title {
-    gap: 7px;
-    margin-bottom: 6px;
+    min-height: 86px !important;
+    padding: 15px !important;
+    margin-bottom: 12px !important;
+    border-radius: 22px !important;
   }
 
   .fx-grid .fx-card-title h3 {
-    font-size: 18px;
-  }
-
-  .fx-grid .fx-badge {
-    padding: 5px 9px;
-    font-size: 10px;
+    font-size: 18px !important;
   }
 
   .fx-grid .fx-card-desc {
-    font-size: 13px;
+    font-size: 13px !important;
   }
 
   .fx-grid .fx-card-arrow {
-    width: 28px;
-    margin-left: 8px;
-    font-size: 28px;
+    width: 28px !important;
+    margin-left: 8px !important;
+    font-size: 28px !important;
   }
 }
 
