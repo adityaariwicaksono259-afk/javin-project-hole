@@ -487,6 +487,11 @@ export async function onRequest(context) {
   newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   newHeaders.set('Origin-Agent-Cluster', '?1');
 
+  // X-Robots-Tag untuk file spesifik
+  if (url.pathname === '/endpoints.json' || url.pathname.endsWith('.bak') || url.pathname.endsWith('.bak.json')) {
+    newHeaders.set('X-Robots-Tag', 'noindex, nofollow');
+  }
+
   const csp = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://challenges.cloudflare.com https://w.soundcloud.com https://widget.sndcdn.com",

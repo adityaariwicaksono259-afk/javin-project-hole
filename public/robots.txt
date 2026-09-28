@@ -1,7 +1,11 @@
 User-agent: *
+Allow: /$
+
+# Jangan indeks file sensitif
 Disallow: /api/
-Disallow: /debug.html
+Disallow: /_frames/
+Disallow: /_video_backup/
 Disallow: /*.json$
-Allow: /
+Disallow: /*.bak$
 
 Sitemap: https://jvin.pages.dev/sitemap.xml
