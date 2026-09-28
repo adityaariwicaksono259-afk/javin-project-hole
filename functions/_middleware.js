@@ -463,6 +463,37 @@ export async function onRequest(context) {
   }
 
   // ==== Pass ke handler ====
+
+  // ==== AUTH GATE: Cek session sebelum serve halaman HTML ====
+  if (method === 'GET' || method === 'HEAD') {
+    var __ext = pathname.split('.').pop().toLowerCase();
+    var __staticExts = ['js','css','png','jpg','jpeg','gif','svg','ico','woff','woff2','ttf','mp3','mp4','webm','json','txt','xml','webp','avif'];
+    var __isStatic = __staticExts.indexOf(__ext) !== -1;
+    var __isApi = pathname.indexOf('/api/') === 0;
+    var __isWellKnown = pathname.indexOf('/.well-known/') === 0;
+    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html'];
+    var __isPublicPage = __publicPages.indexOf(pathname) !== -1;
+
+    if (!__isStatic && !__isApi && !__isWellKnown && !__isPublicPage) {
+      var __authCookie = request.headers.get('Cookie') || '';
+      var __authMatch = __authCookie.match(/(?:^|;\s*)javin_session=([^;]+)/);
+      var __authOk = false;
+      if (__authMatch && context.env && context.env.JAVIN_DB) {
+        try {
+          var __token = decodeURIComponent(__authMatch[1]);
+          var __sess = await context.env.JAVIN_DB.prepare(
+            'SELECT token FROM auth_sessions WHERE token = ? AND expires_at > ?'
+          ).bind(__token, Date.now()).first();
+          if (__sess) __authOk = true;
+        } catch(e) { console.error('[AUTH-GATE]', e.message); }
+      }
+      if (!__authOk) {
+        return Response.redirect(new URL('/login', request.url).toString(), 302);
+      }
+    }
+  }
+  // ==== END AUTH GATE ====
+
   const response = await context.next();
   const newHeaders = new Headers(response.headers);
 
