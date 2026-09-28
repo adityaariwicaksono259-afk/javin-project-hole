@@ -476,7 +476,7 @@ export async function onRequest(context) {
   // ==== LAYER 1: Security headers ====
   newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
   newHeaders.set('X-Content-Type-Options', 'nosniff');
-  newHeaders.set('X-XSS-Protection', '1; mode=block');
+  newHeaders.set('X-XSS-Protection', '0');
   newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   newHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   newHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
@@ -485,6 +485,7 @@ export async function onRequest(context) {
   newHeaders.set('X-Download-Options', 'noopen');
   newHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
   newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  newHeaders.set('Origin-Agent-Cluster', '?1');
 
   const csp = [
     "default-src 'self'",
