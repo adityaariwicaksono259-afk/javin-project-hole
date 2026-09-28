@@ -493,7 +493,7 @@ export async function onRequest(context) {
     "font-src 'self' https://fonts.gstatic.com data:",
     "img-src 'self' data: blob: https:",
     "media-src 'self' blob: https:",
-    "connect-src 'self' https://api.nexadev.my.id https://apii.nexadev.my.id https://api.siputzx.my.id https://api.qrserver.com",
+    "connect-src 'self' https://api.nexadev.my.id https://apii.nexadev.my.id https://api.siputzx.my.id https://api.qrserver.com https://challenges.cloudflare.com",
     "frame-src 'self' https://challenges.cloudflare.com https://w.soundcloud.com https://soundcloud.com https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com",
     "frame-ancestors 'self'",
     "base-uri 'self'",
