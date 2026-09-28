@@ -471,23 +471,24 @@ export async function onRequest(context) {
       var __ddosWindow = Math.floor(__ddosNow / 60000) * 60000;
       var __ddosLimit = 100; // max 100 req/menit per IP
 
-      await __db.prepare(
-        'INSERT INTO ip_rate_limit (ip, window_start, count) VALUES (?, ?, 1) ' +
-        'ON CONFLICT(ip) DO UPDATE SET count = count + 1'
-      ).bind(__ip, __ddosWindow).run();
-
       var __ddosRow = await __db.prepare(
-        'SELECT count FROM ip_rate_limit WHERE ip = ? AND window_start = ?'
+        'INSERT INTO ip_rate_limit (ip, window_start, count) VALUES (?, ?, 1) ' +
+        'ON CONFLICT(ip) DO UPDATE SET ' +
+        'count = CASE WHEN ip_rate_limit.window_start = excluded.window_start THEN count + 1 ELSE 1 END, ' +
+        'window_start = excluded.window_start ' +
+        'RETURNING count'
       ).bind(__ip, __ddosWindow).first();
 
-      if (__ddosRow && __ddosRow.count > __ddosLimit) {
+      var __ddosCount = (__ddosRow && __ddosRow.count) || 0;
+
+      if (__ddosCount > __ddosLimit) {
         // Auto-ban 10 menit
         var __banUntil = __ddosNow + 10 * 60 * 1000;
         try {
           await __db.prepare(
             'INSERT INTO blocked_ips (ip, reason, until, created_at) VALUES (?, ?, ?, ?) ' +
             'ON CONFLICT(ip) DO UPDATE SET reason = excluded.reason, until = excluded.until'
-          ).bind(__ip, 'DDoS: ' + __ddosRow.count + ' req/min', __banUntil, __ddosNow).run();
+          ).bind(__ip, 'DDoS: ' + __ddosCount + ' req/min', __banUntil, __ddosNow).run();
 
           // Notif Telegram
           try {
