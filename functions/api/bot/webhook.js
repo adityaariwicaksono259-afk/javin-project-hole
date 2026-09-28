@@ -2,6 +2,7 @@
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
 import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup, cmdAnnounce } from '../../_lib/bot-admin.js';
+import { cmdOsintIp, cmdOsintIpInfo, cmdOsintDns, cmdOsintReverse, cmdOsintWhois, cmdOsintSubdomain, cmdOsintCve, cmdOsintHeaders, cmdOsintSsl, cmdOsintPhone, cmdOsintQr, cmdOsintHash, cmdOsintPassword, cmdOsintUsername, cmdOsintPortscan } from '../../_lib/osint-commands.js';
 
 async function reply(env, chatId, text) {
   console.log('[BOT-REPLY] Sending to chatId:', chatId, 'text:', text.slice(0, 60));
@@ -88,7 +89,23 @@ export async function onRequestPost({ request, env }) {
         '<code>/listsound</code> — Liat semua sound\n' +
         '<code>/setsound &lt;id&gt;</code> — Ganti sound aktif\n' +
         '<code>/delsound &lt;id&gt;</code> — Hapus sound\n' +
-        '<code>/soundstatus</code> — Liat sound aktif';
+        '<code>/soundstatus</code> — Liat sound aktif' +
+        '\n\n🔍 <b>OSINT COMMANDS</b>\n' +
+        '<code>/ip &lt;target&gt;</code> — IP lookup lengkap\n' +
+        '<code>/ipinfo</code> — Info IP kamu\n' +
+        '<code>/dns &lt;domain&gt;</code> — DNS records\n' +
+        '<code>/reverse &lt;ip&gt;</code> — Reverse DNS\n' +
+        '<code>/whois &lt;domain&gt;</code> — WHOIS lookup\n' +
+        '<code>/subdomain &lt;domain&gt;</code> — Cari subdomain\n' +
+        '<code>/cve &lt;keyword&gt;</code> — CVE finder\n' +
+        '<code>/headers &lt;url&gt;</code> — Cek security headers\n' +
+        '<code>/ssl &lt;domain&gt;</code> — SSL check\n' +
+        '<code>/phone &lt;nomor&gt;</code> — Validasi nomor\n' +
+        '<code>/qr &lt;teks&gt;</code> — QR code generator\n' +
+        '<code>/hash &lt;teks&gt;</code> — Hash generator\n' +
+        '<code>/password &lt;teks&gt;</code> — Cek password strength\n' +
+        '<code>/username &lt;user&gt;</code> — Username search\n' +
+        '<code>/portscan &lt;target&gt;</code> — Port scan (IP sendiri!)';
     }
 
     await reply(env, chatId, help);
@@ -304,6 +321,24 @@ export async function onRequestPost({ request, env }) {
     await handleSoundCommand(cmd, args, chatId, env, reply);
     return new Response('ok');
   }
+
+
+  // ==== OSINT COMMANDS ====
+  if (cmd === '/ip') { await cmdOsintIp(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/ipinfo') { await cmdOsintIpInfo(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/dns') { await cmdOsintDns(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/reverse') { await cmdOsintReverse(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/whois') { await cmdOsintWhois(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/subdomain') { await cmdOsintSubdomain(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/cve') { await cmdOsintCve(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/headers') { await cmdOsintHeaders(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/ssl') { await cmdOsintSsl(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/phone') { await cmdOsintPhone(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/qr') { await cmdOsintQr(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/hash') { await cmdOsintHash(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/password') { await cmdOsintPassword(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/username') { await cmdOsintUsername(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/portscan') { await cmdOsintPortscan(env, chatId, args, reply); return new Response('ok'); }
 
   await reply(env, chatId, '❓ Command nggak dikenal. Ketik /help.');
   return new Response('ok');

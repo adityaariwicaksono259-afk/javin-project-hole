@@ -464,6 +464,65 @@ export async function onRequest(context) {
 
   // ==== Pass ke handler ====
 
+  // ==== ANTI-DDOS: Rate limit per IP per menit ====
+  if (!__isWhitelisted && __db) {
+    try {
+      var __ddosNow = Date.now();
+      var __ddosWindow = Math.floor(__ddosNow / 60000) * 60000;
+      var __ddosLimit = 100; // max 100 req/menit per IP
+
+      await __db.prepare(
+        'INSERT INTO ip_rate_limit (ip, window_start, count) VALUES (?, ?, 1) ' +
+        'ON CONFLICT(ip) DO UPDATE SET count = count + 1'
+      ).bind(__ip, __ddosWindow).run();
+
+      var __ddosRow = await __db.prepare(
+        'SELECT count FROM ip_rate_limit WHERE ip = ? AND window_start = ?'
+      ).bind(__ip, __ddosWindow).first();
+
+      if (__ddosRow && __ddosRow.count > __ddosLimit) {
+        // Auto-ban 10 menit
+        var __banUntil = __ddosNow + 10 * 60 * 1000;
+        try {
+          await __db.prepare(
+            'INSERT INTO blocked_ips (ip, reason, until, created_at) VALUES (?, ?, ?, ?) ' +
+            'ON CONFLICT(ip) DO UPDATE SET reason = excluded.reason, until = excluded.until'
+          ).bind(__ip, 'DDoS: ' + __ddosRow.count + ' req/min', __banUntil, __ddosNow).run();
+
+          // Notif Telegram
+          try {
+            await sendTelegram(context.env, '🚨 <b>ANTI-DDOS</b>\n\n' +
+              'IP: <code>' + __ip + '</code>\n' +
+              'Rate: <b>' + __ddosRow.count + ' req/min</b>\n' +
+              'Action: <b>Banned 10 menit</b>\n' +
+              'Path: <code>' + pathname + '</code>', { type: 'antiddos', throttleMs: 60000 });
+          } catch(e) {}
+        } catch(e) {}
+
+        return new Response(JSON.stringify({
+          ok: false,
+          message: 'Rate limit exceeded. Try again later.',
+          retry_after: 600
+        }), {
+          status: 429,
+          headers: {
+            'Content-Type': 'application/json',
+            'Retry-After': '600',
+            'Cache-Control': 'no-store'
+          }
+        });
+      }
+
+      // Cleanup window lama (tiap 100 request aja, hemat)
+      if (Math.random() < 0.01) {
+        await __db.prepare('DELETE FROM ip_rate_limit WHERE window_start < ?').bind(__ddosNow - 5 * 60 * 1000).run();
+      }
+    } catch(e) {
+      console.error('[ANTI-DDOS]', e.message);
+    }
+  }
+  // ==== END ANTI-DDOS ====
+
   // ==== AUTH GATE: Cek session sebelum serve halaman HTML ====
   if (method === 'GET' || method === 'HEAD') {
     var __ext = pathname.split('.').pop().toLowerCase();
