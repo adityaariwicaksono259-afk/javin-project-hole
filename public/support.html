@@ -107,9 +107,10 @@ a{color:#22d3ee;text-decoration:none}
 .sp-chat{display:none}
 .sp-chat.show{display:block}
 .sp-bubble{
-  padding:14px 16px;border-radius:16px;margin-bottom:12px;
-  font-size:13px;line-height:1.65;white-space:pre-wrap;
+  padding:10px 14px;border-radius:14px;margin-bottom:10px;
+  font-size:13px;line-height:1.5;
   animation:bubbleIn .4s ease;
+  word-break:break-word;
 }
 @keyframes bubbleIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 .sp-bubble.user{
@@ -124,7 +125,7 @@ a{color:#22d3ee;text-decoration:none}
 }
 .sp-bubble-label{
   font-size:10px;text-transform:uppercase;letter-spacing:.5px;
-  font-weight:700;margin-bottom:6px;opacity:.8;
+  font-weight:700;margin-bottom:4px;opacity:.8;
 }
 .sp-bubble.user .sp-bubble-label{color:#22d3ee}
 .sp-bubble.bot .sp-bubble-label{color:#fbbf24}
@@ -179,7 +180,6 @@ a{color:#22d3ee;text-decoration:none}
   <div class="sp-hero">
     <div class="sp-hero-icon">💬</div>
     <div class="sp-hero-title">Pusat Bantuan</div>
-    <div class="sp-hero-sub">Pilih kategori, kirim laporan, bot kami balas otomatis</div>
   </div>
 
   <!-- FORM VIEW -->
