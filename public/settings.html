@@ -105,6 +105,65 @@ body.theme-dark .lang-row .lang-code { background: rgba(255,255,255,0.06); color
 body.theme-dark .lang-row.active .lang-code { background: rgba(129,140,248,0.25); color: #a5b4fc; }
 body.theme-dark .lang-empty { color: #64748b; }
 </style>
+<style>
+/* LANGUAGE PICKER — Dark Mode Override (paling akhir) */
+html[data-theme="dark"] #langSearch {
+  background: rgba(15,23,42,0.85) !important;
+  color: #f1f5f9 !important;
+  border-color: rgba(255,255,255,0.12) !important;
+}
+html[data-theme="dark"] #langSearch::placeholder { color: #64748b !important; }
+html[data-theme="dark"] #langSearch:focus {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 4px rgba(129,140,248,0.18) !important;
+}
+html[data-theme="dark"] #langList {
+  background: rgba(15,23,42,0.95) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
+}
+html[data-theme="dark"] .lang-row {
+  color: #cbd5e1 !important;
+  border-bottom-color: rgba(255,255,255,0.05) !important;
+}
+html[data-theme="dark"] .lang-row:hover {
+  background: rgba(129,140,248,0.12) !important;
+}
+html[data-theme="dark"] .lang-row.active {
+  background: linear-gradient(90deg, rgba(129,140,248,0.25), rgba(14,165,233,0.12)) !important;
+  color: #c7d2fe !important;
+}
+html[data-theme="dark"] .lang-row .lang-code {
+  background: rgba(255,255,255,0.08) !important;
+  color: #94a3b8 !important;
+}
+html[data-theme="dark"] .lang-row.active .lang-code {
+  background: rgba(129,140,248,0.3) !important;
+  color: #c7d2fe !important;
+}
+html[data-theme="dark"] .lang-empty { color: #64748b !important; }
+
+/* Light Mode Fix */
+html[data-theme="light"] #langSearch {
+  background: rgba(255,255,255,0.95) !important;
+  color: #0f172a !important;
+  border-color: rgba(148,163,184,0.3) !important;
+}
+html[data-theme="light"] #langList {
+  background: #fff !important;
+  border-color: rgba(148,163,184,0.2) !important;
+}
+html[data-theme="light"] .lang-row {
+  color: #0f172a !important;
+}
+html[data-theme="light"] .lang-row:hover {
+  background: rgba(99,102,241,0.06) !important;
+}
+html[data-theme="light"] .lang-row.active {
+  background: linear-gradient(90deg, rgba(99,102,241,0.12), rgba(14,165,233,0.08)) !important;
+  color: #6366F1 !important;
+}
+</style>
 </head>
 <body>
 <header class="fx-header">
