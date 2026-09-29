@@ -289,3 +289,77 @@ export async function formatSecurityAlert(env, opts) {
 
   return lines.join('\n');
 }
+
+// ===== Support Ticket Helper =====
+// Kirim pesan ke admin dengan inline keyboard
+export async function sendTelegramWithButtons(env, message, buttons, options) {
+  options = options || {};
+  const token = env.TELEGRAM_BOT_TOKEN;
+  const chatId = env.SHOP_ADMIN_CHAT_ID || env.TELEGRAM_CHAT_ID;
+  if (!token || !chatId) return { ok: false, reason: 'not-configured' };
+
+  const text = String(message || '').slice(0, 4000);
+
+  try {
+    const r = await fetch(API + token + '/sendMessage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text,
+        parse_mode: 'HTML',
+        disable_web_page_preview: true,
+        reply_markup: { inline_keyboard: buttons }
+      })
+    });
+    if (!r.ok) {
+      const err = await r.text();
+      console.error('[TG-BUTTONS] Send failed:', r.status, err.slice(0, 200));
+      return { ok: false, reason: 'http-' + r.status };
+    }
+    const j = await r.json();
+    return { ok: true, message_id: j.result && j.result.message_id };
+  } catch (e) {
+    console.error('[TG-BUTTONS] Error:', e.message);
+    return { ok: false, reason: e.message };
+  }
+}
+
+// Edit pesan lama + ganti tombol (buat update status setelah admin klik)
+export async function editTelegramMessage(env, chatId, messageId, newText, newButtons) {
+  const token = env.TELEGRAM_BOT_TOKEN;
+  if (!token) return { ok: false, reason: 'no_token' };
+
+  const body = {
+    chat_id: chatId,
+    message_id: messageId,
+    text: String(newText || '').slice(0, 4000),
+    parse_mode: 'HTML',
+    disable_web_page_preview: true
+  };
+  if (newButtons) body.reply_markup = { inline_keyboard: newButtons };
+
+  try {
+    const r = await fetch(API + token + '/editMessageText', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    return await r.json();
+  } catch (e) {
+    return { ok: false, reason: e.message };
+  }
+}
+
+// Jawab callback query (biar loading spinner di tombol ilang)
+export async function answerCallbackQuery(env, callbackQueryId, text) {
+  const token = env.TELEGRAM_BOT_TOKEN;
+  if (!token) return;
+  try {
+    await fetch(API + token + '/answerCallbackQuery', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ callback_query_id: callbackQueryId, text: text || '' })
+    });
+  } catch (e) {}
+}
