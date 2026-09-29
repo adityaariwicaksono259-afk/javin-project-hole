@@ -1189,3 +1189,27 @@ body.theme-dark .settings-sub {
 html.preload body { opacity: 0; }
 html.preload { background: #f0f7ff; }
 html[data-theme="dark"].preload { background: #0a0f1a; }
+
+/* ================================================
+   DARK THEME FIX v1 — Header & Profile Card
+   Override inline style dengan !important
+   ================================================ */
+body.theme-dark header.fx-header {
+  background: rgba(15,23,42,0.85) !important;
+  border-bottom-color: rgba(255,255,255,0.08) !important;
+}
+body.theme-dark #profileCard {
+  background: rgba(30,41,59,0.9) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+body.theme-dark #headerName {
+  color: #f1f5f9 !important;
+}
+body.theme-dark #profileCard > div:nth-child(2) > div:nth-child(2) {
+  color: #94a3b8 !important;
+}
+body.theme-dark header.fx-header > div > a {
+  background: rgba(30,41,59,0.9) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  color: #f1f5f9 !important;
+}
