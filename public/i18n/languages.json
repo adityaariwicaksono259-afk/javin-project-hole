@@ -1,0 +1,23 @@
+{
+  "id": "Bahasa Indonesia", "en": "English", "jv": "Jawa", "su": "Sunda",
+  "ms": "Melayu", "ar": "العربية", "zh-CN": "中文 (简体)", "zh-TW": "中文 (繁體)",
+  "ja": "日本語", "ko": "한국어", "th": "ไทย", "vi": "Tiếng Việt",
+  "tl": "Filipino", "hi": "हिन्दी", "bn": "বাংলা", "ur": "اردو",
+  "ta": "தமிழ்", "te": "తెలుగు", "ml": "മലയാളം", "gu": "ગુજરાતી",
+  "mr": "मराठी", "pa": "ਪੰਜਾਬੀ", "ne": "नेपाली", "si": "සිංහල",
+  "my": "မြန်မာ", "km": "ខ្មែរ", "lo": "ລາວ", "ka": "ქართული",
+  "hy": "Հայերեն", "az": "Azərbaycan", "kk": "Қазақ", "uz": "Oʻzbek",
+  "tr": "Türkçe", "fa": "فارسی", "he": "עברית", "ru": "Русский",
+  "uk": "Українська", "be": "Беларуская", "bg": "Български", "sr": "Српски",
+  "hr": "Hrvatski", "sl": "Slovenščina", "sk": "Slovenčina", "cs": "Čeština",
+  "pl": "Polski", "hu": "Magyar", "ro": "Română", "el": "Ελληνικά",
+  "de": "Deutsch", "nl": "Nederlands", "sv": "Svenska", "no": "Norsk",
+  "da": "Dansk", "fi": "Suomi", "is": "Íslenska", "et": "Eesti",
+  "lv": "Latviešu", "lt": "Lietuvių", "ga": "Gaeilge", "cy": "Cymraeg",
+  "es": "Español", "pt": "Português", "fr": "Français", "it": "Italiano",
+  "ca": "Català", "gl": "Galego", "eu": "Euskara", "mt": "Malti",
+  "sq": "Shqip", "mk": "Македонски", "bs": "Bosanski", "af": "Afrikaans",
+  "sw": "Kiswahili", "am": "አማርኛ", "ha": "Hausa", "yo": "Yorùbá",
+  "ig": "Igbo", "zu": "Zulu", "xh": "Xhosa", "st": "Sesotho",
+  "mg": "Malagasy", "eo": "Esperanto", "la": "Latina", "haw": "ʻŌlelo Hawaiʻi"
+}

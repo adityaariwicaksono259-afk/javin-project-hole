@@ -87,9 +87,9 @@
           <div class="settings-sub" id="langCurrent">Bahasa Indonesia</div>
         </div>
       </div>
-      <div class="seg-control" id="langSeg">
-        <button data-val="id" class="active">Indonesia</button>
-        <button data-val="en">English</button>
+      <div style="width:100%;margin-top:8px">
+        <input type="text" id="langSearch" placeholder="Cari bahasa..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(148,163,184,0.3);background:rgba(255,255,255,0.7);font-size:14px;margin-bottom:8px;box-sizing:border-box">
+        <div id="langList" style="max-height:240px;overflow-y:auto;border-radius:10px;border:1px solid rgba(148,163,184,0.2);background:rgba(255,255,255,0.5)"></div>
       </div>
     </div>
   </div>
@@ -187,5 +187,7 @@
 <script src="/settings.js?v=1"></script>
 <script src="/update-banner.js?v=1" defer></script>
 <script src="/announce.js?v=1" defer></script>
+<script src="/i18n.js"></script>
+<script src="/settings-lang.js"></script>
 </body>
 </html>
