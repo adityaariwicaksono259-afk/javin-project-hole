@@ -94,9 +94,6 @@
       $('spChatBotTitle').textContent = (j.auto_reply_emoji || '🤖') + ' ' + (j.auto_reply_title || 'Bot JVaPii');
       $('spChatBotMsg').textContent = j.auto_reply || 'Terima kasih, laporan Anda telah diterima.';
 
-      // Update history
-      loadHistory();
-
       // Scroll ke atas
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch(e) {
@@ -106,42 +103,6 @@
     }
   }
 
-  // ===== Load history =====
-  async function loadHistory(){
-    var uid = '';
-    try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e){}
-    if (!uid) return;
-
-    var card = $('spHistoryCard');
-    var box = $('spHistory');
-    if (!card || !box) return;
-
-    try {
-      var r = await fetch('/api/support/my-tickets?user_id=' + encodeURIComponent(uid) + '&t=' + Date.now(), { cache: 'no-store' });
-      var j = await r.json();
-      if (!j.ok || !j.tickets || !j.tickets.length) return;
-
-      card.style.display = 'block';
-      var h = '';
-      j.tickets.slice(0, 10).forEach(function(t){
-        var d = new Date(t.created_at);
-        var dateStr = d.toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-        var typeLabel = t.type || 'lainnya';
-        var emoji = { bug: '🐛', error: '⚠️', saran: '💡', pembelian: '💰' }[typeLabel] || '📨';
-        h += '<div class="sp-ticket">';
-        h += '<div class="sp-ticket-head">';
-        h += '<span class="sp-ticket-id">#' + t.id + '</span>';
-        h += '<span class="sp-ticket-badge ' + typeLabel + '">' + emoji + ' ' + typeLabel.toUpperCase() + '</span>';
-        h += '</div>';
-        if (t.title) h += '<div class="sp-ticket-title">' + escHtml(t.title) + '</div>';
-        h += '<div class="sp-ticket-preview">' + escHtml(t.message || '') + '</div>';
-        h += '<div class="sp-ticket-date">' + dateStr + '</div>';
-        h += '</div>';
-      });
-      box.innerHTML = h;
-    } catch(e) {}
-  }
-
   function escHtml(s){
     return String(s || '').replace(/[&<>"']/g, function(c){
       return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
@@ -149,5 +110,4 @@
   }
 
   // Init
-  loadHistory();
 })();

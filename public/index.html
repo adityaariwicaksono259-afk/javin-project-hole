@@ -60,6 +60,7 @@
 html { overscroll-behavior-y: contain; }
 </style>
 <link rel="stylesheet" href="/kaze-video.css">
+<link rel="stylesheet" href="/notif.css">
 </head><body>
 <div id="splashScreen">
   <div class="splash-inner">
@@ -79,6 +80,10 @@ html { overscroll-behavior-y: contain; }
         </div>
       </div>
     </div>
+    <button id="notifBell" title="Notifikasi" onclick="if(window.notif) window.notif.open()" style="width:44px;height:44px;flex-shrink:0;border-radius:14px;background:#fff;border:1px solid rgba(148,163,184,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;color:#0f172a;box-sizing:border-box;cursor:pointer;position:relative">
+      🔔
+      <span id="notifBadge" style="display:none;position:absolute;top:6px;right:6px;width:9px;height:9px;border-radius:50%;background:#ef4444;border:2px solid #fff;box-shadow:0 0 0 2px rgba(239,68,68,0.25)"></span>
+    </button>
     <a href="/buy" title="Beli Key" style="width:44px;height:44px;flex-shrink:0;border-radius:14px;background:#fff;border:1px solid rgba(148,163,184,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:#0f172a;box-sizing:border-box">💎</a>
     <a href="/settings" style="width:44px;height:44px;flex-shrink:0;border-radius:14px;background:#fff;border:1px solid rgba(148,163,184,0.15);display:flex;align-items:center;justify-content:center;font-size:18px;text-decoration:none;color:#0f172a;box-sizing:border-box">⚙️</a>
     </div>
@@ -199,4 +204,5 @@ html { overscroll-behavior-y: contain; }
 <script src="/kaze-doa.js"></script>
 <script src="/kaze-chat.js"></script>
 
+<script src="/notif.js"></script>
 </body></html>
