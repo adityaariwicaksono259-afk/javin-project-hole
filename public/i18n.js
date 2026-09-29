@@ -1,19 +1,27 @@
-// i18n Auto-Translate v2 — scan semua text otomatis
+// i18n Auto-Translate v3 — MyMemory direct (bypass Worker)
 (function(){
   'use strict';
 
   var STORAGE_KEY = 'vinapiay_settings';
-  var CACHE_KEY = 'javin_i18n_cache_v2';
+  var CACHE_KEY = 'javin_i18n_cache_v3';
   var BASE_LANG = 'id';
   var currentLang = BASE_LANG;
   var cache = {};
   var pending = {};
   var scanned = new WeakSet();
 
-  // Elemen yang DI-SKIP (jangan di-translate)
   var SKIP_TAGS = ['SCRIPT', 'STYLE', 'CODE', 'PRE', 'NOSCRIPT', 'SVG', 'PATH'];
   var SKIP_CLASSES = ['no-i18n', 'brand', 'logo', 'mono'];
   var SKIP_ATTRS = ['data-no-i18n'];
+
+  // Mapping kode bahasa → MyMemory code
+  // MyMemory pakai ISO 639-1 (2 huruf)
+  function toMyMemoryCode(code) {
+    if (!code) return 'en';
+    // Kalau ada dash (zh-CN, zh-TW), ambil bagian pertama
+    if (code.indexOf('-') !== -1) return code.split('-')[0];
+    return code;
+  }
 
   function getLang() {
     try {
@@ -45,7 +53,6 @@
     for (var j = 0; j < SKIP_ATTRS.length; j++) {
       if (el.hasAttribute(SKIP_ATTRS[j])) return true;
     }
-    // Input password/email/url gak usah di-translate
     if (el.tagName === 'INPUT') {
       var t = (el.type || '').toLowerCase();
       if (['password', 'email', 'url', 'number', 'date', 'time'].indexOf(t) !== -1) return true;
@@ -57,17 +64,38 @@
     return lang + '::' + text;
   }
 
+  // Translate via MyMemory (langsung dari browser)
   function translate(text, lang) {
     if (lang === BASE_LANG) return Promise.resolve(text);
+
     var key = getCacheKey(text, lang);
     if (cache[key]) return Promise.resolve(cache[key]);
     if (pending[key]) return pending[key];
 
-    var url = '/api/translate?text=' + encodeURIComponent(text) + '&to=' + encodeURIComponent(lang) + '&from=' + BASE_LANG;
-    var p = fetch(url, { headers: { 'Accept': 'application/json' } })
+    var memLang = toMyMemoryCode(lang);
+    // Kalau bahasa sama, gak perlu translate
+    if (memLang === BASE_LANG) {
+      cache[key] = text;
+      saveCache();
+      return Promise.resolve(text);
+    }
+
+    var url = 'https://api.mymemory.translated.net/get'
+      + '?q=' + encodeURIComponent(text)
+      + '&langpair=' + encodeURIComponent(BASE_LANG + '|' + memLang)
+      + '&de=translate@jvin.pages.dev';
+
+    var p = fetch(url)
       .then(function(r){ return r.json(); })
       .then(function(j){
-        var result = (j && j.ok && j.text) ? j.text : text;
+        var result = text;
+        if (j && j.responseData && j.responseData.translatedText) {
+          var t = j.responseData.translatedText;
+          // Filter pesan warning MyMemory
+          if (!/MYMEMORY WARNING|QUERY LENGTH LIMIT|INVALID/i.test(t)) {
+            result = t;
+          }
+        }
         cache[key] = result;
         saveCache();
         delete pending[key];
@@ -77,11 +105,11 @@
         delete pending[key];
         return text;
       });
+
     pending[key] = p;
     return p;
   }
 
-  // Simpan text asli di WeakMap (biar gak bisa diintip via DOM attribute)
   var originalTexts = new WeakMap();
 
   function collectTextNodes(root) {
@@ -96,11 +124,8 @@
           if (shouldSkip(parent)) return NodeFilter.FILTER_REJECT;
           var text = node.textContent.trim();
           if (!text) return NodeFilter.FILTER_REJECT;
-          // Skip text yang cuma angka / simbol
           if (!/[a-zA-Z]/.test(text)) return NodeFilter.FILTER_REJECT;
-          // Skip kalau cuma 1-2 char
           if (text.length < 3) return NodeFilter.FILTER_REJECT;
-          // Skip kalau udah pernah di-scan
           if (scanned.has(node)) return NodeFilter.FILTER_REJECT;
           return NodeFilter.FILTER_ACCEPT;
         }
@@ -123,7 +148,6 @@
 
     var nodes = collectTextNodes(document.body);
     if (lang === BASE_LANG) {
-      // Balik ke text asli
       nodes.forEach(function(node) {
         var orig = originalTexts.get(node);
         if (orig && node.textContent !== orig) node.textContent = orig;
@@ -131,10 +155,10 @@
       return Promise.resolve();
     }
 
-    // Batch 5 concurrent
+    // Batch 3 concurrent (MyMemory lebih ketat)
     var chunks = [];
-    for (var i = 0; i < nodes.length; i += 5) {
-      chunks.push(nodes.slice(i, i + 5));
+    for (var i = 0; i < nodes.length; i += 3) {
+      chunks.push(nodes.slice(i, i + 3));
     }
     var chain = Promise.resolve();
     chunks.forEach(function(chunk){
@@ -144,7 +168,6 @@
           text = text.trim();
           if (!text) return;
           return translate(text, lang).then(function(translated){
-            // Preserve leading/trailing whitespace
             var orig = node.textContent;
             var lead = orig.match(/^\s*/)[0];
             var trail = orig.match(/\s*$/)[0];
@@ -163,7 +186,6 @@
   function init() {
     loadCache();
     var lang = getLang();
-    // Delay dikit biar DOM siap
     setTimeout(function(){
       applyTranslations(lang);
     }, 500);
