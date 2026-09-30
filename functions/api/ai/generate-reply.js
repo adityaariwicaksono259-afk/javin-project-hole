@@ -34,7 +34,7 @@ Isi pesan: ${message}
 Buat balasan yang sesuai untuk laporan ini.`;
 
   try {
-    const result = await env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+    const result = await env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
       messages: [
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
@@ -54,7 +54,7 @@ Buat balasan yang sesuai untuk laporan ini.`;
     return json({
       ok: true,
       reply: reply,
-      model: '@cf/meta/llama-3.1-8b-instruct'
+      model: '@cf/meta/llama-3.2-3b-instruct'
     });
   } catch(e) {
     console.error('[AI-REPLY]', e.message);
