@@ -21,8 +21,39 @@ export async function onRequestPost({ request, env }) {
   const pkg = packages[tier];
   if (!pkg) return json({ ok: false, message: 'Paket tidak tersedia' }, 400);
 
-  // Generate kode unik 3 digit (001-999)
-  const uniqueCode = Math.floor(Math.random() * 999) + 1;
+  // ===== Generate kode unik 3 digit dengan cek duplikat =====
+  // Kode unik gak boleh sama dengan order aktif (status waiting_payment/pending_review)
+  let uniqueCode = null;
+  for (let attempt = 0; attempt < 30; attempt++) {
+    const candidate = Math.floor(Math.random() * 999) + 1;
+    try {
+      const existing = await db.prepare(
+        'SELECT id FROM web_orders WHERE package_price = ? AND unique_code = ? AND status IN ("waiting_payment", "pending_review") LIMIT 1'
+      ).bind(pkg.price, candidate).first();
+      if (!existing) {
+        uniqueCode = candidate;
+        break;
+      }
+    } catch (e) {
+      console.error('[BUY-CREATE] check dup error:', e.message);
+    }
+  }
+
+  // Fallback: kalau 30x gagal (harusnya hampir mustahil), pakai sequential
+  if (uniqueCode === null) {
+    console.warn('[BUY-CREATE] Fallback ke sequential');
+    const usedRows = await db.prepare(
+      'SELECT unique_code FROM web_orders WHERE package_price = ? AND status IN ("waiting_payment", "pending_review")'
+    ).bind(pkg.price).all();
+    const used = new Set((usedRows.results || []).map(r => r.unique_code));
+    for (let i = 1; i <= 999; i++) {
+      if (!used.has(i)) { uniqueCode = i; break; }
+    }
+    if (uniqueCode === null) {
+      return json({ ok: false, message: 'Server sibuk, coba lagi nanti.' }, 503);
+    }
+  }
+
   const totalAmount = pkg.price + uniqueCode;
 
   // Generate order code
