@@ -72,6 +72,7 @@ async function verifySignature(request, env){
 
 const MAX_BODY = 6 * 1024 * 1024;
 const DEFAULT_LIMIT = 15;
+const TIER_LIMITS = { free: 15, basic: 70, pro: 150, unlimited: 500 };
 const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
 
 function jsonRes(status, data) {
@@ -145,18 +146,63 @@ async function logRequest(db, data) {
   } catch (e) {}
 }
 
-async function getUserStatus(db, userId) {
+async function getSessionUserId(db, request) {
+  if (!db || !request) return null;
+  try {
+    const cookie = request.headers.get('Cookie') || '';
+    const match = cookie.match(/(?:^|;\s*)javin_session=([^;]+)/);
+    if (!match) return null;
+    const token = decodeURIComponent(match[1]);
+    const sess = await db.prepare(
+      'SELECT user_id FROM auth_sessions WHERE token = ? AND expires_at > ?'
+    ).bind(token, Date.now()).first();
+    return sess ? sess.user_id : null;
+  } catch(e) {
+    return null;
+  }
+}
+
+async function getUserStatus(db, userId, request) {
   const todayStart = getWibDayStartMs();
   const userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
   const countRow = await db.prepare(
     'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND created_at >= ? AND status >= 200 AND status < 300'
   ).bind(userId, todayStart).first();
   const used = (countRow && countRow.c) || 0;
+
   let limit = DEFAULT_LIMIT;
-  if (userRow && typeof userRow.extra_limit === 'number' && userRow.extra_limit > 0) {
-    limit = userRow.extra_limit;
+  let tier = 'free';
+
+  // Anti-bypass: prioritaskan session cookie (server-side)
+  let authUserId = null;
+  if (request) {
+    authUserId = await getSessionUserId(db, request);
   }
-  return { used: used, limit: limit, remaining: Math.max(0, limit - used) };
+  const effectiveUserId = authUserId || userId;
+
+  if (effectiveUserId) {
+    try {
+      const authUser = await db.prepare(
+        'SELECT tier, tier_expires_at FROM auth_users WHERE id = ?'
+      ).bind(effectiveUserId).first();
+
+      if (authUser && authUser.tier) {
+        const notExpired = !authUser.tier_expires_at || authUser.tier_expires_at > Date.now();
+        if (notExpired && TIER_LIMITS[authUser.tier]) {
+          limit = TIER_LIMITS[authUser.tier];
+          tier = authUser.tier;
+        }
+      }
+    } catch(e) {}
+  }
+
+  // Legacy: extra_limit (kalau lebih besar dari tier limit)
+  if (userRow && typeof userRow.extra_limit === 'number' && userRow.extra_limit > limit) {
+    limit = userRow.extra_limit;
+    tier = 'custom';
+  }
+
+  return { used: used, limit: limit, remaining: Math.max(0, limit - used), tier: tier };
 }
 
 
@@ -235,7 +281,7 @@ export async function onRequest(context) {
   // ==== Cek limit user ====
   if (userId && db) {
     try {
-      const status = await getUserStatus(db, userId);
+      const status = await getUserStatus(db, userId, request);
 
       if (status.used >= status.limit) {
         const remaining = msUntilWibReset();
