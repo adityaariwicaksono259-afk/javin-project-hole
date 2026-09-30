@@ -1,57 +1,56 @@
-// ================================================
-// BUY PAGE LOGIC — VinAPIay
-// ================================================
+// BUY.JS — Beli akses tier (basic/pro/unlimited)
 (function(){
+  'use strict';
   var $ = function(id){ return document.getElementById(id); };
 
   var state = {
     packages: [],
     selected: null,
-    orderCode: null,
-    pickedFile: null,
-    qrisUrl: null
+    orderData: null
   };
 
-  // ==== Format rupiah ====
   function rp(n) {
-    return 'Rp ' + (Number(n) || 0).toLocaleString('id-ID');
+    return 'Rp ' + (n || 0).toLocaleString('id-ID');
   }
 
-  // ==== Load paket dari server ====
+  function getUserId() {
+    try { return localStorage.getItem('javin_user_id') || ''; } catch(e) { return ''; }
+  }
+  function getUserName() {
+    try { return localStorage.getItem('javin_user_name') || ''; } catch(e) { return ''; }
+  }
+
+  // ===== LOAD PAKET =====
   async function loadPackages() {
     try {
       var r = await fetch('/api/buy/create', { cache: 'no-store' });
       var j = await r.json();
-
-      if (!j.ok) throw new Error(j.message || 'Gagal load');
-
-      state.packages = j.packages || [];
-      state.hasQris = j.has_qris;
-
-      if (!state.packages.length) {
-        $('pkgList').innerHTML = '<div style="text-align:center;padding:20px;color:#94a3b8">Paket belum tersedia.</div>';
-        return;
+      if (j.ok && j.packages) {
+        state.packages = j.packages;
+        renderPackages();
+      } else {
+        $('pkgList').innerHTML = '<div style="text-align:center;padding:20px;color:#ef4444">Gagal memuat paket</div>';
       }
-
-      renderPackages();
     } catch(e) {
-      $('pkgList').innerHTML = '<div style="text-align:center;padding:20px;color:#dc2626">Error: ' + e.message + '</div>';
+      $('pkgList').innerHTML = '<div style="text-align:center;padding:20px;color:#ef4444">Koneksi error</div>';
     }
   }
 
+  // ===== RENDER PAKET =====
   function renderPackages() {
     var html = state.packages.map(function(p, i) {
-      var badge = p.bonus ? '<div class="buy-pkg-badge">HEMAT ' + rp(p.bonus) + '</div>' : '';
-      var icon = p.qty === 1 ? '🔑' : (p.qty <= 3 ? '🔑🔑' : '💎');
-      return '<div class="buy-pkg" data-idx="' + i + '">' +
-        badge +
-        '<div class="buy-pkg-icon">' + icon + '</div>' +
-        '<div class="buy-pkg-info">' +
-          '<div class="buy-pkg-name">' + (p.label || (p.qty + ' Key')) + '</div>' +
-          '<div class="buy-pkg-desc">' + p.qty + 'x generate premium</div>' +
-        '</div>' +
-        '<div class="buy-pkg-price">' + rp(p.price) + '</div>' +
-      '</div>';
+      var sel = state.selected === p.tier ? ' selected' : '';
+      return ''
+        + '<div class="buy-pkg' + sel + '" data-tier="' + p.tier + '">'
+        + '  <div class="buy-pkg-head">'
+        + '    <div class="buy-pkg-name">' + p.label + '</div>'
+        + '    <div class="buy-pkg-price">' + rp(p.price) + '</div>'
+        + '  </div>'
+        + '  <div class="buy-pkg-meta">'
+        + '    <div>⏱️ ' + p.days + ' hari</div>'
+        + '    <div>⚡ ' + (p.limit || '-') + '</div>'
+        + '  </div>'
+        + '</div>';
     }).join('');
 
     $('pkgList').innerHTML = html;
@@ -60,71 +59,130 @@
       el.onclick = function() {
         document.querySelectorAll('.buy-pkg').forEach(function(x){ x.classList.remove('selected'); });
         el.classList.add('selected');
-        state.selected = state.packages[parseInt(el.dataset.idx)];
+        state.selected = el.dataset.tier;
         updateOrderButton();
       };
     });
   }
 
-  // ==== Create order ====
+  function updateOrderButton() {
+    var btn = $('btnOrderNow');
+    if (!btn) return;
+    btn.disabled = !state.selected;
+  }
+
+  // ===== CREATE ORDER =====
   async function createOrder() {
     if (!state.selected) return;
+    var btn = $('btnOrderNow');
+    btn.disabled = true;
+    btn.textContent = '⏳ Memproses...';
 
     try {
-      var uid = '';
-      try { uid = localStorage.getItem('javin_user_id') || ''; } catch(e) {}
-      var uname = '';
-      try { uname = localStorage.getItem('javin_display_name') || ''; } catch(e) {}
-
       var r = await fetch('/api/buy/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          package_qty: state.selected.qty,
-          user_id: uid,
-          user_name: uname
+          tier: state.selected,
+          user_id: getUserId(),
+          user_name: getUserName()
         })
       });
       var j = await r.json();
-      if (!j.ok) throw new Error(j.message || 'Gagal bikin order');
-
-      state.orderCode = j.order_code;
-      state.qrisUrl = j.qris_file_id || null;
-
-      $('orderCode').textContent = j.order_code;
-      $('orderPkg').textContent = j.package.label || (j.package.qty + ' Key');
-      $('orderTotal').textContent = rp(j.package.price);
-
-      // QRIS
-      if (j.has_qris && j.qris_file_id) {
-        // Kalau file_id dari Telegram, kita nggak bisa langsung tampil.
-        // Fallback: pakai gambar QRIS lokal di /qris.jpg
-        $('qrisImg').innerHTML = '<img src="/qris.png" alt="QRIS" onerror="this.outerHTML=\'<div style=&quot;padding:30px;color:#94a3b8;text-align:center&quot;>⚠️ QRIS belum di-set admin. Hubungi @JekyNobb.</div>\'">';
-      } else {
-        $('qrisImg').innerHTML = '<div style="padding:30px;color:#94a3b8;text-align:center">⚠️ QRIS belum di-set admin.<br><br>Hubungi <b>@JekyNobb</b> via Telegram.</div>';
+      if (!j.ok) {
+        alert(j.message || 'Gagal bikin order');
+        btn.disabled = false;
+        btn.textContent = '🛒 Pesan Sekarang';
+        return;
       }
 
-      goToStep('bayar');
+      state.orderData = j;
+      showPaymentStep(j);
     } catch(e) {
-      showAlert('', 'Error: ' + e.message, 'ℹ️');
-      document.querySelectorAll('.buy-pkg').forEach(function(x){ x.classList.remove('selected'); });
-    }
-  }
-
-  // ==== Tombol Pesan Sekarang ====
-  function updateOrderButton() {
-    var btn = document.getElementById('btnOrderNow');
-    if (!btn) return;
-    if (state.selected) {
+      alert('Koneksi error');
       btn.disabled = false;
-      btn.textContent = '🛒 Pesan Sekarang — Rp ' + (state.selected.price || 0).toLocaleString('id-ID');
-    } else {
-      btn.disabled = true;
       btn.textContent = '🛒 Pesan Sekarang';
     }
   }
 
-  // ==== Step navigation ====
+  // ===== SHOW PAYMENT STEP =====
+  function showPaymentStep(o) {
+    // Set order code
+    if ($('orderCode')) $('orderCode').textContent = o.order_code;
+    if ($('payAmount')) $('payAmount').textContent = rp(o.total_amount);
+    if ($('payBreakdown')) {
+      $('payBreakdown').textContent = rp(o.price) + ' + ' + o.unique_code + ' (kode unik)';
+    }
+
+    // DANA number
+    if ($('danaNumber')) {
+      $('danaNumber').textContent = o.dana_number || '(belum di-set)';
+    }
+
+    // QRIS
+    if (o.qris_file_id && $('qrisImg')) {
+      $('qrisImg').src = o.qris_file_id;
+      if ($('qrisBox')) $('qrisBox').style.display = 'block';
+    } else if ($('qrisBox')) {
+      $('qrisBox').style.display = 'none';
+    }
+
+    goToStep('bayar');
+  }
+
+  // ===== UPLOAD BUKTI =====
+  var fileData = null;
+
+  function handleFile(file) {
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File max 5 MB');
+      return;
+    }
+    fileData = file;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      if ($('uploadPreview')) {
+        $('uploadPreview').src = e.target.result;
+        $('uploadPreview').style.display = 'block';
+      }
+      if ($('uploadLabel')) $('uploadLabel').textContent = file.name;
+      if ($('btnUpload')) $('btnUpload').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  async function uploadProof() {
+    if (!fileData || !state.orderData) return;
+    var btn = $('btnUpload');
+    btn.disabled = true;
+    btn.textContent = '⏳ Mengirim...';
+
+    try {
+      var fd = new FormData();
+      fd.append('order_code', state.orderData.order_code);
+      fd.append('file', fileData);
+
+      var r = await fetch('/api/buy/upload', { method: 'POST', body: fd });
+      var j = await r.json();
+      if (!j.ok) {
+        alert(j.message || 'Gagal upload');
+        btn.disabled = false;
+        btn.textContent = '📸 Kirim Bukti';
+        return;
+      }
+
+      // Sukses
+      if ($('btnUpload')) $('btnUpload').textContent = '✅ Terkirim';
+      if ($('uploadStatus')) $('uploadStatus').style.display = 'block';
+    } catch(e) {
+      alert('Koneksi error');
+      btn.disabled = false;
+      btn.textContent = '📸 Kirim Bukti';
+    }
+  }
+
+  // ===== NAVIGATION =====
   function goToStep(name) {
     document.querySelectorAll('.buy-step').forEach(function(el){ el.classList.remove('active'); });
     var el = $('step' + name.charAt(0).toUpperCase() + name.slice(1));
@@ -134,113 +192,47 @@
 
   window.backToPilih = function() {
     state.selected = null;
-    state.orderCode = null;
-    resetFile();
+    state.orderData = null;
+    fileData = null;
+    renderPackages();
+    updateOrderButton();
     goToStep('pilih');
   };
 
-  // ==== File upload ====
-  var drop = $('dropZone');
-  var fileInput = $('fileInput');
-  var preview = $('preview');
-  var previewImg = $('previewImg');
-  var btnUpload = $('btnUpload');
-  var btnClear = $('btnClear');
+  // ===== INIT =====
+  function init() {
+    loadPackages();
 
-  function handleFile(file) {
-    if (!file) return;
-    if (!/^image\//.test(file.type)) {
-      showAlert('', 'File harus gambar (JPG/PNG/WEBP/GIF)', 'ℹ️');
-      return;
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      showAlert('', 'File max 5 MB', 'ℹ️');
-      return;
+    if ($('btnOrderNow')) {
+      $('btnOrderNow').onclick = createOrder;
     }
 
-    state.pickedFile = file;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-      previewImg.src = e.target.result;
-      preview.classList.add('show');
-      drop.style.display = 'none';
-      btnUpload.disabled = false;
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function resetFile() {
-    state.pickedFile = null;
-    preview.classList.remove('show');
-    drop.style.display = 'block';
-    fileInput.value = '';
-    btnUpload.disabled = true;
-    $('resultBox').style.display = 'none';
-  }
-
-  if (drop) {
-    drop.onclick = function() { fileInput.click(); };
-
-    ['dragover','dragenter'].forEach(function(ev){
-      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.add('hover'); });
-    });
-    ['dragleave','drop'].forEach(function(ev){
-      drop.addEventListener(ev, function(e){ e.preventDefault(); drop.classList.remove('hover'); });
-    });
-    drop.addEventListener('drop', function(e){
-      if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
-    });
-  }
-
-  if (fileInput) fileInput.onchange = function(e) {
-    if (e.target.files[0]) handleFile(e.target.files[0]);
-  };
-
-  if (btnClear) btnClear.onclick = resetFile;
-
-  // ==== Upload bukti ====
-  if (btnUpload) {
-    btnUpload.onclick = async function() {
-      if (!state.pickedFile) return;
-      if (!state.orderCode) { showAlert('', 'Order belum dibuat', 'ℹ️'); return; }
-
-      btnUpload.disabled = true;
-      btnUpload.textContent = '⏳ Mengirim...';
-
-      try {
-        var fd = new FormData();
-        fd.append('order_code', state.orderCode);
-        fd.append('file', state.pickedFile);
-
-        var r = await fetch('/api/buy/upload', { method: 'POST', body: fd });
-        var j = await r.json();
-
-        if (!j.ok) throw new Error(j.message || 'Gagal upload');
-
-        $('succCode').textContent = state.orderCode;
-        goToStep('sukses');
-      } catch(e) {
-        var box = $('resultBox');
-        box.className = 'buy-result err';
-        box.style.display = 'block';
-        box.textContent = '❌ ' + e.message;
-        btnUpload.disabled = false;
-        btnUpload.textContent = '📤 Kirim Bukti';
-      }
-    };
-  }
-
-  // Bind btnOrderNow
-  document.addEventListener('DOMContentLoaded', function() {
-    var btn = document.getElementById('btnOrderNow');
-    if (btn) {
-      btn.onclick = function() {
-        if (!state.selected) return;
-        createOrder();
+    var fileInput = $('fileInput');
+    if (fileInput) {
+      fileInput.onchange = function(e) {
+        handleFile(e.target.files[0]);
       };
     }
-  });
 
-  // Init
-  loadPackages();
+    if ($('btnUpload')) {
+      $('btnUpload').onclick = uploadProof;
+    }
+
+    // Copy order code
+    if ($('orderCode')) {
+      $('orderCode').onclick = function() {
+        var code = $('orderCode').textContent;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(code);
+          alert('Order code di-copy: ' + code);
+        }
+      };
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 })();

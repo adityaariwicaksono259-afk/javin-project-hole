@@ -8,25 +8,22 @@ export async function onRequestGet({ request, env }) {
   const code = url.searchParams.get('code');
   const userId = url.searchParams.get('user_id');
 
+  const COLS = 'order_code, user_id, tier, package_price, total_amount, unique_code, expires_at, status, admin_note, created_at, updated_at';
+
   try {
     if (code) {
       const order = await db.prepare(
-        'SELECT order_code, user_id, package_qty, package_price, status, key_generated, admin_note, created_at, updated_at FROM web_orders WHERE order_code = ?'
+        'SELECT ' + COLS + ' FROM web_orders WHERE order_code = ?'
       ).bind(code).first();
       if (!order) return json({ ok: false, message: 'Order tidak ditemukan' }, 404);
-      if (order.status !== 'approved') order.key_generated = null;
       return json({ ok: true, order: order });
     }
 
     if (userId) {
       const rows = await db.prepare(
-        'SELECT order_code, package_qty, package_price, status, key_generated, admin_note, created_at, updated_at FROM web_orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
+        'SELECT ' + COLS + ' FROM web_orders WHERE user_id = ? ORDER BY created_at DESC LIMIT 50'
       ).bind(userId).all();
-      const list = (rows.results || []).map(function(o){
-        if (o.status !== 'approved') o.key_generated = null;
-        return o;
-      });
-      return json({ ok: true, orders: list });
+      return json({ ok: true, orders: rows.results || [] });
     }
 
     return json({ ok: false, message: 'Kasih ?code= atau ?user_id=' }, 400);
