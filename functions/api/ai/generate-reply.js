@@ -26,7 +26,7 @@ export async function onRequestPost({ request, env }) {
     pembelian: 'masalah pembelian'
   }[type] || 'laporan';
 
-  const systemPrompt = `Kamu adalah customer support Javin (Javin Security Tools), platform API dan tools online. Tugasmu membalas ${typeLabel} dari user dengan sopan, singkat, dan membantu. Bahasa Indonesia. Maksimal 4 kalimat. Jangan pakai emoji berlebihan. Jangan menyapa dengan "Halo [nama]" karena nama user tidak selalu valid. Langsung ke inti balasan.`;
+  const systemPrompt = `Kamu adalah customer support Javin (Javin Security Tools), platform API dan tools online. Tugasmu membalas ${typeLabel} dari user dengan sopan dan membantu. Bahasa Indonesia formal. Balasan minimal 50 kata, maksimal 100 kata. Jangan pakai emoji. Jangan menyapa dengan nama user. Struktur: (1) ucapan terima kasih singkat, (2) tanggapan spesifik terhadap masalah, (3) langkah yang akan dilakukan atau saran untuk user, (4) penutup. Langsung ke inti, jangan bertele-tele.`;
 
   const userPrompt = `Judul laporan: ${title || '(tidak ada judul)'}
 Isi pesan: ${message}
@@ -39,7 +39,7 @@ Buat balasan yang sesuai untuk laporan ini.`;
         { role: 'system', content: systemPrompt },
         { role: 'user', content: userPrompt }
       ],
-      max_tokens: 300,
+      max_tokens: 400,
       temperature: 0.6
     });
 

@@ -68,9 +68,15 @@ export async function onRequestPost({ request, env }) {
       '🕐 ' + new Date(now).toISOString().replace('T', ' ').slice(0, 19)
     ].filter(Boolean);
 
-    // Bikin tombol per kategori
-    const templateKeys = getTemplatesByCategory(type);
+    // Tombol AI Reply (baris pertama)
     const buttons = [];
+    buttons.push([{
+      text: 'AI Reply (auto)',
+      callback_data: 'ai:' + ticketId
+    }]);
+
+    // Tombol template per kategori
+    const templateKeys = getTemplatesByCategory(type);
     templateKeys.forEach(function(key) {
       const tpl = SUPPORT_TEMPLATES[key];
       if (!tpl) return;
