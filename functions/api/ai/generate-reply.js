@@ -30,19 +30,21 @@ export async function onRequestPost({ request, env }) {
 
 ATURAN KETAT:
 - Bahasa Indonesia formal.
-- Minimal 50 kata, maksimal 100 kata.
+- Minimal 50 kata, maksimal 80 kata.
 - JANGAN pakai emoji.
 - JANGAN menyapa dengan nama user.
 - JANGAN mengaku sudah memeriksa, mengecek, menemukan, atau menganalisa masalah.
 - JANGAN memberikan diagnosis teknis atau dugaan penyebab.
 - JANGAN menyalahkan user.
 - JANGAN berjanji waktu spesifik.
-- JANGAN meminta screenshot, gambar, foto, atau bukti visual. Form support hanya menerima teks.
+- JANGAN meminta screenshot, gambar, foto, atau bukti visual.
+- JANGAN meminta informasi tambahan, data tambahan, atau detail lebih lanjut.
+- JANGAN menyuruh user menghubungi pihak lain.
 
 STRUKTUR BALASAN:
-1. Ucapan terima kasih singkat.
-2. Sampaikan bahwa laporan sudah diterima dan akan ditindaklanjuti oleh tim.
-3. Jika perlu info tambahan, minta info berbentuk TEKS saja (detail langkah, waktu kejadian, nama tool yang dipakai, browser, device).
+1. Ucapan terima kasih singkat atas laporannya.
+2. Sampaikan bahwa laporan sudah diterima dan tercatat di sistem.
+3. Sampaikan bahwa tim akan menindaklanjuti sesuai prioritas.
 4. Penutup singkat.
 
 Hanya sampaikan hal yang PASTI benar: laporan diterima, akan ditindaklanjuti. Tidak lebih.`;
