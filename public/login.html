@@ -278,12 +278,33 @@ async function startDemo() {
   errorDemo.classList.remove('show');
   btnDemo.disabled = true;
   btnDemo.textContent = 'Memuat...';
-  noteEl.textContent = '';
+  noteEl.textContent = 'Cek device...';
+
+  // Ambil fingerprint device
+  var fp = '';
+  try {
+    if (window.getFingerprint) {
+      fp = await window.getFingerprint();
+    }
+  } catch(e) {}
+
+  if (!fp || fp.length < 16) {
+    errorDemo.textContent = 'Gagal cek device. Coba refresh halaman.';
+    errorDemo.classList.add('show');
+    btnDemo.disabled = false;
+    btnDemo.textContent = 'Masih ragu? Cobain Mode Demo';
+    noteEl.textContent = '';
+    return;
+  }
+
+  noteEl.textContent = 'Memulai demo...';
 
   try {
     var r = await fetch('/api/auth/demo', {
       method: 'POST',
-      credentials: 'same-origin'
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'same-origin',
+      body: JSON.stringify({ fingerprint: fp })
     });
     var j = await r.json();
 
@@ -447,5 +468,6 @@ async function verifyCode(){
   }, 3000);
 })();
 </script>
+<script src="/fingerprint.js"></script>
 </body>
 </html>

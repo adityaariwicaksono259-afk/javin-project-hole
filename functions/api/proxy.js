@@ -72,7 +72,7 @@ async function verifySignature(request, env){
 
 const MAX_BODY = 6 * 1024 * 1024;
 const DEFAULT_LIMIT = 15;
-const TIER_LIMITS = { free: 15, demo: 1, basic: 70, pro: 150, unlimited: 500 };
+const TIER_LIMITS = { free: 20, demo: 3, basic: 70, pro: 150, unlimited: 500 };
 const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
 
 function jsonRes(status, data) {

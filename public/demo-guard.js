@@ -16,14 +16,14 @@
       + '<div class="dlp-backdrop"></div>'
       + '<div class="dlp-modal">'
       + '  <div class="dlp-icon">🔒</div>'
-      + '  <div class="dlp-title">Limit Demo Habis</div>'
-      + '  <div class="dlp-msg">' + (message || 'Login untuk lanjut, gratis.') + '</div>'
+      + '  <div class="dlp-title">Mode Demo Selesai</div>'
+      + '  <div class="dlp-msg">' + (message || 'Login dengan Google untuk melanjutkan.') + '</div>'
       + '  <div class="dlp-stats">'
-      + '    <div>Login gratis & dapat <b>15 request/hari</b></div>'
-      + '    <div>Atau upgrade paket untuk limit lebih besar</div>'
+      + '    <div>Akun Google dapat <b>20 request/hari</b></div>'
+      + '    <div>Bisa upgrade paket untuk limit lebih besar</div>'
+      + '    <div>Data & akses tersimpan permanen</div>'
       + '  </div>'
-      + '  <button class="dlp-btn-primary" id="dlpLogin">Login Sekarang</button>'
-      + '  <button class="dlp-btn-ghost" id="dlpClose">Nanti aja</button>'
+      + '  <button class="dlp-btn-primary" id="dlpLogin">Login dengan Google</button>'
       + '</div>';
 
     // CSS inline
@@ -39,8 +39,6 @@
       + '.dlp-stats b{color:#0EA5E9}'
       + '.dlp-btn-primary{width:100%;padding:13px;background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;border:0;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;margin-bottom:8px}'
       + '.dlp-btn-primary:active{transform:translateY(1px)}'
-      + '.dlp-btn-ghost{width:100%;padding:11px;background:transparent;color:#64748b;border:0;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}'
-      + '.dlp-btn-ghost:hover{background:rgba(148,163,184,0.1)}'
       + 'body.theme-dark .dlp-modal{background:#1e293b}'
       + 'body.theme-dark .dlp-title{color:#f1f5f9}'
       + 'body.theme-dark .dlp-msg{color:#cbd5e1}'
@@ -49,13 +47,9 @@
     document.head.appendChild(css);
     document.body.appendChild(overlay);
 
-    // Handler
+    // Handler — cuma tombol login (wajib)
     document.getElementById('dlpLogin').onclick = function() {
       location.href = '/login';
-    };
-    document.getElementById('dlpClose').onclick = function() {
-      overlay.remove();
-      css.remove();
     };
   }
 
