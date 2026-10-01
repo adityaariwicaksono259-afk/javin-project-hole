@@ -538,7 +538,7 @@ export async function onRequest(context) {
     var __isStatic = __staticExts.indexOf(__ext) !== -1;
     var __isApi = pathname.indexOf('/api/') === 0;
     var __isWellKnown = pathname.indexOf('/.well-known/') === 0;
-    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html'];
+    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html', '/debug-auth'];
     var __isPublicPage = __publicPages.indexOf(pathname) !== -1;
 
     if (!__isStatic && !__isApi && !__isWellKnown && !__isPublicPage) {
