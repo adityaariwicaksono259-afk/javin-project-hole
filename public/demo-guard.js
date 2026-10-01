@@ -47,8 +47,23 @@
     document.head.appendChild(css);
     document.body.appendChild(overlay);
 
-    // Handler — cuma tombol login (wajib)
-    document.getElementById('dlpLogin').onclick = function() {
+    // Handler — tombol login (hapus cookie demo dulu, biar Google session kembali aktif)
+    document.getElementById('dlpLogin').onclick = async function() {
+      this.disabled = true;
+      this.textContent = 'Mengalihkan...';
+      try {
+        await fetch('/api/auth/logout-demo', {
+          method: 'POST',
+          credentials: 'same-origin'
+        });
+      } catch(e) {}
+      // Clear localStorage demo
+      try {
+        localStorage.removeItem('javin_user_id');
+        localStorage.removeItem('javin_user_name');
+        localStorage.removeItem('javin_user_avatar');
+        localStorage.removeItem('javin_user_code');
+      } catch(e) {}
       location.href = '/login';
     };
   }

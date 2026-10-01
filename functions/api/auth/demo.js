@@ -2,7 +2,7 @@
 // GET  /api/auth/demo?fingerprint=xxx — cek apakah device udah demo
 import { json } from '../../_lib/oauth.js';
 
-const DEMO_TTL_MS = 60 * 60 * 1000; // 1 jam
+const DEMO_TTL_MS = 10 * 365 * 24 * 60 * 60 * 1000; // 10 tahun (praktis unlimited)
 const DEMO_LIMIT = 3;
 
 export async function onRequestPost({ request, env }) {
@@ -26,11 +26,49 @@ export async function onRequestPost({ request, env }) {
     ).bind(fingerprint).first();
 
     if (existing) {
-      return json({
-        ok: false,
-        message: 'Device ini sudah pernah mencoba demo. Silakan login Google untuk melanjutkan.',
-        already_used: true
-      }, 403);
+      // Cek apakah demo user masih ada & belum habis limit
+      const demoUser = await db.prepare(
+        'SELECT id, user_code, tier FROM auth_users WHERE id = ? LIMIT 1'
+      ).bind(existing.guest_user_id).first();
+
+      if (demoUser) {
+        // Hitung jumlah request demo user
+        const countRow = await db.prepare(
+          'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND status >= 200 AND status < 300'
+        ).bind(existing.guest_user_id).first();
+        const used = (countRow && countRow.c) || 0;
+
+        if (used < DEMO_LIMIT) {
+          // Masih bisa dipakai → restore session
+          const newToken = crypto.randomUUID().replace(/-/g, '') + crypto.randomUUID().replace(/-/g, '');
+          const now = Date.now();
+          const expiresAt = now + DEMO_TTL_MS;
+
+          await db.prepare(
+            'INSERT INTO auth_sessions (token, user_id, created_at, expires_at, last_used) VALUES (?, ?, ?, ?, ?)'
+          ).bind(newToken, demoUser.id, now, expiresAt, now).run();
+
+          const cookieVal = 'javin_demo=' + newToken + '; Path=/; Max-Age=' + (DEMO_TTL_MS / 1000) + '; HttpOnly; Secure; SameSite=Lax';
+
+          return json({
+            ok: true,
+            restored: true,
+            demo: true,
+            user_id: demoUser.id,
+            user_code: demoUser.user_code,
+            limit: DEMO_LIMIT,
+            used: used,
+            message: 'Demo session dipulihkan.'
+          }, 200, { 'Set-Cookie': cookieVal });
+        } else {
+          // Limit udah habis
+          return json({
+            ok: false,
+            message: 'Limit demo sudah habis. Login Google untuk melanjutkan.',
+            limit_reached: true
+          }, 403);
+        }
+      }
     }
   } catch(e) {
     console.error('[DEMO] check fp error:', e.message);
@@ -83,7 +121,7 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: false, message: 'Gagal bikin demo: ' + e.message }, 500);
   }
 
-  const cookieVal = 'javin_session=' + sessionToken + '; Path=/; Max-Age=' + (DEMO_TTL_MS / 1000) + '; HttpOnly; Secure; SameSite=Lax';
+  const cookieVal = 'javin_demo=' + sessionToken + '; Path=/; Max-Age=' + (DEMO_TTL_MS / 1000) + '; HttpOnly; Secure; SameSite=Lax';
 
   return json({
     ok: true,

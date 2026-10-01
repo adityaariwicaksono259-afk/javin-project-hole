@@ -299,6 +299,16 @@ async function startDemo() {
 
   noteEl.textContent = 'Memulai demo...';
 
+  // Clear localStorage dulu (biar tampilan gak nyangkut user lama)
+  // Cookie Google/email TETAP aktif (pakai javin_session terpisah)
+  try {
+    localStorage.removeItem('javin_user_id');
+    localStorage.removeItem('javin_user_name');
+    localStorage.removeItem('javin_user_avatar');
+    localStorage.removeItem('javin_user_code');
+    localStorage.removeItem('javin_session_token');
+  } catch(e) {}
+
   try {
     var r = await fetch('/api/auth/demo', {
       method: 'POST',
