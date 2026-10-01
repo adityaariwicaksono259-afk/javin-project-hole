@@ -72,7 +72,7 @@ async function verifySignature(request, env){
 
 const MAX_BODY = 6 * 1024 * 1024;
 const DEFAULT_LIMIT = 15;
-const TIER_LIMITS = { free: 15, basic: 70, pro: 150, unlimited: 500 };
+const TIER_LIMITS = { free: 15, demo: 1, basic: 70, pro: 150, unlimited: 500 };
 const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
 
 function jsonRes(status, data) {
@@ -314,12 +314,16 @@ export async function onRequest(context) {
       if (status.used >= status.limit) {
         const remaining = msUntilWibReset();
         await logRequest(db, { user_id: effectiveUserId, endpoint_id: id, status: 429 });
+        var isDemo = status.tier === 'demo';
         return jsonRes(429, {
           ok: false,
-          message: 'Limit harian habis (' + status.used + '/' + status.limit + '). Reset dalam ' + formatDuration(remaining) + ' (00:00 WIB).',
+          message: isDemo
+            ? 'Limit demo habis. Login untuk lanjut, gratis.'
+            : 'Limit harian habis (' + status.used + '/' + status.limit + '). Reset dalam ' + formatDuration(remaining) + ' (00:00 WIB).',
           limit: status.limit,
           used: status.used,
           tier: status.tier,
+          is_demo: isDemo,
           reset_in_ms: remaining
         });
       }
