@@ -278,34 +278,64 @@ export async function onRequest(context) {
     });
   }
 
-  // ==== Cek limit user ====
-  if (userId && db) {
+  // ==== Cek limit user (anti-bypass) ====
+  // Prioritas: cookie session (server-side) > uid param (backward compat)
+  if (db) {
     try {
-      const status = await getUserStatus(db, userId, request);
+      // Ambil userId dari session kalau ada
+      let effectiveUserId = null;
+      let viaSession = false;
+
+      try {
+        const sessionUserId = await getSessionUserId(db, request);
+        if (sessionUserId) {
+          effectiveUserId = sessionUserId;
+          viaSession = true;
+        }
+      } catch(e) {}
+
+      // Fallback ke uid param kalau gak ada session
+      if (!effectiveUserId && userId) {
+        effectiveUserId = userId;
+      }
+
+      // Kalau gak ada session DAN gak ada uid → tolak
+      if (!effectiveUserId) {
+        return jsonRes(401, {
+          ok: false,
+          message: 'Login dulu atau kirim parameter uid.',
+          need_auth: true
+        });
+      }
+
+      // Cek limit pakai effectiveUserId (bukan uid param)
+      const status = await getUserStatus(db, effectiveUserId, request);
 
       if (status.used >= status.limit) {
         const remaining = msUntilWibReset();
-        await logRequest(db, { user_id: userId, endpoint_id: id, status: 429 });
+        await logRequest(db, { user_id: effectiveUserId, endpoint_id: id, status: 429 });
         return jsonRes(429, {
           ok: false,
           message: 'Limit harian habis (' + status.used + '/' + status.limit + '). Reset dalam ' + formatDuration(remaining) + ' (00:00 WIB).',
           limit: status.limit,
           used: status.used,
+          tier: status.tier,
           reset_in_ms: remaining
         });
       }
 
       const now = Date.now();
-      const userRow = await db.prepare('SELECT id FROM users WHERE id = ?').bind(userId).first();
+      const userRow = await db.prepare('SELECT id FROM users WHERE id = ?').bind(effectiveUserId).first();
       if (!userRow) {
         await db.prepare(
           'INSERT INTO users (id, extra_limit, created_at, last_seen, total_request) VALUES (?, 0, ?, ?, 0)'
-        ).bind(userId, now, now).run();
+        ).bind(effectiveUserId, now, now).run();
       } else {
-        await db.prepare('UPDATE users SET last_seen = ? WHERE id = ?').bind(now, userId).run();
+        await db.prepare('UPDATE users SET last_seen = ? WHERE id = ?').bind(now, effectiveUserId).run();
       }
     } catch (e) {
-      // fail-open
+      console.error('[LIMIT-USER]', e.message);
+      // fail-open: biar user tetap bisa akses kalau DB error
     }
   }
 
@@ -332,7 +362,7 @@ export async function onRequest(context) {
       if (rawBuf.byteLength > MAX_BODY) {
         return jsonRes(502, { ok: false, message: 'Response terlalu besar.' });
       }
-      await logRequest(db, { user_id: userId, endpoint_id: 'raw', status: rawRes.status });
+      await logRequest(db, { user_id: (typeof effectiveUserId !== 'undefined' && effectiveUserId) ? effectiveUserId : userId, endpoint_id: 'raw', status: rawRes.status });
       const rawCt = rawRes.headers.get('content-type') || 'application/json';
       return new Response(rawBuf, {
         status: rawRes.status,
