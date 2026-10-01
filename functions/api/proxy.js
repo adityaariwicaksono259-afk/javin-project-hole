@@ -196,8 +196,8 @@ async function getUserStatus(db, userId, request) {
     } catch(e) {}
   }
 
-  // Legacy: extra_limit (kalau lebih besar dari tier limit)
-  if (userRow && typeof userRow.extra_limit === 'number' && userRow.extra_limit > limit) {
+  // Legacy: extra_limit (kalau di-set dan bukan 0, pakai ini)
+  if (userRow && typeof userRow.extra_limit === 'number' && userRow.extra_limit !== 0) {
     limit = userRow.extra_limit;
     tier = 'custom';
   }
