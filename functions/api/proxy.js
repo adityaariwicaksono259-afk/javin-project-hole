@@ -164,7 +164,7 @@ async function getSessionUserId(db, request) {
 
 async function getUserStatus(db, userId, request) {
   const todayStart = getWibDayStartMs();
-  const userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
+  let userRow = await db.prepare('SELECT * FROM users WHERE id = ?').bind(userId).first();
   const countRow = await db.prepare(
     'SELECT COUNT(*) as c FROM logs WHERE user_id = ? AND created_at >= ? AND status >= 200 AND status < 300'
   ).bind(userId, todayStart).first();
@@ -182,9 +182,16 @@ async function getUserStatus(db, userId, request) {
 
   if (effectiveUserId) {
     try {
-      const authUser = await db.prepare(
+      // Cari by id dulu, fallback ke user_code
+      let authUser = await db.prepare(
         'SELECT tier, tier_expires_at FROM auth_users WHERE id = ?'
       ).bind(effectiveUserId).first();
+
+      if (!authUser) {
+        authUser = await db.prepare(
+          'SELECT tier, tier_expires_at FROM auth_users WHERE user_code = ?'
+        ).bind(effectiveUserId).first();
+      }
 
       if (authUser && authUser.tier) {
         const notExpired = !authUser.tier_expires_at || authUser.tier_expires_at > Date.now();
