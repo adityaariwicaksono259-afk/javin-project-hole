@@ -9,9 +9,237 @@
     try { saved = localStorage.getItem('javin_display_name'); } catch(e){}
     var name = (saved && saved.trim()) ? saved.trim() : 'Javin';
     el.textContent = name;
-    if (av) av.textContent = name.charAt(0).toUpperCase();
+    if (av) {
+      // Cek avatar URL
+      var avatarUrl = null;
+      try { avatarUrl = localStorage.getItem('javin_avatar_url'); } catch(e){}
+      if (avatarUrl && avatarUrl.trim()) {
+        av.style.backgroundImage = 'url(' + avatarUrl + ')';
+        av.style.backgroundSize = 'cover';
+        av.style.backgroundPosition = 'center';
+        av.style.color = 'transparent';
+      } else {
+        av.textContent = name.charAt(0).toUpperCase();
+      }
+    }
   }
 
+  // ===== PROFILE MODAL (ala WhatsApp) =====
+  function fmtDate(ts) {
+    if (!ts) return '-';
+    try {
+      var d = new Date(ts);
+      return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch(e) { return '-'; }
+  }
+
+  function fmtReset(ms) {
+    if (!ms || ms <= 0) return '';
+    var jam = Math.floor(ms / 3600000);
+    var menit = Math.floor((ms % 3600000) / 60000);
+    if (jam > 0) return '(reset ' + jam + 'j ' + menit + 'm)';
+    return '(reset ' + menit + 'm)';
+  }
+
+  async function openProfileModal() {
+    var modal = document.getElementById('profileModal');
+    if (!modal) {
+      console.warn('[Profile] Modal tidak ada');
+      return;
+    }
+
+    modal.style.display = 'flex';
+
+    // Set default dulu
+    var pfUserCode = document.getElementById('pfUserCode');
+    var pfStatus = document.getElementById('pfStatusText');
+    var pfStatusDot = document.getElementById('pfStatusDot');
+    var pfTier = document.getElementById('pfTier');
+    var pfLimit = document.getElementById('pfLimit');
+    var pfJoined = document.getElementById('pfJoined');
+    var pfDisplay = document.getElementById('pfDisplayName');
+    var pfAvatar = document.getElementById('pfAvatar');
+    var pfAvatarImg = document.getElementById('pfAvatarImg');
+
+    // Nama tampilan dari localStorage
+    var displayName = 'Javin';
+    try {
+      var saved = localStorage.getItem('javin_display_name');
+      if (saved && saved.trim()) displayName = saved.trim();
+    } catch(e) {}
+    if (pfDisplay) pfDisplay.textContent = displayName;
+    if (pfAvatar) pfAvatar.textContent = displayName.charAt(0).toUpperCase();
+
+    // Fetch data user dari 2 endpoint
+    try {
+      var r1 = await fetch('/api/auth/me', { credentials: 'same-origin', cache: 'no-store' });
+      var j1 = await r1.json();
+
+      if (j1 && j1.ok && j1.user) {
+        if (pfUserCode) pfUserCode.textContent = j1.user.user_code || '-';
+        if (j1.user.avatar && pfAvatarImg) {
+          pfAvatarImg.src = j1.user.avatar;
+          pfAvatarImg.style.display = 'block';
+          if (pfAvatar) pfAvatar.style.display = 'none';
+        } else {
+          if (pfAvatarImg) pfAvatarImg.style.display = 'none';
+          if (pfAvatar) pfAvatar.style.display = 'flex';
+        }
+
+        // Status
+        var isDemo = j1.is_demo === true || j1.user.provider === 'demo';
+        if (pfStatus) pfStatus.textContent = isDemo ? 'Demo Mode' : (j1.user.provider === 'google' ? 'Google' : (j1.user.provider || 'User'));
+        if (pfStatusDot) pfStatusDot.className = 'pf-status-dot ' + (isDemo ? 'demo' : 'google');
+      } else {
+        if (pfUserCode) pfUserCode.textContent = 'Guest';
+        if (pfStatus) pfStatus.textContent = 'Tidak Login';
+        if (pfStatusDot) pfStatusDot.className = 'pf-status-dot';
+      }
+    } catch(e) {
+      console.warn('[Profile] auth/me error:', e.message);
+    }
+
+    // Fetch limit & tier dari /api/user/me
+    try {
+      var r2 = await fetch('/api/user/me', { credentials: 'same-origin', cache: 'no-store' });
+      var j2 = await r2.json();
+
+      if (j2 && j2.ok) {
+        if (pfTier) {
+          var tier = j2.tier || 'free';
+          pfTier.textContent = tier;
+          pfTier.className = 'pf-tier-badge ' + tier;
+        }
+        if (pfLimit) {
+          pfLimit.textContent = (j2.remaining || 0) + '/' + (j2.limit || 0);
+          var resetEl = document.getElementById('pfLimitReset');
+          if (resetEl) resetEl.textContent = fmtReset(j2.reset_in_ms);
+        }
+      }
+    } catch(e) {
+      console.warn('[Profile] user/me error:', e.message);
+    }
+
+    // Tanggal join dari auth/me (kalau ada)
+    // (Kita bisa tambah kalau perlu nanti)
+
+    // Handler tombol edit nama
+    var editBtn = document.getElementById('pfEditName');
+    if (editBtn) {
+      editBtn.onclick = function() {
+        modal.style.display = 'none';
+        openProfileEditor(); // panggil modal lama
+      };
+    }
+
+    // Handler close
+    var closeBtn = document.getElementById('pfClose');
+    if (closeBtn) {
+      closeBtn.onclick = function() { modal.style.display = 'none'; };
+    }
+
+    // Click overlay = close
+    modal.onclick = function(e) {
+      if (e.target === modal) modal.style.display = 'none';
+    };
+
+    // ===== Handler upload foto =====
+    var avatarWrap = document.getElementById('pfAvatarWrap');
+    var avatarInput = document.getElementById('pfAvatarInput');
+    var uploadHint = document.getElementById('pfUploadHint');
+
+    if (avatarWrap && avatarInput) {
+      avatarWrap.onclick = function() { avatarInput.click(); };
+    }
+
+    if (avatarInput) {
+      avatarInput.onchange = async function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > 2 * 1024 * 1024) {
+          alert('Foto max 2 MB');
+          return;
+        }
+
+        if (uploadHint) uploadHint.textContent = 'Uploading...';
+
+        try {
+          var fd = new FormData();
+          fd.append('file', file);
+          var r = await fetch('/api/user/avatar-upload', {
+            method: 'POST',
+            credentials: 'same-origin',
+            body: fd
+          });
+          var j = await r.json();
+
+          if (!j.ok) {
+            alert(j.message || 'Gagal upload');
+            if (uploadHint) uploadHint.textContent = 'Tap foto untuk ganti';
+            return;
+          }
+
+          // Update preview
+          if (pfAvatarImg) {
+            pfAvatarImg.src = j.avatar_url + '?t=' + Date.now();
+            pfAvatarImg.style.display = 'block';
+          }
+          if (pfAvatar) pfAvatar.style.display = 'none';
+
+          // Update header avatar (kalau ada)
+          try { localStorage.setItem('javin_avatar_url', j.avatar_url); } catch(e){}
+          updateHeaderName();
+
+          if (uploadHint) uploadHint.textContent = 'Berhasil diupload!';
+          setTimeout(function() {
+            if (uploadHint) uploadHint.textContent = 'Tap foto untuk ganti';
+          }, 2000);
+        } catch(err) {
+          alert('Koneksi error');
+          if (uploadHint) uploadHint.textContent = 'Tap foto untuk ganti';
+        }
+      };
+    }
+
+    // ===== Handler logout =====
+    var logoutBtn = document.getElementById('pfLogout');
+    if (logoutBtn) {
+      logoutBtn.onclick = async function() {
+        if (!confirm('Yakin mau logout?')) return;
+
+        logoutBtn.disabled = true;
+        logoutBtn.textContent = 'Logging out...';
+
+        // Cek apakah demo atau session
+        var isDemo = document.cookie.indexOf('javin_demo=') !== -1;
+        var endpoint = isDemo ? '/api/auth/logout-demo' : '/api/auth/logout';
+
+        try {
+          await fetch(endpoint, {
+            method: 'POST',
+            credentials: 'same-origin'
+          });
+        } catch(e) {}
+
+        // Clear localStorage
+        try {
+          localStorage.removeItem('javin_user_id');
+          localStorage.removeItem('javin_user_name');
+          localStorage.removeItem('javin_user_avatar');
+          localStorage.removeItem('javin_user_code');
+          localStorage.removeItem('javin_session_token');
+          localStorage.removeItem('javin_display_name');
+          localStorage.removeItem('javin_avatar_url');
+        } catch(e) {}
+
+        // Redirect ke login
+        location.href = '/login';
+      };
+    }
+  }
+
+  // ===== Profile Editor lama (dipanggil dari modal profile) =====
   function openProfileEditor(){
     var modal = document.getElementById('editNameModal');
     var input = document.getElementById('enmInput');
@@ -84,7 +312,7 @@
       card.onclick = function(e){
         e.preventDefault();
         e.stopPropagation();
-        openProfileEditor();
+        openProfileModal();
       };
     }
   });
@@ -92,6 +320,9 @@
   // Update juga setelah identify selesai
   setTimeout(updateHeaderName, 1500);
   setTimeout(updateHeaderName, 3000);
+
+  // Expose ke window biar bisa dipanggil dari tempat lain
+  window.openProfileModal = openProfileModal;
 })();
 
 // === LOAD SETTINGS (theme, scale, dll) ===
