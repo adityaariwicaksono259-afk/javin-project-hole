@@ -1,43 +1,22 @@
 node_modules/
-.wrangler/
-.dev.vars
-.env
-.env.*
-*.log
 .DS_Store
+*.log
 
-# Backup files (jangan masuk git)
-*.bak
-*.bak-*
-*.bak-*-*
-functions/*.bak*
-_tmp/
+# Patch & backup files - JANGAN ke-push
+patch_*.py
+fix_*.py
+X-osint/
+*.backup
+*.backup-*
+public/debug.html
+public/bg-baseline-backup.mp4
+public/style.css.backup-*
 
-# BETOx1 — media backup & generated
-public/bg-original.mp4
-public/bg-ambient.mp3
-public/*.bak
-public/*.bak-*
-functions/**/*.bak
-functions/**/*.bak-*
-functions/**/*.bak2-*
-
-# BETOx1 — file debug & backup video
+# Video & backup files
 public/_frames/
 public/_video_backup/
-public/bg-original*.mp4
-public/bg-lama*.mp4
-
-# BETOx1 — experiment backups
-public/app.html
-public/iframe-wrapper.html
-public/index.html.original-*
-public/*.bak-*
-
-# Login video backup
-public/login-bg-original.mp4
-
-# Login video backups
+public/bg-ambient.mp3
 public/login-bg-lama.mp4
 public/login-bg-original-2.mp4
 public/login-bg-original.mp4
+public/login.html.bak
