@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Debug - Javin</title>
+<style>
+body{font-family:monospace;background:#0a0a12;color:#eee;padding:16px;font-size:13px;line-height:1.6}
+h1{color:#a98cff;font-size:18px}
+.box{background:#11111a;border:1px solid #ffffff20;border-radius:8px;padding:12px;margin:8px 0;word-break:break-all}
+.k{color:#8a8a9a;font-size:11px}
+.v{color:#4ade80;font-size:12px;margin-bottom:8px}
+.v.orange{color:#fbbf24}
+.v.red{color:#f87171}
+button{background:#7045ff;color:#fff;border:0;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;margin:4px 4px 4px 0;cursor:pointer}
+button.danger{background:#dc2626}
+pre{white-space:pre-wrap;font-size:11px}
+</style>
+</head>
+<body>
+<h1>🔧 Debug User</h1>
+
+<div class="box">
+  <div class="k">user_id (localStorage)</div>
+  <div class="v" id="uid">…</div>
+  <div class="k">fp_cache (localStorage)</div>
+  <div class="v" id="fpc">…</div>
+</div>
+
+<div class="box">
+  <div class="k">Fingerprint (generated sekarang)</div>
+  <div class="v" id="fpg">…</div>
+  <div class="k">Sama dengan fp_cache?</div>
+  <div class="v" id="fpMatch">…</div>
+</div>
+
+<div class="box">
+  <div class="k">Status limit server</div>
+  <pre id="me">…</pre>
+</div>
+
+<div>
+  <button onclick="regen()">Regenerate Fingerprint</button>
+  <button onclick="testIdentify()">Test Identify</button>
+  <button class="danger" onclick="clearAll()">Clear Data</button>
+</div>
+
+<script>
+var $=function(id){return document.getElementById(id)};
+
+async function generateFingerprint(){
+  var parts = [];
+  parts.push('ua=' + (navigator.userAgent || ''));
+  parts.push('pl=' + (navigator.platform || ''));
+  parts.push('lang=' + (navigator.language || ''));
+  parts.push('langs=' + ((navigator.languages || []).join(',') || ''));
+  parts.push('cores=' + (navigator.hardwareConcurrency || 0));
+  parts.push('mem=' + (navigator.deviceMemory || 0));
+  parts.push('touch=' + (navigator.maxTouchPoints || 0));
+  parts.push('scr=' + screen.width + 'x' + screen.height);
+  parts.push('dep=' + screen.colorDepth);
+  parts.push('avail=' + screen.availWidth + 'x' + screen.availHeight);
+  parts.push('dpr=' + (window.devicePixelRatio || 1));
+  try { parts.push('tz=' + (Intl.DateTimeFormat().resolvedOptions().timeZone || '')); } catch(e) { parts.push('tz='); }
+  try {
+    var gl = document.createElement('canvas').getContext('webgl') || document.createElement('canvas').getContext('experimental-webgl');
+    if (gl) {
+      var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+      if (dbg) {
+        parts.push('gpu_v=' + (gl.getParameter(dbg.UNMASKED_VENDOR_WEBGL) || ''));
+        parts.push('gpu_r=' + (gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) || ''));
+      }
+    }
+  } catch(e) {}
+  var raw = parts.join('||');
+  var buf = new TextEncoder().encode(raw);
+  var hashBuf = await crypto.subtle.digest('SHA-256', buf);
+  var arr = Array.from(new Uint8Array(hashBuf));
+  return arr.map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+}
+
+async function render(){
+  var uid = localStorage.getItem('javin_user_id') || '(kosong)';
+  var fpc = localStorage.getItem('javin_fp_cache') || '(kosong)';
+  $('uid').textContent = uid;
+  $('fpc').textContent = fpc;
+
+  try {
+    var fp = await generateFingerprint();
+    $('fpg').textContent = fp;
+    if (fpc && fpc !== '(kosong)') {
+      $('fpMatch').textContent = (fp === fpc) ? '✅ SAMA' : '❌ BEDA';
+      $('fpMatch').className = 'v ' + (fp === fpc ? '' : 'red');
+    } else {
+      $('fpMatch').textContent = '⚠️ fp_cache kosong';
+      $('fpMatch').className = 'v orange';
+    }
+  } catch(e) {
+    $('fpg').textContent = 'ERROR: ' + e.message;
+  }
+
+  if (uid && uid !== '(kosong)') {
+    try {
+      var r = await fetch('/api/user/me?uid=' + encodeURIComponent(uid) + '&t=' + Date.now());
+      var j = await r.json();
+      $('me').textContent = JSON.stringify(j, null, 2);
+    } catch(e) {
+      $('me').textContent = 'ERROR: ' + e.message;
+    }
+  }
+}
+
+async function regen(){
+  var fp = await generateFingerprint();
+  localStorage.setItem('javin_fp_cache', fp);
+  alert('Fingerprint di-regenerate. Refresh halaman.');
+  render();
+}
+
+async function testIdentify(){
+  var fp = await generateFingerprint();
+  var r = await fetch('/api/user/identify', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({fp: fp})
+  });
+  var j = await r.json();
+  alert('Server balikin:\n' + JSON.stringify(j, null, 2));
+  if (j.ok && j.uid) {
+    localStorage.setItem('javin_user_id', j.uid);
+    localStorage.setItem('javin_fp_cache', fp);
+    render();
+  }
+}
+
+function clearAll(){
+  if (!confirm('Clear semua data situs?')) return;
+  localStorage.clear();
+  location.reload();
+}
+
+render();
+</script>
+</body>
+</html>
