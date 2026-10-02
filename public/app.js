@@ -258,8 +258,8 @@
             localStorage.removeItem('javin_user_avatar');
             localStorage.removeItem('javin_user_code');
             localStorage.removeItem('javin_session_token');
-            localStorage.removeItem('javin_display_name');
-            localStorage.removeItem('javin_avatar_url');
+            // javin_display_name & javin_avatar_url DIPERTAHANKAN
+            // biar nama & foto profil tetap sama pas login lagi
           } catch(e) {}
 
           location.replace('/login');
