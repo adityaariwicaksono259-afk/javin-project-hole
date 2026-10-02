@@ -2,6 +2,8 @@
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
 import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup, cmdAnnounce } from '../../_lib/bot-admin.js';
+import { cmdWhitelistAdd, cmdUnban, cmdBan } from '../../_lib/bot-admin.js';
+import { cmdSetTier, cmdRemoveTier, cmdTierInfo } from '../../_lib/bot-admin.js';
 import { editTelegramMessage, answerCallbackQuery } from '../../_lib/telegram.js';
 import { SUPPORT_TEMPLATES, getTemplatesByCategory } from '../../_lib/support-templates.js';
 import { cmdOsintIp, cmdOsintIpInfo, cmdOsintDns, cmdOsintReverse, cmdOsintWhois, cmdOsintSubdomain, cmdOsintCve, cmdOsintHeaders, cmdOsintSsl, cmdOsintPhone, cmdOsintQr, cmdOsintHash, cmdOsintPassword, cmdOsintUsername, cmdOsintPortscan } from '../../_lib/osint-commands.js';
@@ -325,7 +327,15 @@ export async function onRequestPost({ request, env }) {
         '<code>/hash &lt;teks&gt;</code> — Hash generator\n' +
         '<code>/password &lt;teks&gt;</code> — Cek password strength\n' +
         '<code>/username &lt;user&gt;</code> — Username search\n' +
-        '<code>/portscan &lt;target&gt;</code> — Port scan (IP sendiri!)';
+        '<code>/portscan &lt;target&gt;</code> — Port scan (IP sendiri!)' +
+        '\n\n🌐 <b>IP MANAGEMENT</b>\n' +
+        '<code>/whitelist &lt;ip&gt; [alasan]</code> — Whitelist IP\n' +
+        '<code>/unban &lt;ip&gt;</code> — Unban IP\n' +
+        '<code>/ban &lt;ip&gt; [alasan]</code> — Ban IP manual' +
+        '\n\n🎫 <b>TIER MANAGEMENT</b>\n' +
+        '<code>/settier &lt;user_id&gt; &lt;tier&gt; [hari]</code> — Set tier user\n' +
+        '<code>/removetier &lt;user_id&gt;</code> — Turunin ke free\n' +
+        '<code>/tier &lt;user_id&gt;</code> — Cek tier user';
     }
 
     await reply(env, chatId, help);
@@ -559,6 +569,16 @@ export async function onRequestPost({ request, env }) {
   if (cmd === '/password') { await cmdOsintPassword(env, chatId, args, reply); return new Response('ok'); }
   if (cmd === '/username') { await cmdOsintUsername(env, chatId, args, reply); return new Response('ok'); }
   if (cmd === '/portscan') { await cmdOsintPortscan(env, chatId, args, reply); return new Response('ok'); }
+
+  // ==== IP MANAGEMENT ====
+  if (cmd === '/whitelist') { await cmdWhitelistAdd(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/unban') { await cmdUnban(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/ban') { await cmdBan(env, chatId, args, reply); return new Response('ok'); }
+
+  // ==== TIER MANAGEMENT ====
+  if (cmd === '/settier') { await cmdSetTier(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/removetier') { await cmdRemoveTier(env, chatId, args, reply); return new Response('ok'); }
+  if (cmd === '/tier') { await cmdTierInfo(env, chatId, args, reply); return new Response('ok'); }
 
   await reply(env, chatId, '❓ Command nggak dikenal. Ketik /help.');
   return new Response('ok');

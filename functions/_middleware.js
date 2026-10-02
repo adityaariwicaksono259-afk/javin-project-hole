@@ -113,7 +113,19 @@ export async function onRequest(context) {
                (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
                'unknown';
   const __adminIPs = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
-  const __isWhitelisted = __adminIPs.includes(__ip);
+  let __isWhitelisted = __adminIPs.includes(__ip);
+
+  // Cek D1 whitelist juga (kalau belum whitelist dari env)
+  if (!__isWhitelisted && __db) {
+    try {
+      const __wlRow = await __db.prepare(
+        'SELECT ip FROM ip_whitelist WHERE ip = ? LIMIT 1'
+      ).bind(__ip).first();
+      if (__wlRow) __isWhitelisted = true;
+    } catch(e) {
+      console.error('[WHITELIST-DB]', e.message);
+    }
+  }
 
   // ==== LAYER 30-33: Detection (log only) ====
   if (pathname.startsWith('/api/')) {
@@ -538,7 +550,7 @@ export async function onRequest(context) {
     var __isStatic = __staticExts.indexOf(__ext) !== -1;
     var __isApi = pathname.indexOf('/api/') === 0;
     var __isWellKnown = pathname.indexOf('/.well-known/') === 0;
-    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html', '/debug-auth'];
+    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html'];
     var __isPublicPage = __publicPages.indexOf(pathname) !== -1;
 
     if (!__isStatic && !__isApi && !__isWellKnown && !__isPublicPage) {

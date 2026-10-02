@@ -383,3 +383,303 @@ export async function cmdAnnounce(env, chatId, args, reply){
     await reply(env, chatId, '❌ Error: ' + esc(e.message));
   }
 }
+
+// ==================== IP MANAGEMENT (v1.0) ====================
+
+// Helper: validasi format IP
+function isValidIP(ip) {
+  return /^(\d{1,3}\.){3}\d{1,3}$/.test(ip) ||
+         /^[0-9a-f:]+$/i.test(ip); // IPv6 simple
+}
+
+// /whitelist <ip> [alasan]
+export async function cmdWhitelistAdd(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const parts = (args || '').trim().split(/\s+/);
+  const ip = parts[0];
+  const reason = parts.slice(1).join(' ') || 'Manual whitelist via Telegram';
+
+  if (!ip || !isValidIP(ip)) {
+    await reply(env, chatId, '❓ Format: <code>/whitelist &lt;ip&gt; [alasan]</code>\\nContoh: <code>/whitelist 114.79.1.2 My office IP</code>');
+    return;
+  }
+
+  try {
+    const now = Date.now();
+    await db.prepare(
+      'INSERT INTO ip_whitelist (ip, reason, added_at, added_by) VALUES (?, ?, ?, ?) ' +
+      'ON CONFLICT(ip) DO UPDATE SET reason = excluded.reason, added_at = excluded.added_at'
+    ).bind(ip, reason, now, 'telegram_admin').run();
+
+    await reply(env, chatId,
+      '✅ <b>IP WHITELISTED</b>\\n\\n' +
+      '🌐 IP: <code>' + ip + '</code>\\n' +
+      '📝 Alasan: ' + reason + '\\n' +
+      '🕐 ' + new Date(now).toISOString().replace('T', ' ').slice(0, 19)
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + e.message);
+  }
+}
+
+// /unban <ip>
+export async function cmdUnban(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const ip = (args || '').trim().split(/\s+/)[0];
+  if (!ip || !isValidIP(ip)) {
+    await reply(env, chatId, '❓ Format: <code>/unban &lt;ip&gt;</code>');
+    return;
+  }
+
+  try {
+    const r1 = await db.prepare('DELETE FROM blocked_ips WHERE ip = ?').bind(ip).run();
+    const r2 = await db.prepare('DELETE FROM ip_rate_limit WHERE ip = ?').bind(ip).run();
+    const r3 = await db.prepare('DELETE FROM ip_errors WHERE ip = ?').bind(ip).run();
+
+    const changes = (r1.meta && r1.meta.changes || 0) +
+                    (r2.meta && r2.meta.changes || 0) +
+                    (r3.meta && r3.meta.changes || 0);
+
+    await reply(env, chatId,
+      '✅ <b>IP UNBANNED</b>\\n\\n' +
+      '🌐 IP: <code>' + ip + '</code>\\n' +
+      '🗑️ Record dihapus: ' + changes + '\\n' +
+      '🕐 ' + new Date().toISOString().replace('T', ' ').slice(0, 19)
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + e.message);
+  }
+}
+
+// /ban <ip> [alasan]
+export async function cmdBan(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const parts = (args || '').trim().split(/\s+/);
+  const ip = parts[0];
+  const reason = parts.slice(1).join(' ') || 'Manual ban via Telegram';
+
+  if (!ip || !isValidIP(ip)) {
+    await reply(env, chatId, '❓ Format: <code>/ban &lt;ip&gt; [alasan]</code>');
+    return;
+  }
+
+  try {
+    const now = Date.now();
+    const until = now + (365 * 24 * 60 * 60 * 1000); // ban 1 tahun
+
+    await db.prepare(
+      'INSERT INTO blocked_ips (ip, reason, until, created_at) VALUES (?, ?, ?, ?) ' +
+      'ON CONFLICT(ip) DO UPDATE SET reason = excluded.reason, until = excluded.until'
+    ).bind(ip, reason, until, now).run();
+
+    // Hapus dari whitelist kalau ada (biar konsisten)
+    try { await db.prepare('DELETE FROM ip_whitelist WHERE ip = ?').bind(ip).run(); } catch(e) {}
+
+    await reply(env, chatId,
+      '🚫 <b>IP BANNED</b>\\n\\n' +
+      '🌐 IP: <code>' + ip + '</code>\\n' +
+      '📝 Alasan: ' + reason + '\\n' +
+      '⏱️ Durasi: 1 tahun\\n' +
+      '🕐 ' + new Date(now).toISOString().replace('T', ' ').slice(0, 19)
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + e.message);
+  }
+}
+
+// ==================== TIER MANAGEMENT (v1.0) ====================
+
+const TIER_DEFAULT_DAYS = { basic: 5, pro: 12, unlimited: 36, free: 0 };
+const TIER_LIST = ['free', 'basic', 'pro', 'unlimited'];
+
+// Cari user by id ATAU user_code
+async function findAuthUser(db, identifier) {
+  let user = await db.prepare(
+    'SELECT id, user_code, name, email, tier, tier_expires_at FROM auth_users WHERE id = ? LIMIT 1'
+  ).bind(identifier).first();
+
+  if (!user) {
+    user = await db.prepare(
+      'SELECT id, user_code, name, email, tier, tier_expires_at FROM auth_users WHERE user_code = ? LIMIT 1'
+    ).bind(identifier).first();
+  }
+
+  return user;
+}
+
+// /settier <user_id> <tier> [hari]
+export async function cmdSetTier(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const parts = (args || '').trim().split(/\s+/);
+  const identifier = parts[0];
+  const tier = (parts[1] || '').toLowerCase();
+  const daysArg = parts[2];
+
+  if (!identifier || !tier) {
+    await reply(env, chatId,
+      '❓ Format: <code>/settier &lt;user_id&gt; &lt;tier&gt; [hari]</code>\n\n' +
+      '<b>Tier:</b> free, basic, pro, unlimited\n' +
+      '<b>Contoh:</b>\n' +
+      '<code>/settier JH-ABC123 pro 30</code>\n' +
+      '<code>/settier kp:e24... basic</code> (pakai default 5 hari)'
+    );
+    return;
+  }
+
+  if (TIER_LIST.indexOf(tier) === -1) {
+    await reply(env, chatId, '❌ Tier tidak valid. Pilih: free, basic, pro, unlimited.');
+    return;
+  }
+
+  try {
+    const user = await findAuthUser(db, identifier);
+    if (!user) {
+      await reply(env, chatId, '❌ User <code>' + identifier + '</code> tidak ditemukan.');
+      return;
+    }
+
+    const now = Date.now();
+    let newExpires = 0;
+    let days = 0;
+
+    if (tier === 'free') {
+      newExpires = 0;
+      days = 0;
+    } else {
+      days = daysArg ? parseInt(daysArg, 10) : TIER_DEFAULT_DAYS[tier];
+      if (!isFinite(days) || days < 1 || days > 3650) {
+        await reply(env, chatId, '❌ Durasi tidak valid (1-3650 hari).');
+        return;
+      }
+
+      // Kalau user masih punya tier aktif, extend dari expiry lama
+      const baseTime = (user.tier_expires_at && user.tier_expires_at > now) ? user.tier_expires_at : now;
+      newExpires = baseTime + (days * 24 * 60 * 60 * 1000);
+    }
+
+    await db.prepare(
+      'UPDATE auth_users SET tier = ?, tier_expires_at = ? WHERE id = ?'
+    ).bind(tier, newExpires, user.id).run();
+
+    // Update extra_limit di tabel users (biar /api/user/me konsisten)
+    const TIER_LIMITS = { free: 20, demo: 3, basic: 70, pro: 150, unlimited: 500 };
+    try {
+      const userRow = await db.prepare('SELECT id FROM users WHERE id = ?').bind(user.id).first();
+      if (userRow) {
+        await db.prepare('UPDATE users SET extra_limit = ? WHERE id = ?').bind(TIER_LIMITS[tier], user.id).run();
+      }
+    } catch(e) {}
+
+    const expiryStr = newExpires > 0
+      ? new Date(newExpires).toISOString().replace('T', ' ').slice(0, 19)
+      : '(tanpa expiry)';
+
+    await reply(env, chatId,
+      '✅ <b>TIER UPDATED</b>\n\n' +
+      '👤 User: <code>' + user.id + '</code>\n' +
+      '🏷️ Nama: ' + (user.name || '-') + '\n' +
+      '🎫 Tier baru: <b>' + tier + '</b>\n' +
+      '⏱️ Durasi: ' + (days > 0 ? days + ' hari' : '-') + '\n' +
+      '📅 Expires: ' + expiryStr + '\n' +
+      '🕐 Update: ' + new Date(now).toISOString().replace('T', ' ').slice(0, 19)
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + e.message);
+  }
+}
+
+// /removetier <user_id>
+export async function cmdRemoveTier(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const identifier = (args || '').trim().split(/\s+/)[0];
+  if (!identifier) {
+    await reply(env, chatId, '❓ Format: <code>/removetier &lt;user_id&gt;</code>');
+    return;
+  }
+
+  try {
+    const user = await findAuthUser(db, identifier);
+    if (!user) {
+      await reply(env, chatId, '❌ User <code>' + identifier + '</code> tidak ditemukan.');
+      return;
+    }
+
+    await db.prepare(
+      'UPDATE auth_users SET tier = "free", tier_expires_at = 0 WHERE id = ?'
+    ).bind(user.id).run();
+
+    // Reset extra_limit ke 20
+    try {
+      await db.prepare('UPDATE users SET extra_limit = 20 WHERE id = ?').bind(user.id).run();
+    } catch(e) {}
+
+    await reply(env, chatId,
+      '✅ <b>TIER REMOVED</b>\n\n' +
+      '👤 User: <code>' + user.id + '</code>\n' +
+      '🏷️ Nama: ' + (user.name || '-') + '\n' +
+      '🎫 Tier sekarang: <b>free</b>\n' +
+      '📊 Limit: 20/hari\n' +
+      '🕐 ' + new Date().toISOString().replace('T', ' ').slice(0, 19)
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + e.message);
+  }
+}
+
+// /tier <user_id>
+export async function cmdTierInfo(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const identifier = (args || '').trim().split(/\s+/)[0];
+  if (!identifier) {
+    await reply(env, chatId, '❓ Format: <code>/tier &lt;user_id&gt;</code>');
+    return;
+  }
+
+  try {
+    const user = await findAuthUser(db, identifier);
+    if (!user) {
+      await reply(env, chatId, '❌ User <code>' + identifier + '</code> tidak ditemukan.');
+      return;
+    }
+
+    const now = Date.now();
+    const active = user.tier && user.tier !== 'free' && (!user.tier_expires_at || user.tier_expires_at > now);
+
+    let sisaStr = '-';
+    if (user.tier_expires_at && user.tier_expires_at > now) {
+      const sisaMs = user.tier_expires_at - now;
+      const sisaHari = Math.floor(sisaMs / (24 * 60 * 60 * 1000));
+      const sisaJam = Math.floor((sisaMs % (24 * 60 * 60 * 1000)) / 3600000);
+      sisaStr = sisaHari + ' hari ' + sisaJam + ' jam';
+    }
+
+    const expiryStr = user.tier_expires_at
+      ? new Date(user.tier_expires_at).toISOString().replace('T', ' ').slice(0, 19)
+      : '-';
+
+    await reply(env, chatId,
+      '🎫 <b>USER TIER INFO</b>\n\n' +
+      '👤 ID: <code>' + user.id + '</code>\n' +
+      '🆔 Code: <code>' + (user.user_code || '-') + '</code>\n' +
+      '🏷️ Nama: ' + (user.name || '-') + '\n' +
+      '📧 Email: ' + (user.email || '-') + '\n\n' +
+      '🎖️ Tier: <b>' + (user.tier || 'free') + '</b> ' + (active ? '✅' : '(expired)') + '\n' +
+      '📅 Expires: ' + expiryStr + '\n' +
+      '⏱️ Sisa: ' + sisaStr
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + e.message);
+  }
+}
