@@ -7,27 +7,43 @@ const MAX_MUSIC_POSTS = 10;
 const MAX_COMMENTS_PER_VIDEO = 30;
 
 const PRESET_PATTERNS = [
+  // Alight Motion resmi
   /https?:\/\/[^\s"'<>]*alightcreative\.com[^\s"'<>]*/gi,
   /https?:\/\/[^\s"'<>]*alightmotion\.com[^\s"'<>]*/gi,
+  // XML file
   /https?:\/\/[^\s"'<>]*\.xml(?:\?[^\s"'<>]*)?/gi,
+  // Container bio link
   /https?:\/\/(?:www\.)?linktr\.ee\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?sociabuzz\.com\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?beacons\.ai\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?bio\.link\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?link\.bio\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?carrd\.co\/[^\s"'<>]+/gi,
+  // File storage
   /https?:\/\/(?:www\.)?drive\.google\.com\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?mediafire\.com\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?mega\.nz\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?dropbox\.com\/[^\s"'<>]+/gi,
+  /https?:\/\/(?:www\.)?pixeldrain\.com\/[^\s"'<>]+/gi,
+  /https?:\/\/(?:www\.)?gofile\.io\/[^\s"'<>]+/gi,
+  // Short URL
   /https?:\/\/(?:www\.)?bit\.ly\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?s\.id\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?tinyurl\.com\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?is\.gd\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?t\.co\/[^\s"'<>]+/gi,
   /https?:\/\/(?:www\.)?shorturl\.at\/[^\s"'<>]+/gi,
+  /https?:\/\/(?:www\.)?rebrand\.ly\/[^\s"'<>]+/gi,
+  /https?:\/\/(?:www\.)?cutt\.ly\/[^\s"'<>]+/gi,
+  /https?:\/\/(?:www\.)?rb\.gy\/[^\s"'<>]+/gi,
+  // WhatsApp Channel + grup
+  /https?:\/\/(?:www\.)?whatsapp\.com\/channel\/[^\s"'<>]+/gi,
+  /https?:\/\/(?:chat\.)?whatsapp\.com\/[^\s"'<>]+/gi,
+  /https?:\/\/(?:www\.)?wa\.me\/[^\s"'<>]+/gi,
+  // Telegram
   /https?:\/\/(?:t\.me|telegram\.me)\/[^\s"'<>]+/gi,
-  /https?:\/\/[^\s"'<>]*(?:preset|alight|am-preset|prem-?am)[^\s"'<>]*/gi,
+  // Keyword-based
+  /https?:\/\/[^\s"'<>]*(?:preset|alight|am-preset|prem-?am|amvip|xml-?preset)[^\s"'<>]*/gi,
 ];
 
 function extractPresets(text) {
