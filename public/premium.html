@@ -144,7 +144,7 @@ footer{text-align:center;color:#444;font-size:10px;padding:20px;letter-spacing:.
   </div>
 
   <!-- AMFINDER SECTION -->
-  <div class="card" id="amfinderCard" style="margin-top:24px">
+  <div class="card" id="amfinderCard" style="margin-top:24px;display:none">
     <h3>🔍 AM Preset Finder</h3>
     <div class="sub">Cari preset Alight Motion dari link TikTok. Masukkan link video TikTok yang ada preset-nya.</div>
     <input type="url" id="amfinderUrl" placeholder="https://vt.tiktok.com/xxx" autocomplete="off" inputmode="url">
@@ -178,6 +178,15 @@ function showStep(n){
     $('stepBar').style.display = 'flex';
   } else {
     $('stepBar').style.display = 'none';
+  }
+  // Show/hide amfinder card — cuma muncul kalau user udah punya key aktif
+  var amf = $('amfinderCard');
+  if (amf) {
+    if (state.key && state.remaining > 0) {
+      amf.style.display = 'block';
+    } else {
+      amf.style.display = 'none';
+    }
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -228,6 +237,7 @@ async function init(){
       }
 
       // Langsung ke step 1
+      $('amfinderCard').style.display = 'block';
       showStep(1);
       setResult($('res1'), 'info', '✅ Key aktif: ' + state.key + ' · sisa ' + state.remaining + '/' + state.maxUses);
     } else {
