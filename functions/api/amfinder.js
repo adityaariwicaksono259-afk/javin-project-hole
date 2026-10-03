@@ -5,6 +5,8 @@ const RAPIDAPI_HOST = 'tiktok-scraper7.p.rapidapi.com';
 const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 const MAX_MUSIC_POSTS = 10;
 const MAX_COMMENTS_PER_VIDEO = 30;
+const MAX_AUTHOR_REPLY_CHECKS = 5;   // max comment author yang dicek reply-nya
+const MAX_REPLIES_PER_COMMENT = 10;  // max reply per comment
 
 const PRESET_PATTERNS = [
   // Alight Motion resmi
@@ -100,6 +102,51 @@ async function incrementHit(db, hash) {
   try { await db.prepare('UPDATE amfinder_cache SET hit_count = hit_count + 1 WHERE url_hash = ?').bind(hash).run(); } catch (e) {}
 }
 
+
+// ─────────────────────────────────────────
+// AMBIL REPLY DARI KOMENTAR AUTHOR
+// ─────────────────────────────────────────
+async function scanAuthorReplies(videoId, author, topComments, apiKey, host, presetSet, sources) {
+  if (!videoId || !author) return 0;
+
+  // Filter: cuma comment dari author yang reply_total > 0
+  const authorComments = topComments
+    .filter(c => c.user?.unique_id === author && (c.reply_total || 0) > 0)
+    .slice(0, MAX_AUTHOR_REPLY_CHECKS);
+
+  let replyScanned = 0;
+
+  for (const c of authorComments) {
+    try {
+      const replies = await rapidGet(
+        `/comment/reply?comment_id=${c.id}&video_id=${videoId}&count=${MAX_REPLIES_PER_COMMENT}`,
+        apiKey, host
+      );
+
+      const list = replies?.data?.comments || [];
+      for (const r of list) {
+        const rText = r.text || '';
+        replyScanned++;
+        extractPresets(rText).forEach((p) => {
+          if (!presetSet.has(p)) {
+            presetSet.add(p);
+            sources.comments.push({
+              from: 'author_reply',
+              author: c.user?.unique_id,
+              comment: rText.slice(0, 80),
+              url: p,
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.error('[AUTHOR-REPLY]', e.message);
+    }
+  }
+
+  return replyScanned;
+}
+
 export async function onRequestOptions() {
   return new Response(null, { status: 204, headers: {
     'Access-Control-Allow-Origin': '*',
@@ -171,6 +218,7 @@ export async function onRequest({ request, env }) {
 
     const videoData = videoRes.data || {};
     const caption = videoData.title || '';
+    const numericVideoId = videoData.aweme_id || videoData.id || '';
     const author = videoData.author?.unique_id || '';
     const musicId = videoData.music_info?.id || '';
 
@@ -230,7 +278,8 @@ export async function onRequest({ request, env }) {
         from_bio_text: sources.bio_text.length,
         from_bio_link: sources.bio_link.length,
         from_music_posts: sources.music_posts.length,
-        from_comments: sources.comments.length,
+        from_comments: sources.comments.filter(s => s.from !== 'author_reply').length,
+        from_author_replies: sources.comments.filter(s => s.from === 'author_reply').length,
         videos_scanned: musicId ? MAX_MUSIC_POSTS + 1 : 1,
       },
       presets: [...presetSet],
