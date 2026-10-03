@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>Premium APK - JAVIN PROJECT HOLE</title>
+<title>Premium - JAVIN PROJECT HOLE</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -69,7 +69,7 @@ footer{text-align:center;color:#444;font-size:10px;padding:20px;letter-spacing:.
 
 <header>
   <a href="/" class="back">← Beranda</a>
-  <h1>PREMIUM APK</h1>
+  <h1>PREMIUM</h1>
 </header>
 
 <div class="wrap">
@@ -144,7 +144,20 @@ footer{text-align:center;color:#444;font-size:10px;padding:20px;letter-spacing:.
   </div>
 </div>
 
-<footer>JAVIN PROJECT HOLE · PREMIUM APK</footer>
+
+<!-- AMFINDER SECTION -->
+<div style="max-width:600px;margin:0 auto;padding:0 16px 24px">
+  <div class="card" id="amfinderCard">
+    <h3>🔍 AM Preset Finder</h3>
+    <div class="sub">Cari preset Alight Motion dari link TikTok. Masukkan link video TikTok yang ada preset-nya.</div>
+    <input type="url" id="amfinderUrl" placeholder="https://vt.tiktok.com/xxx" autocomplete="off" inputmode="url">
+    <button id="btnAmfinder">🔎 Cari Preset</button>
+    <div class="result" id="resAmfinder"></div>
+    <div id="amfinderResults" style="margin-top:14px"></div>
+  </div>
+</div>
+
+<footer>JAVIN PROJECT HOLE · PREMIUM</footer>
 
 <script>
 var $ = function(id){ return document.getElementById(id) };
@@ -362,6 +375,86 @@ $('btnApply').onclick = async function(){
     btn.disabled = false; btn.textContent = '✨ Aktifkan Premium Sekarang';
   }
 };
+
+
+// ==== AMFINDER ====
+$('btnAmfinder').onclick = async function(){
+  var url = $('amfinderUrl').value.trim();
+  var res = $('resAmfinder');
+  var resBox = $('amfinderResults');
+
+  if (!url) {
+    setResult(res, 'err', '❌ Masukkan link TikTok dulu.');
+    return;
+  }
+  if (!/tiktok\.com/i.test(url)) {
+    setResult(res, 'err', '❌ URL harus dari TikTok.');
+    return;
+  }
+  if (!state.key || !state.uid) {
+    setResult(res, 'err', '❌ Key belum aktif. Isi key dulu di step 1.');
+    return;
+  }
+
+  var btn = $('btnAmfinder');
+  btn.disabled = true; btn.textContent = '⏳ Mencari preset...';
+  setResult(res, 'info', '🔍 Scan TikTok... (bisa 5-30 detik)');
+  resBox.innerHTML = '';
+
+  try {
+    var r = await fetch('/api/premium/amfinder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ uid: state.uid, key: state.key, tiktokUrl: url })
+    });
+    var j = await r.json();
+
+    if (!r.ok || !j.success) {
+      throw new Error(j.message || ('HTTP ' + r.status));
+    }
+
+    // Update counter pill
+    if (j._counter) {
+      state.usedCount = j._counter.used;
+      state.remaining = j._counter.remaining;
+      updateStatusPill();
+    }
+
+    if (!j.found || !j.presetLinks || j.presetLinks.length === 0) {
+      setResult(res, 'info', '⚠️ Preset nggak ketemu di video ini.\nCoba video lain yang creator-nya share preset.');
+      return;
+    }
+
+    setResult(res, 'ok', '✅ Ditemukan ' + j.presetLinks.length + ' preset!' + (j._counter ? '\n📊 Sisa kuota: ' + j._counter.remaining + '/' + j._counter.max : ''));
+    renderAmfinderResults(resBox, j.presetLinks);
+  } catch(e) {
+    setResult(res, 'err', '❌ Gagal: ' + e.message);
+  } finally {
+    btn.disabled = false; btn.textContent = '🔎 Cari Preset';
+  }
+};
+
+function renderAmfinderResults(box, links){
+  box.innerHTML = links.map(function(p){
+    var label = p.type === '5mb' ? '📦 5MB' : (p.type === 'xml' ? '📄 XML' : '🔗 LINK');
+    var title = p.title || 'Tanpa judul';
+    var meta = p.size ? ' · ' + p.size : '';
+    var source = p.detail || (p.byAuthor ? 'By author' : 'From ' + (p.source || 'unknown'));
+    var thumb = p.thumb ? '<img src="' + p.thumb + '" style="width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0">' : '<div style="width:60px;height:60px;background:rgba(112,69,255,.1);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px">' + (p.type === '5mb' ? '📦' : '📄') + '</div>';
+    return '<div style="background:rgba(17,17,26,.6);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px;margin-bottom:10px;display:flex;gap:12px">' +
+      thumb +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-size:13px;font-weight:700;color:#a98cff;margin-bottom:2px">' + label + meta + '</div>' +
+        '<div style="font-size:13px;color:#ddd;margin-bottom:4px">' + title + '</div>' +
+        '<div style="font-size:11px;color:#666;margin-bottom:8px">' + source + '</div>' +
+        '<div style="display:flex;gap:6px">' +
+          '<a href="' + p.url + '" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;background:linear-gradient(90deg,#7045ff,#a05cff);color:#fff;text-decoration:none;border-radius:8px;font-size:12px;font-weight:700">Buka</a>' +
+          '<button type="button" onclick="navigator.clipboard.writeText(\'' + p.url + '\');this.textContent=\'✓ Copied\';setTimeout(()=>this.textContent=\'Copy\',1500)" style="flex:1;padding:8px;background:rgba(255,255,255,.08);color:#ccc;border:0;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Copy</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
 
 // ==== INIT ====
 init();
