@@ -1,76 +1,7 @@
-// functions/api/amfinder.js — Cari preset Alight Motion dari link TikTok
-// Cache di D1 + scan music/posts + bio + komentar
+// functions/api/amfinder.js — Simple proxy ke amfinder.web.id
+// Nggak ada cache, langsung forward + parse SSE
 
-const RAPIDAPI_HOST = 'tiktok-scraper7.p.rapidapi.com';
-const CACHE_TTL_MS = 7 * 24 * 60 * 60 * 1000;
-const MAX_MUSIC_POSTS = 10;
-const MAX_COMMENTS_PER_VIDEO = 30;
-const MAX_AUTHOR_REPLY_CHECKS = 3;   // max comment author yang dicek reply-nya
-const MAX_REPLIES_PER_COMMENT = 10;  // max reply per comment
-
-const PRESET_PATTERNS = [
-  // Alight Motion resmi
-  /https?:\/\/[^\s"'<>]*alightcreative\.com[^\s"'<>]*/gi,
-  /https?:\/\/[^\s"'<>]*alightmotion\.com[^\s"'<>]*/gi,
-  // XML file
-  /https?:\/\/[^\s"'<>]*\.xml(?:\?[^\s"'<>]*)?/gi,
-  // Container bio link
-  /https?:\/\/(?:www\.)?linktr\.ee\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?sociabuzz\.com\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?beacons\.ai\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?bio\.link\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?link\.bio\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?carrd\.co\/[^\s"'<>]+/gi,
-  // File storage
-  /https?:\/\/(?:www\.)?drive\.google\.com\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?mediafire\.com\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?mega\.nz\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?dropbox\.com\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?pixeldrain\.com\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?gofile\.io\/[^\s"'<>]+/gi,
-  // Short URL
-  /https?:\/\/(?:www\.)?bit\.ly\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?s\.id\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?tinyurl\.com\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?is\.gd\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?t\.co\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?shorturl\.at\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?rebrand\.ly\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?cutt\.ly\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?rb\.gy\/[^\s"'<>]+/gi,
-  // WhatsApp Channel + grup
-  /https?:\/\/(?:www\.)?whatsapp\.com\/channel\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:chat\.)?whatsapp\.com\/[^\s"'<>]+/gi,
-  /https?:\/\/(?:www\.)?wa\.me\/[^\s"'<>]+/gi,
-  // Telegram
-  /https?:\/\/(?:t\.me|telegram\.me)\/[^\s"'<>]+/gi,
-  // Keyword-based
-  /https?:\/\/[^\s"'<>]*(?:preset|alight|am-preset|prem-?am|amvip|xml-?preset)[^\s"'<>]*/gi,
-];
-
-function extractPresets(text) {
-  if (!text || typeof text !== 'string') return [];
-  const found = new Set();
-  for (const pat of PRESET_PATTERNS) {
-    const matches = text.match(pat);
-    if (matches) matches.forEach((m) => found.add(m.replace(/[.,;:!?)\]]+$/, '')));
-  }
-  return [...found];
-}
-
-async function sha256(str) {
-  const buf = new TextEncoder().encode(str);
-  const hash = await crypto.subtle.digest('SHA-256', buf);
-  return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-async function rapidGet(path, apiKey, host) {
-  const res = await fetch(`https://${host}${path}`, {
-    headers: { 'X-RapidAPI-Key': apiKey, 'X-RapidAPI-Host': host },
-  });
-  const text = await res.text();
-  try { return JSON.parse(text); } catch { return { _raw: text, _status: res.status }; }
-}
+const AMFINDER_BASE = 'https://amfinder.web.id/api/find';
 
 function json(data, status = 200) {
   return new Response(JSON.stringify(data, null, 2), {
@@ -85,68 +16,6 @@ function json(data, status = 200) {
   });
 }
 
-async function getCache(db, hash) {
-  try {
-    return await db.prepare('SELECT result_json, expires_at FROM amfinder_cache WHERE url_hash = ?').bind(hash).first();
-  } catch (e) { console.error('[CACHE-GET]', e.message); return null; }
-}
-
-async function setCache(db, hash, url, resultJson) {
-  try {
-    const now = Date.now();
-    await db.prepare('INSERT OR REPLACE INTO amfinder_cache (url_hash, tiktok_url, result_json, created_at, expires_at) VALUES (?, ?, ?, ?, ?)').bind(hash, url, resultJson, now, now + CACHE_TTL_MS).run();
-  } catch (e) { console.error('[CACHE-SET]', e.message); }
-}
-
-async function incrementHit(db, hash) {
-  try { await db.prepare('UPDATE amfinder_cache SET hit_count = hit_count + 1 WHERE url_hash = ?').bind(hash).run(); } catch (e) {}
-}
-
-
-// ─────────────────────────────────────────
-// AMBIL REPLY DARI KOMENTAR AUTHOR
-// ─────────────────────────────────────────
-async function scanAllReplies(videoId, topComments, apiKey, host, presetSet, sources) {
-  if (!videoId) return 0;
-
-  const candidates = topComments
-    .filter(c => (c.reply_total || 0) > 0 && (c.text || '').length > 5)
-    .slice(0, MAX_AUTHOR_REPLY_CHECKS);
-
-  let replyScanned = 0;
-
-  for (const c of candidates) {
-    try {
-      const replies = await rapidGet(
-        `/comment/reply?comment_id=${c.id}&video_id=${videoId}&count=${MAX_REPLIES_PER_COMMENT}`,
-        apiKey, host
-      );
-
-      const list = replies?.data?.comments || [];
-      for (const r of list) {
-        const rText = r.text || '';
-        replyScanned++;
-        extractPresets(rText).forEach((p) => {
-          if (!presetSet.has(p)) {
-            presetSet.add(p);
-            sources.comments.push({
-              from: 'reply',
-              parent_author: c.user?.unique_id,
-              reply_author: r.user?.unique_id,
-              comment: rText.slice(0, 80),
-              url: p,
-            });
-          }
-        });
-      }
-    } catch (e) {
-      console.error('[REPLY]', e.message);
-    }
-  }
-
-  return replyScanned;
-}
-
 export async function onRequestOptions() {
   return new Response(null, { status: 204, headers: {
     'Access-Control-Allow-Origin': '*',
@@ -155,7 +24,7 @@ export async function onRequestOptions() {
   }});
 }
 
-export async function onRequest({ request, env }) {
+export async function onRequest({ request }) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: {
       'Access-Control-Allow-Origin': '*',
@@ -171,139 +40,78 @@ export async function onRequest({ request, env }) {
     try { const body = await request.json(); tiktokUrl = body.url; } catch {}
   }
 
-  if (!tiktokUrl) return json({ status: 'error', code: 'MISSING_URL', message: 'Parameter "url" wajib.' }, 400);
-  if (!/tiktok\.com/i.test(tiktokUrl)) return json({ status: 'error', code: 'INVALID_URL', message: 'URL harus dari TikTok.' }, 400);
+  if (!tiktokUrl) {
+    return json({ status: 'error', code: 'MISSING_URL', message: 'Parameter "url" wajib.' }, 400);
+  }
 
-  const RAPIDAPI_KEY = env.RAPIDAPI_KEY;
-  if (!RAPIDAPI_KEY) return json({ status: 'error', code: 'MISSING_ENV', message: 'RAPIDAPI_KEY belum di-set.' }, 500);
+  if (!/tiktok\.com/i.test(tiktokUrl)) {
+    return json({ status: 'error', code: 'INVALID_URL', message: 'URL harus dari TikTok.' }, 400);
+  }
 
-  const db = env.JAVIN_DB;
-  const urlHash = await sha256(tiktokUrl);
   const started = Date.now();
 
-  // CEK CACHE
-  if (db) {
-    const cached = await getCache(db, urlHash);
-    if (cached && cached.expires_at > Date.now()) {
-      incrementHit(db, urlHash);
-      try {
-        const parsed = JSON.parse(cached.result_json);
-        parsed.cached = true;
-        parsed.elapsed_ms = Date.now() - started;
-        return json(parsed);
-      } catch {}
-    }
-  }
-
-  const presetSet = new Set();
-  const sources = { caption: [], bio_text: [], bio_link: [], music_posts: [], comments: [] };
-
   try {
-    const videoRes = await rapidGet(`/?url=${encodeURIComponent(tiktokUrl)}`, RAPIDAPI_KEY, RAPIDAPI_HOST);
+    const res = await fetch(`${AMFINDER_BASE}?url=${encodeURIComponent(tiktokUrl)}`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36',
+        'Accept': 'text/event-stream',
+        'Referer': 'https://amfinder.web.id/',
+      },
+    });
 
-    if (videoRes?.code !== 0) {
-      if (db) {
-        const cached = await getCache(db, urlHash);
-        if (cached) {
-          try {
-            const parsed = JSON.parse(cached.result_json);
-            parsed.cached = true;
-            parsed.cache_expired = true;
-            return json(parsed);
-          } catch {}
-        }
-      }
-      return json({ status: 'error', code: 'VIDEO_FETCH_FAILED', message: videoRes?.msg || 'Gagal ambil data video.' }, 502);
+    if (!res.ok) {
+      return json({
+        status: 'error',
+        code: 'UPSTREAM_ERROR',
+        message: `Amfinder HTTP ${res.status}`,
+      }, 502);
     }
 
-    const videoData = videoRes.data || {};
-    const caption = videoData.title || '';
-    const numericVideoId = videoData.aweme_id || videoData.id || '';
-    const author = videoData.author?.unique_id || '';
-    const musicId = videoData.music_info?.id || '';
-
-    extractPresets(caption).forEach((p) => { presetSet.add(p); sources.caption.push(p); });
-
-    if (author) {
-      const userRes = await rapidGet(`/user/info?unique_id=${encodeURIComponent(author)}`, RAPIDAPI_KEY, RAPIDAPI_HOST);
-      if (userRes?.code === 0) {
-        const u = userRes.data?.user || {};
-        const bioText = u.signature || '';
-        const bioLink = u.bioLink?.link || '';
-        extractPresets(bioText).forEach((p) => { if (!presetSet.has(p)) { presetSet.add(p); sources.bio_text.push(p); } });
-        if (bioLink) extractPresets(bioLink).forEach((p) => { if (!presetSet.has(p)) { presetSet.add(p); sources.bio_link.push(p); } });
-      }
-    }
-
-    const commentRes = await rapidGet(`/comment/list?url=${encodeURIComponent(tiktokUrl)}&count=${MAX_COMMENTS_PER_VIDEO}`, RAPIDAPI_KEY, RAPIDAPI_HOST);
-    const comments = commentRes?.data?.comments || [];
-    for (const c of comments) {
-      extractPresets(c.text || '').forEach((p) => {
-        if (!presetSet.has(p)) { presetSet.add(p); sources.comments.push({ from: 'main_video', comment: (c.text || '').slice(0, 80), url: p }); }
-      });
-    }
-
-    if (musicId) {
-      const postsRes = await rapidGet(`/music/posts?music_id=${musicId}`, RAPIDAPI_KEY, RAPIDAPI_HOST);
-      const videos = (postsRes?.data?.videos || []).slice(0, MAX_MUSIC_POSTS);
-      for (const v of videos) {
-        const vCaption = v.title || '';
-        const vUrl = v.video_id ? `https://www.tiktok.com/@${v.author?.unique_id || 'user'}/video/${v.video_id}` : null;
-        extractPresets(vCaption).forEach((p) => {
-          if (!presetSet.has(p)) { presetSet.add(p); sources.music_posts.push({ author: v.author?.unique_id, caption_snippet: vCaption.slice(0, 80), url: p }); }
-        });
-        if (vUrl) {
-          const vCommentsRes = await rapidGet(`/comment/list?url=${encodeURIComponent(vUrl)}&count=${MAX_COMMENTS_PER_VIDEO}`, RAPIDAPI_KEY, RAPIDAPI_HOST);
-          const vComments = vCommentsRes?.data?.comments || [];
-          for (const c of vComments) {
-            extractPresets(c.text || '').forEach((p) => {
-              if (!presetSet.has(p)) { presetSet.add(p); sources.comments.push({ from: v.author?.unique_id, comment: (c.text || '').slice(0, 80), url: p }); }
-            });
-          }
-        }
-      }
-    }
-
+    const text = await res.text();
+    const result = parseSSE(text);
     const elapsed = Date.now() - started;
 
-    const result = {
-      status: 'ok',
-      tiktok_url: tiktokUrl,
-      author,
-      caption: caption.slice(0, 200),
-      music_id: musicId,
-      counts: {
-        total_presets: presetSet.size,
-        from_caption: sources.caption.length,
-        from_bio_text: sources.bio_text.length,
-        from_bio_link: sources.bio_link.length,
-        from_music_posts: sources.music_posts.length,
-        from_comments: sources.comments.filter(s => s.from !== 'reply').length,
-        from_replies: sources.comments.filter(s => s.from === 'reply').length,
-        videos_scanned: musicId ? MAX_MUSIC_POSTS + 1 : 1,
-      },
-      presets: [...presetSet],
-      sources,
-      elapsed_ms: elapsed,
-      cached: false,
-    };
+    if (!result) {
+      return json({
+        status: 'error',
+        code: 'NO_RESULT',
+        message: 'Amfinder nggak kasih hasil.',
+        elapsed_ms: elapsed,
+        raw_preview: text.slice(0, 300),
+      }, 502);
+    }
 
-    if (db) await setCache(db, urlHash, tiktokUrl, JSON.stringify(result));
-    return json(result);
+    return json({ status: 'ok', ...result, elapsed_ms: elapsed });
 
   } catch (err) {
-    if (db) {
-      const cached = await getCache(db, urlHash);
-      if (cached) {
-        try {
-          const parsed = JSON.parse(cached.result_json);
-          parsed.cached = true;
-          parsed.cache_expired = true;
-          parsed.error_fallback = err.message;
-          return json(parsed);
-        } catch {}
+    return json({
+      status: 'error',
+      code: 'FETCH_FAILED',
+      message: err.message,
+      elapsed_ms: Date.now() - started,
+    }, 500);
+  }
+}
+
+function parseSSE(text) {
+  const lines = text.split('\n');
+  let currentEvent = null;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i].trim();
+    if (line.startsWith('event:')) {
+      currentEvent = line.slice(6).trim();
+    } else if (line.startsWith('data:') && currentEvent === 'result') {
+      try {
+        const raw = line.slice(5).trim();
+        const jsonStr = raw.startsWith('"') && raw.endsWith('"')
+          ? JSON.parse(raw)
+          : raw;
+        return JSON.parse(jsonStr);
+      } catch (e) {
+        console.error('[PARSE]', e.message);
       }
     }
-    return json({ status: 'error', code: 'INTERNAL_ERROR', message: err.message }, 500);
   }
+  return null;
 }
