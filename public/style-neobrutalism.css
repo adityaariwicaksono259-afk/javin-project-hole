@@ -1703,3 +1703,405 @@ body {
 /* ============================================================
    END JAVIN-COLOR-UI-V93
    ============================================================ */
+
+/* ============================================================
+   JAVIN-ENDPOINT-UI-V94
+   GLOBAL ENDPOINT DETAIL THEME
+   Semua 244 endpoint memakai renderer yang sama.
+   Tidak mengubah API / endpoint data.
+   ============================================================ */
+
+/* PAGE */
+body.tool-page {
+  background: #FFE600 !important;
+  background-image:
+    radial-gradient(circle at 8% 8%, rgba(255,127,229,.28) 0 90px, transparent 92px),
+    radial-gradient(circle at 92% 12%, rgba(93,231,255,.30) 0 100px, transparent 102px),
+    linear-gradient(135deg, #FFE600 0%, #FFF3A8 52%, #FFE600 100%) !important;
+  background-attachment: scroll !important;
+  color: #111 !important;
+}
+
+/* HEADER */
+body.tool-page header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 50 !important;
+  background: #FFE600 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 3px solid #111 !important;
+  box-shadow: 0 4px 0 #111 !important;
+  padding: 12px 16px !important;
+}
+
+body.tool-page header .back {
+  color: #111 !important;
+  background: #fff !important;
+  border: 2px solid #111 !important;
+  border-radius: 10px !important;
+  box-shadow: 3px 3px 0 #111 !important;
+  font-weight: 800 !important;
+}
+
+body.tool-page header .back:active {
+  transform: translate(2px,2px) !important;
+  box-shadow: 1px 1px 0 #111 !important;
+}
+
+body.tool-page header h1 {
+  color: #111 !important;
+  background: none !important;
+  -webkit-text-fill-color: #111 !important;
+  font-weight: 900 !important;
+  letter-spacing: -.4px !important;
+}
+
+/* CONTAINER */
+body.tool-page .wrap {
+  max-width: 760px !important;
+  padding: 24px 16px 70px !important;
+}
+
+/* HERO */
+body.tool-page .hero {
+  background: #fff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 3px solid #111 !important;
+  border-radius: 16px !important;
+  padding: 22px !important;
+  box-shadow: 7px 7px 0 #111 !important;
+  margin-bottom: 22px !important;
+}
+
+body.tool-page .badge {
+  color: #111 !important;
+  background: #5DE7FF !important;
+  border: 2px solid #111 !important;
+  border-radius: 8px !important;
+  padding: 5px 9px !important;
+  font-weight: 900 !important;
+}
+
+body.tool-page .title {
+  color: #111 !important;
+  font-weight: 900 !important;
+  letter-spacing: -.8px !important;
+}
+
+body.tool-page .desc {
+  color: #333 !important;
+  font-weight: 500 !important;
+}
+
+/* FORM CARD */
+body.tool-page .card,
+body.tool-page .result-card {
+  background: #fff !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 3px solid #111 !important;
+  border-radius: 16px !important;
+  box-shadow: 7px 7px 0 #111 !important;
+}
+
+/* FIELDS */
+body.tool-page .field {
+  margin-bottom: 17px !important;
+}
+
+body.tool-page .field label {
+  color: #111 !important;
+  font-weight: 900 !important;
+}
+
+body.tool-page .field label small {
+  color: #555 !important;
+}
+
+body.tool-page .field input,
+body.tool-page .field textarea,
+body.tool-page .field select,
+body.tool-page .chat-input-row textarea {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  background: #fff !important;
+  color: #111 !important;
+  border: 3px solid #111 !important;
+  border-radius: 10px !important;
+  box-shadow: 3px 3px 0 #111 !important;
+  font-weight: 600 !important;
+}
+
+body.tool-page .field input:focus,
+body.tool-page .field textarea:focus,
+body.tool-page .field select:focus,
+body.tool-page .chat-input-row textarea:focus {
+  border-color: #111 !important;
+  outline: 3px solid #5DE7FF !important;
+  outline-offset: 1px !important;
+  box-shadow: 3px 3px 0 #111 !important;
+}
+
+body.tool-page .field input::placeholder,
+body.tool-page .field textarea::placeholder {
+  color: #777 !important;
+}
+
+/* UPLOAD */
+body.tool-page .drop {
+  background: #FFF3A8 !important;
+  border: 3px dashed #111 !important;
+  border-radius: 14px !important;
+  box-shadow: 4px 4px 0 #111 !important;
+}
+
+body.tool-page .drop:hover,
+body.tool-page .drop.hover {
+  background: #5DE7FF !important;
+  border-color: #111 !important;
+}
+
+body.tool-page .drop-icon {
+  background: #FF7FE5 !important;
+  border: 2px solid #111 !important;
+}
+
+body.tool-page .drop-text,
+body.tool-page .drop-sub {
+  color: #111 !important;
+}
+
+body.tool-page .drop-text b {
+  color: #111 !important;
+}
+
+body.tool-page .preview img {
+  background: #fff !important;
+  border: 3px solid #111 !important;
+  border-radius: 12px !important;
+}
+
+body.tool-page .preview-clear {
+  border: 2px solid #111 !important;
+  box-shadow: 2px 2px 0 #111 !important;
+}
+
+/* ALT URL */
+body.tool-page .alt-toggle {
+  color: #111 !important;
+  background: #5DE7FF !important;
+  border: 2px solid #111 !important;
+  border-radius: 8px !important;
+  padding: 7px 10px !important;
+  text-decoration: none !important;
+  box-shadow: 3px 3px 0 #111 !important;
+}
+
+body.tool-page .alt-toggle:active {
+  transform: translate(2px,2px) !important;
+  box-shadow: 1px 1px 0 #111 !important;
+}
+
+/* MAIN BUTTON */
+body.tool-page .submit {
+  background: #FF7FE5 !important;
+  color: #111 !important;
+  border: 3px solid #111 !important;
+  border-radius: 11px !important;
+  box-shadow: 5px 5px 0 #111 !important;
+  font-weight: 900 !important;
+  text-transform: none !important;
+}
+
+body.tool-page .submit:hover:not(:disabled) {
+  transform: translate(-1px,-1px) !important;
+  box-shadow: 7px 7px 0 #111 !important;
+}
+
+body.tool-page .submit:active:not(:disabled) {
+  transform: translate(4px,4px) !important;
+  box-shadow: 1px 1px 0 #111 !important;
+}
+
+body.tool-page .submit:disabled {
+  background: #d8d8d8 !important;
+  color: #666 !important;
+  border-color: #555 !important;
+  box-shadow: 3px 3px 0 #555 !important;
+}
+
+/* RESULT */
+body.tool-page .result-wrap {
+  margin-top: 18px !important;
+}
+
+body.tool-page .result-title {
+  color: #111 !important;
+  background: #FFE600 !important;
+  border: 2px solid #111 !important;
+  border-radius: 8px !important;
+  display: inline-block !important;
+  padding: 6px 9px !important;
+  font-weight: 900 !important;
+}
+
+body.tool-page .result-media {
+  background: #f4f4f4 !important;
+  border: 3px solid #111 !important;
+  border-radius: 12px !important;
+}
+
+body.tool-page .result-text {
+  background: #FFFDF0 !important;
+  color: #111 !important;
+  border: 3px solid #111 !important;
+  border-radius: 12px !important;
+  box-shadow: 3px 3px 0 #111 !important;
+}
+
+/* RESULT ACTIONS */
+body.tool-page .result-actions {
+  gap: 10px !important;
+}
+
+body.tool-page .btn-action {
+  background: #fff !important;
+  color: #111 !important;
+  border: 2px solid #111 !important;
+  border-radius: 9px !important;
+  box-shadow: 3px 3px 0 #111 !important;
+  font-weight: 900 !important;
+}
+
+body.tool-page .btn-action:hover {
+  background: #5DE7FF !important;
+}
+
+body.tool-page .btn-action:active {
+  transform: translate(2px,2px) !important;
+  box-shadow: 1px 1px 0 #111 !important;
+}
+
+body.tool-page .btn-action.primary {
+  background: #FF7FE5 !important;
+  color: #111 !important;
+  border: 2px solid #111 !important;
+}
+
+/* CHAT */
+body.tool-page .chat-list {
+  scrollbar-width: thin;
+}
+
+body.tool-page .chat-bubble.user {
+  background: #FF7FE5 !important;
+  color: #111 !important;
+  border: 2px solid #111 !important;
+  box-shadow: 3px 3px 0 #111 !important;
+}
+
+body.tool-page .chat-bubble.ai {
+  background: #fff !important;
+  color: #111 !important;
+  border: 2px solid #111 !important;
+  box-shadow: 3px 3px 0 #111 !important;
+}
+
+body.tool-page .chat-input-row button {
+  background: #5DE7FF !important;
+  color: #111 !important;
+  border: 3px solid #111 !important;
+  box-shadow: 4px 4px 0 #111 !important;
+}
+
+/* LOADING */
+body.tool-page .loading {
+  color: #111 !important;
+  font-weight: 800 !important;
+}
+
+body.tool-page .loading-spin {
+  border-color: #111 !important;
+  border-top-color: #FF7FE5 !important;
+}
+
+/* ERROR */
+body.tool-page .error-box {
+  background: #FFB3B3 !important;
+  color: #111 !important;
+  border: 3px solid #111 !important;
+  border-radius: 12px !important;
+  box-shadow: 4px 4px 0 #111 !important;
+  font-weight: 700 !important;
+}
+
+/* NOT FOUND */
+body.tool-page .notfound h2,
+body.tool-page .notfound p {
+  color: #111 !important;
+}
+
+body.tool-page .notfound a {
+  background: #FF7FE5 !important;
+  color: #111 !important;
+  border: 3px solid #111 !important;
+  border-radius: 10px !important;
+  box-shadow: 5px 5px 0 #111 !important;
+  font-weight: 900 !important;
+}
+
+/* INLINE COLOR OVERRIDES YANG MUNCUL DARI TOOL-APP */
+body.tool-page [style*="color:#dc2626"],
+body.tool-page [style*="color: #dc2626"] {
+  color: #111 !important;
+  background: #FFE600 !important;
+  padding: 1px 4px !important;
+  border-radius: 4px !important;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  body.tool-page .wrap {
+    padding: 18px 12px 55px !important;
+  }
+
+  body.tool-page .hero,
+  body.tool-page .card,
+  body.tool-page .result-card {
+    border-width: 3px !important;
+    box-shadow: 5px 5px 0 #111 !important;
+  }
+
+  body.tool-page .title {
+    font-size: 21px !important;
+  }
+
+  body.tool-page .field input,
+  body.tool-page .field textarea,
+  body.tool-page .field select {
+    font-size: 14px !important;
+  }
+
+  body.tool-page .submit {
+    min-height: 52px !important;
+  }
+
+  body.tool-page .result-actions {
+    display: grid !important;
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  body.tool-page .btn-action {
+    justify-content: center !important;
+  }
+
+  body.tool-page .chat-bubble {
+    max-width: 92% !important;
+  }
+}
+
+/* ============================================================
+   END JAVIN-ENDPOINT-UI-V94
+   ============================================================ */
