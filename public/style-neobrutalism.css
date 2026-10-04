@@ -1634,3 +1634,72 @@ body .pf-value {
 /* ============================================================
    END JAVIN-COLOR-UI-V92
    ============================================================ */
+
+/* ============================================================
+   JAVIN-COLOR-UI-V93
+   PROFILE LIMIT VISIBILITY + MOBILE SCROLL PERFORMANCE
+   ============================================================ */
+
+/* LIMIT HARUS SELALU TERLIHAT */
+body #profileCard .u-limit {
+  flex: 0 0 auto !important;
+  flex-shrink: 0 !important;
+  white-space: nowrap !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: max-content !important;
+  box-sizing: border-box !important;
+}
+
+/* PROFILE CONTENT TIDAK BOLEH MEMAKSA LIMIT KELUAR */
+body #profileCard > * {
+  min-width: 0;
+}
+
+body #profileCard #headerName,
+body #profileCard #userId {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* SCROLLING LEBIH RINGAN */
+html,
+body {
+  background-attachment: scroll !important;
+}
+
+/* PATTERN TIDAK PERLU DI MOBILE */
+@media (max-width: 600px) {
+  body::before {
+    display: none !important;
+  }
+
+  html,
+  body,
+  body.theme-light,
+  body.theme-dark {
+    background-image:
+      radial-gradient(circle at 8% 12%, rgba(255,127,229,.32) 0 70px, transparent 72px),
+      radial-gradient(circle at 92% 18%, rgba(93,231,255,.32) 0 80px, transparent 82px),
+      linear-gradient(135deg, #FFE600 0%, #FFF3A8 52%, #FFE600 100%) !important;
+    background-attachment: scroll !important;
+  }
+
+  body #profileCard {
+    gap: 8px !important;
+    padding-right: 10px !important;
+    max-width: 100% !important;
+  }
+
+  body #profileCard .u-limit {
+    font-size: 11px !important;
+    padding: 2px 6px !important;
+  }
+}
+
+/* ============================================================
+   END JAVIN-COLOR-UI-V93
+   ============================================================ */
