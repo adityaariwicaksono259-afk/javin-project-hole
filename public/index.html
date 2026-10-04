@@ -59,7 +59,7 @@
 }
 html { overscroll-behavior-y: contain; }
 </style>
-<link rel="stylesheet" href="/kaze-video.css">
+
 <link rel="stylesheet" href="/notif.css">
 <style>
 /* ===== PROFILE MODAL CSS (ala WhatsApp) ===== */
@@ -527,7 +527,7 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
 <script src="/kaze-character.js"></script>
 <script src="/kaze-spotify.js"></script>
 <script src="/kaze-widgets.js" defer></script>
-<script src="/kaze-video-loop.js"></script>
+
 <script src="/kaze-youtube.js"></script>
 <script src="/kaze-anime-detail.js?v=2"></script>
 <script src="/kaze-anime.js"></script>
@@ -548,4 +548,30 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
 
 <script src="/notif.js"></script>
 <script src="/demo-guard.js"></script>
+
+<script>
+/* FIX v8 — JS FORCE REMOVE video layer */
+(function(){
+  function killBg(){
+    ['betoBgLayer','betoBgVideo','bgCanvas','betoBgOverlay','betoStrip','kazeVideo','bgVideo'].forEach(function(id){
+      var el = document.getElementById(id);
+      if (el && el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    });
+    // Paksa html & body kuning
+    document.documentElement.style.setProperty('background', '#FFE600', 'important');
+    document.documentElement.style.setProperty('background-image', 'none', 'important');
+    if (document.body) {
+      document.body.style.setProperty('background', '#FFE600', 'important');
+      document.body.style.setProperty('background-image', 'none', 'important');
+    }
+  }
+  // Jalanin sekarang
+  killBg();
+  // Jalanin tiap 500ms buat nangkep kalau di-inject ulang
+  setInterval(killBg, 500);
+})();
+</script>
+
 </body></html>
