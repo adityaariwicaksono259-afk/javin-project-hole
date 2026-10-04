@@ -1167,3 +1167,126 @@ footer {
   background: #FFE600 !important;
   color: #0A0A0A !important;
 }
+
+
+/* ============================================
+   FIX v8 — MIX WARNA (Neobrutalism colorful)
+   ============================================ */
+
+/* 1. Profile card — PINK */
+#profileCard {
+  background: #FF7FE5 !important;
+  background-color: #FF7FE5 !important;
+}
+
+#profileCard #headerName {
+  color: #0A0A0A !important;
+}
+
+#profileCard #profileAvatar {
+  background: #FFE600 !important;
+  background-image: none !important;
+  color: #0A0A0A !important;
+  border: 2px solid #0A0A0A !important;
+}
+
+/* 2. Search — WHITE (biar clean) */
+#search,
+.fx-search-wrap input {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+}
+
+#search:focus,
+.fx-search-wrap input:focus {
+  background: #FFE600 !important;
+}
+
+/* 3. List card — warna-warni bergantian via nth-child */
+.fx-grid .fx-card:nth-child(5n+1) {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+}
+.fx-grid .fx-card:nth-child(5n+2) {
+  background: #FFF9B0 !important;
+  background-color: #FFF9B0 !important;
+}
+.fx-grid .fx-card:nth-child(5n+3) {
+  background: #FFD9F5 !important;
+  background-color: #FFD9F5 !important;
+}
+.fx-grid .fx-card:nth-child(5n+4) {
+  background: #D9FFFF !important;
+  background-color: #D9FFFF !important;
+}
+.fx-grid .fx-card:nth-child(5n+5) {
+  background: #E5D9FF !important;
+  background-color: #E5D9FF !important;
+}
+
+/* 4. List card — warna border tetap hitam */
+.fx-grid .fx-card {
+  border: 3px solid #0A0A0A !important;
+  box-shadow: 4px 4px 0 #0A0A0A !important;
+}
+
+/* 5. List card — HOVER beda warna */
+.fx-grid .fx-card:hover {
+  background: #FFE600 !important;
+  background-color: #FFE600 !important;
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 6px 6px 0 #0A0A0A !important;
+}
+
+/* 6. List card — ACTIVE */
+.fx-grid .fx-card:active {
+  transform: scale(0.97) translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0 #0A0A0A !important;
+}
+
+/* 7. Chips — variasi warna by data */
+.fx-cat {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+}
+
+.fx-cat.active {
+  background: #0A0A0A !important;
+  background-color: #0A0A0A !important;
+  color: #FFE600 !important;
+}
+
+/* 8. Chips hover — kuning */
+.fx-cat:hover:not(.active) {
+  background: #FFE600 !important;
+  background-color: #FFE600 !important;
+}
+
+/* 9. Premium card — PINK (udah) */
+.fx-featured {
+  background: #FF7FE5 !important;
+}
+
+/* 10. Footer — warna PINK */
+footer {
+  background: #FF7FE5 !important;
+  color: #0A0A0A !important;
+  border-top: 3px solid #0A0A0A !important;
+  padding: 14px 16px !important;
+  margin-top: 24px !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  text-align: center !important;
+}
+
+/* 11. Header — kuning (udah) + border hitam */
+header.fx-header {
+  background: #FFE600 !important;
+}
+
+/* 12. Main — transparan biar kuning keliatan */
+main {
+  background: transparent !important;
+  padding-bottom: 80px !important;
+}
