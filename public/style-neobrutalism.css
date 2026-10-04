@@ -406,3 +406,143 @@ body .fx-card .fx-badge {
   border-radius: 6px !important;
   font-weight: 700 !important;
 }
+
+
+/* ============================================
+   FIX v4 — FULL NEOBRUTALISM OVERRIDE
+   ============================================ */
+
+/* 1. HTML & BODY kuning — PAKSA */
+html {
+  background: #FFE600 !important;
+  background-color: #FFE600 !important;
+  background-image: none !important;
+  color-scheme: light !important;
+}
+
+body {
+  background: #FFE600 !important;
+  background-color: #FFE600 !important;
+  background-image: none !important;
+  color: #0A0A0A !important;
+}
+
+/* 2. Sembunyiin video background (kaze + beto) */
+#betoBgLayer,
+#betoBgVideo,
+#kazeVideo,
+#bgVideo,
+#bg-video,
+.bg-video,
+.kaze-video,
+#loginBgVideo,
+#loginBgOverlay {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  z-index: -9999 !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 3. Splash screen kuning */
+#splashScreen {
+  background: #FFE600 !important;
+}
+
+#splashScreen .splash-inner,
+#splashScreen .splash-title,
+#splashScreen .splash-icon {
+  color: #0A0A0A !important;
+}
+
+/* 4. Header — hapus blur, jadi kuning */
+header.fx-header {
+  background: #FFE600 !important;
+  background-color: #FFE600 !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: 3px solid #0A0A0A !important;
+  box-shadow: 0 4px 0 #0A0A0A !important;
+}
+
+header.fx-header > * {
+  color: #0A0A0A !important;
+}
+
+/* 5. Search input */
+.fx-search-wrap input,
+#search {
+  background: #FFFFFF !important;
+  color: #0A0A0A !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 10px !important;
+  box-shadow: 4px 4px 0 #0A0A0A !important;
+}
+
+.fx-search-wrap input:focus,
+#search:focus {
+  background: #FFE600 !important;
+  outline: none !important;
+}
+
+.fx-search-wrap input::placeholder,
+#search::placeholder {
+  color: #666 !important;
+}
+
+/* 6. Category chips */
+.fx-cat {
+  background: #FFFFFF !important;
+  color: #0A0A0A !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 10px !important;
+  box-shadow: 3px 3px 0 #0A0A0A !important;
+  font-family: 'Space Grotesk', system-ui, sans-serif !important;
+  font-weight: 700 !important;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.15s ease !important;
+}
+
+.fx-cat:active {
+  transform: scale(0.94) translate(2px, 2px) !important;
+  box-shadow: 1px 1px 0 #0A0A0A !important;
+}
+
+.fx-cat.active {
+  background: #0A0A0A !important;
+  color: #FFE600 !important;
+}
+
+/* 7. Premium featured card */
+.fx-featured {
+  background: #FF7FE5 !important;
+  background-color: #FF7FE5 !important;
+  background-image: none !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 10px !important;
+  box-shadow: 6px 6px 0 #0A0A0A !important;
+}
+
+.fx-featured-title,
+.fx-featured-desc {
+  color: #0A0A0A !important;
+}
+
+.fx-featured-badge {
+  background: #0A0A0A !important;
+  color: #FFE600 !important;
+  border: 2px solid #0A0A0A !important;
+}
+
+/* 8. Footer */
+footer {
+  color: #0A0A0A !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1px !important;
+  font-family: 'Space Grotesk', system-ui, sans-serif !important;
+}
