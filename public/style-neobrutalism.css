@@ -1290,3 +1290,139 @@ main {
   background: transparent !important;
   padding-bottom: 80px !important;
 }
+
+
+/* ============================================================
+   JAVIN-COLOR-V91
+   DATA-COLOR CARD + CHIP
+   ============================================================ */
+
+/* =========================
+   ENDPOINT CARD COLORS
+   ========================= */
+
+body .fx-grid .fx-card[data-color="0"] {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+}
+
+body .fx-grid .fx-card[data-color="1"] {
+  background: #FFF9B0 !important;
+  background-color: #FFF9B0 !important;
+}
+
+body .fx-grid .fx-card[data-color="2"] {
+  background: #FFD9F5 !important;
+  background-color: #FFD9F5 !important;
+}
+
+body .fx-grid .fx-card[data-color="3"] {
+  background: #D9FFFF !important;
+  background-color: #D9FFFF !important;
+}
+
+body .fx-grid .fx-card[data-color="4"] {
+  background: #E5D9FF !important;
+  background-color: #E5D9FF !important;
+}
+
+/* Card content */
+body .fx-grid .fx-card[data-color] .fx-card-title h3 {
+  color: #0A0A0A !important;
+}
+
+body .fx-grid .fx-card[data-color] .fx-card-desc {
+  color: #4A4A4A !important;
+}
+
+body .fx-grid .fx-card[data-color] .fx-card-arrow {
+  color: #0A0A0A !important;
+}
+
+body .fx-grid .fx-card[data-color] .fx-badge {
+  background: #0A0A0A !important;
+  color: #FFFFFF !important;
+}
+
+/* =========================
+   CATEGORY CHIP COLORS
+   ========================= */
+
+body .fx-cats .fx-cat[data-color="0"] {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  color: #0A0A0A !important;
+}
+
+body .fx-cats .fx-cat[data-color="1"] {
+  background: #FFE600 !important;
+  background-color: #FFE600 !important;
+  color: #0A0A0A !important;
+}
+
+body .fx-cats .fx-cat[data-color="2"] {
+  background: #FF7FE5 !important;
+  background-color: #FF7FE5 !important;
+  color: #0A0A0A !important;
+}
+
+body .fx-cats .fx-cat[data-color="3"] {
+  background: #5DE7FF !important;
+  background-color: #5DE7FF !important;
+  color: #0A0A0A !important;
+}
+
+body .fx-cats .fx-cat[data-color="4"] {
+  background: #BFA7FF !important;
+  background-color: #BFA7FF !important;
+  color: #0A0A0A !important;
+}
+
+/* Chip count */
+body .fx-cats .fx-cat[data-color] small {
+  background: #0A0A0A !important;
+  color: #FFFFFF !important;
+}
+
+/* Active category tetap hitam */
+body .fx-cats .fx-cat.active {
+  background: #0A0A0A !important;
+  background-color: #0A0A0A !important;
+  color: #FFE600 !important;
+}
+
+body .fx-cats .fx-cat.active small {
+  background: #FFE600 !important;
+  color: #0A0A0A !important;
+}
+
+/* =========================
+   MOBILE CHIP CONTAINER
+   ========================= */
+
+@media (max-width: 600px) {
+  body .fx-cats {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    scrollbar-width: none !important;
+  }
+
+  body .fx-cats::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body .fx-cats .fx-cat {
+    flex: 0 0 auto !important;
+    max-width: calc(100vw - 32px) !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* ============================================================
+   END JAVIN-COLOR-V91
+   ============================================================ */

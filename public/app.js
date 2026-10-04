@@ -453,8 +453,8 @@ function renderCats(cats){
   });
   var el = document.getElementById('categories');
   if (!el) return;
-  el.innerHTML = '<button class="fx-cat active" data-c="ALL">Semua <small>' + endpoints.length + '</small></button>' +
-    sorted.map(function(c){ return '<button class="fx-cat" data-c="' + esc(c) + '">' + esc(c) + ' <small>' + endpoints.filter(function(x){ return x.folder === c; }).length + '</small></button>'; }).join('');
+  el.innerHTML = '<button class="fx-cat active" data-c="ALL" data-color="0">Semua <small>' + endpoints.length + '</small></button>' +
+    sorted.map(function(c, i){ return '<button class="fx-cat" data-c="' + esc(c) + '" data-color="' + ((i + 1) % 5) + '">' + esc(c) + ' <small>' + endpoints.filter(function(x){ return x.folder === c; }).length + '</small></button>'; }).join('');
   document.querySelectorAll('.fx-cat').forEach(function(b){
     b.onclick = function(){
       active = b.dataset.c;
@@ -561,7 +561,8 @@ function render(){
 
 function card(x){
   var badge = x.subfolder || x.folder;
-  return '<div class="fx-card" data-id="' + esc(x.catalogId) + '">' +
+  var colorIndex = Math.abs(String(x.catalogId || x.name || '').split('').reduce(function(a, c){ return a + c.charCodeAt(0); }, 0)) % 5;
+  return '<div class="fx-card" data-id="' + esc(x.catalogId) + '" data-color="' + colorIndex + '">' +
     '<div class="fx-card-body">' +
       '<div class="fx-card-title">' +
         '<h3>' + esc(x.name) + '</h3>' +
