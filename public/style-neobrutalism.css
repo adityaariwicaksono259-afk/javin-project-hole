@@ -1426,3 +1426,211 @@ body .fx-cats .fx-cat.active small {
 /* ============================================================
    END JAVIN-COLOR-V91
    ============================================================ */
+
+
+/* ============================================================
+   JAVIN-COLOR-UI-V92
+   PROFILE + FEATURE + BACKGROUND
+   ============================================================ */
+
+/* =========================
+   PAGE BACKGROUND
+   ========================= */
+
+html,
+body,
+body.theme-light,
+body.theme-dark {
+  background-color: #FFE600 !important;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(255,127,229,.55) 0 90px, transparent 92px),
+    radial-gradient(circle at 92% 18%, rgba(93,231,255,.55) 0 110px, transparent 112px),
+    radial-gradient(circle at 82% 82%, rgba(191,167,255,.48) 0 130px, transparent 132px),
+    radial-gradient(circle at 14% 88%, rgba(255,255,255,.7) 0 75px, transparent 77px),
+    linear-gradient(135deg, #FFE600 0%, #FFF3A8 48%, #FFE600 100%) !important;
+  background-attachment: fixed !important;
+}
+
+/* subtle pattern */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .22;
+  background-image:
+    linear-gradient(45deg, transparent 46%, #0A0A0A 47%, #0A0A0A 53%, transparent 54%);
+  background-size: 34px 34px;
+}
+
+/* =========================
+   PROFILE CARD
+   ========================= */
+
+body #profileCard {
+  background:
+    linear-gradient(135deg, #FFFFFF 0%, #FFF9B0 48%, #FFD9F5 100%) !important;
+  background-color: #FFF9B0 !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 18px !important;
+  box-shadow: 6px 6px 0 #0A0A0A !important;
+  transition: transform .15s ease, box-shadow .15s ease !important;
+}
+
+body #profileCard:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 8px 8px 0 #0A0A0A !important;
+}
+
+body #profileCard:active {
+  transform: translate(3px, 3px) !important;
+  box-shadow: 3px 3px 0 #0A0A0A !important;
+}
+
+body #profileCard #profileAvatar {
+  background:
+    linear-gradient(135deg, #FF7FE5 0%, #BFA7FF 50%, #5DE7FF 100%) !important;
+  border: 3px solid #0A0A0A !important;
+  box-shadow: 3px 3px 0 #0A0A0A !important;
+}
+
+body #profileCard #headerName {
+  color: #0A0A0A !important;
+}
+
+body #profileCard #userId {
+  color: #4A4A4A !important;
+}
+
+body #profileCard .u-limit {
+  color: #0A0A0A !important;
+  background: #FFE600 !important;
+  padding: 2px 7px !important;
+  border: 2px solid #0A0A0A !important;
+  border-radius: 999px !important;
+}
+
+/* =========================
+   PREMIUM / FEATURE CARD
+   ========================= */
+
+body .fx-featured {
+  background:
+    linear-gradient(135deg, #FF7FE5 0%, #FFD9F5 38%, #BFA7FF 100%) !important;
+  background-color: #FF7FE5 !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 20px !important;
+  box-shadow: 7px 7px 0 #0A0A0A !important;
+  overflow: hidden !important;
+  position: relative !important;
+}
+
+body .fx-featured::after {
+  content: "";
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  right: -35px;
+  top: -40px;
+  border-radius: 50%;
+  background: #FFE600 !important;
+  border: 3px solid #0A0A0A !important;
+  pointer-events: none;
+}
+
+body .fx-featured:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 9px 9px 0 #0A0A0A !important;
+}
+
+body .fx-featured .fx-featured-icon {
+  background: #FFE600 !important;
+  border: 3px solid #0A0A0A !important;
+  box-shadow: 3px 3px 0 #0A0A0A !important;
+}
+
+body .fx-featured .fx-featured-badge {
+  background: #0A0A0A !important;
+  color: #FFE600 !important;
+  border: 2px solid #0A0A0A !important;
+}
+
+body .fx-featured .fx-featured-title,
+body .fx-featured .fx-featured-desc,
+body .fx-featured .fx-featured-arrow {
+  color: #0A0A0A !important;
+}
+
+/* =========================
+   ENDPOINT CARDS — EXTRA DEPTH
+   ========================= */
+
+body .fx-grid .fx-card[data-color="0"] {
+  background: linear-gradient(135deg, #FFFFFF, #F3F3F3) !important;
+}
+
+body .fx-grid .fx-card[data-color="1"] {
+  background: linear-gradient(135deg, #FFF9B0, #FFE68A) !important;
+}
+
+body .fx-grid .fx-card[data-color="2"] {
+  background: linear-gradient(135deg, #FFD9F5, #FFBDEB) !important;
+}
+
+body .fx-grid .fx-card[data-color="3"] {
+  background: linear-gradient(135deg, #D9FFFF, #A9F4FF) !important;
+}
+
+body .fx-grid .fx-card[data-color="4"] {
+  background: linear-gradient(135deg, #E5D9FF, #C9B3FF) !important;
+}
+
+body .fx-grid .fx-card[data-color] {
+  border: 3px solid #0A0A0A !important;
+  box-shadow: 6px 6px 0 #0A0A0A !important;
+}
+
+body .fx-grid .fx-card[data-color]:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: 8px 8px 0 #0A0A0A !important;
+}
+
+/* =========================
+   PROFILE MODAL
+   ========================= */
+
+body .pf-modal {
+  border: 3px solid #0A0A0A !important;
+  border-radius: 22px !important;
+  box-shadow: 10px 10px 0 #0A0A0A !important;
+}
+
+body .pf-header {
+  background:
+    linear-gradient(135deg, #FFF9B0 0%, #FFD9F5 50%, #D9FFFF 100%) !important;
+  border-bottom: 3px solid #0A0A0A !important;
+}
+
+body .pf-avatar,
+body .pf-avatar-img {
+  border: 4px solid #0A0A0A !important;
+  box-shadow: 5px 5px 0 #0A0A0A !important;
+}
+
+body .pf-avatar {
+  background:
+    linear-gradient(135deg, #FF7FE5, #BFA7FF, #5DE7FF) !important;
+}
+
+body .pf-field {
+  border-bottom: 2px solid rgba(10,10,10,.14) !important;
+}
+
+body .pf-value {
+  color: #0A0A0A !important;
+}
+
+/* ============================================================
+   END JAVIN-COLOR-UI-V92
+   ============================================================ */
