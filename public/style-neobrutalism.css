@@ -299,3 +299,90 @@ input.otp {
   margin-top: 8px !important;
   line-height: 1.5 !important;
 }
+
+
+/* ============================================
+   INDEX PAGE — NEOBRUTALISM OVERRIDE
+   Scope: background kuning + list card (.fx-card)
+   ============================================ */
+
+/* --- Background kuning solid (kayak login) --- */
+body {
+  background: var(--nb-yellow) !important;
+  font-family: var(--nb-font) !important;
+}
+
+/* Sembunyiin video/gradient background */
+body > video,
+#bgVideo, #bg-video, .bg-video,
+#kazeVideo, .kaze-video,
+video[autoplay] {
+  display: none !important;
+}
+
+/* --- List Card (.fx-card) --- */
+.fx-card {
+  background: var(--nb-white) !important;
+  border: var(--nb-border) !important;
+  border-radius: var(--nb-radius) !important;
+  box-shadow: var(--nb-shadow-sm) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.15s ease,
+              background-color 0.15s ease !important;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.fx-card:hover {
+  transform: translate(-2px, -2px) !important;
+  box-shadow: var(--nb-shadow) !important;
+  background: var(--nb-white) !important;
+  border-color: var(--nb-black) !important;
+}
+
+.fx-card:active {
+  transform: scale(0.97) translate(2px, 2px) !important;
+  box-shadow: 2px 2px 0 var(--nb-black) !important;
+  transition: transform 0.08s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.08s ease !important;
+}
+
+/* Card body */
+.fx-card-body {
+  /* nggak diubah */
+}
+
+/* Card title */
+.fx-card-title h3 {
+  font-family: var(--nb-font-display) !important;
+  color: var(--nb-black) !important;
+  font-weight: 400 !important;
+  letter-spacing: -0.3px !important;
+}
+
+/* Card description */
+.fx-card-desc {
+  color: #4A4A4A !important;
+  font-family: var(--nb-font) !important;
+}
+
+/* Card arrow */
+.fx-card-arrow {
+  color: var(--nb-black) !important;
+  font-weight: 700 !important;
+}
+
+.fx-card:hover .fx-card-arrow {
+  color: var(--nb-black) !important;
+}
+
+/* Badge (cai, AI, gpt4, claude, dll) */
+.fx-badge {
+  background: var(--nb-cyan) !important;
+  color: var(--nb-black) !important;
+  border: 2px solid var(--nb-black) !important;
+  border-radius: 6px !important;
+  font-weight: 700 !important;
+}
