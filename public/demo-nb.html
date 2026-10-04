@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Demo Neobrutalism</title>
+<link rel="stylesheet" href="/style-neobrutalism.css">
+</head>
+<body>
+
+<div class="nb-container nb-container--full">
+
+  <h1>NEOBRUTALISM DEMO</h1>
+  <p class="nb-subtitle">Preview komponen dasar JAVIN Neobrutalism Theme</p>
+
+  <!-- CARD -->
+  <div class="nb-card" style="margin-bottom:20px">
+    <h3>Card Biasa</h3>
+    <p>Ini card dengan border tebal dan hard shadow.</p>
+  </div>
+
+  <div class="nb-card nb-card--yellow" style="margin-bottom:20px">
+    <h3>Card Kuning</h3>
+    <p>Warna kuning cerah</p>
+  </div>
+
+  <div class="nb-card nb-card--pink" style="margin-bottom:20px">
+    <h3>Card Pink</h3>
+    <p>Warna pink neon</p>
+  </div>
+
+  <div class="nb-card nb-card--cyan" style="margin-bottom:20px">
+    <h3>Card Cyan</h3>
+    <p>Warna cyan terang</p>
+  </div>
+
+  <div class="nb-card nb-card--purple" style="margin-bottom:20px">
+    <h3>Card Ungu</h3>
+    <p>Warna ungu pastel</p>
+  </div>
+
+  <!-- BUTTONS -->
+  <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px">
+    <button class="nb-btn">Kuning</button>
+    <button class="nb-btn nb-btn--pink">Pink</button>
+    <button class="nb-btn nb-btn--cyan">Cyan</button>
+    <button class="nb-btn nb-btn--purple">Ungu</button>
+    <button class="nb-btn nb-btn--green">Hijau</button>
+    <button class="nb-btn nb-btn--red">Merah</button>
+  </div>
+
+  <!-- FORM -->
+  <div class="nb-card" style="margin-bottom:20px">
+    <h3>Form Input</h3>
+    <label class="nb-field">
+      <span class="nb-label">Email</span>
+      <input class="nb-input" type="email" placeholder="nama@example.com">
+    </label>
+    <label class="nb-field">
+      <span class="nb-label">OTP</span>
+      <input class="nb-input nb-input--otp" type="text" placeholder="1 2 3 4 5 6" maxlength="6">
+    </label>
+    <button class="nb-btn nb-btn--block nb-btn--yellow">Kirim</button>
+  </div>
+
+  <!-- ALERT -->
+  <div class="nb-alert nb-alert--success show" style="margin-bottom:12px">
+    ✅ Ini alert success
+  </div>
+  <div class="nb-alert nb-alert--error show" style="margin-bottom:12px">
+    ❌ Ini alert error
+  </div>
+  <div class="nb-alert nb-alert--info show" style="margin-bottom:12px">
+    ℹ️ Ini alert info
+  </div>
+
+  <!-- PILL -->
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px">
+    <span class="nb-pill">Default</span>
+    <span class="nb-pill nb-pill--ok">Success</span>
+    <span class="nb-pill nb-pill--warn">Warning</span>
+    <span class="nb-pill nb-pill--err">Error</span>
+  </div>
+
+</div>
+
+<!-- THEME TOGGLE -->
+<div class="nb-theme-toggle" onclick="toggleTheme()" id="themeBtn">☀️</div>
+
+<script>
+function toggleTheme(){
+  var cur = document.body.getAttribute('data-theme') || 'light';
+  var next = cur === 'light' ? 'dark' : 'light';
+  document.body.setAttribute('data-theme', next);
+  document.getElementById('themeBtn').textContent = next === 'light' ? '☀️' : '🌙';
+  localStorage.setItem('nb_theme', next);
+}
+// Load theme
+(function(){
+  var saved = localStorage.getItem('nb_theme') || 'light';
+  if(saved === 'dark') document.body.setAttribute('data-theme', 'dark');
+  document.getElementById('themeBtn').textContent = saved === 'light' ? '☀️' : '🌙';
+})();
+</script>
+
+</body>
+</html>
