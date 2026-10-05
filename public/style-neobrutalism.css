@@ -826,8 +826,7 @@ body #betoBgLayer,
 #betoBgLayer *,
 #betoBgVideo,
 #bgCanvas,
-#betoBgOverlay,
-#betoStrip {
+#betoBgOverlay {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
@@ -948,7 +947,6 @@ body {
 #betoBgVideo,
 #bgCanvas,
 #betoBgOverlay,
-#betoStrip,
 #kazeVideo,
 #bgVideo,
 #bg-video,
@@ -3105,3 +3103,93 @@ body > .jsea-bg {
 }
 
 /* V26 END */
+
+/* ==================================================
+   JAVIN-MAIN-BG-V32
+   FINAL MAIN PAGE BACKGROUND + WIDGET RESTORE
+   Hanya background utama + widget status
+   ================================================== */
+
+/* Main page memakai background dekoratif */
+html body:not(.tool-page) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Pastikan layer background benar-benar tampil */
+body:not(.tool-page) > .jsea-bg {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+
+  background:
+    radial-gradient(
+      circle at 8% 12%,
+      rgba(255,127,229,.34) 0 90px,
+      transparent 220px
+    ),
+    radial-gradient(
+      circle at 92% 18%,
+      rgba(93,231,255,.30) 0 100px,
+      transparent 230px
+    ),
+    radial-gradient(
+      circle at 50% 92%,
+      rgba(177,140,255,.26) 0 120px,
+      transparent 260px
+    ),
+    linear-gradient(
+      135deg,
+      #FFE600 0%,
+      #FFF3A8 48%,
+      #DDFBFF 74%,
+      #F5DDFF 100%
+    ) !important;
+}
+
+/* Konten tetap di atas background */
+body:not(.tool-page) > header,
+body:not(.tool-page) > main,
+body:not(.tool-page) > footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Widget jam / battery / music HARUS tampil */
+body:not(.tool-page) #betoStrip {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 42px !important;
+  overflow: visible !important;
+  z-index: 1001 !important;
+  pointer-events: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Wrapper widget ikut di atas header */
+body:not(.tool-page) #betoHeaderWrap {
+  position: relative !important;
+  z-index: 1000 !important;
+  width: 100% !important;
+}
+
+/* Jangan biarkan widget tertutup pseudo-element */
+body:not(.tool-page) #betoStrip *,
+body:not(.tool-page) #betoMusicBtn {
+  pointer-events: auto !important;
+}
+
+/* ==================================================
+   END JAVIN-MAIN-BG-V32
+   ================================================== */
