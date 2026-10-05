@@ -3014,29 +3014,28 @@ body main .fx-card {
    END JAVIN-MAIN-BG-V13
    ================================================== */
 
-/* JAVIN-MAIN-BG-V14 */
-html,
-body,
-body.tool-page,
-body.home-page {
-  background-color: #f6d84a !important;
-  background-image:
-    radial-gradient(circle at 15% 20%, rgba(255,255,255,.35) 0 7%, transparent 7.5%),
-    radial-gradient(circle at 85% 15%, rgba(255,255,255,.25) 0 6%, transparent 6.5%),
-    radial-gradient(circle at 75% 80%, rgba(0,0,0,.08) 0 8%, transparent 8.5%) !important;
+/* JAVIN-MAIN-BG-V15 */
+html {
+  background: #f8fafc !important;
 }
 
-/* Pastikan wrapper utama tidak menutup background */
-main,
-#app,
-#root,
-.page,
-.home,
-.main,
-.main-content,
-.fx-page,
-.fx-container {
-  background: transparent !important;
+body {
+  background:
+    radial-gradient(circle at 12% 18%, rgba(255,126,229,.28) 0 90px, transparent 91px),
+    radial-gradient(circle at 88% 20%, rgba(99,185,255,.25) 0 100px, transparent 101px),
+    radial-gradient(circle at 78% 82%, rgba(142,227,107,.25) 0 120px, transparent 121px),
+    #f8fafc !important;
 }
 
-/* JAVIN-MAIN-BG-V14-END */
+/* Jangan ganggu tombol/header/interaksi */
+header,
+nav,
+button,
+.profile,
+.notification,
+#profile,
+#notifications {
+  pointer-events: auto;
+}
+
+/* JAVIN-MAIN-BG-V15-END */
