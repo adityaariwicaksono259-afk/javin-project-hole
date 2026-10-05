@@ -598,21 +598,12 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
 <script>
 /* FIX v8 — JS FORCE REMOVE video layer */
 (function(){
-  function killBg(){
-    ['betoBgLayer','betoBgVideo','bgCanvas','betoBgOverlay','betoStrip','kazeVideo','bgVideo'].forEach(function(id){
-      var el = document.getElementById(id);
-      if (el && el.parentNode) {
-        el.parentNode.removeChild(el);
-      }
-    });
-    // Paksa html & body kuning
-    document.documentElement.style.setProperty('background', '#FFE600', 'important');
-    document.documentElement.style.setProperty('background-image', 'none', 'important');
-    if (document.body) {
-      document.body.style.setProperty('background', '#FFE600', 'important');
-      document.body.style.setProperty('background-image', 'none', 'important');
-    }
+  function killBg() {
+    // JAVIN-BG-V11:
+    // Background sekarang dikontrol oleh CSS.
+    // Tidak lagi memaksa html/body menjadi kuning.
   }
+
   // Jalanin sekarang
   killBg();
   // Jalanin tiap 500ms buat nangkep kalau di-inject ulang

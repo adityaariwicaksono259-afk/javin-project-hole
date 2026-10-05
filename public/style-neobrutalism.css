@@ -2648,3 +2648,221 @@ body > *:not(.jsea-bg) {
 }
 
 /* END JAVIN-SEA-BG-V10 */
+
+/* =========================================================
+   JAVIN-MULTI-BG-V11
+   Background berbeda berdasarkan halaman/kategori
+   ========================================================= */
+
+/* ROOT */
+
+html,
+body {
+  background-color: #f8fafc !important;
+  background-image: none !important;
+}
+
+/* MAIN PAGE */
+
+body:not(.tool-page) {
+  background:
+    radial-gradient(circle at 10% 15%, rgba(59,130,246,.14), transparent 28%),
+    radial-gradient(circle at 90% 25%, rgba(168,85,247,.12), transparent 30%),
+    radial-gradient(circle at 50% 90%, rgba(16,185,129,.10), transparent 35%),
+    linear-gradient(135deg,#f8fafc,#eef2ff 50%,#ecfeff) !important;
+}
+
+/* TOOL PAGE BASE */
+
+html:has(body.tool-page),
+body.tool-page {
+  background-color: #f8fafc !important;
+  background-image:
+    radial-gradient(circle at 12% 12%, var(--javin-bg-a, rgba(59,130,246,.14)), transparent 28%),
+    radial-gradient(circle at 88% 30%, var(--javin-bg-b, rgba(168,85,247,.10)), transparent 30%),
+    linear-gradient(135deg, var(--javin-bg-base, #f8fafc), #ffffff 70%) !important;
+}
+
+/* =========================================================
+   CATEGORY COLOR SYSTEM
+   ========================================================= */
+
+/* AI — BLUE / PURPLE */
+
+body.tool-page[data-category="AI"],
+body.tool-page.ai-page {
+  --javin-bg-base: #eff6ff;
+  --javin-bg-a: rgba(37,99,235,.18);
+  --javin-bg-b: rgba(124,58,237,.14);
+}
+
+/* TOOLS — CYAN / TEAL */
+
+body.tool-page[data-category="Tools"],
+body.tool-page.tools-page {
+  --javin-bg-base: #ecfeff;
+  --javin-bg-a: rgba(6,182,212,.18);
+  --javin-bg-b: rgba(20,184,166,.13);
+}
+
+/* DOWNLOADER — ORANGE / RED */
+
+body.tool-page[data-category="Downloader"],
+body.tool-page.downloader-page {
+  --javin-bg-base: #fff7ed;
+  --javin-bg-a: rgba(249,115,22,.17);
+  --javin-bg-b: rgba(239,68,68,.12);
+}
+
+/* ANIME — PINK / VIOLET */
+
+body.tool-page[data-category="Anime"],
+body.tool-page.anime-page {
+  --javin-bg-base: #fdf2f8;
+  --javin-bg-a: rgba(236,72,153,.17);
+  --javin-bg-b: rgba(168,85,247,.14);
+}
+
+/* CANVAS — INDIGO */
+
+body.tool-page[data-category="Canvas"],
+body.tool-page.canvas-page {
+  --javin-bg-base: #eef2ff;
+  --javin-bg-a: rgba(79,70,229,.18);
+  --javin-bg-b: rgba(99,102,241,.12);
+}
+
+/* RANDOM — GREEN */
+
+body.tool-page[data-category="Random"],
+body.tool-page.random-page {
+  --javin-bg-base: #f0fdf4;
+  --javin-bg-a: rgba(34,197,94,.17);
+  --javin-bg-b: rgba(16,185,129,.13);
+}
+
+/* SEARCH — SKY */
+
+body.tool-page[data-category="Search"],
+body.tool-page.search-page {
+  --javin-bg-base: #f0f9ff;
+  --javin-bg-a: rgba(14,165,233,.18);
+  --javin-bg-b: rgba(59,130,246,.12);
+}
+
+/* SMM — ROSE / PINK */
+
+body.tool-page[data-category="SMM"],
+body.tool-page.smm-page {
+  --javin-bg-base: #fff1f2;
+  --javin-bg-a: rgba(244,63,94,.16);
+  --javin-bg-b: rgba(236,72,153,.13);
+}
+
+/* BERITA — SLATE / RED */
+
+body.tool-page[data-category="Berita"],
+body.tool-page.berita-page {
+  --javin-bg-base: #f8fafc;
+  --javin-bg-a: rgba(71,85,105,.15);
+  --javin-bg-b: rgba(239,68,68,.10);
+}
+
+/* INFO — TEAL */
+
+body.tool-page[data-category="Info"],
+body.tool-page.info-page {
+  --javin-bg-base: #f0fdfa;
+  --javin-bg-a: rgba(13,148,136,.17);
+  --javin-bg-b: rgba(20,184,166,.11);
+}
+
+/* ISLAMI — EMERALD */
+
+body.tool-page[data-category="Islami"],
+body.tool-page.islami-page {
+  --javin-bg-base: #ecfdf5;
+  --javin-bg-a: rgba(5,150,105,.18);
+  --javin-bg-b: rgba(16,185,129,.12);
+}
+
+/* UPLOADER — VIOLET */
+
+body.tool-page[data-category="Uploader"],
+body.tool-page.uploader-page {
+  --javin-bg-base: #f5f3ff;
+  --javin-bg-a: rgba(124,58,237,.18);
+  --javin-bg-b: rgba(139,92,246,.12);
+}
+
+/* OTHER — AMBER, TIDAK FULL KUNING */
+
+body.tool-page[data-category="Other"],
+body.tool-page.other-page {
+  --javin-bg-base: #fffbeb;
+  --javin-bg-a: rgba(245,158,11,.14);
+  --javin-bg-b: rgba(234,88,12,.10);
+}
+
+/* =========================================================
+   GEOMETRIC COLOR WASH
+   ========================================================= */
+
+body.tool-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+
+  pointer-events: none;
+
+  background:
+    linear-gradient(
+      135deg,
+      transparent 0 38%,
+      var(--javin-bg-a, rgba(59,130,246,.08)) 38.5%,
+      transparent 46%
+    );
+
+  opacity: .8;
+  z-index: -2;
+}
+
+/* FLOATING SQUARES */
+
+body.tool-page::after {
+  content: "";
+  position: fixed;
+
+  width: 180px;
+  height: 180px;
+
+  right: 5%;
+  bottom: 8%;
+
+  border: 1px solid var(--javin-bg-a, rgba(59,130,246,.14));
+  border-radius: 22px;
+
+  transform: rotate(22deg);
+
+  box-shadow:
+    -90px -70px 0 -35px var(--javin-bg-b, rgba(168,85,247,.08)),
+    -180px 40px 0 -65px var(--javin-bg-a, rgba(59,130,246,.07));
+
+  pointer-events: none;
+
+  animation: javinCategoryFloat 12s ease-in-out infinite;
+
+  z-index: -1;
+}
+
+@keyframes javinCategoryFloat {
+  0%,100% {
+    transform: translate3d(0,0,0) rotate(22deg);
+  }
+
+  50% {
+    transform: translate3d(-25px,-30px,0) rotate(34deg);
+  }
+}
+
+/* END JAVIN-MULTI-BG-V11 */
