@@ -2341,6 +2341,8 @@ body.tool-page > *:not(.javin-playful-bg) {
 
 /* JAVIN-SEA-BG-V10 */
 
+/* GEOMETRIC FLOATING BACKGROUND */
+
 .jsea-bg {
   position: fixed !important;
   inset: 0 !important;
@@ -2348,409 +2350,301 @@ body.tool-page > *:not(.javin-playful-bg) {
   height: 100vh !important;
   overflow: hidden !important;
   pointer-events: none !important;
-  z-index: -5 !important;
+  z-index: 0 !important;
+
   background:
-    radial-gradient(circle at 15% 20%, rgba(56,189,248,.13), transparent 25%),
-    radial-gradient(circle at 85% 70%, rgba(14,165,233,.10), transparent 30%),
-    linear-gradient(180deg, #eefaff 0%, #f7fdff 55%, #e8f9ff 100%);
+    radial-gradient(circle at 15% 15%, rgba(59,130,246,.12), transparent 28%),
+    radial-gradient(circle at 85% 25%, rgba(168,85,247,.10), transparent 28%),
+    radial-gradient(circle at 50% 90%, rgba(16,185,129,.09), transparent 32%),
+    linear-gradient(135deg,#f8fafc 0%,#eef2ff 48%,#ecfeff 100%);
 }
 
-/* Bubbles */
+/* GRID DEPTH */
+
+.jsea-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image:
+    linear-gradient(rgba(15,23,42,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,23,42,.035) 1px, transparent 1px);
+
+  background-size: 42px 42px;
+  mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+
+  opacity: .65;
+}
+
+/* FLOATING SQUARES */
+
+.jsea-bg::after {
+  content: "";
+  position: absolute;
+
+  width: 190px;
+  height: 190px;
+
+  left: 46%;
+  top: 36%;
+
+  border: 1px solid rgba(59,130,246,.12);
+
+  transform: rotate(45deg);
+
+  box-shadow:
+    0 0 0 35px rgba(59,130,246,.025),
+    0 0 0 70px rgba(168,85,247,.018);
+
+  animation: geoCenter 12s ease-in-out infinite;
+}
 
 .jsea-bubble {
   position: absolute;
-  border: 2px solid rgba(14,165,233,.28);
-  border-radius: 50%;
-  background: rgba(255,255,255,.30);
-  box-shadow: inset 3px 3px 0 rgba(255,255,255,.65);
-  animation: jseaBubble linear infinite;
+
+  border-radius: 10px;
+
+  border: 1px solid rgba(255,255,255,.65);
+
+  box-shadow:
+    0 14px 35px rgba(15,23,42,.08),
+    inset 0 1px 0 rgba(255,255,255,.75);
+
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+
+  animation:
+    geoFloat var(--duration,12s) ease-in-out infinite,
+    geoRotate var(--rotate,16s) linear infinite;
 }
 
+/* BLUE */
+
 .jsea-bubble-1 {
-  width: 18px;
-  height: 18px;
-  left: 8%;
-  bottom: -30px;
-  animation-duration: 8s;
+  width: 72px;
+  height: 72px;
+  left: 7%;
+  top: 18%;
+
+  background: rgba(59,130,246,.13);
+
+  --duration: 11s;
+  --rotate: 18s;
 }
 
 .jsea-bubble-2 {
-  width: 11px;
-  height: 11px;
-  left: 26%;
-  bottom: -30px;
-  animation-duration: 11s;
-  animation-delay: 2s;
+  width: 34px;
+  height: 34px;
+  left: 22%;
+  top: 70%;
+
+  background: rgba(14,165,233,.14);
+
+  --duration: 8s;
+  --rotate: 13s;
 }
 
+/* PURPLE */
+
 .jsea-bubble-3 {
-  width: 25px;
-  height: 25px;
-  right: 18%;
-  bottom: -40px;
-  animation-duration: 13s;
-  animation-delay: 1s;
+  width: 110px;
+  height: 110px;
+  right: 8%;
+  top: 17%;
+
+  background: rgba(168,85,247,.10);
+
+  --duration: 15s;
+  --rotate: 25s;
 }
 
 .jsea-bubble-4 {
-  width: 9px;
-  height: 9px;
-  right: 35%;
-  bottom: -20px;
-  animation-duration: 9s;
-  animation-delay: 4s;
+  width: 48px;
+  height: 48px;
+  right: 31%;
+  top: 72%;
+
+  background: rgba(139,92,246,.12);
+
+  --duration: 10s;
+  --rotate: 15s;
 }
+
+/* GREEN */
 
 .jsea-bubble-5 {
-  width: 15px;
-  height: 15px;
-  right: 7%;
-  bottom: -25px;
-  animation-duration: 12s;
-  animation-delay: 3s;
+  width: 82px;
+  height: 82px;
+  right: 18%;
+  bottom: 12%;
+
+  background: rgba(16,185,129,.11);
+
+  --duration: 13s;
+  --rotate: 21s;
 }
 
-@keyframes jseaBubble {
-  0% {
-    transform: translate3d(0,0,0) scale(.7);
-    opacity: 0;
-  }
-  15% {
-    opacity: .75;
-  }
-  50% {
-    transform: translate3d(25px,-50vh,0) scale(1);
-  }
-  100% {
-    transform: translate3d(-30px,-115vh,0) scale(1.15);
-    opacity: 0;
-  }
-}
-
-/* Yellow cartoon character */
-
-.jsea-yellow {
-  position: absolute;
-  width: 92px;
-  height: 76px;
-  right: 7%;
-  top: 23%;
-  border: 4px solid #111;
-  border-radius: 22px;
-  background:
-    radial-gradient(circle at 20% 25%, #fff27a 0 5px, transparent 6px),
-    radial-gradient(circle at 75% 65%, #d6a800 0 5px, transparent 6px),
-    linear-gradient(135deg,#ffe83b,#ffc928);
-  box-shadow: 8px 8px 0 rgba(0,0,0,.15);
-  transform: rotate(-4deg);
-  animation: jseaYellow 4s ease-in-out infinite;
-}
-
-.jsea-eye {
-  position: absolute;
-  top: 19px;
-  width: 16px;
-  height: 20px;
-  border: 3px solid #111;
-  border-radius: 50%;
-  background: white;
-}
-
-.jsea-eye::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  height: 8px;
-  left: 4px;
-  top: 5px;
-  border-radius: 50%;
-  background: #111;
-}
-
-.jsea-eye.left {
-  left: 24px;
-}
-
-.jsea-eye.right {
-  left: 47px;
-}
-
-.jsea-smile {
-  position: absolute;
-  width: 28px;
-  height: 14px;
-  left: 31px;
-  top: 45px;
-  border-bottom: 3px solid #111;
-  border-radius: 0 0 50% 50%;
-}
-
-.jsea-hole {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(170,120,0,.55);
-}
-
-.jsea-hole.h1 {
-  width: 7px;
-  height: 7px;
-  left: 10px;
-  top: 49px;
-}
-
-.jsea-hole.h2 {
-  width: 5px;
-  height: 5px;
-  right: 9px;
-  top: 13px;
-}
-
-.jsea-hole.h3 {
-  width: 6px;
-  height: 6px;
-  right: 15px;
-  bottom: 12px;
-}
-
-@keyframes jseaYellow {
-  0%,100% {
-    transform: translate3d(0,0,0) rotate(-4deg);
-  }
-  25% {
-    transform: translate3d(-18px,-8px,0) rotate(3deg);
-  }
-  50% {
-    transform: translate3d(-5px,8px,0) rotate(-2deg);
-  }
-  75% {
-    transform: translate3d(15px,-4px,0) rotate(5deg);
-  }
-}
-
-/* Pink star character */
-
-.jsea-star {
-  position: absolute;
-  width: 86px;
-  height: 86px;
-  left: 7%;
-  top: 58%;
-  background: #ff789c;
-  border: 4px solid #111;
-  clip-path: polygon(
-    50% 0%,
-    62% 31%,
-    96% 22%,
-    72% 49%,
-    96% 73%,
-    61% 68%,
-    50% 100%,
-    38% 68%,
-    4% 73%,
-    28% 49%,
-    4% 22%,
-    38% 31%
-  );
-  filter: drop-shadow(7px 7px 0 rgba(0,0,0,.14));
-  animation: jseaStar 5s ease-in-out infinite;
-}
-
-.jsea-star-eye {
-  position: absolute;
-  width: 11px;
-  height: 15px;
-  top: 35px;
-  border-radius: 50%;
-  background: #111;
-}
-
-.jsea-star-eye.left {
-  left: 28px;
-}
-
-.jsea-star-eye.right {
-  left: 48px;
-}
-
-.jsea-star-mouth {
-  position: absolute;
-  width: 20px;
-  height: 10px;
-  left: 36px;
-  top: 51px;
-  border-bottom: 3px solid #111;
-  border-radius: 0 0 50% 50%;
-}
-
-@keyframes jseaStar {
-  0%,100% {
-    transform: translate3d(0,0,0) rotate(-6deg);
-  }
-  20% {
-    transform: translate3d(16px,-15px,0) rotate(5deg);
-  }
-  45% {
-    transform: translate3d(32px,5px,0) rotate(-3deg);
-  }
-  70% {
-    transform: translate3d(12px,18px,0) rotate(7deg);
-  }
-}
-
-/* Fish */
-
-.jsea-fish {
-  position: absolute;
-  width: 46px;
-  height: 28px;
-  border-radius: 60% 45% 45% 60%;
-  background: #38bdf8;
-  border: 3px solid #111;
-  animation: jseaFish 9s linear infinite;
-}
-
-.jsea-fish::before {
-  content: "";
-  position: absolute;
-  right: -17px;
-  top: 4px;
-  width: 0;
-  height: 0;
-  border-top: 9px solid transparent;
-  border-bottom: 9px solid transparent;
-  border-right: 18px solid #38bdf8;
-}
-
-.jsea-fish::after {
-  content: "";
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  right: 9px;
-  top: 7px;
-  border-radius: 50%;
-  background: #111;
-}
-
-.jsea-fish-1 {
-  left: -70px;
-  top: 35%;
-  animation-delay: 1s;
-}
-
-.jsea-fish-2 {
-  left: -100px;
-  top: 76%;
-  transform: scale(.65);
-  animation-duration: 13s;
-  animation-delay: 5s;
-}
-
-@keyframes jseaFish {
-  0% {
-    transform: translate3d(-80px,0,0) scale(1);
-  }
-  25% {
-    transform: translate3d(30vw,-30px,0) scale(1.05);
-  }
-  50% {
-    transform: translate3d(60vw,30px,0) scale(.9);
-  }
-  75% {
-    transform: translate3d(100vw,-20px,0) scale(1.05);
-  }
-  100% {
-    transform: translate3d(120vw,10px,0) scale(1);
-  }
-}
-
-/* Seaweed */
-
-.jsea-seaweed {
-  position: absolute;
-  bottom: -5px;
-  width: 100px;
-  height: 105px;
-  opacity: .5;
-}
+/* ORANGE */
 
 .jsea-seaweed-1 {
-  left: 17%;
+  position: absolute;
+
+  width: 130px;
+  height: 130px;
+
+  left: 38%;
+  top: 12%;
+
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(249,115,22,.12),
+      rgba(245,158,11,.04)
+    );
+
+  border: 1px solid rgba(249,115,22,.14);
+
+  transform: rotate(18deg);
+
+  animation: geoFloat2 14s ease-in-out infinite;
 }
+
+.jsea-seaweed-1::before,
+.jsea-seaweed-1::after {
+  content: "";
+
+  position: absolute;
+
+  border: 1px solid rgba(249,115,22,.16);
+
+  border-radius: 8px;
+}
+
+.jsea-seaweed-1::before {
+  width: 55px;
+  height: 55px;
+  right: -25px;
+  bottom: -25px;
+}
+
+.jsea-seaweed-1::after {
+  width: 25px;
+  height: 25px;
+  left: -13px;
+  top: 25px;
+}
+
+/* PINK */
 
 .jsea-seaweed-2 {
-  right: 15%;
-  transform: scale(.8);
-}
-
-.jsea-seaweed i {
   position: absolute;
-  bottom: 0;
-  width: 12px;
-  height: 90px;
-  border-radius: 50%;
-  border: 5px solid #22a06b;
-  border-bottom: 0;
-  transform-origin: bottom;
-  animation: jseaWeed 3s ease-in-out infinite;
+
+  width: 64px;
+  height: 64px;
+
+  left: 12%;
+  bottom: 17%;
+
+  border-radius: 12px;
+
+  background: rgba(236,72,153,.10);
+
+  border: 1px solid rgba(236,72,153,.15);
+
+  transform: rotate(-18deg);
+
+  animation: geoFloat 9s ease-in-out infinite reverse;
 }
 
-.jsea-seaweed i:nth-child(1) {
-  left: 10px;
-  height: 65px;
-}
+/* REMOVE OLD CHARACTER DETAILS */
 
-.jsea-seaweed i:nth-child(2) {
-  left: 42px;
-  height: 95px;
-  animation-delay: .5s;
-}
-
-.jsea-seaweed i:nth-child(3) {
-  left: 72px;
-  height: 72px;
-  animation-delay: 1s;
-}
-
-@keyframes jseaWeed {
-  0%,100% {
-    transform: rotate(-7deg);
-  }
-  50% {
-    transform: rotate(9deg);
-  }
-}
-
-/* Ground */
-
+.jsea-yellow,
+.jsea-star,
+.jsea-fish,
 .jsea-ground {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -32px;
-  height: 55px;
-  background:
-    radial-gradient(circle at 15% 30%, #f3d28a 0 5px, transparent 6px),
-    radial-gradient(circle at 35% 60%, #e8c277 0 4px, transparent 5px),
-    radial-gradient(circle at 65% 25%, #f0cc82 0 5px, transparent 6px),
-    linear-gradient(#efd08a,#dfb86d);
-  border-top: 3px solid rgba(111,75,30,.25);
+  display: none !important;
 }
 
-/* Keep main UI above decorative layer */
+/* EXTRA GEOMETRIC DEPTH */
+
+.jsea-bubble-1::before,
+.jsea-bubble-2::before,
+.jsea-bubble-3::before,
+.jsea-bubble-4::before,
+.jsea-bubble-5::before {
+  content: "";
+
+  position: absolute;
+
+  inset: 18%;
+
+  border: 1px solid rgba(255,255,255,.5);
+
+  border-radius: 5px;
+
+  transform: rotate(45deg);
+}
+
+@keyframes geoFloat {
+  0%,100% {
+    transform: translate3d(0,0,0) rotate(0deg);
+  }
+
+  25% {
+    transform: translate3d(18px,-24px,0) rotate(5deg);
+  }
+
+  50% {
+    transform: translate3d(-10px,-42px,0) rotate(-4deg);
+  }
+
+  75% {
+    transform: translate3d(-24px,-15px,0) rotate(7deg);
+  }
+}
+
+@keyframes geoFloat2 {
+  0%,100% {
+    transform: translate3d(0,0,0) rotate(18deg);
+  }
+
+  30% {
+    transform: translate3d(25px,-18px,0) rotate(27deg);
+  }
+
+  65% {
+    transform: translate3d(-20px,28px,0) rotate(9deg);
+  }
+}
+
+@keyframes geoRotate {
+  from {
+    rotate: 0deg;
+  }
+
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes geoCenter {
+  0%,100% {
+    transform: translate3d(0,0,0) rotate(45deg) scale(1);
+  }
+
+  50% {
+    transform: translate3d(0,-30px,0) rotate(135deg) scale(1.08);
+  }
+}
+
+/* MAIN UI ABOVE BACKGROUND */
 
 body > *:not(.jsea-bg) {
   position: relative;
   z-index: 1;
-}
-
-.jsea-bg {
-  z-index: 0 !important;
-}
-
-body {
-  position: relative !important;
-  min-height: 100vh;
 }
 
 /* END JAVIN-SEA-BG-V10 */
