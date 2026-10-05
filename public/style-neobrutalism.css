@@ -3046,3 +3046,62 @@ body::after {
 }
 
 /* JAVIN-MAIN-BG-V16-END */
+
+
+/* ==================================================
+   JAVIN-MAIN-BG-V26
+   SINGLE LIGHTWEIGHT MAIN BACKGROUND
+   Background only — no UI/card/header changes
+   ================================================== */
+
+/* Matikan background animation lama */
+body:not(.tool-page)::before,
+body:not(.tool-page)::after {
+  animation: none !important;
+  filter: none !important;
+}
+
+/* Matikan efek berat pada decorative bubbles */
+.jsea-bg .jsea-bubble {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Matikan animasi decorative objects */
+.jsea-bg .jsea-seaweed,
+.jsea-bg .jsea-yellow,
+.jsea-bg .jsea-star,
+.jsea-bg .jsea-fish,
+.jsea-bg .jsea-ground {
+  animation: none !important;
+}
+
+/* Background utama: satu layer statis */
+body > .jsea-bg {
+  background:
+    radial-gradient(
+      circle at 12% 15%,
+      rgba(59,130,246,.10),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 88% 22%,
+      rgba(168,85,247,.08),
+      transparent 28%
+    ),
+    radial-gradient(
+      circle at 50% 90%,
+      rgba(16,185,129,.07),
+      transparent 32%
+    ),
+    linear-gradient(
+      135deg,
+      #f8fafc 0%,
+      #eef2ff 50%,
+      #ecfeff 100%
+    ) !important;
+}
+
+/* V26 END */
