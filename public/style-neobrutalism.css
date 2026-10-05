@@ -2937,35 +2937,79 @@ body:not(.tool-page)::after {
 
 /* END JAVIN-MAIN-BG-V11.1 */
 
+
+
 /* ==================================================
-   JAVIN-MAIN-BG-V12
-   FIX: BACKGROUND HALAMAN UTAMA
-   BAGIAN BAWAH/CARD TETAP PUTIH
+   JAVIN-MAIN-BG-V13
+   FIX BACKGROUND LAYER ONLY
    ================================================== */
 
-html:has(body:not(.tool-page)) {
-  background: #f5c842 !important;
+/* Background utama memakai JSEA */
+html,
+html[data-theme],
+html[class] {
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  background-image: none !important;
 }
 
-body:not(.tool-page) {
-  background: #f5c842 !important;
-  background-color: #f5c842 !important;
+body,
+body[data-theme],
+body[class] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
 }
 
-/* Jangan ubah area konten/card yang sudah putih */
-body:not(.tool-page) main,
-body:not(.tool-page) .container,
-body:not(.tool-page) .content,
-body:not(.tool-page) .fx-grid,
-body:not(.tool-page) .fx-card {
-  background-color: transparent;
+/* JSEA menjadi background utama */
+body > .jsea-bg {
+  display: block !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Konten berada di atas background */
+body > header,
+body > main,
+body > footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Main tidak boleh membawa warna kuning */
+body > main {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Header tetap putih */
+body > header.fx-header {
+  background: rgba(255,255,255,0.9) !important;
+  background-color: rgba(255,255,255,0.9) !important;
+  background-image: none !important;
+}
+
+/* Bar/footer kembali putih */
+body > footer,
+body footer {
+  background: #fff !important;
+  background-color: #fff !important;
+  background-image: none !important;
+  color: #0A0A0A !important;
 }
 
 /* Card tetap putih */
-body:not(.tool-page) .fx-card {
+body .fx-grid .fx-card,
+body #grid .fx-card,
+body main .fx-card {
   background: #fff !important;
+  background-color: #fff !important;
 }
 
 /* ==================================================
-   END JAVIN-MAIN-BG-V12
+   END JAVIN-MAIN-BG-V13
    ================================================== */
