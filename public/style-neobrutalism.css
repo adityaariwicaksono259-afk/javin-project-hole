@@ -2936,3 +2936,36 @@ body:not(.tool-page)::after {
 }
 
 /* END JAVIN-MAIN-BG-V11.1 */
+
+/* ==================================================
+   JAVIN-MAIN-BG-V12
+   FIX: BACKGROUND HALAMAN UTAMA
+   BAGIAN BAWAH/CARD TETAP PUTIH
+   ================================================== */
+
+html:has(body:not(.tool-page)) {
+  background: #f5c842 !important;
+}
+
+body:not(.tool-page) {
+  background: #f5c842 !important;
+  background-color: #f5c842 !important;
+}
+
+/* Jangan ubah area konten/card yang sudah putih */
+body:not(.tool-page) main,
+body:not(.tool-page) .container,
+body:not(.tool-page) .content,
+body:not(.tool-page) .fx-grid,
+body:not(.tool-page) .fx-card {
+  background-color: transparent;
+}
+
+/* Card tetap putih */
+body:not(.tool-page) .fx-card {
+  background: #fff !important;
+}
+
+/* ==================================================
+   END JAVIN-MAIN-BG-V12
+   ================================================== */
