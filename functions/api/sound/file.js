@@ -24,7 +24,7 @@ export async function onRequestGet({ request, env }) {
       return new Response('telegram getFile failed', { status: 502 });
     }
 
-    const fileUrl = TG_API + token + '/' + gf.result.file_path;
+    const fileUrl = 'https://api.telegram.org/file/bot' + token + '/' + gf.result.file_path;
     const audioRes = await fetch(fileUrl, {
       cf: { cacheEverything: true, cacheTtl: 604800 }
     });
