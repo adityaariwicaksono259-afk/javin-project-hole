@@ -2106,140 +2106,113 @@ body.tool-page [style*="color: #dc2626"] {
    END JAVIN-ENDPOINT-UI-V94
    ============================================================ */
 
-/* JAVIN-BG-V9.5 */
-html,
-body {
-  background-color: #f4f1e8 !important;
+/* JAVIN-CLEAN-ANIMATED-BG-V98 */
+
+html {
+  background: #f4f1e8 !important;
+}
+
+body.tool-page {
+  position: relative !important;
+  isolation: isolate !important;
+  background: #f4f1e8 !important;
+}
+
+/* Dekorasi utama — berada di belakang seluruh konten */
+body.tool-page::before,
+body.tool-page::after {
+  content: "" !important;
+  position: fixed !important;
+  display: block !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  border: 4px solid #111 !important;
+  box-shadow: 7px 7px 0 #111 !important;
+}
+
+/* Kotak kuning */
+body.tool-page::before {
+  width: 115px !important;
+  height: 115px !important;
+  left: -25px !important;
+  top: 18% !important;
+  background: #ffd84d !important;
+  transform: rotate(-14deg) !important;
+  animation: javinCleanFloatA 9s ease-in-out infinite !important;
+}
+
+/* Lingkaran merah */
+body.tool-page::after {
+  width: 145px !important;
+  height: 145px !important;
+  right: -35px !important;
+  bottom: 12% !important;
+  border-radius: 50% !important;
+  background: #ff6b6b !important;
+  animation: javinCleanFloatB 11s ease-in-out infinite !important;
+}
+
+/* SEMUA KONTEN SELALU DI ATAS DEKORASI */
+body.tool-page > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Aksen biru melalui background layer */
+body.tool-page {
   background-image:
-    radial-gradient(circle at 15% 20%, rgba(0,0,0,.055) 0 2px, transparent 2.5px),
-    radial-gradient(circle at 85% 75%, rgba(0,0,0,.045) 0 2px, transparent 2.5px),
-    linear-gradient(rgba(0,0,0,.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0,0,0,.045) 1px, transparent 1px) !important;
-  background-size:
-    28px 28px,
-    36px 36px,
-    32px 32px,
-    32px 32px !important;
-  background-position:
-    0 0,
-    12px 18px,
-    0 0,
-    0 0 !important;
+    radial-gradient(
+      circle at 78% 18%,
+      rgba(98,181,255,.9) 0 45px,
+      transparent 46px
+    ),
+    radial-gradient(
+      circle at 22% 82%,
+      rgba(142,227,107,.8) 0 28px,
+      transparent 29px
+    ) !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  animation: javinCleanBackground 14s ease-in-out infinite alternate !important;
 }
 
-body::before {
-  content: "";
-  position: fixed;
-  width: 180px;
-  height: 180px;
-  left: -70px;
-  top: 140px;
-  background: #ffd84d;
-  border: 4px solid #111;
-  transform: rotate(-12deg);
-  opacity: .9;
-  z-index: -1;
-  pointer-events: none;
+@keyframes javinCleanFloatA {
+  0%,100% {
+    transform: translate3d(0,0,0) rotate(-14deg);
+  }
+  50% {
+    transform: translate3d(28px,-32px,0) rotate(8deg);
+  }
 }
 
-body::after {
-  content: "";
-  position: fixed;
-  width: 140px;
-  height: 140px;
-  right: -50px;
-  bottom: 100px;
-  background: #ff6b6b;
-  border: 4px solid #111;
-  border-radius: 50%;
-  opacity: .75;
-  z-index: -1;
-  pointer-events: none;
-}
-/* END JAVIN-BG-V9.5 */
-
-/* JAVIN-ANIMATED-BG-V96 */
-
-.javin-animated-bg {
-  position: fixed;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  z-index: 0;
+@keyframes javinCleanFloatB {
+  0%,100% {
+    transform: translate3d(0,0,0) scale(1);
+  }
+  50% {
+    transform: translate3d(-30px,28px,0) scale(1.08);
+  }
 }
 
-.javin-bg-shape {
-  position: absolute;
-  display: block;
-  border: 4px solid #111;
-  box-shadow: 7px 7px 0 #111;
-  will-change: transform;
-}
-
-.javin-bg-square {
-  width: 110px;
-  height: 110px;
-  left: 5%;
-  top: 18%;
-  background: #ffd84d;
-  transform: rotate(-14deg);
-  animation: javinFloatA 9s ease-in-out infinite;
-}
-
-.javin-bg-circle {
-  width: 145px;
-  height: 145px;
-  right: 5%;
-  top: 28%;
-  border-radius: 50%;
-  background: #ff6b6b;
-  animation: javinFloatB 11s ease-in-out infinite;
-}
-
-.javin-bg-blue {
-  width: 95px;
-  height: 95px;
-  right: 15%;
-  bottom: 12%;
-  background: #62b5ff;
-  transform: rotate(22deg);
-  animation: javinFloatC 8s ease-in-out infinite;
-}
-
-.javin-bg-small {
-  width: 55px;
-  height: 55px;
-  left: 18%;
-  bottom: 15%;
-  background: #8ee36b;
-  transform: rotate(45deg);
-  animation: javinFloatD 7s ease-in-out infinite;
-}
-
-@keyframes javinFloatA {
-  0%,100% { transform: translate3d(0,0,0) rotate(-14deg); }
-  50% { transform: translate3d(25px,-35px,0) rotate(8deg); }
-}
-
-@keyframes javinFloatB {
-  0%,100% { transform: translate3d(0,0,0) scale(1); }
-  50% { transform: translate3d(-30px,35px,0) scale(1.08); }
-}
-
-@keyframes javinFloatC {
-  0%,100% { transform: translate3d(0,0,0) rotate(22deg); }
-  50% { transform: translate3d(-25px,-28px,0) rotate(48deg); }
-}
-
-@keyframes javinFloatD {
-  0%,100% { transform: translate3d(0,0,0) rotate(45deg); }
-  50% { transform: translate3d(20px,-25px,0) rotate(90deg); }
+@keyframes javinCleanBackground {
+  0% {
+    background-position:
+      0 0,
+      0 0;
+  }
+  100% {
+    background-position:
+      -35px 25px,
+      30px -25px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .javin-bg-shape {
+  body.tool-page::before,
+  body.tool-page::after,
+  body.tool-page {
     animation: none !important;
   }
 }
 
-/* END JAVIN-ANIMATED-BG-V96 */
+/* END JAVIN-CLEAN-ANIMATED-BG-V98 */
