@@ -3049,3 +3049,65 @@ body::after {
 }
 
 /* JAVIN-MAIN-BG-V16-END */
+
+
+/* JAVIN-MAIN-ROOT-FIX-V20 */
+/*
+   MAIN PAGE ROOT LAYER
+   JSEA adalah background utama.
+   Jangan biarkan pseudo-element/background lama menutupnya.
+*/
+
+html:not([data-v20-disabled]) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+body:not(.tool-page) {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Matikan decorative root layer lama pada MAIN PAGE saja */
+body:not(.tool-page)::before,
+body:not(.tool-page)::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Main tetap transparan agar JSEA terlihat */
+body:not(.tool-page) > main {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* JSEA tetap menjadi layer paling bawah */
+body:not(.tool-page) > .jsea-bg {
+  display: block !important;
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+}
+
+/* UI utama berada di atas JSEA */
+body:not(.tool-page) > header,
+body:not(.tool-page) > main,
+body:not(.tool-page) > footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* Header tetap translucent */
+body:not(.tool-page) > header.fx-header {
+  background: rgba(255,255,255,0.90) !important;
+  background-color: rgba(255,255,255,0.90) !important;
+  background-image: none !important;
+}
+
+/* END JAVIN-MAIN-ROOT-FIX-V20 */
