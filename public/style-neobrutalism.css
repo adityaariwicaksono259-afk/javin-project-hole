@@ -3016,14 +3016,11 @@ body main .fx-card {
 
 /* JAVIN-MAIN-BG-V16 */
 
-/* Background halaman utama */
-html {
-  background: #f8fafc !important;
-}
-
-body {
-  background-color: #f8fafc !important;
-}
+/*
+ * V16 FIX:
+ * Jangan override background html/body.
+ * V13 sudah membuat body transparan agar .jsea-bg terlihat.
+ */
 
 /* Header harus selalu berada di atas decorative background */
 .fx-header {
