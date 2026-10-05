@@ -2866,3 +2866,73 @@ body.tool-page::after {
 }
 
 /* END JAVIN-MULTI-BG-V11 */
+
+/* =========================================================
+   JAVIN-MAIN-BG-V11.1
+   MAIN PAGE ONLY — background, no UI changes
+   ========================================================= */
+
+html:has(body:not(.tool-page)),
+body:not(.tool-page) {
+  background-color: #eef6ff !important;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(59,130,246,.24) 0 90px, transparent 91px),
+    radial-gradient(circle at 92% 18%, rgba(168,85,247,.22) 0 120px, transparent 121px),
+    radial-gradient(circle at 18% 82%, rgba(34,197,94,.20) 0 110px, transparent 111px),
+    radial-gradient(circle at 84% 78%, rgba(249,115,22,.20) 0 130px, transparent 131px),
+    linear-gradient(135deg, #eef6ff 0%, #f5f0ff 48%, #effcf5 100%) !important;
+  background-attachment: fixed !important;
+}
+
+body:not(.tool-page)::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  background:
+    linear-gradient(45deg, transparent 47%, rgba(59,130,246,.10) 48%, rgba(59,130,246,.10) 52%, transparent 53%) 0 0 / 90px 90px,
+    linear-gradient(-45deg, transparent 47%, rgba(168,85,247,.08) 48%, rgba(168,85,247,.08) 52%, transparent 53%) 45px 45px / 90px 90px;
+  animation: javinMainBgFloat 18s linear infinite !important;
+}
+
+body:not(.tool-page)::after {
+  content: "" !important;
+  position: fixed !important;
+  width: 280px !important;
+  height: 280px !important;
+  left: 50% !important;
+  top: 42% !important;
+  transform: translate(-50%, -50%) !important;
+  border-radius: 42px !important;
+  background: linear-gradient(
+    135deg,
+    rgba(59,130,246,.10),
+    rgba(168,85,247,.10),
+    rgba(34,197,94,.08)
+  ) !important;
+  filter: blur(12px) !important;
+  pointer-events: none !important;
+  z-index: -1 !important;
+  animation: javinMainCenter 7s ease-in-out infinite alternate !important;
+}
+
+@keyframes javinMainBgFloat {
+  from {
+    background-position: 0 0, 45px 45px;
+  }
+  to {
+    background-position: 90px 90px, 135px 135px;
+  }
+}
+
+@keyframes javinMainCenter {
+  from {
+    transform: translate(-50%, -50%) rotate(0deg) scale(.92);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(8deg) scale(1.08);
+  }
+}
+
+/* END JAVIN-MAIN-BG-V11.1 */
