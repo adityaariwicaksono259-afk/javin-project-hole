@@ -346,10 +346,13 @@ html[data-theme="dark"] .pf-avatar, html[data-theme="dark"] .pf-avatar-img {
   <video
     class="javin-featured-video"
     src="/videos/TikVideo.App_7693109582822149397.mp4"
-    controls
+    autoplay
+    muted
+    loop
     playsinline
-    preload="metadata">
-  </video>
+    webkit-playsinline
+    preload="auto"
+    aria-hidden="true"></video>
 </div>
 
 <div class="fx-cats" id="categories"></div>
@@ -592,31 +595,76 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
 
 <script src="/notif.js"></script>
 <script>
-/* JAVIN-CLICK-FIX-V5 */
+/* JAVIN-CLICK-FIX-V9 */
 (function () {
-  function fixHeaderClicks() {
+  function bindHeaderClicks() {
     var profile = document.getElementById('profileCard');
     var bell = document.getElementById('notifBell');
 
     if (profile) {
       profile.style.pointerEvents = 'auto';
       profile.style.touchAction = 'manipulation';
+
+      profile.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (typeof window.openProfileModal === 'function') {
+          window.openProfileModal();
+        }
+      };
     }
 
     if (bell) {
       bell.style.pointerEvents = 'auto';
       bell.style.touchAction = 'manipulation';
+
+      bell.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (window.notif && typeof window.notif.open === 'function') {
+          window.notif.open();
+        }
+      };
     }
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fixHeaderClicks);
-  } else {
-    fixHeaderClicks();
+  function startVideo() {
+    var video = document.querySelector('.javin-featured-video');
+    if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
+    video.autoplay = true;
+    video.loop = true;
+    video.playsInline = true;
+
+    var promise = video.play();
+    if (promise && typeof promise.catch === 'function') {
+      promise.catch(function () {
+        /* Browser dapat menunda autoplay; video tetap muted. */
+      });
+    }
   }
+
+  function init() {
+    bindHeaderClicks();
+    startVideo();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  window.addEventListener('load', function () {
+    bindHeaderClicks();
+    startVideo();
+  });
 })();
-</script>
-<!-- END JAVIN-CLICK-FIX-V5 -->
+<!-- END JAVIN-CLICK-FIX-V9 -->
 
 
 

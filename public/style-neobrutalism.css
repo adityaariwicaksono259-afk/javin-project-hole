@@ -3195,17 +3195,24 @@ body:not(.tool-page) #betoMusicBtn {
    ================================================== */
 
 /* ==================================================
-   JAVIN-FIX-V5 — FEATURED VIDEO CARD + HEADER CLICK
+   JAVIN-FIX-V9 — VIDEO BACKGROUND + HEADER CLICK
    ================================================== */
 
-/* Header benar-benar di atas layer lain */
+/* Header selalu berada di atas background video */
 header.fx-header {
   position: sticky !important;
   top: 0 !important;
   z-index: 10000 !important;
 }
 
-/* Kontrol header */
+/* Area header dan semua kontrolnya tetap clickable */
+header.fx-header,
+header.fx-header *,
+#profileCard,
+#notifBell {
+  pointer-events: auto !important;
+}
+
 #profileCard,
 #notifBell,
 .fx-header a,
@@ -3217,22 +3224,24 @@ header.fx-header {
   cursor: pointer !important;
 }
 
-/* Video mengikuti konsep featured/premium card */
+/* Background video — bukan player/card */
 .javin-video-card {
+  position: relative !important;
   display: block !important;
-  width: min(100%, 320px) !important;
-  height: 180px !important;
-  margin: 12px auto 18px !important;
+  width: 100% !important;
+  height: clamp(220px, 48vw, 430px) !important;
+  margin: 0 !important;
   padding: 0 !important;
   overflow: hidden !important;
   box-sizing: border-box !important;
-  border: 3px solid #0A0A0A !important;
-  border-radius: 10px !important;
-  background: #FF7FE5 !important;
-  box-shadow: 6px 6px 0 #0A0A0A !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: #000 !important;
+  box-shadow: none !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
 }
 
-/* Video mengisi featured card */
 .javin-featured-video {
   display: block !important;
   width: 100% !important;
@@ -3242,10 +3251,15 @@ header.fx-header {
   margin: 0 !important;
   padding: 0 !important;
   border: 0 !important;
-  border-radius: 7px !important;
+  border-radius: 0 !important;
   box-shadow: none !important;
   background: #000 !important;
   object-fit: cover !important;
+  pointer-events: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
-/* JAVIN-FIX-V5 END */
+/* ==================================================
+   JAVIN-FIX-V9 END
+   ================================================== */
