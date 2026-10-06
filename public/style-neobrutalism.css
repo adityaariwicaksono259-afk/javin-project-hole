@@ -343,11 +343,17 @@ body[class] {
 .bg-video,
 .kaze-video,
 #loginBgVideo,
-#loginBgOverlay,
-video[autoplay] {
+#loginBgOverlay {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
+}
+
+/* JAVIN-FIX-V9: featured video HARUS tetap terlihat */
+.javin-featured-video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 /* 3. Paksa .fx-card — pake body prefix biar menang specificity */
@@ -3258,6 +3264,79 @@ header.fx-header *,
   pointer-events: none !important;
   user-select: none !important;
   -webkit-user-select: none !important;
+}
+
+/* ==================================================
+   JAVIN-FIX-V9 END
+   ================================================== */
+
+/* ==================================================
+   JAVIN-FIX-V9 — PROFILE + NOTIFICATION MODAL
+   ================================================== */
+
+/* Profile modal harus berada di atas seluruh halaman */
+#profileModal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 200000 !important;
+  pointer-events: auto !important;
+}
+
+/* Isi modal profile tetap bisa disentuh */
+#profileModal > * {
+  pointer-events: auto !important;
+}
+
+/* Notification overlay dibuat paling atas */
+#nfOverlay {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 210000 !important;
+  pointer-events: auto !important;
+}
+
+/* Saat notification dibuka */
+#nfOverlay.show {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+}
+
+/* Modal notification menerima klik */
+#nfOverlay .nf-modal {
+  pointer-events: auto !important;
+  position: relative !important;
+  z-index: 210001 !important;
+}
+
+/* Header control selalu di atas background/decorative layer */
+header.fx-header,
+header.fx-header *,
+#profileCard,
+#notifBell {
+  pointer-events: auto !important;
+}
+
+#profileCard,
+#notifBell {
+  position: relative !important;
+  z-index: 10001 !important;
+  touch-action: manipulation !important;
+  cursor: pointer !important;
+}
+
+/* Featured video bukan background blocker */
+.javin-video-card {
+  pointer-events: none !important;
+  z-index: 0 !important;
+}
+
+.javin-featured-video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
 }
 
 /* ==================================================
