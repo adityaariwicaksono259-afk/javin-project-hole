@@ -469,6 +469,23 @@ html[data-theme="dark"] .pf-avatar, html[data-theme="dark"] .pf-avatar-img {
       </div>
 
       <div class="pf-field">
+        <div class="pf-label">API Key</div>
+        <div class="pf-value-row" style="display:flex;align-items:center;gap:8px">
+          <div class="pf-value mono" id="pfApiKey" style="flex:1;font-family:monospace;letter-spacing:1px">-</div>
+          <button type="button" id="pfApiKeyEye" style="background:rgba(14,165,233,.1);color:#0EA5E9;border:0;border-radius:8px;padding:6px 10px;font-size:14px;cursor:pointer;flex-shrink:0" title="Lihat">👁</button>
+          <button type="button" id="pfApiKeyCopy" style="background:rgba(34,197,94,.1);color:#16a34a;border:0;border-radius:8px;padding:6px 10px;font-size:14px;cursor:pointer;flex-shrink:0" title="Salin">📋</button>
+        </div>
+      </div>
+
+      <div class="pf-field">
+        <div class="pf-label">Saldo API Key</div>
+        <div class="pf-value">
+          <span id="pfCredits" style="font-weight:800;color:#0EA5E9">-</span>
+          <span style="font-size:11px;color:#94a3b8;margin-left:6px">reset otomatis ke 5 di jam 00:00 WIB</span>
+        </div>
+      </div>
+
+      <div class="pf-field">
         <div class="pf-label">Bergabung</div>
         <div class="pf-value" id="pfJoined">-</div>
       </div>

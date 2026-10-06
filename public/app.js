@@ -41,6 +41,13 @@
     return '(reset ' + menit + 'm)';
   }
 
+  function maskApiKey(key) {
+    if (!key) return '-';
+    var s = String(key);
+    if (s.length <= 4) return '•'.repeat(s.length);
+    return s.slice(0, 2) + '•'.repeat(Math.max(0, s.length - 4)) + s.slice(-2);
+  }
+
   async function openProfileModal() {
     var modal = document.getElementById('profileModal');
     if (!modal) {
@@ -60,6 +67,13 @@
     var pfDisplay = document.getElementById('pfDisplayName');
     var pfAvatar = document.getElementById('pfAvatar');
     var pfAvatarImg = document.getElementById('pfAvatarImg');
+    var pfApiKey = document.getElementById('pfApiKey');
+    var pfCredits = document.getElementById('pfCredits');
+    var pfApiKeyEye = document.getElementById('pfApiKeyEye');
+    var pfApiKeyCopy = document.getElementById('pfApiKeyCopy');
+
+    // State API key (buat toggle show/hide)
+    var _currentApiKey = '';
 
     // Nama tampilan dari localStorage
     var displayName = 'Javin';
@@ -90,6 +104,74 @@
         var isDemo = j1.is_demo === true || j1.user.provider === 'demo';
         if (pfStatus) pfStatus.textContent = isDemo ? 'Demo Mode' : (j1.user.provider === 'google' ? 'Google' : (j1.user.provider || 'User'));
         if (pfStatusDot) pfStatusDot.className = 'pf-status-dot ' + (isDemo ? 'demo' : 'google');
+
+        // API Key (sensor + toggle)
+        _currentApiKey = j1.user.api_key || '';
+        if (pfApiKey) {
+          if (_currentApiKey) {
+            pfApiKey.textContent = maskApiKey(_currentApiKey);
+            pfApiKey.dataset.revealed = '0';
+          } else {
+            pfApiKey.textContent = '(belum ada)';
+          }
+        }
+        if (pfCredits) {
+          var creds = j1.user.credits || 0;
+          pfCredits.textContent = creds;
+          // Warna kalau kurang
+          pfCredits.style.color = creds < 15 ? '#ef4444' : (creds < 30 ? '#f59e0b' : '#0EA5E9');
+        }
+
+        // Handler toggle mata
+        if (pfApiKeyEye && !pfApiKeyEye.dataset.bound) {
+          pfApiKeyEye.dataset.bound = '1';
+          pfApiKeyEye.onclick = function(e) {
+            e.stopPropagation();
+            if (!_currentApiKey || !pfApiKey) return;
+            var revealed = pfApiKey.dataset.revealed === '1';
+            if (revealed) {
+              pfApiKey.textContent = maskApiKey(_currentApiKey);
+              pfApiKey.dataset.revealed = '0';
+              pfApiKeyEye.textContent = '👁';
+            } else {
+              pfApiKey.textContent = _currentApiKey;
+              pfApiKey.dataset.revealed = '1';
+              pfApiKeyEye.textContent = '🙈';
+            }
+          };
+        }
+
+        // Handler salin
+        if (pfApiKeyCopy && !pfApiKeyCopy.dataset.bound) {
+          pfApiKeyCopy.dataset.bound = '1';
+          pfApiKeyCopy.onclick = function(e) {
+            e.stopPropagation();
+            if (!_currentApiKey) return;
+            var doCopy = function() {
+              if (navigator.clipboard && navigator.clipboard.writeText) {
+                return navigator.clipboard.writeText(_currentApiKey);
+              }
+              // Fallback
+              var ta = document.createElement('textarea');
+              ta.value = _currentApiKey;
+              ta.style.position = 'fixed';
+              ta.style.opacity = '0';
+              document.body.appendChild(ta);
+              ta.select();
+              try { document.execCommand('copy'); } catch(e) {}
+              document.body.removeChild(ta);
+              return Promise.resolve();
+            };
+            doCopy().then(function() {
+              var old = pfApiKeyCopy.textContent;
+              pfApiKeyCopy.textContent = '✅';
+              setTimeout(function(){ pfApiKeyCopy.textContent = old; }, 1200);
+            }).catch(function(){
+              pfApiKeyCopy.textContent = '❌';
+              setTimeout(function(){ pfApiKeyCopy.textContent = '📋'; }, 1200);
+            });
+          };
+        }
       } else {
         if (pfUserCode) pfUserCode.textContent = 'Guest';
         if (pfStatus) pfStatus.textContent = 'Tidak Login';

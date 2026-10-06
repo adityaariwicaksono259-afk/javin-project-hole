@@ -84,6 +84,304 @@
     return 'simple';
   }
 
+  // ============================================
+  // PREMIUM TOOL WIZARD (AM Premium + AM Finder)
+  // ============================================
+  function renderPremiumTool(ep) {
+    if (ep.catalogId === 'premium-amprem') return renderAmpemWizard(ep);
+    if (ep.catalogId === 'premium-amfinder') return renderAmfinder(ep);
+  }
+
+  function premiumApiCall(path, body) {
+    return fetch(path, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      credentials: 'same-origin'
+    }).then(function(r) {
+      return r.json().then(function(j) {
+        if (!r.ok) throw new Error(j.message || ('HTTP ' + r.status));
+        return j;
+      });
+    });
+  }
+
+  function renderAmpemWizard(ep) {
+    var state = { step: 1, apikey: '', email: '', idToken: '', credits: 0 };
+
+    wrap.innerHTML = [
+      '<div class="hero">',
+      '  <div class="badge">' + esc(ep.folder) + (ep.subfolder ? ' · ' + esc(ep.subfolder) : '') + '</div>',
+      '  <h1 class="title">' + esc(ep.name) + '</h1>',
+      '  <p class="desc">' + esc(ep.desc || '') + '</p>',
+      '</div>',
+      '<div class="wz-steps" id="wzSteps"></div>',
+      '<div class="card" id="wzBody"></div>',
+      '<div class="result-wrap" id="wzResult"></div>'
+    ].join('\n');
+
+    if (!document.getElementById('wzCss')) {
+      var st = document.createElement('style');
+      st.id = 'wzCss';
+      st.textContent = [
+        '.wz-steps{display:flex;gap:8px;margin-bottom:16px;justify-content:center;flex-wrap:wrap}',
+        '.wz-step{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:#f1f5f9;color:#94a3b8;font-size:12px;font-weight:700}',
+        '.wz-step.active{background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff}',
+        '.wz-step.done{background:rgba(34,197,94,.15);color:#16a34a}',
+        '.wz-info{background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);color:#0369a1;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.6;margin-bottom:14px}',
+        '.wz-credits{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;margin-bottom:8px}',
+        '.wz-credits b{color:#0EA5E9;font-size:16px}'
+      ].join('');
+      document.head.appendChild(st);
+    }
+
+    function renderSteps() {
+      var el = document.getElementById('wzSteps');
+      if (!el) return;
+      var steps = [
+        { n: 1, label: 'API Key' },
+        { n: 2, label: 'Email' },
+        { n: 3, label: 'Verifikasi' }
+      ];
+      el.innerHTML = steps.map(function(s) {
+        var cls = 'wz-step';
+        if (s.n === state.step) cls += ' active';
+        else if (s.n < state.step) cls += ' done';
+        return '<div class="' + cls + '">' + s.n + '. ' + s.label + '</div>';
+      }).join('');
+    }
+
+    function renderBody() {
+      var body = document.getElementById('wzBody');
+      if (!body) return;
+
+      if (state.step === 1) {
+        body.innerHTML = [
+          '<div class="wz-info">Masukkan API Key kamu. Kredit akan dicek dulu sebelum lanjut.</div>',
+          '<div class="field"><label>API Key <span style="color:#dc2626">*</span></label>',
+          '<input type="text" id="wzApiKey" placeholder="LSHAI1728" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
+          '<button class="submit" id="wzBtn1">Lanjut</button>',
+          '<div class="result" id="wzRes1"></div>'
+        ].join('\n');
+        var b1 = document.getElementById('wzBtn1');
+        if (b1) b1.onclick = doStep1;
+        var i1 = document.getElementById('wzApiKey');
+        if (i1) i1.addEventListener('keydown', function(e){ if (e.key === 'Enter') doStep1(); });
+      } else if (state.step === 2) {
+        body.innerHTML = [
+          '<div class="wz-credits"><span>Sisa API Key:</span><b>' + state.credits + '</b></div>',
+          '<div class="wz-info">Masukkan email Alight Motion kamu. Kami akan mengirim magic link ke email tersebut.</div>',
+          '<div class="field"><label>Email Alight Motion <span style="color:#dc2626">*</span></label>',
+          '<input type="email" id="wzEmail" placeholder="nama@gmail.com" autocomplete="email" inputmode="email"></div>',
+          '<button class="submit" id="wzBtn2">Kirim Magic Link</button>',
+          '<div class="result" id="wzRes2"></div>'
+        ].join('\n');
+        var b2 = document.getElementById('wzBtn2');
+        if (b2) b2.onclick = doStep2;
+        var i2 = document.getElementById('wzEmail');
+        if (i2) i2.addEventListener('keydown', function(e){ if (e.key === 'Enter') doStep2(); });
+      } else if (state.step === 3) {
+        body.innerHTML = [
+          '<div class="wz-info">Cek inbox <b>' + esc(state.email) + '</b> (juga folder spam).<br>Copy <b>seluruh isi email</b>, paste di bawah ini.</div>',
+          '<div class="field"><label>Isi Email / Magic Link <span style="color:#dc2626">*</span></label>',
+          '<textarea id="wzRawLink" placeholder="Paste isi email di sini..." rows="6" style="min-height:120px;font-family:monospace;font-size:12px"></textarea></div>',
+          '<button class="submit" id="wzBtn3">Verifikasi &amp; Aktifkan Premium</button>',
+          '<div class="result" id="wzRes3"></div>'
+        ].join('\n');
+        var b3 = document.getElementById('wzBtn3');
+        if (b3) b3.onclick = doStep3;
+      }
+    }
+
+    function doStep1() {
+      var key = (document.getElementById('wzApiKey').value || '').trim().toUpperCase();
+      var btn = document.getElementById('wzBtn1');
+      var res = document.getElementById('wzRes1');
+      if (!key) { res.className = 'result show err'; res.textContent = '❌ Masukkan API Key dulu.'; return; }
+      btn.disabled = true; btn.textContent = 'Memvalidasi...';
+      res.className = 'result show info';
+      res.textContent = 'Memvalidasi API Key...';
+      premiumApiCall('/api/premium/validate-key', { apikey: key }).then(function(j) {
+        if (!j.ok) throw new Error(j.message || 'API Key tidak valid');
+        state.apikey = key;
+        state.credits = j.credits || 0;
+        if (state.credits < 15) throw new Error('Kredit tidak cukup. Butuh 15, punya ' + state.credits + '.');
+        state.step = 2;
+        renderSteps();
+        renderBody();
+      }).catch(function(e) {
+        res.className = 'result show err';
+        res.textContent = '❌ ' + e.message;
+      }).then(function() {
+        btn.disabled = false; btn.textContent = 'Lanjut';
+      });
+    }
+
+    function doStep2() {
+      var email = (document.getElementById('wzEmail').value || '').trim();
+      var btn = document.getElementById('wzBtn2');
+      var res = document.getElementById('wzRes2');
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        res.className = 'result show err';
+        res.textContent = '❌ Email tidak valid.';
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Mengirim...';
+      res.className = 'result show info';
+      res.textContent = 'Mengirim magic link ke ' + email + '...';
+      premiumApiCall('/api/premium/amprem', {
+        apikey: state.apikey,
+        action: 'send-magiclink',
+        email: email
+      }).then(function(j) {
+        if (!j.success) throw new Error(j.message || 'Gagal kirim magic link');
+        state.email = email;
+        state.step = 3;
+        renderSteps();
+        renderBody();
+      }).catch(function(e) {
+        res.className = 'result show err';
+        res.textContent = '❌ ' + e.message;
+      }).then(function() {
+        btn.disabled = false; btn.textContent = 'Kirim Magic Link';
+      });
+    }
+
+    function doStep3() {
+      var raw = (document.getElementById('wzRawLink').value || '').trim();
+      var btn = document.getElementById('wzBtn3');
+      var res = document.getElementById('wzRes3');
+      if (!raw || raw.length < 10) {
+        res.className = 'result show err';
+        res.textContent = '❌ Paste isi email dulu.';
+        return;
+      }
+      btn.disabled = true; btn.textContent = 'Memverifikasi...';
+      res.className = 'result show info';
+      res.textContent = 'Memverifikasi magic link...';
+
+      var idTokenGot = null;
+      premiumApiCall('/api/premium/amprem', {
+        apikey: state.apikey,
+        action: 'verify-account',
+        email: state.email,
+        rawLink: raw
+      }).then(function(j1) {
+        if (!j1.success) throw new Error(j1.message || 'Verifikasi gagal');
+        idTokenGot = j1.idToken || (j1.profile && j1.profile.idToken);
+        if (!idTokenGot) throw new Error('idToken tidak diterima dari server.');
+        res.textContent = 'Mengaktifkan premium...';
+        return premiumApiCall('/api/premium/amprem', {
+          apikey: state.apikey,
+          action: 'apply-premium',
+          email: state.email,
+          idToken: idTokenGot
+        });
+      }).then(function(j2) {
+        if (!j2.success) throw new Error(j2.message || 'Aktivasi gagal');
+        var remain = (j2._counter && j2._counter.remaining != null) ? j2._counter.remaining : '-';
+        res.className = 'result show ok';
+        res.innerHTML = [
+          '<div style="font-size:15px;font-weight:800;margin-bottom:8px">Premium Aktif!</div>',
+          '<div style="font-size:12px;line-height:1.8">',
+          '  Email: <b>' + esc(state.email) + '</b><br>',
+          '  Sisa API Key: <b>' + remain + '</b>',
+          '</div>',
+          '<button type="button" id="wzReset" style="margin-top:12px;padding:8px 14px;background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer">Aktivasi Akun Lain</button>'
+        ].join('');
+        var resetBtn = document.getElementById('wzReset');
+        if (resetBtn) resetBtn.onclick = function() {
+          state = { step: 1, apikey: '', email: '', idToken: '', credits: 0 };
+          renderSteps();
+          renderBody();
+        };
+      }).catch(function(e) {
+        res.className = 'result show err';
+        res.textContent = '❌ ' + e.message;
+      }).then(function() {
+        btn.disabled = false; btn.textContent = 'Verifikasi & Aktifkan Premium';
+      });
+    }
+
+    renderSteps();
+    renderBody();
+  }
+
+  function renderAmfinder(ep) {
+    wrap.innerHTML = [
+      '<div class="hero">',
+      '  <div class="badge">' + esc(ep.folder) + (ep.subfolder ? ' · ' + esc(ep.subfolder) : '') + '</div>',
+      '  <h1 class="title">' + esc(ep.name) + '</h1>',
+      '  <p class="desc">' + esc(ep.desc || '') + '</p>',
+      '</div>',
+      '<div class="card">',
+      '  <div class="field"><label>API Key <span style="color:#dc2626">*</span></label>',
+      '  <input type="text" id="afApiKey" placeholder="LSHAI1728" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
+      '  <div class="field"><label>Link TikTok <span style="color:#dc2626">*</span></label>',
+      '  <input type="url" id="afUrl" placeholder="https://vt.tiktok.com/xxx" autocomplete="off" inputmode="url"></div>',
+      '  <button class="submit" id="afBtn">Cari Preset</button>',
+      '  <div class="result" id="afRes"></div>',
+      '</div>',
+      '<div class="result-wrap" id="afResult"></div>'
+    ].join('\n');
+
+    var afBtn = document.getElementById('afBtn');
+    if (!afBtn) return;
+    afBtn.onclick = function() {
+      var key = (document.getElementById('afApiKey').value || '').trim().toUpperCase();
+      var url = (document.getElementById('afUrl').value || '').trim();
+      var res = document.getElementById('afRes');
+      var out = document.getElementById('afResult');
+
+      if (!key) { res.className = 'result show err'; res.textContent = '❌ API Key wajib.'; return; }
+      if (!url || !/tiktok\.com/i.test(url)) { res.className = 'result show err'; res.textContent = '❌ Link TikTok tidak valid.'; return; }
+
+      afBtn.disabled = true; afBtn.textContent = 'Mencari...';
+      res.className = 'result show info';
+      res.textContent = 'Scan TikTok... (bisa 5-30 detik)';
+      out.innerHTML = '';
+
+      premiumApiCall('/api/premium/amfinder', { apikey: key, tiktokUrl: url }).then(function(j) {
+        if (!j.success) throw new Error(j.message || 'Gagal');
+        if (!j.found || !j.presetLinks || j.presetLinks.length === 0) {
+          res.className = 'result show info';
+          res.textContent = '⚠️ Preset tidak ditemukan di video ini.';
+          return;
+        }
+        var remain = (j._counter && j._counter.remaining != null) ? j._counter.remaining : '-';
+        res.className = 'result show ok';
+        res.textContent = '✅ Ditemukan ' + j.presetLinks.length + ' preset. Sisa API Key: ' + remain;
+        out.innerHTML = j.presetLinks.map(function(p) {
+          var label = p.type === '5mb' ? '5MB' : (p.type === 'xml' ? 'XML' : 'LINK');
+          var title = p.title || 'Tanpa judul';
+          var meta = p.size ? ' · ' + p.size : '';
+          var thumb = p.thumb
+            ? '<img src="' + p.thumb + '" style="width:60px;height:60px;object-fit:cover;border-radius:8px;flex-shrink:0">'
+            : '<div style="width:60px;height:60px;background:rgba(112,69,255,.1);border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px">' + (p.type === '5mb' ? '📦' : '📄') + '</div>';
+          var copyHandler = 'navigator.clipboard.writeText(this.dataset.u);this.textContent=\'Copied\';setTimeout(function(){this.textContent=\'Copy\'}.bind(this),1200)';
+          return [
+            '<div style="background:rgba(255,255,255,.85);border:1px solid rgba(148,163,184,.2);border-radius:14px;padding:12px;margin-bottom:10px;display:flex;gap:12px">',
+            thumb,
+            '<div style="flex:1;min-width:0">',
+            '  <div style="font-size:13px;font-weight:700;color:#0EA5E9;margin-bottom:2px">' + label + meta + '</div>',
+            '  <div style="font-size:13px;color:#0f172a;margin-bottom:8px">' + esc(title) + '</div>',
+            '  <div style="display:flex;gap:6px">',
+            '    <a href="' + esc(p.url) + '" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;text-decoration:none;border-radius:8px;font-size:12px;font-weight:700">Buka</a>',
+            '    <button type="button" data-u="' + esc(p.url) + '" onclick="' + copyHandler + '" style="flex:1;padding:8px;background:rgba(15,23,42,.08);color:#0f172a;border:0;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Copy</button>',
+            '  </div>',
+            '</div>',
+            '</div>'
+          ].join('');
+        }).join('');
+      }).catch(function(e) {
+        res.className = 'result show err';
+        res.textContent = '❌ ' + e.message;
+      }).then(function() {
+        afBtn.disabled = false; afBtn.textContent = 'Cari Preset';
+      });
+    };
+  }
+
   // ===== BUILD FORM =====
   function buildForm(type, ep){
     var allParams = ep.params || [];
@@ -1189,6 +1487,14 @@ function renderError(c, msg){
     headerTitle.textContent = ep.name;
 
     if (ep.redirect) { window.location.href = ep.redirect; return; }
+
+    // Premium tools pakai wizard khusus
+    if (ep.catalogId === 'premium-amprem' || ep.catalogId === 'premium-amfinder') {
+      document.title = ep.name + ' — JAVIN';
+      headerTitle.textContent = ep.name;
+      renderPremiumTool(ep);
+      return;
+    }
 
     var type = detectType(ep);
 
