@@ -5441,19 +5441,13 @@
     "path": "/api/premium/amprem",
     "folder": "Tools",
     "subfolder": "premium",
-    "desc": "API Premium untuk proses verifikasi dan aktivasi akun Alight Motion. Wajib API Key Premium.",
+    "desc": "Endpoint untuk memproses verifikasi dan aktivasi akun Alight Motion premium.",
     "needKey": true,
-    "keyParam": "key",
-    "keyDesc": "API Key Premium yang terikat ke UID pengguna.",
+    "keyParam": "apikey",
+    "keyDesc": "API Key Premium untuk akses endpoint.",
     "params": [
       {
-        "n": "uid",
-        "t": "string",
-        "r": 1,
-        "d": "UID pengguna yang terikat dengan API Key."
-      },
-      {
-        "n": "key",
+        "n": "apikey",
         "t": "string",
         "r": 1,
         "d": "API Key Premium."
@@ -5486,24 +5480,18 @@
   },
   {
     "catalogId": "premium-amfinder",
-    "name": "AM Premium Finder",
+    "name": "am finder",
     "m": "POST",
     "path": "/api/premium/amfinder",
     "folder": "Tools",
     "subfolder": "premium",
-    "desc": "Cari preset Alight Motion dari link TikTok. Wajib API Key Premium dan memiliki rate limit.",
+    "desc": "Cari preset Alight Motion secara instan dari TikTok.",
     "needKey": true,
-    "keyParam": "key",
-    "keyDesc": "API Key Premium yang terikat ke UID pengguna.",
+    "keyParam": "apikey",
+    "keyDesc": "API Key Premium untuk akses endpoint.",
     "params": [
       {
-        "n": "uid",
-        "t": "string",
-        "r": 1,
-        "d": "UID pengguna yang terikat dengan API Key."
-      },
-      {
-        "n": "key",
+        "n": "apikey",
         "t": "string",
         "r": 1,
         "d": "API Key Premium."

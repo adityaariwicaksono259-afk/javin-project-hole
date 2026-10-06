@@ -10,7 +10,11 @@
   "theme_color": "#0EA5E9",
   "lang": "id",
   "dir": "ltr",
-  "categories": ["utilities", "productivity", "entertainment"],
+  "categories": [
+    "utilities",
+    "productivity",
+    "entertainment"
+  ],
   "icons": [
     {
       "src": "/icon-192.png",
@@ -33,16 +37,15 @@
   ],
   "shortcuts": [
     {
-      "name": "Premium APK",
-      "short_name": "Premium",
-      "url": "/premium.html",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
-    },
-    {
       "name": "Admin Panel",
       "short_name": "Admin",
       "url": "/admin.html",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
     }
   ]
 }

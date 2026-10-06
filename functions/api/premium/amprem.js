@@ -1,5 +1,5 @@
 // POST /api/premium/amprem
-// Body: { key, action, email, rawLink?, idToken? }
+// Body: { apikey, action, email, rawLink?, idToken? }
 // Counter increment HANYA kalau action=apply-premium sukses.
 
 const UPSTREAM = 'https://anita-studio.netlify.app/.netlify/functions/amprem';
@@ -84,7 +84,7 @@ export async function onRequestPost({ request, env }) {
     }, 400);
   }
 
-  const key = String(body.key || '')
+  const apikey = String(body.apikey || '')
     .trim()
     .toUpperCase();
 
@@ -103,7 +103,7 @@ export async function onRequestPost({ request, env }) {
     }, 400);
   }
 
-  const v = await verifyKey(db, key);
+  const v = await verifyKey(db, apikey);
 
   if (!v.ok) {
     return json({
@@ -205,7 +205,7 @@ export async function onRequestPost({ request, env }) {
           newCount,
           newCount >= v.row.max_uses ? 'exhausted' : 'active',
           Date.now(),
-          key,
+          apikey,
           oldCount,
           cost
         ).run();

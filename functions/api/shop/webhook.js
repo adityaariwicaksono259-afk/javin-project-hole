@@ -225,7 +225,6 @@ async function handleApprove(env, callback, orderId) {
     '📦 Paket: <b>' + qty + ' Key</b>\n\n' +
     '🔑 <b>Key kamu:</b>\n' + keyList + '\n\n' +
     '📖 <b>Cara pakai:</b>\n' +
-    '1. Buka https://jvin.pages.dev/premium.html\n' +
     '2. Masukkan key\n' +
     '3. Ikuti langkah generate premium\n\n' +
     '⚠️ 1 Key = 1x generate. Simpan baik-baik.'
@@ -379,7 +378,7 @@ async function handleUpdate(env, update) {
         '3️⃣ Kirim screenshot bukti\n' +
         '4️⃣ Tunggu admin approve\n' +
         '5️⃣ Dapet key, pakai di:\n' +
-        '   https://jvin.pages.dev/premium.html\n\n' +
+        '' +
         '⚠️ <b>Penting:</b>\n' +
         '• 1 key = 1x generate premium\n' +
         '• Key permanen (tidak expired)\n' +

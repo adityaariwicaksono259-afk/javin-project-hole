@@ -1,5 +1,5 @@
 // POST /api/premium/amfinder
-// Body: { key, tiktokUrl }
+// Body: { apikey, tiktokUrl }
 // Verify API key → cek quota → proxy ke amfinder.web.id → increment quota.
 
 const AMFINDER_BASE = 'https://amfinder.web.id/api/find';
@@ -152,13 +152,13 @@ export async function onRequestPost({ request, env }) {
     }, 400);
   }
 
-  const key = String(body.key || '')
+  const apikey = String(body.apikey || '')
     .trim()
     .toUpperCase();
 
   const tiktokUrl = String(body.tiktokUrl || '').trim();
 
-  if (!key) {
+  if (!apikey) {
     return json({
       success: false,
       message: 'API Key wajib.'
@@ -188,7 +188,7 @@ export async function onRequestPost({ request, env }) {
     }, 403);
   }
 
-  const v = await verifyKey(db, key);
+  const v = await verifyKey(db, apikey);
 
   if (!v.ok) {
     return json({
@@ -253,7 +253,7 @@ export async function onRequestPost({ request, env }) {
       newCount,
       newCount >= v.row.max_uses ? 'exhausted' : 'active',
       Date.now(),
-      key,
+      apikey,
       oldCount,
       cost
     ).run();
