@@ -3342,3 +3342,67 @@ header.fx-header *,
 /* ==================================================
    JAVIN-FIX-V9 END
    ================================================== */
+
+/* ==================================================
+   JAVIN-NEOBRUTAL-V10
+   UI ONLY — PROFILE + NOTIFICATION
+   ================================================== */
+
+/* Profile modal */
+#profileModal {
+  box-sizing: border-box !important;
+  padding: 20px !important;
+}
+
+#profileModal > * {
+  border: 3px solid #0A0A0A !important;
+  border-radius: 14px !important;
+  box-shadow: 8px 8px 0 #0A0A0A !important;
+  overflow: hidden !important;
+}
+
+/* Notification overlay */
+#nfOverlay {
+  box-sizing: border-box !important;
+  padding: 20px !important;
+}
+
+#nfOverlay .nf-modal {
+  width: min(92vw, 430px) !important;
+  max-width: 430px !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 14px !important;
+  box-shadow: 8px 8px 0 #0A0A0A !important;
+  overflow: hidden !important;
+  background: #FFFFFF !important;
+}
+
+/* Header notification */
+#nfOverlay .nf-head {
+  border-bottom: 3px solid #0A0A0A !important;
+  min-height: 58px !important;
+  padding: 12px 14px !important;
+  box-sizing: border-box !important;
+}
+
+#nfOverlay .nf-head h3 {
+  margin: 0 !important;
+  font-weight: 900 !important;
+}
+
+#nfOverlay .nf-close {
+  border: 3px solid #0A0A0A !important;
+  border-radius: 8px !important;
+  box-shadow: 3px 3px 0 #0A0A0A !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+}
+
+/* Notification body */
+#nfOverlay .nf-body {
+  padding: 14px !important;
+}
+
+/* ==================================================
+   JAVIN-NEOBRUTAL-V10 END
+   ================================================== */
