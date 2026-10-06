@@ -1,14 +1,9 @@
 // POST /api/premium/amfinder
-// Body: { uid, key, tiktokUrl }
-// Verify key → cek quota → proxy ke amfinder.web.id → increment quota
+// Body: { key, tiktokUrl }
+// Verify API key → cek quota → proxy ke amfinder.web.id → increment quota.
 
 const AMFINDER_BASE = 'https://amfinder.web.id/api/find';
 
-// Rate limit per UID: max 5 request per menit
-const RATE_LIMIT_WINDOW_MS = 60 * 1000;
-const RATE_LIMIT_MAX = 5;
-
-// Origin/referer whitelist
 const ALLOWED_ORIGINS = [
   'https://jvin.pages.dev',
   'https://javin-cf.pages.dev',
@@ -17,171 +12,225 @@ const ALLOWED_ORIGINS = [
 function json(data, status) {
   return new Response(JSON.stringify(data), {
     status: status || 200,
-    headers: { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Cache-Control': 'no-store'
+    }
   });
 }
 
-async function verifyKey(db, uid, key) {
-  if (!db) return { ok: false, code: 503, message: 'DB belum di-bind.' };
-  if (!uid) return { ok: false, code: 401, message: 'UID wajib.' };
-  if (!key) return { ok: false, code: 401, message: 'Key wajib.' };
+async function verifyKey(db, key) {
+  if (!db) {
+    return {
+      ok: false,
+      code: 503,
+      message: 'DB belum di-bind.'
+    };
+  }
+
+  if (!key) {
+    return {
+      ok: false,
+      code: 401,
+      message: 'API Key wajib.'
+    };
+  }
 
   const row = await db.prepare(
-    'SELECT * FROM premium_keys WHERE owner_id = ? LIMIT 1'
-  ).bind(uid).first();
+    'SELECT * FROM premium_keys WHERE key = ? LIMIT 1'
+  ).bind(key).first();
 
-  if (!row) return { ok: false, code: 403, message: 'Kamu belum punya key. Minta admin dulu.' };
-  if (row.key !== key) return { ok: false, code: 403, message: 'Key tidak cocok dengan user ini.' };
-  if (row.status === 'revoked') return { ok: false, code: 403, message: 'Key sudah di-revoke admin.' };
-  const remaining = Math.max(0, (row.max_uses || 0) - (row.used_count || 0));
+  if (!row) {
+    return {
+      ok: false,
+      code: 403,
+      message: 'API Key tidak ditemukan.'
+    };
+  }
+
+  if (row.status === 'revoked') {
+    return {
+      ok: false,
+      code: 403,
+      message: 'API Key sudah di-revoke admin.'
+    };
+  }
+
+  const remaining = Math.max(
+    0,
+    (row.max_uses || 0) - (row.used_count || 0)
+  );
 
   if (row.status === 'exhausted' || remaining < 1) {
-    return { ok: false, code: 403, message: 'API Key tidak cukup' };
+    return {
+      ok: false,
+      code: 403,
+      message: 'API Key tidak cukup'
+    };
   }
 
-  return { ok: true, row, remaining };
-}
-
-
-async function checkRateLimit(db, uid) {
-  if (!db) return { ok: true };
-  const now = Date.now();
-
-  try {
-    const row = await db.prepare(
-      'SELECT count, window_start FROM amfinder_rate_limit WHERE uid = ?'
-    ).bind(uid).first();
-
-    if (!row) {
-      await db.prepare(
-        'INSERT OR REPLACE INTO amfinder_rate_limit (uid, count, window_start, last_request) VALUES (?, 1, ?, ?)'
-      ).bind(uid, now, now).run();
-      return { ok: true, remaining: RATE_LIMIT_MAX - 1 };
-    }
-
-    // Cek window udah expired?
-    if (now - row.window_start > RATE_LIMIT_WINDOW_MS) {
-      // Reset window
-      await db.prepare(
-        'UPDATE amfinder_rate_limit SET count = 1, window_start = ?, last_request = ? WHERE uid = ?'
-      ).bind(now, now, uid).run();
-      return { ok: true, remaining: RATE_LIMIT_MAX - 1 };
-    }
-
-    // Window aktif, cek count
-    if (row.count >= RATE_LIMIT_MAX) {
-      const resetIn = Math.ceil((row.window_start + RATE_LIMIT_WINDOW_MS - now) / 1000);
-      return { ok: false, message: `Rate limit: max ${RATE_LIMIT_MAX} request per menit. Coba lagi dalam ${resetIn} detik.` };
-    }
-
-    // Increment count
-    await db.prepare(
-      'UPDATE amfinder_rate_limit SET count = count + 1, last_request = ? WHERE uid = ?'
-    ).bind(now, uid).run();
-
-    return { ok: true, remaining: RATE_LIMIT_MAX - row.count - 1 };
-  } catch (e) {
-    console.error('[RATE-LIMIT]', e.message);
-    return { ok: true }; // Fail open kalau DB error
-  }
+  return {
+    ok: true,
+    row,
+    remaining
+  };
 }
 
 function checkOrigin(request) {
-  const origin = request.headers.get('Origin') || request.headers.get('Referer') || '';
-  if (!origin) return { ok: true }; // Curl / server-to-server — allow
+  const origin = request.headers.get('Origin') ||
+    request.headers.get('Referer') ||
+    '';
 
-  // Cek apakah origin ada di whitelist
-  const allowed = ALLOWED_ORIGINS.some(a => origin.startsWith(a));
-  // Selalu allow localhost (buat dev)
-  if (allowed || origin.includes('localhost') || origin.includes('127.0.0.1')) {
+  if (!origin) return { ok: true };
+
+  const allowed = ALLOWED_ORIGINS.some(function(a) {
+    return origin.startsWith(a);
+  });
+
+  if (
+    allowed ||
+    origin.includes('localhost') ||
+    origin.includes('127.0.0.1')
+  ) {
     return { ok: true };
   }
-  return { ok: false, message: 'Origin nggak diizinkan.' };
+
+  return {
+    ok: false,
+    message: 'Origin nggak diizinkan.'
+  };
 }
 
 function parseSSE(text) {
   const lines = text.split('\n');
   let currentEvent = null;
+
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
+
     if (line.startsWith('event:')) {
       currentEvent = line.slice(6).trim();
-    } else if (line.startsWith('data:') && currentEvent === 'result') {
+    } else if (
+      line.startsWith('data:') &&
+      currentEvent === 'result'
+    ) {
       try {
         const raw = line.slice(5).trim();
-        const jsonStr = raw.startsWith('"') && raw.endsWith('"') ? JSON.parse(raw) : raw;
+        const jsonStr =
+          raw.startsWith('"') && raw.endsWith('"')
+            ? JSON.parse(raw)
+            : raw;
+
         return JSON.parse(jsonStr);
-      } catch (e) { console.error('[PARSE]', e.message); }
+      } catch (e) {
+        console.error('[PARSE]', e.message);
+      }
     }
   }
+
   return null;
 }
 
 export async function onRequestGet() {
-  return json({ success: false, message: 'Method not allowed. Gunakan POST.' }, 405);
+  return json({
+    success: false,
+    message: 'Method not allowed. Gunakan POST.'
+  }, 405);
 }
 
 export async function onRequestPost({ request, env }) {
   const db = env.JAVIN_DB;
 
   let body;
-  try { body = await request.json(); } catch (e) {
-    return json({ success: false, message: 'Body invalid.' }, 400);
+
+  try {
+    body = await request.json();
+  } catch (e) {
+    return json({
+      success: false,
+      message: 'Body invalid.'
+    }, 400);
   }
 
-  const uid = String(body.uid || '').trim().slice(0, 40);
-  const key = String(body.key || '').trim().toUpperCase();
+  const key = String(body.key || '')
+    .trim()
+    .toUpperCase();
+
   const tiktokUrl = String(body.tiktokUrl || '').trim();
 
+  if (!key) {
+    return json({
+      success: false,
+      message: 'API Key wajib.'
+    }, 401);
+  }
+
   if (!tiktokUrl) {
-    return json({ success: false, message: 'URL TikTok wajib.' }, 400);
+    return json({
+      success: false,
+      message: 'URL TikTok wajib.'
+    }, 400);
   }
+
   if (!/tiktok\.com/i.test(tiktokUrl)) {
-    return json({ success: false, message: 'URL harus dari TikTok.' }, 400);
+    return json({
+      success: false,
+      message: 'URL harus dari TikTok.'
+    }, 400);
   }
 
-  // ==== Cek origin (anti-bypass dari domain lain) ====
   const originCheck = checkOrigin(request);
+
   if (!originCheck.ok) {
-    return json({ success: false, message: originCheck.message }, 403);
+    return json({
+      success: false,
+      message: originCheck.message
+    }, 403);
   }
 
-  // ==== Verify key ====
-  const v = await verifyKey(db, uid, key);
-  if (!v.ok) return json({ success: false, message: v.message }, v.code);
+  const v = await verifyKey(db, key);
 
-  // ==== Rate limit per UID ====
-  const rl = await checkRateLimit(db, uid);
-  if (!rl.ok) {
-    return json({ success: false, message: rl.message }, 429);
+  if (!v.ok) {
+    return json({
+      success: false,
+      message: v.message
+    }, v.code);
   }
 
-  // ==== Proxy ke amfinder ====
   const started = Date.now();
   let result;
+
   try {
-    const res = await fetch(`${AMFINDER_BASE}?url=${encodeURIComponent(tiktokUrl)}`, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36',
-        'Accept': 'text/event-stream',
-        'Referer': 'https://amfinder.web.id/',
-      },
-    });
+    const res = await fetch(
+      `${AMFINDER_BASE}?url=${encodeURIComponent(tiktokUrl)}`,
+      {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36',
+          'Accept': 'text/event-stream',
+          'Referer': 'https://amfinder.web.id/',
+        },
+      }
+    );
 
     if (!res.ok) {
-      return json({ success: false, message: `Amfinder HTTP ${res.status}` }, 502);
+      return json({
+        success: false,
+        message: `Amfinder HTTP ${res.status}`
+      }, 502);
     }
 
     const text = await res.text();
     result = parseSSE(text);
   } catch (err) {
-    return json({ success: false, message: 'Gagal hubungi amfinder: ' + err.message }, 502);
+    return json({
+      success: false,
+      message: 'Gagal hubungi amfinder: ' + err.message
+    }, 502);
   }
 
   const elapsed = Date.now() - started;
 
   if (!result || !result.ok) {
-    // NGGAK increment kuota kalau gagal
     return json({
       success: false,
       message: 'Preset nggak ketemu atau amfinder error.',
@@ -190,38 +239,46 @@ export async function onRequestPost({ request, env }) {
     });
   }
 
-  // ==== Potong 1 API Key hanya kalau sukses ====
+  // Potong 1 API Key hanya kalau sukses.
   let counterInfo = null;
+
   try {
     const cost = 1;
     const oldCount = v.row.used_count || 0;
     const newCount = oldCount + cost;
 
     const updated = await db.prepare(
-      'UPDATE premium_keys SET used_count = ?, status = ?, last_used = ? WHERE key = ? AND owner_id = ? AND used_count = ? AND used_count + ? <= max_uses'
+      'UPDATE premium_keys SET used_count = ?, status = ?, last_used = ? WHERE key = ? AND used_count = ? AND used_count + ? <= max_uses'
     ).bind(
       newCount,
       newCount >= v.row.max_uses ? 'exhausted' : 'active',
       Date.now(),
       key,
-      uid,
       oldCount,
       cost
     ).run();
 
     if (!updated.meta || updated.meta.changes !== 1) {
-      return json({ success: false, message: 'API Key tidak cukup' }, 403);
+      return json({
+        success: false,
+        message: 'API Key tidak cukup'
+      }, 403);
     }
 
     counterInfo = {
-      cost: cost,
+      cost,
       used: newCount,
       max: v.row.max_uses,
       remaining: Math.max(0, v.row.max_uses - newCount),
-      status: newCount >= v.row.max_uses ? 'exhausted' : 'active'
+      status: newCount >= v.row.max_uses
+        ? 'exhausted'
+        : 'active'
     };
   } catch (e) {
-    return json({ success: false, message: 'Gagal memproses API Key.' }, 500);
+    return json({
+      success: false,
+      message: 'Gagal memproses API Key.'
+    }, 500);
   }
 
   return json({
