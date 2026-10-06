@@ -3469,3 +3469,89 @@ header.fx-header *,
 }
 
 /* END JAVIN-CODEX-CENTER-V5 */
+
+/* ==================================================
+   JAVIN-CODEX-VIDEO-NEOBRUTAL-V6
+   VIDEO CONTAINER ONLY
+   ================================================== */
+
+.fx-featured-wrap.javin-video-card {
+  position: relative !important;
+
+  width: calc(100% - 28px) !important;
+  max-width: 1100px !important;
+
+  height: clamp(190px, 42vw, 430px) !important;
+
+  margin: 18px auto 24px !important;
+  padding: 0 !important;
+
+  overflow: hidden !important;
+
+  border: 4px solid #000 !important;
+  border-radius: 18px !important;
+
+  background: #000 !important;
+
+  box-shadow:
+    8px 8px 0 #000 !important;
+
+  box-sizing: border-box !important;
+}
+
+.fx-featured-wrap.javin-video-card .javin-featured-video {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  min-width: 100% !important;
+  min-height: 100% !important;
+
+  object-fit: cover !important;
+  object-position: center !important;
+
+  display: block !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+}
+
+.fx-featured-wrap.javin-video-card .javin-codex-center {
+  position: absolute !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  z-index: 20 !important;
+
+  pointer-events: none !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.fx-featured-wrap.javin-video-card .javin-codex-center {
+  font-size: clamp(36px, 9vw, 88px) !important;
+  font-weight: 1000 !important;
+  line-height: .9 !important;
+  letter-spacing: -.04em !important;
+
+  color: #fff !important;
+  text-align: center !important;
+
+  -webkit-text-stroke: 2px #000 !important;
+  text-shadow: 6px 6px 0 #000 !important;
+}
+
+/* END JAVIN-CODEX-VIDEO-NEOBRUTAL-V6 */
