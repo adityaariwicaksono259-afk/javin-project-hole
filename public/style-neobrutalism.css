@@ -3424,3 +3424,48 @@ header.fx-header *,
   white-space: nowrap;
 }
 /* END JAVIN-CODEX-MINIMAL-CSS */
+
+/* ==================================================
+   JAVIN-CODEX-CENTER-V5
+   SINGLE TEXT — NO BOX / NO LAYOUT CHANGE
+   ================================================== */
+
+.javin-video-card {
+  position: relative !important;
+}
+
+.javin-video-card .javin-codex-center {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 10 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  pointer-events: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  font-family: inherit !important;
+  font-size: clamp(38px, 10vw, 88px) !important;
+  font-weight: 1000 !important;
+  line-height: .9 !important;
+  letter-spacing: -.045em !important;
+
+  color: #ffffff !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+
+  -webkit-text-stroke: 2px #000 !important;
+  text-shadow: 5px 5px 0 #000 !important;
+}
+
+/* END JAVIN-CODEX-CENTER-V5 */
