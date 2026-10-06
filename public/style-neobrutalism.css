@@ -3195,17 +3195,16 @@ body:not(.tool-page) #betoMusicBtn {
    ================================================== */
 
 /* ==================================================
-   JAVIN-FIX-V3 — VIDEO + PROFILE + BELL
+   JAVIN-FIX-V4 — VIDEO CARD + PROFILE + BELL
    ================================================== */
 
-/* Header harus berada di atas wrapper/dekorasi lain */
+/* Header tetap paling atas dan seluruh kontrol bisa disentuh */
 header.fx-header {
   position: sticky !important;
   top: 0 !important;
   z-index: 10000 !important;
 }
 
-/* Profile dan bell tetap menerima tap */
 #profileCard,
 #notifBell,
 .fx-header a,
@@ -3214,29 +3213,39 @@ header.fx-header {
   z-index: 10001 !important;
   pointer-events: auto !important;
   cursor: pointer !important;
+  touch-action: manipulation !important;
 }
 
-/* Video featured pengganti Premium */
+/* Video dibuat menjadi card kecil seperti card Premium */
 .javin-video-card {
-  width: 100% !important;
-  margin: 0 !important;
+  width: 150px !important;
+  height: 150px !important;
+  max-width: 150px !important;
+  max-height: 150px !important;
+  margin: 12px auto 16px !important;
+  padding: 0 !important;
   overflow: hidden !important;
+  border: 0 !important;
+  box-sizing: border-box !important;
+  flex: 0 0 150px !important;
 }
 
 .javin-featured-video {
   display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  height: auto !important;
+  width: 150px !important;
+  height: 150px !important;
+  max-width: 150px !important;
+  max-height: 150px !important;
   border: 3px solid #0A0A0A !important;
   border-radius: 14px !important;
   box-shadow: 5px 5px 0 #0A0A0A !important;
   background: #000 !important;
-  object-fit: contain !important;
+  object-fit: cover !important;
+  box-sizing: border-box !important;
 }
 
 .javin-featured-video::-webkit-media-controls {
   z-index: 2;
 }
 
-/* JAVIN-FIX-V3 END */
+/* JAVIN-FIX-V4 END */
