@@ -1,5 +1,6 @@
 // POST /api/auth/facebook — Body: { access_token }
 import { verifyFacebookToken, generateUserCode, generateSessionToken, json } from '../../_lib/oauth.js';
+import { generateUniqueApiKey, DEFAULT_CREDITS } from '../../_lib/gen-api-key.js';
 
 export async function onRequestPost({ request, env }) {
   var db = env.JAVIN_DB;
@@ -37,9 +38,10 @@ export async function onRequestPost({ request, env }) {
       if (!dup) break;
       userCode = generateUserCode();
     }
-    var r = await db.prepare(
-      'INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, created_at, last_login) VALUES (?, ?, ?, ?, "facebook", ?, 30, ?, ?)'
-    ).bind(userCode, fb.email, fb.name, fb.avatar, fb.id, now, now).run();
+    var apiKey = await generateUniqueApiKey(db);
+        var r = await db.prepare(
+          'INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, api_key, credits, created_at, last_login) VALUES (?, ?, ?, ?, "facebook", ?, 30, ?, ?, ?, ?)'
+        ).bind(userCode, fb.email, fb.name, fb.avatar, fb.id, apiKey, DEFAULT_CREDITS, now, now).run();
     userId = r.meta.last_row_id;
   }
 

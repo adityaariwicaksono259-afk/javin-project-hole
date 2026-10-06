@@ -1,6 +1,9 @@
 // POST /api/premium/amprem
 // Body: { apikey, action, email, rawLink?, idToken? }
-// Counter increment HANYA kalau action=apply-premium sukses.
+// Verify API key dari auth_users → cek credits >= 15 → proxy ke upstream → deduct 15.
+
+import { verifyApiKey, deductCredits } from '../../_lib/gen-api-key.js';
+
 
 const UPSTREAM = 'https://anita-studio.netlify.app/.netlify/functions/amprem';
 
@@ -14,62 +17,6 @@ function json(data, status) {
   });
 }
 
-async function verifyKey(db, key) {
-  if (!db) {
-    return {
-      ok: false,
-      code: 503,
-      message: 'DB belum di-bind.'
-    };
-  }
-
-  if (!key) {
-    return {
-      ok: false,
-      code: 401,
-      message: 'API Key wajib.'
-    };
-  }
-
-  const row = await db.prepare(
-    'SELECT * FROM premium_keys WHERE key = ? LIMIT 1'
-  ).bind(key).first();
-
-  if (!row) {
-    return {
-      ok: false,
-      code: 403,
-      message: 'API Key tidak ditemukan.'
-    };
-  }
-
-  if (row.status === 'revoked') {
-    return {
-      ok: false,
-      code: 403,
-      message: 'API Key sudah di-revoke admin.'
-    };
-  }
-
-  const remaining = Math.max(
-    0,
-    (row.max_uses || 0) - (row.used_count || 0)
-  );
-
-  if (row.status === 'exhausted' || remaining < 10) {
-    return {
-      ok: false,
-      code: 403,
-      message: 'API Key tidak cukup'
-    };
-  }
-
-  return {
-    ok: true,
-    row,
-    remaining
-  };
-}
 
 export async function onRequestPost({ request, env }) {
   const db = env.JAVIN_DB;
@@ -103,7 +50,7 @@ export async function onRequestPost({ request, env }) {
     }, 400);
   }
 
-  const v = await verifyKey(db, apikey);
+  const v = await verifyApiKey(db, apikey);
 
   if (!v.ok) {
     return json({
@@ -192,46 +139,20 @@ export async function onRequestPost({ request, env }) {
       };
     }
 
-    // Potong 10 API Key hanya kalau request sukses.
+    // Potong 15 API Key hanya kalau request sukses.
     if (data && data.success === true) {
-      try {
-        const cost = 10;
-        const oldCount = v.row.used_count || 0;
-        const newCount = oldCount + cost;
-
-        const updated = await db.prepare(
-          'UPDATE premium_keys SET used_count = ?, status = ?, last_used = ? WHERE key = ? AND used_count = ? AND used_count + ? <= max_uses'
-        ).bind(
-          newCount,
-          newCount >= v.row.max_uses ? 'exhausted' : 'active',
-          Date.now(),
-          apikey,
-          oldCount,
-          cost
-        ).run();
-
-        if (!updated.meta || updated.meta.changes !== 1) {
-          return json({
-            success: false,
-            message: 'API Key tidak cukup'
-          }, 403);
-        }
-
-        data._counter = {
-          cost,
-          used: newCount,
-          max: v.row.max_uses,
-          remaining: Math.max(0, v.row.max_uses - newCount),
-          status: newCount >= v.row.max_uses
-            ? 'exhausted'
-            : 'active'
-        };
-      } catch (e) {
+      const deduct = await deductCredits(db, v.user.id, 15);
+      if (!deduct.ok) {
         return json({
           success: false,
-          message: 'Gagal memproses API Key.'
-        }, 500);
+          message: deduct.message || 'API Key tidak cukup.'
+        }, 403);
       }
+      data._counter = {
+        cost: 15,
+        remaining: deduct.credits,
+        status: 'active'
+      };
     }
 
     return json(data, upstream.status);

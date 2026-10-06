@@ -3,6 +3,13 @@
 // Body: { amount, sender, secret, email_id }
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 
+// Kredit yang didapat per tier
+const TIER_CREDITS = {
+  basic: 50,
+  pro: 130,
+  unlimited: 1000
+};
+
 export async function onRequestPost({ request, env }) {
   const db = env.JAVIN_DB;
   if (!db) return json({ ok: false, error: 'DB gak siap' }, 503);
@@ -62,11 +69,16 @@ export async function onRequestPost({ request, env }) {
           const baseTime = (user.tier_expires_at && user.tier_expires_at > now) ? user.tier_expires_at : now;
           const newExpires = baseTime + ((order.expires_at || 0) - order.created_at);
 
+          const creditsToAdd = TIER_CREDITS[order.tier] || 0;
+          const oldCredits = user.credits || 0;
+          const newCredits = oldCredits + creditsToAdd;
+
           await db.prepare(
-            'UPDATE auth_users SET tier = ?, tier_expires_at = ? WHERE id = ?'
-          ).bind(order.tier, newExpires, order.user_id).run();
+            'UPDATE auth_users SET tier = ?, tier_expires_at = ?, credits = ? WHERE id = ?'
+          ).bind(order.tier, newExpires, newCredits, order.user_id).run();
 
           tierApplied = true;
+          console.log('[AUTO-APPROVE] API Key: ' + oldCredits + ' + ' + creditsToAdd + ' = ' + newCredits);
         }
       } catch (e) {
         console.error('[AUTO-APPROVE] update tier error:', e.message);
@@ -82,6 +94,7 @@ export async function onRequestPost({ request, env }) {
       '💰 Nominal: <b>Rp ' + amount.toLocaleString('id-ID') + '</b>\n' +
       '👤 Dari: ' + escapeHtml(sender || '-') + '\n' +
       '🎫 Tier applied: ' + (tierApplied ? '✅' : '❌ (user gak login)') + '\n' +
+      'API Key: +' + (TIER_CREDITS[order.tier] || 0) + '\n' +
       '🕐 ' + new Date(now).toISOString().replace('T', ' ').slice(0, 19),
       { type: 'auto-approve', throttleMs: 3000 }
     );

@@ -1,4 +1,5 @@
 import { generateSessionToken } from '../../../_lib/oauth.js';
+import { generateUniqueApiKey, DEFAULT_CREDITS } from '../../../_lib/gen-api-key.js';
 
 function generateUserCode() {
   var chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -46,7 +47,10 @@ export async function onRequestGet({ request, env }) {
       userCode = generateUserCode();
     }
     var nameFromEmail = email.split('@')[0];
-    var r = await db.prepare('INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, created_at, last_login) VALUES (?, ?, ?, ?, "email", ?, 30, ?, ?)').bind(userCode, email, nameFromEmail, '', email, now, now).run();
+    var apiKey = await generateUniqueApiKey(db);
+        var r = await db.prepare(
+          'INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, api_key, credits, created_at, last_login) VALUES (?, ?, ?, ?, "email", ?, 30, ?, ?, ?, ?)'
+        ).bind(userCode, email, nameFromEmail, '', email, apiKey, DEFAULT_CREDITS, now, now).run();
     userId = r.meta.last_row_id;
   }
 

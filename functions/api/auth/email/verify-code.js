@@ -4,6 +4,7 @@
 // Auto-detect → verify → set cookie → return user
 
 import { generateSessionToken } from '../../../_lib/oauth.js';
+import { generateUniqueApiKey, DEFAULT_CREDITS } from '../../../_lib/gen-api-key.js';
 
 function json(data, status, extraHeaders){
   return new Response(JSON.stringify(data), {
@@ -150,9 +151,10 @@ export async function onRequestPost({ request, env }) {
         }
 
         const nameFromEmail = email.split('@')[0];
+        const apiKey = await generateUniqueApiKey(db);
         const r = await db.prepare(
-          'INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, created_at, last_login) VALUES (?, ?, ?, ?, "email", ?, 30, ?, ?)'
-        ).bind(userCode, email, nameFromEmail, '', email, now, now).run();
+          'INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, api_key, credits, created_at, last_login) VALUES (?, ?, ?, ?, "email", ?, 30, ?, ?, ?, ?)'
+        ).bind(userCode, email, nameFromEmail, '', email, apiKey, DEFAULT_CREDITS, now, now).run();
 
         userId = r.meta.last_row_id;
       }

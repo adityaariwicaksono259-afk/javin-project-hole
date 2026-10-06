@@ -41,7 +41,12 @@ export async function onRequestGet({ request, env }) {
       email: user.email,
       avatar: user.avatar,
       provider: user.provider,
-      extra_limit: user.extra_limit
+      extra_limit: user.extra_limit,
+      api_key: user.api_key || null,
+      credits: user.credits || 0,
+      tier: user.tier || 'free',
+      tier_expires_at: user.tier_expires_at || 0,
+      created_at: user.created_at || null
     }
   });
 }

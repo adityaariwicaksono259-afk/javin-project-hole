@@ -1,5 +1,6 @@
 // POST /api/auth/google — Body: { id_token }
 import { verifyGoogleToken, generateUserCode, generateSessionToken, json } from '../../_lib/oauth.js';
+import { generateUniqueApiKey, DEFAULT_CREDITS } from '../../_lib/gen-api-key.js';
 
 export async function onRequestPost({ request, env }) {
   var db = env.JAVIN_DB;
@@ -40,9 +41,10 @@ export async function onRequestPost({ request, env }) {
       if (!dup) break;
       userCode = generateUserCode();
     }
-    var r = await db.prepare(
-      'INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, created_at, last_login) VALUES (?, ?, ?, ?, "google", ?, 30, ?, ?)'
-    ).bind(userCode, gu.email, gu.name, gu.avatar, gu.id, now, now).run();
+    var apiKey = await generateUniqueApiKey(db);
+        var r = await db.prepare(
+          'INSERT INTO auth_users (user_code, email, name, avatar, provider, provider_id, extra_limit, api_key, credits, created_at, last_login) VALUES (?, ?, ?, ?, "google", ?, 30, ?, ?, ?, ?)'
+        ).bind(userCode, gu.email, gu.name, gu.avatar, gu.id, apiKey, DEFAULT_CREDITS, now, now).run();
     userId = r.meta.last_row_id;
   }
 
