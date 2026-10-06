@@ -3193,3 +3193,50 @@ body:not(.tool-page) #betoMusicBtn {
 /* ==================================================
    END JAVIN-MAIN-BG-V32
    ================================================== */
+
+/* ==================================================
+   JAVIN-FIX-V3 — VIDEO + PROFILE + BELL
+   ================================================== */
+
+/* Header harus berada di atas wrapper/dekorasi lain */
+header.fx-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 10000 !important;
+}
+
+/* Profile dan bell tetap menerima tap */
+#profileCard,
+#notifBell,
+.fx-header a,
+.fx-header button {
+  position: relative !important;
+  z-index: 10001 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
+}
+
+/* Video featured pengganti Premium */
+.javin-video-card {
+  width: 100% !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+}
+
+.javin-featured-video {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 14px !important;
+  box-shadow: 5px 5px 0 #0A0A0A !important;
+  background: #000 !important;
+  object-fit: contain !important;
+}
+
+.javin-featured-video::-webkit-media-controls {
+  z-index: 2;
+}
+
+/* JAVIN-FIX-V3 END */
