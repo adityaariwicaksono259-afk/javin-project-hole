@@ -210,6 +210,7 @@ function initWidgets(){
   audio.loop = true;
   audio.volume = CONFIG.volume;
   audio.preload = 'auto';
+  audio.playsInline = true;
   document.documentElement.appendChild(audio);
 
   var currentSoundId = null;
@@ -227,19 +228,84 @@ function initWidgets(){
     }
   }
 
+  var audioReady = false;
+
+  audio.addEventListener('canplay', function(){
+    audioReady = true;
+    console.log('BETOx1 audio canplay:', audio.src);
+
+    if (enabled && currentSoundId && audio.paused) {
+      playMusic();
+    }
+  });
+
+  audio.addEventListener('playing', function(){
+    console.log('BETOx1 audio PLAYING:', audio.src);
+    updateUI();
+  });
+
+  audio.addEventListener('pause', function(){
+    console.log('BETOx1 audio PAUSED');
+    updateUI();
+  });
+
+  audio.addEventListener('error', function(){
+    audioReady = false;
+    console.error('BETOx1 audio ERROR:', audio.error);
+    updateUI();
+  });
+
+  audio.addEventListener('stalled', function(){
+    console.warn('BETOx1 audio STALLED');
+  });
+
   function playMusic(){
-    if (!currentSoundId) return;
-    var pr = audio.play();
-    if (pr && pr.catch) pr.catch(function(){});
+    if (!currentSoundId || !enabled) return false;
+
+    if (!audio.src) {
+      console.warn('BETOx1 audio: no source');
+      return false;
+    }
+
+    var pr;
+
+    try {
+      pr = audio.play();
+    } catch (e) {
+      console.warn('BETOx1 audio play exception:', e);
+      return false;
+    }
+
+    if (pr && pr.then) {
+      pr.then(function(){
+        console.log('BETOx1 audio play OK:', audio.src);
+        updateUI();
+      }).catch(function(e){
+        console.warn('BETOx1 audio play rejected:', e);
+        updateUI();
+      });
+    }
+
+    return true;
   }
-  function stopMusic(){ audio.pause(); }
+
+  function stopMusic(){
+    audio.pause();
+    updateUI();
+  }
 
   function loadSound(url, id){
-    if (currentSoundId === id) return;
+    if (currentSoundId === id && audio.src) return;
+
     currentSoundId = id;
+    audioReady = false;
+
+    audio.pause();
     audio.src = url;
     audio.load();
-    if (enabled) playMusic();
+
+    console.log('BETOx1 audio source:', url);
+
     updateUI();
   }
 
@@ -266,13 +332,16 @@ function initWidgets(){
     if (enabled) playMusic(); else stopMusic();
   });
 
-  var kick = function(){
-    if (enabled && audio.paused && currentSoundId) playMusic();
-    document.removeEventListener('click', kick);
-    document.removeEventListener('touchstart', kick);
-  };
-  document.addEventListener('click', kick);
-  document.addEventListener('touchstart', kick);
+  function userKick(){
+    if (enabled && currentSoundId && audio.paused) {
+      console.log('BETOx1 user gesture -> play');
+      playMusic();
+    }
+  }
+
+  document.addEventListener('click', userKick, { passive: true });
+  document.addEventListener('touchstart', userKick, { passive: true });
+  document.addEventListener('pointerdown', userKick, { passive: true });
 
   fetchSound();
   setInterval(fetchSound, CONFIG.refreshMs);
