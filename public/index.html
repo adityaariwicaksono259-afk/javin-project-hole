@@ -591,47 +591,35 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
 <script src="/kaze-chat.js"></script>
 
 <script src="/notif.js"></script>
-
 <script>
-/* JAVIN-CLICK-FIX-V4 */
+/* JAVIN-CLICK-FIX-V5 */
 (function () {
-  function bindHeaderActions() {
+  function fixHeaderClicks() {
     var profile = document.getElementById('profileCard');
     var bell = document.getElementById('notifBell');
 
     if (profile) {
       profile.style.pointerEvents = 'auto';
       profile.style.touchAction = 'manipulation';
-      profile.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (typeof window.openProfileModal === 'function') {
-          window.openProfileModal();
-        }
-      }, true);
     }
 
     if (bell) {
       bell.style.pointerEvents = 'auto';
       bell.style.touchAction = 'manipulation';
-      bell.addEventListener('click', function (e) {
-        e.preventDefault();
-        e.stopPropagation();
-        if (window.notif && typeof window.notif.open === 'function') {
-          window.notif.open();
-        }
-      }, true);
     }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bindHeaderActions);
+    document.addEventListener('DOMContentLoaded', fixHeaderClicks);
   } else {
-    bindHeaderActions();
+    fixHeaderClicks();
   }
 })();
 </script>
-<!-- END JAVIN-CLICK-FIX-V4 -->
+<!-- END JAVIN-CLICK-FIX-V5 -->
+
+
+
 <script src="/demo-guard.js"></script>
 
 <script>

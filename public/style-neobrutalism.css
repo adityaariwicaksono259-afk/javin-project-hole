@@ -3195,16 +3195,17 @@ body:not(.tool-page) #betoMusicBtn {
    ================================================== */
 
 /* ==================================================
-   JAVIN-FIX-V4 — VIDEO CARD + PROFILE + BELL
+   JAVIN-FIX-V5 — FEATURED VIDEO CARD + HEADER CLICK
    ================================================== */
 
-/* Header tetap paling atas dan seluruh kontrol bisa disentuh */
+/* Header benar-benar di atas layer lain */
 header.fx-header {
   position: sticky !important;
   top: 0 !important;
   z-index: 10000 !important;
 }
 
+/* Kontrol header */
 #profileCard,
 #notifBell,
 .fx-header a,
@@ -3212,40 +3213,39 @@ header.fx-header {
   position: relative !important;
   z-index: 10001 !important;
   pointer-events: auto !important;
-  cursor: pointer !important;
   touch-action: manipulation !important;
+  cursor: pointer !important;
 }
 
-/* Video dibuat menjadi card kecil seperti card Premium */
+/* Video mengikuti konsep featured/premium card */
 .javin-video-card {
-  width: 150px !important;
-  height: 150px !important;
-  max-width: 150px !important;
-  max-height: 150px !important;
-  margin: 12px auto 16px !important;
+  display: block !important;
+  width: min(100%, 320px) !important;
+  height: 180px !important;
+  margin: 12px auto 18px !important;
   padding: 0 !important;
   overflow: hidden !important;
-  border: 0 !important;
   box-sizing: border-box !important;
-  flex: 0 0 150px !important;
+  border: 3px solid #0A0A0A !important;
+  border-radius: 10px !important;
+  background: #FF7FE5 !important;
+  box-shadow: 6px 6px 0 #0A0A0A !important;
 }
 
+/* Video mengisi featured card */
 .javin-featured-video {
   display: block !important;
-  width: 150px !important;
-  height: 150px !important;
-  max-width: 150px !important;
-  max-height: 150px !important;
-  border: 3px solid #0A0A0A !important;
-  border-radius: 14px !important;
-  box-shadow: 5px 5px 0 #0A0A0A !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 7px !important;
+  box-shadow: none !important;
   background: #000 !important;
   object-fit: cover !important;
-  box-sizing: border-box !important;
 }
 
-.javin-featured-video::-webkit-media-controls {
-  z-index: 2;
-}
-
-/* JAVIN-FIX-V4 END */
+/* JAVIN-FIX-V5 END */
