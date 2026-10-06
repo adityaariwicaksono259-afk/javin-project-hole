@@ -33,11 +33,13 @@ async function verifyKey(db, uid, key) {
   if (!row) return { ok: false, code: 403, message: 'Kamu belum punya key. Minta admin dulu.' };
   if (row.key !== key) return { ok: false, code: 403, message: 'Key tidak cocok dengan user ini.' };
   if (row.status === 'revoked') return { ok: false, code: 403, message: 'Key sudah di-revoke admin.' };
-  if (row.status === 'exhausted' || row.used_count >= row.max_uses) {
-    return { ok: false, code: 403, message: 'Key sudah habis (' + row.used_count + '/' + row.max_uses + ').' };
+  const remaining = Math.max(0, (row.max_uses || 0) - (row.used_count || 0));
+
+  if (row.status === 'exhausted' || remaining < 1) {
+    return { ok: false, code: 403, message: 'API Key tidak cukup' };
   }
 
-  return { ok: true, row };
+  return { ok: true, row, remaining };
 }
 
 
@@ -188,24 +190,38 @@ export async function onRequestPost({ request, env }) {
     });
   }
 
-  // ==== Increment counter HANYA kalau sukses ====
+  // ==== Potong 1 API Key hanya kalau sukses ====
   let counterInfo = null;
   try {
-    const newCount = (v.row.used_count || 0) + 1;
-    const newStatus = newCount >= v.row.max_uses ? 'exhausted' : 'active';
+    const cost = 1;
+    const oldCount = v.row.used_count || 0;
+    const newCount = oldCount + cost;
 
-    await db.prepare(
-      'UPDATE premium_keys SET used_count = ?, status = ?, last_used = ? WHERE key = ?'
-    ).bind(newCount, newStatus, Date.now(), key).run();
+    const updated = await db.prepare(
+      'UPDATE premium_keys SET used_count = ?, status = ?, last_used = ? WHERE key = ? AND owner_id = ? AND used_count = ? AND used_count + ? <= max_uses'
+    ).bind(
+      newCount,
+      newCount >= v.row.max_uses ? 'exhausted' : 'active',
+      Date.now(),
+      key,
+      uid,
+      oldCount,
+      cost
+    ).run();
+
+    if (!updated.meta || updated.meta.changes !== 1) {
+      return json({ success: false, message: 'API Key tidak cukup' }, 403);
+    }
 
     counterInfo = {
+      cost: cost,
       used: newCount,
       max: v.row.max_uses,
       remaining: Math.max(0, v.row.max_uses - newCount),
-      status: newStatus
+      status: newCount >= v.row.max_uses ? 'exhausted' : 'active'
     };
   } catch (e) {
-    counterInfo = { error: e.message };
+    return json({ success: false, message: 'Gagal memproses API Key.' }, 500);
   }
 
   return json({

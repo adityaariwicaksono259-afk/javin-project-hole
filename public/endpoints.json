@@ -5433,5 +5433,87 @@
     "ex": "/upload.html",
     "redirect": "/upload.html",
     "params": []
+  },
+  {
+    "catalogId": "premium-amprem",
+    "name": "AM Premium",
+    "m": "POST",
+    "path": "/api/premium/amprem",
+    "folder": "Tools",
+    "subfolder": "premium",
+    "desc": "API Premium untuk proses verifikasi dan aktivasi akun Alight Motion. Wajib API Key Premium.",
+    "needKey": true,
+    "keyParam": "key",
+    "keyDesc": "API Key Premium yang terikat ke UID pengguna.",
+    "params": [
+      {
+        "n": "uid",
+        "t": "string",
+        "r": 1,
+        "d": "UID pengguna yang terikat dengan API Key."
+      },
+      {
+        "n": "key",
+        "t": "string",
+        "r": 1,
+        "d": "API Key Premium."
+      },
+      {
+        "n": "action",
+        "t": "string",
+        "r": 1,
+        "d": "send-magiclink, verify-account, atau apply-premium."
+      },
+      {
+        "n": "email",
+        "t": "string",
+        "r": 1,
+        "d": "Email akun Alight Motion."
+      },
+      {
+        "n": "rawLink",
+        "t": "string",
+        "r": 0,
+        "d": "Magic link saat action verify-account."
+      },
+      {
+        "n": "idToken",
+        "t": "string",
+        "r": 0,
+        "d": "ID token saat action apply-premium."
+      }
+    ]
+  },
+  {
+    "catalogId": "premium-amfinder",
+    "name": "AM Premium Finder",
+    "m": "POST",
+    "path": "/api/premium/amfinder",
+    "folder": "Tools",
+    "subfolder": "premium",
+    "desc": "Cari preset Alight Motion dari link TikTok. Wajib API Key Premium dan memiliki rate limit.",
+    "needKey": true,
+    "keyParam": "key",
+    "keyDesc": "API Key Premium yang terikat ke UID pengguna.",
+    "params": [
+      {
+        "n": "uid",
+        "t": "string",
+        "r": 1,
+        "d": "UID pengguna yang terikat dengan API Key."
+      },
+      {
+        "n": "key",
+        "t": "string",
+        "r": 1,
+        "d": "API Key Premium."
+      },
+      {
+        "n": "tiktokUrl",
+        "t": "string",
+        "r": 1,
+        "d": "Link TikTok yang berisi preset Alight Motion."
+      }
+    ]
   }
 ]

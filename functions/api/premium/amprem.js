@@ -23,11 +23,13 @@ async function verifyKey(db, uid, key) {
   if (!row) return { ok: false, code: 403, message: 'Kamu belum punya key. Minta admin dulu.' };
   if (row.key !== key) return { ok: false, code: 403, message: 'Key tidak cocok dengan user ini.' };
   if (row.status === 'revoked') return { ok: false, code: 403, message: 'Key sudah di-revoke admin.' };
-  if (row.status === 'exhausted' || row.used_count >= row.max_uses) {
-    return { ok: false, code: 403, message: 'Key sudah habis (' + row.used_count + '/' + row.max_uses + ').' };
+  const remaining = Math.max(0, (row.max_uses || 0) - (row.used_count || 0));
+
+  if (row.status === 'exhausted' || remaining < 10) {
+    return { ok: false, code: 403, message: 'API Key tidak cukup' };
   }
 
-  return { ok: true, row: row };
+  return { ok: true, row: row, remaining: remaining };
 }
 
 export async function onRequestPost({ request, env }) {
@@ -89,25 +91,38 @@ export async function onRequestPost({ request, env }) {
     try { data = JSON.parse(text); }
     catch (e) { data = { success: false, message: 'Upstream response bukan JSON', raw: text.slice(0, 500) }; }
 
-    // ==== Increment counter HANYA kalau apply-premium SUKSES ====
-    if (action === 'apply-premium' && data && data.success === true) {
+    // ==== Potong 10 API Key untuk setiap request yang SUKSES ====
+    if (data && data.success === true) {
       try {
-        const newCount = (v.row.used_count || 0) + 1;
-        const newStatus = newCount >= v.row.max_uses ? 'exhausted' : 'active';
+        const cost = 10;
+        const oldCount = v.row.used_count || 0;
+        const newCount = oldCount + cost;
 
-        await db.prepare(
-          'UPDATE premium_keys SET used_count = ?, status = ?, last_used = ? WHERE key = ?'
-        ).bind(newCount, newStatus, Date.now(), key).run();
+        const updated = await db.prepare(
+          'UPDATE premium_keys SET used_count = ?, status = ?, last_used = ? WHERE key = ? AND owner_id = ? AND used_count = ? AND used_count + ? <= max_uses'
+        ).bind(
+          newCount,
+          newCount >= v.row.max_uses ? 'exhausted' : 'active',
+          Date.now(),
+          key,
+          uid,
+          oldCount,
+          cost
+        ).run();
+
+        if (!updated.meta || updated.meta.changes !== 1) {
+          return json({ success: false, message: 'API Key tidak cukup' }, 403);
+        }
 
         data._counter = {
+          cost: cost,
           used: newCount,
           max: v.row.max_uses,
           remaining: Math.max(0, v.row.max_uses - newCount),
-          status: newStatus
+          status: newCount >= v.row.max_uses ? 'exhausted' : 'active'
         };
       } catch (e) {
-        // Counter error, tapi response tetap sukses
-        data._counter_error = e.message;
+        return json({ success: false, message: 'Gagal memproses API Key.' }, 500);
       }
     }
 
