@@ -1,5 +1,6 @@
 // GET /api/auth/me — cek user login
 import { json } from '../../_lib/oauth.js';
+import { generateUniqueApiKey, DEFAULT_CREDITS } from '../../_lib/gen-api-key.js';
 
 export async function onRequestGet({ request, env }) {
   var db = env.JAVIN_DB;
@@ -24,6 +25,33 @@ export async function onRequestGet({ request, env }) {
 
   var user = await db.prepare('SELECT * FROM auth_users WHERE id = ?').bind(session.user_id).first();
   if (!user) return json({ ok: false, logged_in: false });
+
+  // ==== Auto-generate api_key + credits kalau NULL (user lama & demo) ====
+  let needsUpdate = false;
+  let newApiKey = user.api_key;
+  let newCredits = user.credits;
+
+  if (!newApiKey) {
+    newApiKey = await generateUniqueApiKey(db);
+    needsUpdate = true;
+  }
+  if (newCredits === null || newCredits === undefined) {
+    newCredits = DEFAULT_CREDITS;
+    needsUpdate = true;
+  }
+
+  if (needsUpdate) {
+    try {
+      await db.prepare(
+        'UPDATE auth_users SET api_key = ?, credits = ? WHERE id = ?'
+      ).bind(newApiKey, newCredits, user.id).run();
+      user.api_key = newApiKey;
+      user.credits = newCredits;
+      console.log('[ME] Auto-gen api_key for user ' + user.id + ' → ' + newApiKey);
+    } catch (e) {
+      console.error('[ME] Auto-gen error:', e.message);
+    }
+  }
 
   // Update last_used
   try {
