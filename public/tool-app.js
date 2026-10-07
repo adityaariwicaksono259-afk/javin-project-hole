@@ -159,7 +159,7 @@
         body.innerHTML = [
           '<div class="wz-info">Masukkan API Key kamu. Kredit akan dicek dulu sebelum lanjut.</div>',
           '<div class="field"><label>API Key <span style="color:#dc2626">*</span></label>',
-          '<input type="text" id="wzApiKey" placeholder="LSHAI1728" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
+          '<input type="text" id="wzApiKey" placeholder="Your API Key" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
           '<button class="submit" id="wzBtn1">Lanjut</button>',
           '<div class="result" id="wzRes1"></div>'
         ].join('\n');
@@ -316,7 +316,7 @@
       '</div>',
       '<div class="card">',
       '  <div class="field"><label>API Key <span style="color:#dc2626">*</span></label>',
-      '  <input type="text" id="afApiKey" placeholder="LSHAI1728" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
+      '  <input type="text" id="afApiKey" placeholder="Your API Key" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
       '  <div class="field"><label>Link TikTok <span style="color:#dc2626">*</span></label>',
       '  <input type="url" id="afUrl" placeholder="https://vt.tiktok.com/xxx" autocomplete="off" inputmode="url"></div>',
       '  <button class="submit" id="afBtn">Cari Preset</button>',
