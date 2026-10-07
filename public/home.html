@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>Javin Codex — Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style-neobrutalism.css?v=8">
+<link rel="stylesheet" href="/bottom-nav.css?v=2">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#FFE600;font-family:'Space Grotesk',system-ui,sans-serif;color:#0A0A0A;overflow-x:hidden}
+body{padding-bottom:120px}
+
+
+.top-bar{padding:14px 16px;display:flex;align-items:center;justify-content:space-between;background:#FFE600;border-bottom:3px solid #0A0A0A;box-shadow:0 4px 0 #0A0A0A;position:sticky;top:0;z-index:50}
+.top-bar-title{font-family:'Archivo Black',sans-serif;font-size:16px;letter-spacing:0.5px}
+.top-bar-user{display:flex;align-items:center;gap:8px}
+.top-bar-avatar{width:36px;height:36px;border-radius:50%;background:#FF7FE5;border:3px solid #0A0A0A;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;box-shadow:2px 2px 0 #0A0A0A}
+
+.hero{padding:24px 20px 16px;text-align:center}
+.hero-logo{width:72px;height:72px;margin:0 auto 14px;background:#0A0A0A;color:#FFE600;border-radius:16px;display:flex;align-items:center;justify-content:center;font-family:'Archivo Black',sans-serif;font-size:36px;border:3px solid #0A0A0A;box-shadow:5px 5px 0 #FF7FE5}
+.hero-title{font-family:'Archivo Black',sans-serif;font-size:28px;margin:0 0 8px;letter-spacing:-0.5px;line-height:1.1}
+.hero-sub{font-size:13px;color:#4A4A4A;margin:0;line-height:1.5;font-weight:500}
+
+.section{padding:0 16px;margin-bottom:20px}
+.section-title{font-family:'Archivo Black',sans-serif;font-size:16px;margin:0 0 12px}
+.section-title::before{content:'— ';color:#FF7FE5}
+
+.stats-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.stat-box{background:#FFFFFF;border:3px solid #0A0A0A;border-radius:10px;box-shadow:3px 3px 0 #0A0A0A;padding:12px 6px;text-align:center}
+.stat-num{font-family:'Archivo Black',sans-serif;font-size:18px;margin-bottom:2px}
+.stat-label{font-size:9px;color:#4A4A4A;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+
+.card{background:#FFFFFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;padding:14px 16px;margin-bottom:10px;display:block;text-decoration:none;color:#0A0A0A;transition:transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),box-shadow 0.15s ease}
+.card:active{transform:scale(0.97) translate(2px, 2px);box-shadow:1px 1px 0 #0A0A0A}
+.card-title{font-family:'Archivo Black',sans-serif;font-size:15px;margin:0 0 4px}
+.card-desc{font-size:12px;color:#4A4A4A;line-height:1.5;margin:0}
+
+.feature-item{background:#FFFFFF;border:3px solid #0A0A0A;border-radius:10px;box-shadow:3px 3px 0 #0A0A0A;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.feature-name{font-weight:700;font-size:13px;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.feature-badge{background:#00E5E5;border:2px solid #0A0A0A;border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;flex-shrink:0}
+
+.tier-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tier-pill{background:#FFFFFF;border:3px solid #0A0A0A;border-radius:8px;padding:8px 4px;text-align:center;font-size:10px;font-weight:700}
+.tier-pill b{display:block;font-family:'Archivo Black',sans-serif;font-size:16px;margin-bottom:2px}
+.tier-pill.free{background:#FFFFFF}
+.tier-pill.basic{background:#FFF9B0}
+.tier-pill.pro{background:#FFD9F5}
+.tier-pill.unlimited{background:#D9FFFF}
+
+
+
+/* BOTTOM NAV */
+
+
+.loading{text-align:center;padding:16px;font-weight:700;color:#4A4A4A;font-size:12px}
+
+/* Tier user card */
+.tier-user-box { min-height: 60px; }
+.tier-user-card{background:#FFFFFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:5px 5px 0 #0A0A0A;padding:16px;display:flex;align-items:center;gap:14px}
+.tier-user-badge{font-family:'Archivo Black',sans-serif;font-size:14px;padding:8px 14px;border:3px solid #0A0A0A;border-radius:8px;box-shadow:3px 3px 0 #0A0A0A;flex-shrink:0}
+.tier-user-badge.tier-free{background:#FFFFFF}
+.tier-user-badge.tier-basic{background:#FFF9B0}
+.tier-user-badge.tier-pro{background:#FFD9F5}
+.tier-user-badge.tier-unlimited{background:#D9FFFF}
+.tier-user-info{flex:1;min-width:0}
+.tier-user-credits{font-size:14px;font-weight:700;margin-bottom:2px}
+.tier-user-credits b{font-family:'Archivo Black',sans-serif;font-size:20px;color:#0EA5E9}
+.tier-user-expired{font-size:11px;color:#4A4A4A;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="top-bar-title">JAVIN CODEX</div>
+  <div class="top-bar-user">
+    <div class="top-bar-avatar" id="topAvatar">J</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="section">
+  <div class="section-title">Server Stats</div>
+  <div class="stats-grid">
+    <div class="stat-box">
+      <div class="stat-num" id="statUser">-</div>
+      <div class="stat-label">User</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="statEndpoint">246</div>
+      <div class="stat-label">Endpoint</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num" id="statReq">-</div>
+      <div class="stat-label">Request</div>
+    </div>
+  </div>
+</div>
+
+<!-- TOP FITUR -->
+<div class="section">
+  <div class="section-title">Top Fitur</div>
+  <div id="topFeatures" class="loading">Memuat...</div>
+</div>
+
+<!-- USER TIER -->
+<div class="section">
+  <div class="section-title">Tier Kamu</div>
+  <div id="userTierBox" class="tier-user-box">
+    <div class="loading">Memuat...</div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<script>
+(function(){
+  // Load user info (avatar)
+  fetch('/api/auth/me', { credentials: 'same-origin', cache: 'no-store' })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (j && j.ok && j.user) {
+        var avatar = document.getElementById('topAvatar');
+        if (avatar) {
+          var name = j.user.name || 'J';
+          avatar.textContent = name.charAt(0).toUpperCase();
+        }
+      }
+    })
+    .catch(function(){});
+
+  // Load stats dari /api/stats
+  fetch('/api/stats', { credentials: 'same-origin', cache: 'no-store' })
+    .then(function(r){ return r.json(); })
+    .then(function(j){
+      if (!j || !j.ok) return;
+
+      // Stats
+      var elU = document.getElementById('statUser');
+      var elE = document.getElementById('statEndpoint');
+      var elR = document.getElementById('statReq');
+      if (elU) elU.textContent = j.total_users || 0;
+      if (elE) elE.textContent = j.total_endpoints || 0;
+      if (elR) elR.textContent = j.total_requests || 0;
+
+      // Top Fitur (dari hits)
+      var topEl = document.getElementById('topFeatures');
+      if (topEl) {
+        if (j.top_fitur && j.top_fitur.length > 0) {
+          topEl.innerHTML = j.top_fitur.map(function(t, i){
+            return '<div class="feature-item">' +
+              '<div class="feature-name">' + (t.name || '-') + '</div>' +
+              '<div class="feature-badge">#' + (i+1) + ' · ' + (t.hits || 0) + '</div>' +
+              '</div>';
+          }).join('');
+        } else {
+          topEl.innerHTML = '<div class="loading">Belum ada data hits</div>';
+        }
+      }
+
+      // User Tier
+      var tierEl = document.getElementById('userTierBox');
+      if (tierEl) {
+        if (j.user_tier) {
+          var t = j.user_tier;
+          var expiredStr = '-';
+          if (t.expires_at && t.expires_at > Date.now()) {
+            var d = new Date(t.expires_at);
+            var diff = Math.ceil((t.expires_at - Date.now()) / 86400000);
+            expiredStr = diff + ' hari lagi';
+          } else if (t.tier !== 'free') {
+            expiredStr = 'expired';
+          }
+          tierEl.innerHTML = '<div class="tier-user-card">' +
+            '<div class="tier-user-badge tier-' + t.tier + '">' + t.tier.toUpperCase() + '</div>' +
+            '<div class="tier-user-info">' +
+              '<div class="tier-user-credits"><b>' + (t.credits || 0) + '</b> API Key</div>' +
+              '<div class="tier-user-expired">' + expiredStr + '</div>' +
+            '</div>' +
+            '</div>';
+        } else {
+          tierEl.innerHTML = '<div class="tier-user-card"><div class="tier-user-info"><div class="tier-user-credits" style="font-size:13px">Login dulu untuk lihat tier</div></div></div>';
+        }
+      }
+    })
+    .catch(function(e){
+      console.error('[home] stats error:', e);
+    });
+})();
+</script>
+
+<script src="/bottom-nav.js?v=2"></script>
+</body>
+</html>

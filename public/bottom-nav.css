@@ -1,0 +1,161 @@
+/* ============================================
+   JAVIN LIQUID BOTTOM NAV — WhatsApp Style v2
+   ============================================ */
+
+body {
+  padding-bottom: 90px !important;
+  overscroll-behavior: none;
+}
+
+.jv-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: #FFFFFF;
+  border-top: 3px solid #0A0A0A;
+  box-shadow: 0 -4px 0 #0A0A0A;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding: 10px 4px calc(8px + env(safe-area-inset-bottom));
+  z-index: 999;
+  height: 76px;
+  box-sizing: border-box;
+}
+
+/* Bubble — bulatan di atas nav */
+.jv-nav-bubble {
+  position: absolute;
+  top: -24px;
+  width: 52px;
+  height: 52px;
+  background: #FF7FE5;
+  border: 3px solid #0A0A0A;
+  border-radius: 50%;
+  box-shadow: 3px 3px 0 #0A0A0A;
+  z-index: 2;
+  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  will-change: left;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.jv-nav-bubble svg {
+  width: 24px;
+  height: 24px;
+  stroke: #0A0A0A;
+  stroke-width: 2.5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.3s ease;
+}
+
+.jv-nav-bubble.bounce {
+  animation: jvBubbleBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes jvBubbleBounce {
+  0%   { transform: translateY(0) scale(1); }
+  40%  { transform: translateY(-10px) scale(1.1); }
+  70%  { transform: translateY(-3px) scale(1.04); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Tab item */
+.jv-nav-item {
+  flex: 1;
+  max-width: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 3px;
+  text-decoration: none;
+  color: #6A6A6A;
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 2px;
+  position: relative;
+  z-index: 3;
+  transition: color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+}
+
+.jv-nav-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.jv-nav-icon svg {
+  width: 24px;
+  height: 24px;
+  stroke: #6A6A6A;
+  stroke-width: 2.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
+}
+
+.jv-nav-label {
+  transition: opacity 0.3s ease;
+  opacity: 0.7;
+  font-size: 10px;
+  line-height: 1;
+}
+
+/* Tab aktif — icon di nav item ilang (ada di bubble) */
+.jv-nav-item.active .jv-nav-icon {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.jv-nav-item.active .jv-nav-label {
+  opacity: 1;
+  color: #0A0A0A;
+}
+
+/* Tap feedback */
+.jv-nav-item:not(.active):active .jv-nav-icon {
+  transform: scale(0.85);
+}
+
+/* iPhone safe area */
+@supports (padding: max(0px)) {
+  .jv-nav {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    height: calc(76px + env(safe-area-inset-bottom));
+  }
+  body {
+    padding-bottom: calc(90px + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* FORCE FIX — anti override */
+nav.jv-nav,
+body .jv-nav,
+html body nav.jv-nav,
+#jvNav {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: auto !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  transform: none !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  z-index: 9999 !important;
+}

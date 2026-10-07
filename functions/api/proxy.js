@@ -137,6 +137,19 @@ function sanitizeJson(obj, depth) {
   return obj;
 }
 
+async function incrementHits(db, endpointId) {
+  if (!db || !endpointId) return;
+  try {
+    const now = Date.now();
+    await db.prepare(
+      'INSERT INTO endpoint_hits (endpoint_id, hits, last_hit) VALUES (?, 1, ?) ' +
+      'ON CONFLICT(endpoint_id) DO UPDATE SET hits = hits + 1, last_hit = ?'
+    ).bind(endpointId, now, now).run();
+  } catch (e) {
+    // Silent fail — jangan ganggu request utama
+  }
+}
+
 async function logRequest(db, data) {
   if (!db) return;
   try {
@@ -478,6 +491,11 @@ export async function onRequest(context) {
 
     // Log dengan status upstream — hanya 2xx yang dihitung ke limit
     await logRequest(db, { user_id: userId, endpoint_id: id, status: upstream.status });
+
+    // Increment hits kalau sukses (2xx)
+    if (upstream.status >= 200 && upstream.status < 300) {
+      incrementHits(db, id).catch(function(){});
+    }
 
     const ct = upstream.headers.get('content-type') || 'application/octet-stream';
 
