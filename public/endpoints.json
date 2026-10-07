@@ -5450,7 +5450,7 @@
         "n": "apikey",
         "t": "string",
         "r": 1,
-        "d": "API Key Premium."
+        "d": "Your API Key."
       },
       {
         "n": "action",
@@ -5494,7 +5494,7 @@
         "n": "apikey",
         "t": "string",
         "r": 1,
-        "d": "API Key Premium."
+        "d": "Your API Key."
       },
       {
         "n": "tiktokUrl",
