@@ -3555,3 +3555,40 @@ header.fx-header *,
 }
 
 /* END JAVIN-CODEX-VIDEO-NEOBRUTAL-V6 */
+
+
+/* ============================================
+   PROFILE MODAL PROTECTION
+   Jangan override warna teks di dalam profile modal
+   ============================================ */
+.pf-modal,
+.pf-modal *,
+.pf-overlay .pf-modal,
+.pf-overlay .pf-modal * {
+  /* Biarin warna asli dari style-v5.css */
+}
+
+.pf-label,
+.pf-value,
+.pf-modal .pf-label,
+.pf-modal .pf-value,
+.pf-modal .pf-status-text,
+.pf-modal .pf-upload-hint {
+  color: revert !important;
+}
+
+.pf-modal .pf-label {
+  color: #94a3b8 !important;
+}
+
+.pf-modal .pf-value {
+  color: #f1f5f9 !important;
+}
+
+.pf-modal .pf-value.mono {
+  color: #f1f5f9 !important;
+}
+
+.pf-modal #pfCredits {
+  color: #0EA5E9 !important;
+}
