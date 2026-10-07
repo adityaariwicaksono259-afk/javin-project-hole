@@ -303,6 +303,89 @@ async function handleWebApprove(env, callback, orderCode) {
   // (skip karena user datang dari web, bukan chat bot)
 }
 
+// ==== DETAIL ORDER (WEB) ====
+async function handleWebDetail(env, cb, orderCode) {
+  const db = env.JAVIN_DB;
+  const order = await db.prepare('SELECT * FROM web_orders WHERE order_code = ?').bind(orderCode).first();
+
+  if (!order) {
+    await answerCallback(env, cb.id, '❌ Order tidak ditemukan', true);
+    return;
+  }
+
+  const timeStr = new Date(order.created_at).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+  const expiresStr = order.expires_at ? new Date(order.expires_at).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }) : '-';
+
+  const msg =
+    '🔍 <b>DETAIL ORDER</b>\n\n' +
+    '🆔 Kode: <code>' + escapeHtml(order.order_code) + '</code>\n' +
+    '👤 User: ' + escapeHtml(order.user_name || '-') + (order.user_id ? ' (<code>' + escapeHtml(order.user_id) + '</code>)' : '') + '\n' +
+    '📦 Tier: <b>' + escapeHtml(order.tier || '-') + '</b>\n' +
+    '💰 Harga: <b>Rp ' + (order.package_price || 0).toLocaleString('id-ID') + '</b>\n' +
+    '🔢 Kode Unik: <code>' + (order.unique_code || '-') + '</code>\n' +
+    '💵 Total Transfer: <b>Rp ' + (order.total_amount || 0).toLocaleString('id-ID') + '</b>\n' +
+    '📊 Status: <b>' + escapeHtml(order.status || '-') + '</b>\n' +
+    '🔑 Key Generated: ' + (order.key_generated ? '<code>' + escapeHtml(order.key_generated) + '</code>' : '(belom)') + '\n' +
+    '🕐 Dibuat: ' + timeStr + '\n' +
+    '⏰ Expired: ' + expiresStr;
+
+  await answerCallback(env, cb.id);
+  await sendMessage(env, cb.message.chat.id, msg);
+}
+
+// ==== CANCEL AUTO-APPROVE + ROLLBACK ====
+async function handleCancelAuto(env, cb, orderCode) {
+  const db = env.JAVIN_DB;
+  const order = await db.prepare('SELECT * FROM web_orders WHERE order_code = ?').bind(orderCode).first();
+
+  if (!order) {
+    await answerCallback(env, cb.id, '❌ Order tidak ditemukan', true);
+    return;
+  }
+
+  if (order.status === 'cancelled') {
+    await answerCallback(env, cb.id, '⚠️ Order udah di-cancel sebelumnya', true);
+    return;
+  }
+
+  if (order.status !== 'approved') {
+    await answerCallback(env, cb.id, '⚠️ Order belum di-approve (status: ' + order.status + ')', true);
+    return;
+  }
+
+  // Rollback: kurangi credits user
+  const TIER_CREDITS_MAP = { basic: 70, pro: 150, unlimited: 1000 };
+  const creditsToRemove = TIER_CREDITS_MAP[order.tier] || 0;
+
+  try {
+    if (order.user_id && creditsToRemove > 0) {
+      const user = await db.prepare('SELECT credits FROM auth_users WHERE id = ?').bind(order.user_id).first();
+      if (user) {
+        const newCredits = Math.max(0, (user.credits || 0) - creditsToRemove);
+        await db.prepare('UPDATE auth_users SET credits = ? WHERE id = ?').bind(newCredits, order.user_id).run();
+      }
+    }
+
+    // Update status order
+    await db.prepare('UPDATE web_orders SET status = "cancelled", updated_at = ? WHERE order_code = ?')
+      .bind(Date.now(), orderCode).run();
+
+    await answerCallback(env, cb.id, '✅ Order dibatalkan');
+
+    const timeStr = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
+    await sendMessage(env, cb.message.chat.id,
+      '❌ <b>ORDER DIBATALKAN</b>\n\n' +
+      '🆔 Kode: <code>' + escapeHtml(orderCode) + '</code>\n' +
+      '👤 User: ' + escapeHtml(order.user_name || '-') + '\n' +
+      '📦 Tier: <b>' + escapeHtml(order.tier || '-') + '</b>\n' +
+      '🔙 Credits dikurangi: <b>-' + creditsToRemove + '</b>\n' +
+      '🕐 Waktu: ' + timeStr
+    );
+  } catch (e) {
+    await answerCallback(env, cb.id, '❌ Gagal: ' + e.message, true);
+  }
+}
+
 // ==== REJECT ORDER WEB ====
 async function handleWebReject(env, callback, orderCode) {
   const db = env.JAVIN_DB;
@@ -367,6 +450,14 @@ async function handleUpdate(env, update) {
     }
     if (data.startsWith('webrj_')) {
       await handleWebReject(env, cb, data.slice(6));
+      return;
+    }
+    if (data.startsWith('detail_')) {
+      await handleWebDetail(env, cb, data.slice(7));
+      return;
+    }
+    if (data.startsWith('cancel_auto_')) {
+      await handleCancelAuto(env, cb, data.slice(12));
       return;
     }
     if (data === 'help') {

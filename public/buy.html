@@ -13,6 +13,7 @@
 <script src="/theme-loader.js"></script>
 <link rel="stylesheet" href="/native-feel.css?v=1">
 <script src="/dialog.js?v=1"></script>
+<link rel="stylesheet" href="/style-neobrutalism.css?v=7">
 </head>
 <body>
 
@@ -90,35 +91,40 @@
       </div>
     </div>
 
-    <!-- UPLOAD -->
+    <!-- UPLOAD (OPSIONAL) -->
     <div class="buy-upload-box">
-      <div class="buy-upload-title">📤 Upload Bukti Transfer</div>
-      <div class="buy-upload-sub">Screenshot bukti transfer dari aplikasi DANA/e-wallet</div>
+      <button type="button" id="btnToggleUpload" class="buy-upload-toggle">
+        Upload bukti transfer (opsional)
+      </button>
 
-      <div id="dropZone" class="buy-drop" onclick="document.getElementById('fileInput').click()">
-        <div class="buy-drop-icon">☁️</div>
-        <div class="buy-drop-text">Tap untuk pilih gambar</div>
-        <div class="buy-drop-sub" id="uploadLabel">JPG, PNG, WEBP · Maks 5 MB</div>
-        <input type="file" id="fileInput" accept="image/*" style="display:none">
-      </div>
+      <div id="uploadSection" style="display:none;margin-top:14px">
+        <div class="buy-upload-sub" style="margin-bottom:12px">Screenshot bukti transfer dari aplikasi DANA/e-wallet</div>
 
-      <div id="preview" class="buy-preview" style="display:none">
-        <img id="uploadPreview" style="width:100%;border-radius:12px">
-      </div>
+        <div id="dropZone" class="buy-drop" onclick="document.getElementById('fileInput').click()">
+          <div class="buy-drop-icon">+</div>
+          <div class="buy-drop-text">Tap untuk pilih gambar</div>
+          <div class="buy-drop-sub" id="uploadLabel">JPG, PNG, WEBP · Maks 5 MB</div>
+          <input type="file" id="fileInput" accept="image/*" style="display:none">
+        </div>
 
-      <button id="btnUpload" class="buy-submit" disabled>📤 Kirim Bukti</button>
+        <div id="preview" class="buy-preview" style="display:none">
+          <img id="uploadPreview" style="width:100%;border-radius:12px">
+        </div>
 
-      <div id="uploadStatus" class="buy-result" style="display:none">
-        ✅ Bukti terkirim! Order akan diverifikasi otomatis dalam 1-5 menit.
+        <button id="btnUpload" class="buy-submit" disabled>Kirim Bukti</button>
+
+        <div id="uploadStatus" class="buy-result" style="display:none">
+          Bukti terkirim. Tunggu verifikasi admin.
+        </div>
       </div>
     </div>
   </div>
 
   <!-- STEP 3: SUKSES -->
   <div id="stepSukses" class="buy-step">
-    <div class="buy-success-icon">✅</div>
-    <div class="buy-success-title">Bukti Terkirim!</div>
-    <div class="buy-success-sub">Order kamu sedang diverifikasi. Biasanya 1-5 menit.</div>
+    <div class="buy-success-icon">✓</div>
+    <div class="buy-success-title">Order Dibuat</div>
+    <div class="buy-success-sub">Bayar sesuai nominal, lalu tunggu verifikasi.</div>
 
     <div class="buy-order-info">
       <div class="buy-order-row">
@@ -127,17 +133,16 @@
       </div>
       <div class="buy-order-row">
         <span>Status</span>
-        <b style="color:#f59e0b">⏳ Menunggu Verifikasi</b>
+        <b style="color:#f59e0b">Menunggu Pembayaran</b>
       </div>
     </div>
 
     <div class="buy-info-box">
-      <div>💡 Akses bakal aktif otomatis setelah pembayaran diverifikasi</div>
-      <div>🔔 Cek status di halaman <b>Pesanan</b></div>
+      <div>Cek status di halaman Pesanan</div>
     </div>
 
-    <a href="/my-orders" class="buy-submit" style="text-decoration:none;display:block;text-align:center;margin-top:10px">📋 Lihat Pesanan Saya</a>
-    <a href="/" class="buy-back-full" style="display:block;text-align:center;margin-top:8px;padding:14px;color:#64748b;text-decoration:none;font-weight:600">← Kembali ke Beranda</a>
+    <a href="/my-orders" class="buy-submit" style="text-decoration:none;display:block;text-align:center;margin-top:10px">Lihat Pesanan Saya</a>
+    <a href="/" class="buy-back-full" style="display:block;text-align:center;margin-top:8px;padding:14px;color:#64748b;text-decoration:none;font-weight:600">Kembali ke Beranda</a>
   </div>
 
 </div>

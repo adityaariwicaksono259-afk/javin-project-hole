@@ -156,7 +156,7 @@
     if (!fileData || !state.orderData) return;
     var btn = $('btnUpload');
     btn.disabled = true;
-    btn.textContent = '⏳ Mengirim...';
+    btn.textContent = 'Mengirim...';
 
     try {
       var fd = new FormData();
@@ -168,17 +168,17 @@
       if (!j.ok) {
         alert(j.message || 'Gagal upload');
         btn.disabled = false;
-        btn.textContent = '📸 Kirim Bukti';
+        btn.textContent = 'Kirim Bukti';
         return;
       }
 
       // Sukses
-      if ($('btnUpload')) $('btnUpload').textContent = '✅ Terkirim';
+      if ($('btnUpload')) $('btnUpload').textContent = 'Terkirim';
       if ($('uploadStatus')) $('uploadStatus').style.display = 'block';
     } catch(e) {
       alert('Koneksi error');
       btn.disabled = false;
-      btn.textContent = '📸 Kirim Bukti';
+      btn.textContent = 'Kirim Bukti';
     }
   }
 
@@ -200,6 +200,19 @@
   };
 
   // ===== INIT =====
+  // ===== TOGGLE UPLOAD (OPSIONAL) =====
+  function setupUploadToggle() {
+    var btn = $('btnToggleUpload');
+    var section = $('uploadSection');
+    if (!btn || !section) return;
+
+    btn.addEventListener('click', function() {
+      var hidden = section.style.display === 'none' || !section.style.display;
+      section.style.display = hidden ? 'block' : 'none';
+      btn.textContent = hidden ? 'Sembunyikan upload bukti' : 'Upload bukti transfer (opsional)';
+    });
+  }
+
   function init() {
     loadPackages();
 
@@ -228,6 +241,7 @@
         }
       };
     }
+    setupUploadToggle();
   }
 
   if (document.readyState === 'loading') {

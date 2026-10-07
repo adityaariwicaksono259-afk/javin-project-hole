@@ -1,7 +1,7 @@
 // POST /api/buy/auto-approve
 // Dipanggil Google Apps Script saat email DANA masuk
 // Body: { amount, sender, secret, email_id }
-import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
+import { sendTelegram, sendTelegramWithButtons, escapeHtml } from '../../_lib/telegram.js';
 
 // Kredit yang didapat per tier
 const TIER_CREDITS = {
@@ -85,19 +85,27 @@ export async function onRequestPost({ request, env }) {
       }
     }
 
-    // Notif ke admin
-    await sendTelegram(env,
-      '✅ <b>Order Auto-Approved</b>\n\n' +
+    // Notif ke admin — dengan tombol
+    const creditsAdded = TIER_CREDITS[order.tier] || 0;
+    const notifMsg =
+      '✅ <b>PEMBAYARAN TERDETEKSI OTOMATIS</b>\n\n' +
       '🆔 Kode: <code>' + escapeHtml(order.order_code) + '</code>\n' +
       '👤 User: ' + escapeHtml(order.user_name || '-') + (order.user_id ? ' (<code>' + escapeHtml(order.user_id) + '</code>)' : '') + '\n' +
       '📦 Tier: <b>' + escapeHtml(order.tier || '-') + '</b>\n' +
       '💰 Nominal: <b>Rp ' + amount.toLocaleString('id-ID') + '</b>\n' +
-      '👤 Dari: ' + escapeHtml(sender || '-') + '\n' +
-      '🎫 Tier applied: ' + (tierApplied ? '✅' : '❌ (user gak login)') + '\n' +
-      'API Key: +' + (TIER_CREDITS[order.tier] || 0) + '\n' +
-      '🕐 ' + new Date(now).toISOString().replace('T', ' ').slice(0, 19),
-      { type: 'auto-approve', throttleMs: 3000 }
-    );
+      '📤 Dari: ' + escapeHtml(sender || '-') + '\n' +
+      '🎁 API Key: <b>+' + creditsAdded + '</b>\n' +
+      '📊 Status: ' + (tierApplied ? '✅ Credits ditambahkan' : '⚠️ User belum login, credits gagal ditambahkan') + '\n' +
+      '🕐 ' + new Date(now).toISOString().replace('T', ' ').slice(0, 19);
+
+    await sendTelegramWithButtons(env, notifMsg, [
+      [
+        { text: '🔍 Lihat Detail', callback_data: 'detail_' + order.order_code }
+      ],
+      [
+        { text: '❌ Batalkan & Refund', callback_data: 'cancel_auto_' + order.order_code }
+      ]
+    ], { type: 'auto-approve', throttleMs: 3000 });
 
     return json({
       ok: true,

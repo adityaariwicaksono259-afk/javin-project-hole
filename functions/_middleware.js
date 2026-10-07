@@ -287,7 +287,7 @@ export async function onRequest(context) {
 
   // ==== LAYER 11: Content-Type enforcement ====
   if (['POST', 'PUT', 'PATCH'].includes(method) && pathname.startsWith('/api/')) {
-    if (!pathname.includes('/imgtourl') && !pathname.includes('/premium/')) {
+    if (!pathname.includes('/imgtourl') && !pathname.includes('/premium/') && !pathname.includes('/buy/upload')) {
       const ct = request.headers.get('Content-Type') || '';
       if (!ct.includes('application/json') && ct !== '') {
         return jsonResp(415, { ok: false, message: 'Content-Type harus application/json.' });
