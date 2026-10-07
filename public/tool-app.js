@@ -1656,7 +1656,7 @@ function renderError(c, msg){
           }
         }
       } catch(e) {
-        console.warn('[TikWM] gagal, fallback ke nexadev', e.message);
+        console.warn('[TikWM] gagal, fallback ke provider', e.message);
       }
     }
     // ==== END TIKWM ====

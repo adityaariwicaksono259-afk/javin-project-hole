@@ -372,7 +372,7 @@
     ],
     "outputType": "",
     "example_values": {
-      "username": "nexadevv"
+      "username": "javin"
     }
   },
   {
@@ -409,7 +409,7 @@
         "n": "url",
         "t": "string",
         "r": 0,
-        "d": "kasih gambar nya pakai url uploder.nexadev.my.id"
+        "d": "kasih gambar nya pakai url uploder.Javin.my.id"
       }
     ],
     "outputType": "image",
@@ -519,7 +519,7 @@
         "n": "url",
         "t": "string",
         "r": 0,
-        "d": "https://api.nexadev.my.id/api/fb/?url=https://www.facebook.com/share/r/176Gd2Y3F5/"
+        "d": "https://javin.pages.dev/api/sample"
       }
     ],
     "outputType": "",
@@ -1408,7 +1408,7 @@
       }
     ],
     "example_values": {
-      "url": "https://api.nexaadev.my.id/api/reelshort/video?url=..."
+      "url": "https://javin.pages.dev/api/sample"
     }
   },
   {
@@ -1521,7 +1521,7 @@
     "outputType": "image",
     "example_values": {
       "ppurl": "https://clooud.my.id/uploder/uploads/SggiMA.jpeg",
-      "name": "NexaDev",
+      "name": "Javin",
       "duration": "19.45"
     }
   },
@@ -1538,7 +1538,7 @@
         "n": "nickname1",
         "t": "string",
         "r": 0,
-        "d": "NexaDev"
+        "d": "Javin"
       },
       {
         "n": "nickname2",
@@ -1570,7 +1570,7 @@
     ],
     "outputType": "image",
     "example_values": {
-      "usn": "NexaDev"
+      "usn": "Javin"
     }
   },
   {
@@ -1610,7 +1610,7 @@
     "example_values": {
       "photo": "https://clooud.my.id/uploder/uploads/jaoCqc.jpeg",
       "avatar": "https://clooud.my.id/uploder/uploads/Mbasnl.jpeg",
-      "usn": "nexadev",
+      "usn": "Javin",
       "name": "Javin"
     }
   },
@@ -1863,7 +1863,7 @@
     "outputType": "image",
     "example_values": {
       "url": "https://clooud.my.id/uploder/uploads/fRkHHO.jpeg",
-      "name": "NexaDev",
+      "name": "Javin",
       "text": "halo gua nexa"
     }
   },
@@ -3011,7 +3011,7 @@
     ],
     "example_values": {
       "username": "John",
-      "guildName": "Siputzx Api",
+      "guildName": "Javin Api",
       "memberCount": "150",
       "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
       "background": "https://i.ibb.co/4YBNyvP/images-76.jpg"
@@ -3151,7 +3151,7 @@
     ],
     "example_values": {
       "username": "Zero Two",
-      "guildName": "Siputzx Community",
+      "guildName": "Javin Community",
       "memberCount": "219",
       "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
       "background": "https://i.ibb.co/4YBNyvP/mountain-sunset.jpg",
@@ -3334,7 +3334,7 @@
       "exp": "500",
       "requireExp": "1000",
       "level": "10",
-      "name": "siputzx"
+      "name": "Javin"
     }
   },
   {
@@ -3653,7 +3653,7 @@
     ],
     "example_values": {
       "username": "John",
-      "guildName": "Siputzx Api",
+      "guildName": "Javin Api",
       "memberCount": "150",
       "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
       "background": "https://i.ibb.co/4YBNyvP/images-76.jpg"
@@ -3765,7 +3765,7 @@
     ],
     "example_values": {
       "username": "Zero Two",
-      "guildName": "Siputzx Community",
+      "guildName": "Javin Community",
       "memberCount": "219",
       "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
       "background": "https://i.ibb.co/4YBNyvP/mountain-sunset.jpg",
@@ -3864,7 +3864,7 @@
       }
     ],
     "example_values": {
-      "url": "https://gist.github.com/siputzx/966268a3aa3c14695e80cc9f30da8e9f"
+      "url": "https://gist.github.com/Javin/966268a3aa3c14695e80cc9f30da8e9f"
     }
   },
   {
@@ -3921,7 +3921,7 @@
       }
     ],
     "example_values": {
-      "url": "siputzx_"
+      "url": "Javin_"
     }
   },
   {
@@ -4363,7 +4363,7 @@
       }
     ],
     "example_values": {
-      "query": "siputzx"
+      "query": "Javin"
     }
   },
   {
@@ -5154,7 +5154,7 @@
       }
     ],
     "example_values": {
-      "user": "siputzx"
+      "user": "Javin"
     }
   },
   {
@@ -5173,7 +5173,7 @@
       }
     ],
     "example_values": {
-      "username": "siputzx"
+      "username": "Javin"
     }
   },
   {
