@@ -200,9 +200,7 @@ export async function onRequestPost({ request, env }) {
   counterInfo = {
     cost: 2,
     remaining: deduct.credits,
-    status: 'active'
-  };, 500);
-  }
+  };
 
   return json({
     success: true,
