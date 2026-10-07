@@ -157,7 +157,6 @@
 
       if (state.step === 1) {
         body.innerHTML = [
-          '<div class="wz-info">Masukkan API Key kamu. Kredit akan dicek dulu sebelum lanjut.</div>',
           '<div class="field"><label>API Key <span style="color:#dc2626">*</span></label>',
           '<input type="text" id="wzApiKey" placeholder="Your API Key" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
           '<button class="submit" id="wzBtn1">Lanjut</button>',
@@ -322,7 +321,7 @@
       '  <button class="submit" id="afBtn">Cari Preset</button>',
       '  <div class="result" id="afRes"></div>',
       '</div>',
-      '<div class="result-wrap" id="afResult"></div>'
+      '<div id="afResult" style="margin-top:16px"></div>'
     ].join('\n');
 
     var afBtn = document.getElementById('afBtn');
