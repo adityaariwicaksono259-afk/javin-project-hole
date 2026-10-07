@@ -433,13 +433,13 @@
     }
 
     // ===== Simple — enhanced =====
-    // Ambil default value dari `ep.ex` (URL contoh)
+    // Ambil default value dari `ep.example_values`
     var defaults = {};
     try {
-      if (ep.ex) {
-        var exUrl = ep.ex.indexOf('http') === 0 ? ep.ex : 'https://' + ep.ex;
-        var exParams = new URL(exUrl).searchParams;
-        exParams.forEach(function(v, k){ defaults[k.toLowerCase()] = v; });
+      if (ep.example_values && typeof ep.example_values === 'object') {
+        Object.keys(ep.example_values).forEach(function(k){
+          defaults[k.toLowerCase()] = ep.example_values[k];
+        });
       }
     } catch(e){}
 

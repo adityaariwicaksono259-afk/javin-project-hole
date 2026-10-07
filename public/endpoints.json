@@ -1,17 +1,12 @@
 [
   {
-    "id": "custom_1785294130_4213",
+    "catalogId": "ep001",
     "name": "c.ai",
-    "m": "GET",
-    "path": "/ai/cai",
     "desc": "API untuk melakukan pencarian karakter AI di platform Character.AI berdasarkan kata kunci (query), mengembalikan daftar bot/karakter lengkap beserta Character ID, avatar, dan deskripsi profilnya.",
     "folder": "AI",
     "subfolder": "cai",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/ai/cai/?q=sukuna",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -20,22 +15,19 @@
         "d": "sukuna"
       }
     ],
-    "updated_at": "2026-07-29T03:02:54+00:00",
-    "created_at": "2026-07-29T03:02:54+00:00",
-    "catalogId": "ep001"
+    "outputType": "",
+    "example_values": {
+      "q": "sukuna"
+    }
   },
   {
+    "catalogId": "ep002",
     "name": "chat Gpt3",
-    "m": "GET",
-    "path": "/ai/chatgptpro",
     "desc": "Ai Endpoint Chat Gpt3",
     "folder": "AI",
     "subfolder": "",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/ai/chatgptpro/?q=apa%20itu%20axios",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -44,23 +36,19 @@
         "d": "apa itu axios"
       }
     ],
-    "id": "custom_1784539626_3839",
-    "updated_at": "2026-07-20T09:27:06+00:00",
-    "created_at": "2026-07-20T09:27:06+00:00",
-    "catalogId": "ep002"
+    "outputType": "",
+    "example_values": {
+      "q": "apa itu axios"
+    }
   },
   {
+    "catalogId": "ep003",
     "name": "chat gpt4",
-    "m": "GET",
-    "path": "/ai/gpt4",
     "desc": "Endpoint API untuk interaksi tanya-jawab dan pemrosesan teks menggunakan model AI GPT-4.",
     "folder": "AI",
     "subfolder": "gpt4",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/ai/gpt4/?q=apa%20itu%20php",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -69,23 +57,19 @@
         "d": "apa itu php"
       }
     ],
-    "id": "custom_1784540073_8363",
-    "updated_at": "2026-07-20T09:34:33+00:00",
-    "created_at": "2026-07-20T09:34:33+00:00",
-    "catalogId": "ep003"
+    "outputType": "",
+    "example_values": {
+      "q": "apa itu php"
+    }
   },
   {
+    "catalogId": "ep004",
     "name": "Claude Haiku",
-    "m": "GET",
-    "path": "/ai/claude",
     "desc": "Ini api Endpoint Ai Claude Haiku ",
     "folder": "AI",
     "subfolder": "claude",
-    "outputType": "",
-    "ex": "api.nexadev.my.id/ai/claude/?text=hallo",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "text",
@@ -94,23 +78,19 @@
         "d": "hallo"
       }
     ],
-    "id": "custom_1784539384_8015",
-    "updated_at": "2026-07-20T09:23:04+00:00",
-    "created_at": "2026-07-20T09:23:04+00:00",
-    "catalogId": "ep004"
+    "outputType": "",
+    "example_values": {
+      "text": "hallo"
+    }
   },
   {
+    "catalogId": "ep005",
     "name": "deepsek ai",
-    "m": "GET",
-    "path": "/ai/deepsek",
     "desc": "AI berbasis DeepSeek dengan reasoning mendalam. Selalu menampilkan proses berpikir (think) dan jawaban akhir.",
     "folder": "AI",
     "subfolder": "deepsek",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/ai/deepsek/?text=apa+nodejs",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "text",
@@ -119,23 +99,19 @@
         "d": "apa itu node.js"
       }
     ],
-    "id": "custom_1784547842_6557",
-    "updated_at": "2026-07-20T11:44:02+00:00",
-    "created_at": "2026-07-20T11:44:02+00:00",
-    "catalogId": "ep005"
+    "outputType": "",
+    "example_values": {
+      "text": "apa nodejs"
+    }
   },
   {
+    "catalogId": "ep006",
     "name": "felo ai",
-    "m": "GET",
-    "path": "/ai/felo",
     "desc": "Endpoint pencarian cerdas berbasis Felo AI untuk memberikan jawaban terstruktur beserta referensi informasi dari internet.",
     "folder": "AI",
     "subfolder": "felo",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/ai/felo/?q=apa%20itu%20javascript",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -144,24 +120,19 @@
         "d": "apa itu javascript "
       }
     ],
-    "id": "custom_1784541516_2391",
-    "updated_at": "2026-07-20T09:58:36+00:00",
-    "created_at": "2026-07-20T09:58:36+00:00",
-    "catalogId": "ep006"
+    "outputType": "",
+    "example_values": {
+      "q": "apa itu javascript"
+    }
   },
   {
-    "id": "custom_1785331388_5108",
+    "catalogId": "ep007",
     "name": "IMG to promt",
-    "m": "GET",
-    "path": "/ai/imgtopromt",
     "desc": "API untuk menganalisis gambar dari URL dan mengonversinya secara otomatis menjadi kalimat deskripsi/prompt teks AI bergaya Midjourney/Stable Diffusion.",
     "folder": "AI",
     "subfolder": "imgtopromt",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/ai/imgtopromt/?url=https://clooud.my.id/uploder/uploads/tpRbqq.jpg",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -170,22 +141,19 @@
         "d": "masukan url foto"
       }
     ],
-    "updated_at": "2026-07-29T18:42:29+00:00",
-    "created_at": "2026-07-29T18:42:29+00:00",
-    "catalogId": "ep007"
+    "outputType": "",
+    "example_values": {
+      "url": "https://clooud.my.id/uploder/uploads/tpRbqq.jpg"
+    }
   },
   {
+    "catalogId": "ep008",
     "name": "Meta Llama 7.1",
-    "m": "GET",
-    "path": "/ai/llama",
     "desc": "Endpoint kecerdasan buatan berbasis Llama untuk menjawab pertanyaan, pemrosesan teks, dan tugas percakapan umum.",
     "folder": "AI",
     "subfolder": "Llama",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/ai/llama/?q=apa%20itu%20php",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -194,24 +162,19 @@
         "d": "apa itu php"
       }
     ],
-    "id": "custom_1784542772_1778",
-    "updated_at": "2026-07-20T10:19:32+00:00",
-    "created_at": "2026-07-20T10:19:32+00:00",
-    "catalogId": "ep008"
+    "outputType": "",
+    "example_values": {
+      "q": "apa itu php"
+    }
   },
   {
-    "id": "custom_1786276860_3663",
+    "catalogId": "ep009",
     "name": "github stalker",
-    "m": "GET",
-    "path": "/api/githubstalker",
     "desc": "API untuk memverifikasi dan mengekstrak informasi detail profil pengguna GitHub (User ID, avatar HD, nama lengkap, bio, jumlah repositori publik, gists, followers, following, lokasi, email, tautan blog, hingga tanggal akun dibuat) secara otomatis berdasarkan username.",
     "folder": "Tools",
     "subfolder": "ghstalker",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/githubstalker/?username=skayhayato-cmyk",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username ",
@@ -220,17 +183,18 @@
         "d": "masukan username github"
       }
     ],
-    "updated_at": "2026-08-09T12:01:44+00:00",
-    "created_at": "2026-08-09T12:01:44+00:00",
-    "catalogId": "ep009"
+    "outputType": "",
+    "example_values": {
+      "username": "skayhayato-cmyk"
+    }
   },
   {
-    "id": "tl3",
+    "catalogId": "ep012",
     "name": "NGL Spam",
-    "m": "GET",
-    "path": "/tools/nglspam/",
-    "folder": "Tools",
     "desc": "Kirim pesan bertubi-tubi (spam) ke akun NGL berdasarkan link profil.",
+    "folder": "Tools",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -251,23 +215,20 @@
         "d": "Jumlah pesan yang dikirim."
       }
     ],
-    "ex": "https://api.nexadev.my.id/tools/nglspam/?url=https://ngl.link/username&pesan=hallo&jumlah=2",
-    "catalogId": "ep012",
-    "subfolder": ""
+    "example_values": {
+      "url": "https://ngl.link/username",
+      "pesan": "hallo",
+      "jumlah": "2"
+    }
   },
   {
-    "id": "custom_1785331641_2320",
+    "catalogId": "ep013",
     "name": "remini",
-    "m": "GET",
-    "path": "/api/remini",
     "desc": "API untuk meningkatkan kualitas visual gambar (upscale/HD) dan memperjelas detail foto buram secara otomatis menggunakan teknologi AI Remini",
     "folder": "Tools",
     "subfolder": "remini",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/remini?url=https://clooud.my.id/uploder/uploads/tpRbqq.jpg",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -276,23 +237,19 @@
         "d": "masukan url foto"
       }
     ],
-    "updated_at": "2026-07-29T13:41:33+00:00",
-    "created_at": "2026-07-29T13:41:33+00:00",
-    "catalogId": "ep013"
+    "outputType": "",
+    "example_values": {
+      "url": "https://clooud.my.id/uploder/uploads/tpRbqq.jpg"
+    }
   },
   {
-    "id": "custom_1785330922_6030",
+    "catalogId": "ep015",
     "name": "Roblox Stalker ",
-    "m": "GET",
-    "path": "/api/roblox",
     "desc": "API untuk memverifikasi dan mengambil informasi lengkap profil pengguna Roblox (User ID, status, tanggal bergabung, avatar, bio, dll) berdasarkan username secara otomatis.",
     "folder": "Tools",
     "subfolder": "roblox",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/roblox/?username=Linkmon99",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -301,23 +258,19 @@
         "d": "masukan username mu wok"
       }
     ],
-    "updated_at": "2026-07-29T18:38:43+00:00",
-    "created_at": "2026-07-29T18:38:43+00:00",
-    "catalogId": "ep015"
+    "outputType": "",
+    "example_values": {
+      "username": "Linkmon99"
+    }
   },
   {
-    "id": "custom_1786270010_9211",
+    "catalogId": "ep020",
     "name": "stalker Instagram",
-    "m": "GET",
-    "path": "/api/instagramstalker",
     "desc": "API untuk memverifikasi dan mengekstrak informasi detail profil akun Instagram (User ID, foto profil HD, nama lengkap, jumlah postingan, followers, following, bio, status verifikasi, hingga status privat) secara otomatis berdasarkan username.",
     "folder": "Tools",
     "subfolder": "Instagramstalker",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/instagramstalker/?username=Kyzeee48",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -326,23 +279,19 @@
         "d": "masukan username Instagram "
       }
     ],
-    "updated_at": "2026-08-09T10:07:24+00:00",
-    "created_at": "2026-08-09T10:07:24+00:00",
-    "catalogId": "ep020"
+    "outputType": "",
+    "example_values": {
+      "username": "Kyzeee48"
+    }
   },
   {
-    "id": "custom_1785330076_3438",
+    "catalogId": "ep021",
     "name": "stalker ml",
-    "m": "GET",
-    "path": "/api/ml",
     "desc": "API untuk memverifikasi serta mengekstrak Nickname/In-Game Name (IGN) akun Mobile Legends: Bang Bang berdasarkan User ID dan Server/Zone ID secara otomatis.",
     "folder": "Tools",
     "subfolder": "stalkerml",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ml/?id=134972929&zone=2687",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "id",
@@ -357,22 +306,20 @@
         "d": "masukan zone"
       }
     ],
-    "updated_at": "2026-07-29T13:01:36+00:00",
-    "created_at": "2026-07-29T13:01:36+00:00",
-    "catalogId": "ep021"
+    "outputType": "",
+    "example_values": {
+      "id": "134972929",
+      "zone": "2687"
+    }
   },
   {
+    "catalogId": "ep022",
     "name": "stalker pubg",
-    "m": "GET",
-    "path": "/api/pubg",
     "desc": "API untuk memverifikasi serta mengambil Nickname/In-Game Name (IGN) akun PUBG Mobile berdasarkan Character ID/User ID secara otomatis.",
     "folder": "Tools",
     "subfolder": "pubg",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/pubg/?id=5119961143",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "id",
@@ -381,23 +328,19 @@
         "d": "masukan id PUBG mu wok"
       }
     ],
-    "id": "custom_1785330594_5348",
-    "updated_at": "2026-07-29T13:09:54+00:00",
-    "created_at": "2026-07-29T13:09:54+00:00",
-    "catalogId": "ep022"
+    "outputType": "",
+    "example_values": {
+      "id": "5119961143"
+    }
   },
   {
+    "catalogId": "ep023",
     "name": "stalker Twitter ",
-    "m": "GET",
-    "path": "/api/stalkertwiter",
     "desc": "API untuk memverifikasi dan mengekstrak informasi profil pengguna Twitter/X (User ID, foto profil, header banner, nama lengkap, jumlah tweet, followers, following, lokasi, bio, hingga tanggal bergabung) berdasarkan username secara otomatis.",
     "folder": "Tools",
     "subfolder": "stalkertwiter ",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/stalkertwiter/?username=",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -406,23 +349,19 @@
         "d": "masukan username Twitter "
       }
     ],
-    "id": "custom_1786272545_9597",
-    "updated_at": "2026-08-09T10:49:05+00:00",
-    "created_at": "2026-08-09T10:49:05+00:00",
-    "catalogId": "ep023"
+    "outputType": "",
+    "example_values": {
+      "username": ""
+    }
   },
   {
+    "catalogId": "ep024",
     "name": "tiktok stalker",
-    "m": "GET",
-    "path": "/api/tiktokstalker",
     "desc": "API untuk mengekstrak dan memverifikasi detail profil akun TikTok (User ID, foto profil, statistik followers, following, total suka, status verifikasi, hingga bio) berdasarkan username secara otomatis.",
     "folder": "Tools",
     "subfolder": "tiktokstalker",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/tiktokstalker/?username=nexadevv",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -431,23 +370,19 @@
         "d": "masukan username tiktok"
       }
     ],
-    "id": "custom_1786268773_4934",
-    "updated_at": "2026-08-09T09:46:13+00:00",
-    "created_at": "2026-08-09T09:46:13+00:00",
-    "catalogId": "ep024"
+    "outputType": "",
+    "example_values": {
+      "username": "nexadevv"
+    }
   },
   {
+    "catalogId": "ep025",
     "name": "toqr",
-    "m": "GET",
-    "path": "/tools/toqr",
     "desc": "buat url jadi QR",
     "folder": "Tools",
     "subfolder": "toqr",
-    "outputType": "image",
-    "ex": "https://api.nexadev.my.id/tools/toqr/?url=https://clooud.my.id/uploder/uploads/ISsVGW.jpg",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -456,23 +391,19 @@
         "d": "url foto dll bebas"
       }
     ],
-    "id": "custom_1784788119_6741",
-    "updated_at": "2026-07-23T06:28:39+00:00",
-    "created_at": "2026-07-23T06:28:39+00:00",
-    "catalogId": "ep025"
+    "outputType": "image",
+    "example_values": {
+      "url": "https://clooud.my.id/uploder/uploads/ISsVGW.jpg"
+    }
   },
   {
+    "catalogId": "ep026",
     "name": "upscale ",
-    "m": "GET",
-    "path": "/api/upscale",
     "desc": "API untuk memperjelas, menjernihkan, dan meningkatkan resolusi gambar (HD Image Upscaling) secara otomatis dari URL gambar.",
     "folder": "Tools",
     "subfolder": "upscale",
-    "outputType": "image",
-    "ex": "https://api.nexadev.my.id/api/upscale/?url=https://clooud.my.id/uploder/uploads/QdhzJe.jpg",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -481,23 +412,19 @@
         "d": "kasih gambar nya pakai url uploder.nexadev.my.id"
       }
     ],
-    "id": "custom_1785129748_6180",
-    "updated_at": "2026-07-27T05:22:28+00:00",
-    "created_at": "2026-07-27T05:22:28+00:00",
-    "catalogId": "ep026"
+    "outputType": "image",
+    "example_values": {
+      "url": "https://clooud.my.id/uploder/uploads/QdhzJe.jpg"
+    }
   },
   {
+    "catalogId": "ep027",
     "name": "upscale v1",
-    "m": "GET",
-    "path": "/api/upscale1",
     "desc": "API generasi terbaru untuk meng-upscale dan memperjelas resolusi gambar secara instan dengan kustomisasi tingkat perbesaran (resolusi), langsung mengembalikan raw binary image.",
     "folder": "Tools",
     "subfolder": "upscalev1",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/upscale1/?url=https://clooud.my.id/uploder/uploads/QdhzJe.jpg&resolusi=4",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -512,23 +439,20 @@
         "d": "2/4"
       }
     ],
-    "id": "custom_1785133957_8366",
-    "updated_at": "2026-07-27T06:32:37+00:00",
-    "created_at": "2026-07-27T06:32:37+00:00",
-    "catalogId": "ep027"
+    "outputType": "",
+    "example_values": {
+      "url": "https://clooud.my.id/uploder/uploads/QdhzJe.jpg",
+      "resolusi": "4"
+    }
   },
   {
+    "catalogId": "ep028",
     "name": "wink",
-    "m": "GET",
-    "path": "/api/wink",
     "desc": "API berbasis AI untuk menganimasi foto wajah statis dengan (wink) dan memperjelas detail wajah secara otomatis dari URL gambar.",
     "folder": "Tools",
     "subfolder": "wink",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/wink/?url=https://clooud.my.id/uploder/uploads/XIxbPP.jpg",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -537,18 +461,18 @@
         "d": "masukan url gambar"
       }
     ],
-    "id": "custom_1785291454_6894",
-    "updated_at": "2026-07-29T02:17:34+00:00",
-    "created_at": "2026-07-29T02:17:34+00:00",
-    "catalogId": "ep028"
+    "outputType": "",
+    "example_values": {
+      "url": "https://clooud.my.id/uploder/uploads/XIxbPP.jpg"
+    }
   },
   {
-    "id": "dl1",
+    "catalogId": "ep029",
     "name": "AIO Downloader",
-    "m": "GET",
-    "path": "/api/aio",
-    "folder": "Downloader",
     "desc": "Unduh video, audio, atau reels dari TikTok, Instagram, YouTube, Facebook, Twitter, dll.",
+    "folder": "Downloader",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -557,22 +481,18 @@
         "d": "URL media video/reels dari platform sosial media."
       }
     ],
-    "ex": "https://api.nexadev.my.id/api/aio?url=https://vt.tiktok.com/ZS2x9a9d",
-    "catalogId": "ep029",
-    "subfolder": ""
+    "example_values": {
+      "url": "https://vt.tiktok.com/ZS2x9a9d"
+    }
   },
   {
+    "catalogId": "ep031",
     "name": "capcut downloader ",
-    "m": "GET",
-    "path": "/api/capcut",
     "desc": "Endpoint pengunduh video dan template CapCut tanpa watermark secara instan.",
     "folder": "Downloader",
     "subfolder": "capcut",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/capcut/?url=https://www.capcut.com/tv2/ZSXXSAX2q/",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -581,23 +501,19 @@
         "d": "https://www.capcut.com/tv2/ZSXXSAX2q/"
       }
     ],
-    "id": "custom_1784577622_9870",
-    "updated_at": "2026-07-20T20:00:22+00:00",
-    "created_at": "2026-07-20T20:00:22+00:00",
-    "catalogId": "ep031"
+    "outputType": "",
+    "example_values": {
+      "url": "https://www.capcut.com/tv2/ZSXXSAX2q/"
+    }
   },
   {
+    "catalogId": "ep032",
     "name": "Facebook downloader ",
-    "m": "GET",
-    "path": "/api/fb",
     "desc": "Endpoint pengunduh video Facebook untuk mengunduh video publik dalam kualitas SD/HD secara instan.",
     "folder": "Downloader",
     "subfolder": "Facebook ",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/fb/?url=https://www.facebook.com/share/r/176Gd2Y3F5/",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -606,23 +522,19 @@
         "d": "https://api.nexadev.my.id/api/fb/?url=https://www.facebook.com/share/r/176Gd2Y3F5/"
       }
     ],
-    "id": "custom_1784577180_6296",
-    "updated_at": "2026-07-20T19:53:00+00:00",
-    "created_at": "2026-07-20T19:53:00+00:00",
-    "catalogId": "ep032"
+    "outputType": "",
+    "example_values": {
+      "url": "https://www.facebook.com/share/r/176Gd2Y3F5/"
+    }
   },
   {
+    "catalogId": "ep033",
     "name": "Instagram download  (All post types) ",
-    "m": "GET",
-    "path": "/api/ig",
     "desc": "Endpoint pengunduh konten Instagram untuk mengunduh foto, video, Reels, atau Carousel secara instan.",
     "folder": "Downloader",
     "subfolder": "Instagram ",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ig/?url=https://www.instagram.com/reel/Da_eH4pva9C/?igsh=MWpzNXdhbjE1cjZmOA==",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -631,23 +543,19 @@
         "d": "https://www.instagram.com/reel/Da_eH4pva9C/?igsh=MWpzNXdhbjE1cjZmOA=="
       }
     ],
-    "id": "custom_1784576901_1889",
-    "updated_at": "2026-07-20T19:48:21+00:00",
-    "created_at": "2026-07-20T19:48:21+00:00",
-    "catalogId": "ep033"
+    "outputType": "",
+    "example_values": {
+      "url": "https://www.instagram.com/reel/Da_eH4pva9C/?igsh=MWpzNXdhbjE1cjZmOA=="
+    }
   },
   {
+    "catalogId": "ep034",
     "name": "Instagram Stories ",
-    "m": "GET",
-    "path": "/api/igstories/",
     "desc": "API untuk mengambil seluruh media Instagram Story aktif (foto/video) dari username tertentu dalam bentuk array media JSON.",
     "folder": "Downloader",
     "subfolder": "igstories ",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/igstories/?username=",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "username",
@@ -656,24 +564,19 @@
         "d": "masukan username Ig nya"
       }
     ],
-    "id": "custom_1785073255_3082",
-    "updated_at": "2026-07-26T13:40:55+00:00",
-    "created_at": "2026-07-26T13:40:55+00:00",
-    "catalogId": "ep034"
+    "outputType": "",
+    "example_values": {
+      "username": ""
+    }
   },
   {
-    "id": "custom_1785127663_2096",
+    "catalogId": "ep035",
     "name": "mediafire ",
-    "m": "GET",
-    "path": "/api/mediafire",
     "desc": "API untuk melakukan bypass dan meng-extrak direct download link dari URL Mediafire beserta informasi file nama file, ukuran, tipe MIME",
     "folder": "Downloader",
     "subfolder": "alok",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/mediafire/?url=https://www.mediafire.com/file/v7rlj8ngxj1621f/Nexa_Bot_v1.0.0.zip/file",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -682,22 +585,19 @@
         "d": "masukan url nya "
       }
     ],
-    "updated_at": "2026-07-27T04:48:21+00:00",
-    "created_at": "2026-07-27T04:48:21+00:00",
-    "catalogId": "ep035"
+    "outputType": "",
+    "example_values": {
+      "url": "https://www.mediafire.com/file/v7rlj8ngxj1621f/Nexa_Bot_v1.0.0.zip/file"
+    }
   },
   {
+    "catalogId": "ep036",
     "name": "pinterest ",
-    "m": "GET",
-    "path": "/api/pin",
     "desc": "API untuk mengunduh media dari link Pinterest (berupa gambar kualitas tinggi atau video MP3/MP4) beserta detail metadata postingan.",
     "folder": "Downloader",
     "subfolder": "pinv2",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/pin/?url=https://pin.it/5TJ3CCrNF",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -706,24 +606,19 @@
         "d": "masukan url kamu"
       }
     ],
-    "id": "custom_1785134286_4890",
-    "updated_at": "2026-07-27T06:38:06+00:00",
-    "created_at": "2026-07-27T06:38:06+00:00",
-    "catalogId": "ep036"
+    "outputType": "",
+    "example_values": {
+      "url": "https://pin.it/5TJ3CCrNF"
+    }
   },
   {
-    "id": "custom_1787368331_3795",
+    "catalogId": "ep037",
     "name": "snapsave ig",
-    "m": "GET",
-    "path": "/api/sanapsave",
     "desc": "api ini untuk mengambil meta data dari snapsave",
     "folder": "Downloader",
     "subfolder": "snapsave",
-    "outputType": "",
-    "ex": "https://api.nexaadev.my.id/api/sanapsave?url=https://www.instagram.com/reel/Dbzp_KGTxOI/?igsi=OXdiMmlpMjIyeDc5",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -732,23 +627,19 @@
         "d": "masukan url instagram"
       }
     ],
-    "updated_at": "2026-08-28T21:08:22+00:00",
-    "created_at": "2026-08-28T21:08:22+00:00",
-    "catalogId": "ep037"
+    "outputType": "",
+    "example_values": {
+      "url": "https://www.instagram.com/reel/Dbzp_KGTxOI/?igsi=OXdiMmlpMjIyeDc5"
+    }
   },
   {
-    "id": "custom_1784578651_4610",
+    "catalogId": "ep038",
     "name": "snaptik",
-    "m": "GET",
-    "path": "/api/snaptik/",
     "desc": "Endpoint pengunduh video TikTok tanpa watermark untuk mengunduh media dan audio secara instan.",
     "folder": "Downloader",
     "subfolder": "snaptik",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/snaptik/?url=https://vt.tiktok.com/ZSXXAnbkc/",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -757,22 +648,19 @@
         "d": "url link vidio tiktok"
       }
     ],
-    "updated_at": "2026-07-20T20:19:36+00:00",
-    "created_at": "2026-07-20T20:19:36+00:00",
-    "catalogId": "ep038"
+    "outputType": "",
+    "example_values": {
+      "url": "https://vt.tiktok.com/ZSXXAnbkc/"
+    }
   },
   {
+    "catalogId": "ep039",
     "name": "Spotify ",
-    "m": "GET",
-    "path": "/api/spotify",
     "desc": "Mengambil metadata lengkap lagu Spotify beserta direct link unduhan MP3 dalam format JSON.",
     "folder": "Downloader",
     "subfolder": "spotify",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/spotify/?url=https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=jEdF4DG3R2ShotykgqJE4A&utm_source=copy-link",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -781,23 +669,20 @@
         "d": "https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=jEdF4DG3R2ShotykgqJE4A&utm_source=copy-link"
       }
     ],
-    "id": "custom_1785072413_9881",
-    "updated_at": "2026-07-26T13:26:53+00:00",
-    "created_at": "2026-07-26T13:26:53+00:00",
-    "catalogId": "ep039"
+    "outputType": "",
+    "example_values": {
+      "url": "https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=jEdF4DG3R2ShotykgqJE4A",
+      "utm_source": "copy-link"
+    }
   },
   {
+    "catalogId": "ep040",
     "name": "Spotify download v2",
-    "m": "GET",
-    "path": "/api/spotify",
     "desc": "Api ini untuk mendownload Atau untuk mengambil meta data mp3",
     "folder": "Downloader",
     "subfolder": "Spotifydl",
-    "outputType": "",
-    "ex": "https://api.nexaadev.my.id/api/spotify?url=https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=XtbNv3PmQ4Gtbz8Ts1tIAQ&utm_source=copy-link&sci=spotify%3Acard-config%3A4RqxR7Vh1ZgcevwExir9GJ",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -806,23 +691,21 @@
         "d": "masukan url spotify"
       }
     ],
-    "id": "custom_1787366506_6675",
-    "updated_at": "2026-08-22T02:41:46+00:00",
-    "created_at": "2026-08-22T02:41:46+00:00",
-    "catalogId": "ep040"
+    "outputType": "",
+    "example_values": {
+      "url": "https://open.spotify.com/track/5vQSU3pxA9atqN6zMrcTU7?si=XtbNv3PmQ4Gtbz8Ts1tIAQ",
+      "utm_source": "copy-link",
+      "sci": "spotify:card-config:4RqxR7Vh1ZgcevwExir9GJ"
+    }
   },
   {
+    "catalogId": "ep041",
     "name": "spotify play",
-    "m": "GET",
-    "path": "/api/spotifyplay",
     "desc": "Endpoint pencarian dan pemutar lagu Spotify untuk mengunduh audio serta mengambil metadata musik secara instan.",
     "folder": "Downloader",
     "subfolder": "spotifyplay",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/spotifyplay/?q=karna+kamu",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -831,23 +714,19 @@
         "d": "karna kamu"
       }
     ],
-    "id": "custom_1784549869_3234",
-    "updated_at": "2026-07-20T12:17:49+00:00",
-    "created_at": "2026-07-20T12:17:49+00:00",
-    "catalogId": "ep041"
+    "outputType": "",
+    "example_values": {
+      "q": "karna kamu"
+    }
   },
   {
+    "catalogId": "ep042",
     "name": "Spotify playlist",
-    "m": "GET",
-    "path": "/api/spotifypl",
     "desc": "API untuk mengambil detail metadata lagu Spotify (judul, artis, thumbnail, durasi, preview audio) beserta direct link unduhan MP3 secara otomatis.",
     "folder": "Downloader",
     "subfolder": "Spotifyplaylist",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/spotifypl/?url=https://open.spotify.com/playlist/6Tp1XghEcLfAsZfwHZA6dK?si=FtE2Y1DsSKiy5csMSmrYXw&utm_source=copy-link&pi=TXUyK1-lRRKQC",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -856,23 +735,21 @@
         "d": "masukan url playlist"
       }
     ],
-    "id": "custom_1785292774_7205",
-    "updated_at": "2026-07-29T02:39:34+00:00",
-    "created_at": "2026-07-29T02:39:34+00:00",
-    "catalogId": "ep042"
+    "outputType": "",
+    "example_values": {
+      "url": "https://open.spotify.com/playlist/6Tp1XghEcLfAsZfwHZA6dK?si=FtE2Y1DsSKiy5csMSmrYXw",
+      "utm_source": "copy-link",
+      "pi": "TXUyK1-lRRKQC"
+    }
   },
   {
+    "catalogId": "ep043",
     "name": "YouTube playlist ",
-    "m": "GET",
-    "path": "/api/ytplaylist",
     "desc": "API untuk mengamankan daftar seluruh video dari playlist YouTube secara sekaligus, lengkap dengan informasi channel, total durasi, daftar item, serta link unduhan.",
     "folder": "Downloader",
     "subfolder": "YouTube playlist",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ytplaylist/?url=https://youtube.com/playlist?list=PLnQvfeVegcJbjCnML6FdusK-rl-oDRMXJ&si=5Y98HQ_qMhovarVr",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -881,24 +758,20 @@
         "d": "masukan url playlist"
       }
     ],
-    "id": "custom_1785293294_3057",
-    "updated_at": "2026-07-29T02:48:14+00:00",
-    "created_at": "2026-07-29T02:48:14+00:00",
-    "catalogId": "ep043"
+    "outputType": "",
+    "example_values": {
+      "url": "https://youtube.com/playlist?list=PLnQvfeVegcJbjCnML6FdusK-rl-oDRMXJ",
+      "si": "5Y98HQ_qMhovarVr"
+    }
   },
   {
-    "id": "custom_1784550694_2828",
+    "catalogId": "ep044",
     "name": "yt play",
-    "m": "GET",
-    "path": "/api/ytplay",
     "desc": "Endpoint pencarian dan pemutar media YouTube untuk mengunduh audio serta mengambil metadata secara instan.",
     "folder": "Downloader",
     "subfolder": "ytplay",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ytplay/?q=alone",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -907,22 +780,19 @@
         "d": "cocomelon"
       }
     ],
-    "updated_at": "2026-09-08T01:54:17+00:00",
-    "created_at": "2026-09-08T01:54:17+00:00",
-    "catalogId": "ep044"
+    "outputType": "",
+    "example_values": {
+      "q": "alone"
+    }
   },
   {
+    "catalogId": "ep046",
     "name": "ytmp4",
-    "m": "GET",
-    "path": "/api/ytmp4",
     "desc": "API untuk mengunduh video atau audio dari YouTube dengan kustomisasi tipe media (video/audio) dan pilihan kualitas resolusi (360p, 720p, 1080p) beserta metadata lengkap video.",
     "folder": "Downloader",
     "subfolder": "ytmp4",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/ytmp4/?url=https://youtu.be/gQmLrZw5Jlg?si=LZWsf2kY90HG9nEo&type=video&quality=720p",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -943,19 +813,20 @@
         "d": "720p"
       }
     ],
-    "id": "custom_1785292336_2504",
-    "updated_at": "2026-07-29T02:32:16+00:00",
-    "created_at": "2026-07-29T02:32:16+00:00",
-    "catalogId": "ep046"
+    "outputType": "",
+    "example_values": {
+      "url": "https://youtu.be/gQmLrZw5Jlg?si=LZWsf2kY90HG9nEo",
+      "type": "video",
+      "quality": "720p"
+    }
   },
   {
-    "id": "as5",
+    "catalogId": "ep047",
     "name": "Animasu Completed",
-    "m": "GET",
-    "path": "/animasu",
+    "desc": "Lihat daftar anime yang sudah tamat/selesai tayang dari Animasu.",
     "folder": "Anime",
     "subfolder": "Animasu",
-    "desc": "Lihat daftar anime yang sudah tamat/selesai tayang dari Animasu.",
+    "m": "GET",
     "params": [
       {
         "n": "completed",
@@ -970,17 +841,18 @@
         "d": "Nomor halaman."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/animasu?completed=1&page=1",
-    "catalogId": "ep047"
+    "example_values": {
+      "completed": "1",
+      "page": "1"
+    }
   },
   {
-    "id": "as2",
+    "catalogId": "ep048",
     "name": "Animasu Details",
-    "m": "GET",
-    "path": "/animasu",
+    "desc": "Dapatkan info detail genre, skor, episode dan sinopsis anime Animasu.",
     "folder": "Anime",
     "subfolder": "Animasu",
-    "desc": "Dapatkan info detail genre, skor, episode dan sinopsis anime Animasu.",
+    "m": "GET",
     "params": [
       {
         "n": "details",
@@ -989,17 +861,17 @@
         "d": "URL detail anime."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/animasu?details=https://v1.animasu.work/anime/jujutsu-kaisen-subtitle-indo/",
-    "catalogId": "ep048"
+    "example_values": {
+      "details": "https://v1.animasu.work/anime/jujutsu-kaisen-subtitle-indo/"
+    }
   },
   {
-    "id": "as4",
+    "catalogId": "ep049",
     "name": "Animasu Ongoing",
-    "m": "GET",
-    "path": "/animasu",
+    "desc": "Lihat anime-anime ongoing yang sedang rilis setiap minggunya.",
     "folder": "Anime",
     "subfolder": "Animasu",
-    "desc": "Lihat anime-anime ongoing yang sedang rilis setiap minggunya.",
+    "m": "GET",
     "params": [
       {
         "n": "ongoing",
@@ -1014,17 +886,18 @@
         "d": "Halaman list."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/animasu?ongoing=1&page=1",
-    "catalogId": "ep049"
+    "example_values": {
+      "ongoing": "1",
+      "page": "1"
+    }
   },
   {
-    "id": "as6",
+    "catalogId": "ep050",
     "name": "Animasu Popular",
-    "m": "GET",
-    "path": "/animasu",
+    "desc": "Lihat daftar anime terpopuler versi Animasu.",
     "folder": "Anime",
     "subfolder": "Animasu",
-    "desc": "Lihat daftar anime terpopuler versi Animasu.",
+    "m": "GET",
     "params": [
       {
         "n": "popular",
@@ -1039,17 +912,18 @@
         "d": "Nomor halaman."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/animasu?popular=1&page=1",
-    "catalogId": "ep050"
+    "example_values": {
+      "popular": "1",
+      "page": "1"
+    }
   },
   {
-    "id": "as7",
+    "catalogId": "ep051",
     "name": "Animasu Schedule",
-    "m": "GET",
-    "path": "/animasu",
+    "desc": "Lihat jadwal tayang mingguan anime dari Animasu.",
     "folder": "Anime",
     "subfolder": "Animasu",
-    "desc": "Lihat jadwal tayang mingguan anime dari Animasu.",
+    "m": "GET",
     "params": [
       {
         "n": "schedule",
@@ -1058,17 +932,17 @@
         "d": "Nilai 1."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/animasu?schedule=1",
-    "catalogId": "ep051"
+    "example_values": {
+      "schedule": "1"
+    }
   },
   {
-    "id": "as1",
+    "catalogId": "ep052",
     "name": "Animasu Search",
-    "m": "GET",
-    "path": "/animasu",
+    "desc": "Mencari list anime sub-indo melalaui database Animasu.",
     "folder": "Anime",
     "subfolder": "Animasu",
-    "desc": "Mencari list anime sub-indo melalaui database Animasu.",
+    "m": "GET",
     "params": [
       {
         "n": "search",
@@ -1077,17 +951,17 @@
         "d": "Judul anime."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/animasu?search=jujutsu+kaisen",
-    "catalogId": "ep052"
+    "example_values": {
+      "search": "jujutsu kaisen"
+    }
   },
   {
-    "id": "as3",
+    "catalogId": "ep053",
     "name": "Animasu Stream",
-    "m": "GET",
-    "path": "/animasu",
+    "desc": "Ambil link sreaming video Animasu resolusi 360p-720p.",
     "folder": "Anime",
     "subfolder": "Animasu",
-    "desc": "Ambil link sreaming video Animasu resolusi 360p-720p.",
+    "m": "GET",
     "params": [
       {
         "n": "stream",
@@ -1096,17 +970,17 @@
         "d": "URL episode streaming."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/animasu?stream=https://v1.animasu.work/nonton-jujutsu-kaisen-tv-episode-10-indo/",
-    "catalogId": "ep053"
+    "example_values": {
+      "stream": "https://v1.animasu.work/nonton-jujutsu-kaisen-tv-episode-10-indo/"
+    }
   },
   {
-    "id": "a5",
+    "catalogId": "ep054",
     "name": "Animekuindo Completed",
-    "m": "GET",
-    "path": "/anime",
+    "desc": "Menampilkan daftar anime tamat terbaru.",
     "folder": "Anime",
     "subfolder": "Animekuindo",
-    "desc": "Menampilkan daftar anime tamat terbaru.",
+    "m": "GET",
     "params": [
       {
         "n": "completed",
@@ -1121,17 +995,18 @@
         "d": "Nomor halaman."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/anime?completed=1&page=1",
-    "catalogId": "ep054"
+    "example_values": {
+      "completed": "1",
+      "page": "1"
+    }
   },
   {
-    "id": "a2",
+    "catalogId": "ep055",
     "name": "Animekuindo Details",
-    "m": "GET",
-    "path": "/anime",
+    "desc": "Dapatkan informasi lengkap, synopsis, genre, dan daftar episode dari Animekuindo.",
     "folder": "Anime",
     "subfolder": "Animekuindo",
-    "desc": "Dapatkan informasi lengkap, synopsis, genre, dan daftar episode dari Animekuindo.",
+    "m": "GET",
     "params": [
       {
         "n": "details",
@@ -1140,17 +1015,17 @@
         "d": "URL detail anime dari hasil pencarian."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/anime?details=https://s2.animekuindo.life/anime/oshi-no-ko-season-3-subtitle-indonesia/",
-    "catalogId": "ep055"
+    "example_values": {
+      "details": "https://s2.animekuindo.life/anime/oshi-no-ko-season-3-subtitle-indonesia/"
+    }
   },
   {
-    "id": "a4",
+    "catalogId": "ep056",
     "name": "Animekuindo Recent",
-    "m": "GET",
-    "path": "/anime",
+    "desc": "Menampilkan daftar update episode anime subtitle Indonesia terbaru.",
     "folder": "Anime",
     "subfolder": "Animekuindo",
-    "desc": "Menampilkan daftar update episode anime subtitle Indonesia terbaru.",
+    "m": "GET",
     "params": [
       {
         "n": "recent",
@@ -1165,17 +1040,18 @@
         "d": "Nomor halaman pencarian."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/anime?recent=1&page=1",
-    "catalogId": "ep056"
+    "example_values": {
+      "recent": "1",
+      "page": "1"
+    }
   },
   {
-    "id": "a1",
+    "catalogId": "ep057",
     "name": "Animekuindo Search",
-    "m": "GET",
-    "path": "/anime",
+    "desc": "Mencari judul anime subtitle Indonesia melalui database Animekuindo.",
     "folder": "Anime",
     "subfolder": "Animekuindo",
-    "desc": "Mencari judul anime subtitle Indonesia melalui database Animekuindo.",
+    "m": "GET",
     "params": [
       {
         "n": "search",
@@ -1184,17 +1060,17 @@
         "d": "Kata kunci judul anime."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/anime?search=one+piece",
-    "catalogId": "ep057"
+    "example_values": {
+      "search": "one piece"
+    }
   },
   {
-    "id": "a3",
+    "catalogId": "ep058",
     "name": "Animekuindo Stream",
-    "m": "GET",
-    "path": "/anime",
+    "desc": "Dapatkan link streaming server video untuk episode tertentu.",
     "folder": "Anime",
     "subfolder": "Animekuindo",
-    "desc": "Dapatkan link streaming server video untuk episode tertentu.",
+    "m": "GET",
     "params": [
       {
         "n": "stream",
@@ -1203,17 +1079,17 @@
         "d": "URL streaming episode anime."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/anime?stream=https://s2.animekuindo.life/oshi-no-ko-season-3-episode-7-subtitle-indonesia/",
-    "catalogId": "ep058"
+    "example_values": {
+      "stream": "https://s2.animekuindo.life/oshi-no-ko-season-3-episode-7-subtitle-indonesia/"
+    }
   },
   {
-    "id": "db3",
+    "catalogId": "ep059",
     "name": "Dramabox Browse",
-    "m": "GET",
-    "path": "/api/dramabox/browse",
+    "desc": "Menampilkan daftar drama yang difilter berdasarkan kategori beserta paginasi.",
     "folder": "Anime",
     "subfolder": "Dramabox",
-    "desc": "Menampilkan daftar drama yang difilter berdasarkan kategori beserta paginasi.",
+    "m": "GET",
     "params": [
       {
         "n": "typeId",
@@ -1228,29 +1104,27 @@
         "d": "Nomor halaman pencarian."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/dramabox/browse?typeId=1&page=1",
-    "catalogId": "ep059"
+    "example_values": {
+      "typeId": "1",
+      "page": "1"
+    }
   },
   {
-    "id": "db2",
+    "catalogId": "ep060",
     "name": "Dramabox Categories",
-    "m": "GET",
-    "path": "/api/dramabox/categories",
+    "desc": "Mengambil daftar lengkap kategori atau genre yang tersedia di sistem.",
     "folder": "Anime",
     "subfolder": "Dramabox",
-    "desc": "Mengambil daftar lengkap kategori atau genre yang tersedia di sistem.",
-    "params": [],
-    "ex": "https://api.nexaadev.my.id/api/dramabox/categories",
-    "catalogId": "ep060"
+    "m": "GET",
+    "params": []
   },
   {
-    "id": "db5",
+    "catalogId": "ep061",
     "name": "Dramabox Details",
-    "m": "GET",
-    "path": "/api/dramabox/detail",
+    "desc": "Mengambil informasi lengkap drama seperti sinopsis, rating, pemeran, dan daftar episode.",
     "folder": "Anime",
     "subfolder": "Dramabox",
-    "desc": "Mengambil informasi lengkap drama seperti sinopsis, rating, pemeran, dan daftar episode.",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -1259,29 +1133,26 @@
         "d": "Link URL halaman drama."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/dramabox/detail?url=https://www.dramaboxapp.com/detail/...",
-    "catalogId": "ep061"
+    "example_values": {
+      "url": "https://www.dramaboxapp.com/detail/..."
+    }
   },
   {
-    "id": "db1",
+    "catalogId": "ep062",
     "name": "Dramabox Home",
-    "m": "GET",
-    "path": "/api/dramabox/home",
+    "desc": "Menyajikan data beranda seperti slider banner utama, Trending Now, dan New Releases.",
     "folder": "Anime",
     "subfolder": "Dramabox",
-    "desc": "Menyajikan data beranda seperti slider banner utama, Trending Now, dan New Releases.",
-    "params": [],
-    "ex": "https://api.nexaadev.my.id/api/dramabox/home",
-    "catalogId": "ep062"
+    "m": "GET",
+    "params": []
   },
   {
-    "id": "db4",
+    "catalogId": "ep063",
     "name": "Dramabox Search",
-    "m": "GET",
-    "path": "/api/dramabox/search",
+    "desc": "Mencari judul drama, film, atau series berdasarkan kata kunci.",
     "folder": "Anime",
     "subfolder": "Dramabox",
-    "desc": "Mencari judul drama, film, atau series berdasarkan kata kunci.",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -1290,17 +1161,17 @@
         "d": "Kata kunci pencarian."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/dramabox/search?q=ceo",
-    "catalogId": "ep063"
+    "example_values": {
+      "q": "ceo"
+    }
   },
   {
-    "id": "db6",
+    "catalogId": "ep064",
     "name": "Dramabox Video",
-    "m": "GET",
-    "path": "/api/dramabox/video",
+    "desc": "Mengekstrak dan mengambil direct link pemutaran video (streaming) atau format m3u8/mp4.",
     "folder": "Anime",
     "subfolder": "Dramabox",
-    "desc": "Mengekstrak dan mengambil direct link pemutaran video (streaming) atau format m3u8/mp4.",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -1309,21 +1180,18 @@
         "d": "Link URL episode spesifik."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/dramabox/video?url=https://www.dramaboxapp.com/episode/...",
-    "catalogId": "ep064"
+    "example_values": {
+      "url": "https://www.dramaboxapp.com/episode/..."
+    }
   },
   {
+    "catalogId": "ep065",
     "name": "komik indo daftar ",
-    "m": "GET",
-    "path": "/komik/daftar",
     "desc": "ambil daftar komik indo",
     "folder": "Anime",
     "subfolder": "komikindo",
-    "outputType": "",
-    "ex": "https://apii.nexadev.my.id/komik/daftar?page=1",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "page",
@@ -1332,23 +1200,19 @@
         "d": "1"
       }
     ],
-    "id": "custom_1784240037_6387",
-    "updated_at": "2026-07-16T22:13:57+00:00",
-    "created_at": "2026-07-16T22:13:57+00:00",
-    "catalogId": "ep065"
+    "outputType": "",
+    "example_values": {
+      "page": "1"
+    }
   },
   {
+    "catalogId": "ep066",
     "name": "komik indo details",
-    "m": "GET",
-    "path": "/komik/detail",
     "desc": "Dapatkan info detail genre, skor, episode dan sinopsis komik indo.",
     "folder": "Anime",
     "subfolder": "komik indo",
-    "outputType": "",
-    "ex": "https://apii.nexadev.my.id/komik/detail?slug=the-great-ruler",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "slug",
@@ -1357,23 +1221,19 @@
         "d": "the-great-ruler"
       }
     ],
-    "id": "custom_1784240149_8544",
-    "updated_at": "2026-07-16T22:15:49+00:00",
-    "created_at": "2026-07-16T22:15:49+00:00",
-    "catalogId": "ep066"
+    "outputType": "",
+    "example_values": {
+      "slug": "the-great-ruler"
+    }
   },
   {
+    "catalogId": "ep067",
     "name": "komik indo page",
-    "m": "GET",
-    "path": "/komik",
     "desc": "ambil page dari komik indo",
     "folder": "Anime",
     "subfolder": "komikindo",
-    "outputType": "",
-    "ex": "https://apii.nexadev.my.id/komik?page=2",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "page",
@@ -1382,24 +1242,19 @@
         "d": "2"
       }
     ],
-    "id": "custom_1784240212_3024",
-    "updated_at": "2026-07-16T22:16:52+00:00",
-    "created_at": "2026-07-16T22:16:52+00:00",
-    "catalogId": "ep067"
+    "outputType": "",
+    "example_values": {
+      "page": "2"
+    }
   },
   {
-    "id": "custom_1784239677_7529",
+    "catalogId": "ep068",
     "name": "Komik indo search",
-    "m": "GET",
-    "path": "/komik",
     "desc": "Mencari judul komik subtitle Indonesia melalui database komik indo",
     "folder": "Anime",
     "subfolder": "komikindo",
-    "outputType": "",
-    "ex": "https://apii.nexadev.my.id/komik?q=nano",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -1408,22 +1263,19 @@
         "d": "nano machine"
       }
     ],
-    "updated_at": "2026-07-16T22:08:57+00:00",
-    "created_at": "2026-07-16T22:08:57+00:00",
-    "catalogId": "ep068"
+    "outputType": "",
+    "example_values": {
+      "q": "nano"
+    }
   },
   {
+    "catalogId": "ep069",
     "name": "komik indo stream ",
-    "m": "GET",
-    "path": "/komik/stream",
     "desc": "Dapatkan link streaming server gambar untuk episode tertentu",
     "folder": "Anime",
     "subfolder": "komikindo",
-    "outputType": "",
-    "ex": "https://apii.nexadev.my.id/komik/stream?slug=the-great-ruler-chapter-304",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "slug",
@@ -1432,24 +1284,19 @@
         "d": "the-great-ruler-chapter-304"
       }
     ],
-    "id": "custom_1784239874_7804",
-    "updated_at": "2026-07-16T22:11:14+00:00",
-    "created_at": "2026-07-16T22:11:14+00:00",
-    "catalogId": "ep069"
+    "outputType": "",
+    "example_values": {
+      "slug": "the-great-ruler-chapter-304"
+    }
   },
   {
-    "id": "custom_1784239968_5596",
+    "catalogId": "ep070",
     "name": "komik indo update ",
-    "m": "GET",
-    "path": "/komik/update",
     "desc": "dapatkan update komik indo ",
     "folder": "Anime",
     "subfolder": "komikindo",
-    "outputType": "",
-    "ex": "https://apii.nexadev.my.id/komik/update?page=1",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "page",
@@ -1458,18 +1305,18 @@
         "d": "1"
       }
     ],
-    "updated_at": "2026-07-16T22:12:57+00:00",
-    "created_at": "2026-07-16T22:12:57+00:00",
-    "catalogId": "ep070"
+    "outputType": "",
+    "example_values": {
+      "page": "1"
+    }
   },
   {
-    "id": "rs3",
+    "catalogId": "ep071",
     "name": "Reelshort Browse",
-    "m": "GET",
-    "path": "/api/reelshort/browse",
+    "desc": "Menampilkan daftar konten Reelshort berdasarkan kategori/tagId tertentu beserta paginasi.",
     "folder": "Anime",
     "subfolder": "Reelshort",
-    "desc": "Menampilkan daftar konten Reelshort berdasarkan kategori/tagId tertentu beserta paginasi.",
+    "m": "GET",
     "params": [
       {
         "n": "tagId",
@@ -1484,29 +1331,27 @@
         "d": "Nomor halaman pencarian."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/reelshort/browse?tagId=1&page=1",
-    "catalogId": "ep071"
+    "example_values": {
+      "tagId": "1",
+      "page": "1"
+    }
   },
   {
-    "id": "rs2",
+    "catalogId": "ep072",
     "name": "Reelshort Categories",
-    "m": "GET",
-    "path": "/api/reelshort/categories",
+    "desc": "Mengambil daftar lengkap kategori atau genre (tagId) dari Reelshort.",
     "folder": "Anime",
     "subfolder": "Reelshort",
-    "desc": "Mengambil daftar lengkap kategori atau genre (tagId) dari Reelshort.",
-    "params": [],
-    "ex": "https://api.nexaadev.my.id/api/reelshort/categories",
-    "catalogId": "ep072"
+    "m": "GET",
+    "params": []
   },
   {
-    "id": "rs5",
+    "catalogId": "ep073",
     "name": "Reelshort Details",
-    "m": "GET",
-    "path": "/api/reelshort/detail",
+    "desc": "Mengambil informasi lengkap konten Reelshort (sinopsis, daftar episode, dll).",
     "folder": "Anime",
     "subfolder": "Reelshort",
-    "desc": "Mengambil informasi lengkap konten Reelshort (sinopsis, daftar episode, dll).",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -1515,29 +1360,26 @@
         "d": "Book ID atau link URL drama Reelshort."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/reelshort/detail?url=12345",
-    "catalogId": "ep073"
+    "example_values": {
+      "url": "12345"
+    }
   },
   {
-    "id": "rs1",
+    "catalogId": "ep074",
     "name": "Reelshort Home",
-    "m": "GET",
-    "path": "/api/reelshort/home",
+    "desc": "Menyajikan data beranda Reelshort seperti trending, rekomendasi, dan rilisan terbaru.",
     "folder": "Anime",
     "subfolder": "Reelshort",
-    "desc": "Menyajikan data beranda Reelshort seperti trending, rekomendasi, dan rilisan terbaru.",
-    "params": [],
-    "ex": "https://api.nexaadev.my.id/api/reelshort/home",
-    "catalogId": "ep074"
+    "m": "GET",
+    "params": []
   },
   {
-    "id": "rs4",
+    "catalogId": "ep075",
     "name": "Reelshort Search",
-    "m": "GET",
-    "path": "/api/reelshort/search",
+    "desc": "Mencari judul series atau film Reelshort berdasarkan kata kunci.",
     "folder": "Anime",
     "subfolder": "Reelshort",
-    "desc": "Mencari judul series atau film Reelshort berdasarkan kata kunci.",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -1546,17 +1388,17 @@
         "d": "Kata kunci pencarian."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/reelshort/search?q=ceo",
-    "catalogId": "ep075"
+    "example_values": {
+      "q": "ceo"
+    }
   },
   {
-    "id": "rs6",
+    "catalogId": "ep076",
     "name": "Reelshort Video",
-    "m": "GET",
-    "path": "/api/reelshort/video",
+    "desc": "Mengekstrak direct link pemutaran video (streaming) untuk episode Reelshort.",
     "folder": "Anime",
     "subfolder": "Reelshort",
-    "desc": "Mengekstrak direct link pemutaran video (streaming) untuk episode Reelshort.",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -1565,17 +1407,17 @@
         "d": "Link URL episode Reelshort spesifik."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/reelshort/video?url=https://api.nexaadev.my.id/api/reelshort/video?url=...",
-    "catalogId": "ep076"
+    "example_values": {
+      "url": "https://api.nexaadev.my.id/api/reelshort/video?url=..."
+    }
   },
   {
-    "id": "cv1",
+    "catalogId": "ep077",
     "name": "Brat Canvas",
-    "m": "GET",
-    "path": "/api/canvas/brat",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Ubah teks menjadi format stiker/gambar bergaya tren minimalis Brat.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -1584,18 +1426,18 @@
         "d": "Kata-kata atau kalimat teks."
       }
     ],
-    "ex": "https://api.nexadev.my.id/api/canvas/brat?text=halo%20nexa",
-    "catalogId": "ep077",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "text": "halo nexa"
+    }
   },
   {
-    "id": "cv6",
+    "catalogId": "ep078",
     "name": "Brat Patrick",
-    "m": "GET",
-    "path": "/bratpatrick",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Gambar stiker Brat bergaya meme merah muda Patrick Star.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -1604,18 +1446,18 @@
         "d": "Isi teks stiker."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/bratpatrick?text=hallo+gua+nexa",
-    "catalogId": "ep078",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "text": "hallo gua nexa"
+    }
   },
   {
-    "id": "cv2",
+    "catalogId": "ep079",
     "name": "Bratvid Canvas",
-    "m": "GET",
-    "path": "/api/canvas/bratvid",
-    "folder": "Canvas",
-    "outputType": "video",
     "desc": "Ubah teks menjadi video klip animasi minimalis berlatar belakang neon hijau Brat.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -1624,18 +1466,18 @@
         "d": "Isi teks sticker."
       }
     ],
-    "ex": "https://api.nexadev.my.id/api/canvas/bratvid?text=halo%20nexa",
-    "catalogId": "ep079",
-    "subfolder": ""
+    "outputType": "video",
+    "example_values": {
+      "text": "halo nexa"
+    }
   },
   {
-    "id": "cv7",
+    "catalogId": "ep080",
     "name": "Bratvid Patrick",
-    "m": "GET",
-    "path": "/bratpatrick/video",
-    "folder": "Canvas",
-    "outputType": "video",
     "desc": "Video loop neon hijau Brat berisikan animasi Patrick Star.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -1644,18 +1486,18 @@
         "d": "Kalimat teks."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/bratpatrick/video?text=hallo+gua+nexa",
-    "catalogId": "ep080",
-    "subfolder": ""
+    "outputType": "video",
+    "example_values": {
+      "text": "hallo gua nexa"
+    }
   },
   {
-    "id": "cv13",
+    "catalogId": "ep082",
     "name": "Fake Call",
-    "m": "GET",
-    "path": "/fakecall",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Mockup tampilan layar panggilan masuk (fake incoming call) dengan foto profil dan durasi kustom.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "ppurl",
@@ -1676,22 +1518,21 @@
         "d": "Durasi panggilan (Format: MM.SS)."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/fakecall?ppurl=https://clooud.my.id/uploder/uploads/SggiMA.jpeg&name=NexaDev&duration=19.45",
-    "catalogId": "ep082",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "ppurl": "https://clooud.my.id/uploder/uploads/SggiMA.jpeg",
+      "name": "NexaDev",
+      "duration": "19.45"
+    }
   },
   {
+    "catalogId": "ep083",
     "name": "Fake ff duo",
-    "m": "GET",
-    "path": "/fakeffduo",
     "desc": "buat Fake ff duo mu sekarang 🔥",
     "folder": "Canvas",
     "subfolder": "Fakeffduo",
-    "outputType": "",
-    "ex": "https://apii.nexadev.my.id/fakeffduo?nickname1=Javin%20%F0%9F%98%A0&nickname2=Xy%20Pemula",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "nickname1",
@@ -1706,19 +1547,19 @@
         "d": "Xy Pemula"
       }
     ],
-    "id": "custom_1784291589_6194",
-    "updated_at": "2026-07-17T12:33:09+00:00",
-    "created_at": "2026-07-17T12:33:09+00:00",
-    "catalogId": "ep083"
+    "outputType": "",
+    "example_values": {
+      "nickname1": "Javin 😠",
+      "nickname2": "Xy Pemula"
+    }
   },
   {
-    "id": "cv10",
+    "catalogId": "ep084",
     "name": "Fake FF Profile v2",
-    "m": "GET",
-    "path": "/fakeff",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Mockup profil game Free Fire versi 2 dengan dukungan karakter unicode pada nickname.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "usn",
@@ -1727,18 +1568,18 @@
         "d": "Nickname/username yang ditampilkan pada profil."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/fakeff?usn=NexaDev",
-    "catalogId": "ep084",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "usn": "NexaDev"
+    }
   },
   {
-    "id": "cv12",
+    "catalogId": "ep086",
     "name": "Instagram Story Image",
-    "m": "GET",
-    "path": "/igstory-img",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Mockup tampilan Instagram Story lengkap dengan foto, avatar, dan nama pengguna.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "photo",
@@ -1765,18 +1606,21 @@
         "d": "Nama tampilan (display name) pengguna."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/igstory-img?photo=https://clooud.my.id/uploder/uploads/jaoCqc.jpeg&avatar=https://clooud.my.id/uploder/uploads/Mbasnl.jpeg&usn=nexadev&name=Javin",
-    "catalogId": "ep086",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "photo": "https://clooud.my.id/uploder/uploads/jaoCqc.jpeg",
+      "avatar": "https://clooud.my.id/uploder/uploads/Mbasnl.jpeg",
+      "usn": "nexadev",
+      "name": "Javin"
+    }
   },
   {
-    "id": "cv8",
+    "catalogId": "ep087",
     "name": "IQC (Islamic Quote Card)",
-    "m": "GET",
-    "path": "/api/canvas/iqc",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Buat quote card islami dari teks menjadi gambar siap bagikan.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -1785,18 +1629,18 @@
         "d": "Isi teks quote."
       }
     ],
-    "ex": "https://api.nexadev.my.id/api/canvas/iqc?text=hasbunallah+wa+nikmal+wakil",
-    "catalogId": "ep087",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "text": "hasbunallah wa nikmal wakil"
+    }
   },
   {
-    "id": "cv11",
+    "catalogId": "ep088",
     "name": "IQC Dark",
-    "m": "GET",
-    "path": "/iqc-dark",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Quote card bergaya chat pertanyaan dengan tema gelap (dark mode), lengkap dengan gambar dan waktu.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -1817,18 +1661,20 @@
         "d": "URL gambar pendukung yang ditampilkan pada card."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/iqc-dark?text=aku+lucu+gak%3F&time=01.27&url=https://clooud.my.id/uploder/uploads/fRkHHO.jpeg",
-    "catalogId": "ep088",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "text": "aku lucu gak?",
+      "time": "01.27",
+      "url": "https://clooud.my.id/uploder/uploads/fRkHHO.jpeg"
+    }
   },
   {
-    "id": "cv5",
+    "catalogId": "ep089",
     "name": "Nokia Canvas",
-    "m": "GET",
-    "path": "/nokia",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Mockup layar ponsel legendaris Nokia jadul berisikan sms kustom.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -1861,18 +1707,22 @@
         "d": "Judul header layar."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/nokia?text=kata-kata+hari+ini&from=nexa&date=08/06/2026&time=12:00&title=nexa",
-    "catalogId": "ep089",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "text": "kata-kata hari ini",
+      "from": "nexa",
+      "date": "08/06/2026",
+      "time": "12:00",
+      "title": "nexa"
+    }
   },
   {
-    "id": "cv15",
+    "catalogId": "ep090",
     "name": "QCWA (Quote Card WhatsApp)",
-    "m": "GET",
-    "path": "/qcwa",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Quote card bergaya chat WhatsApp tanpa lampiran gambar, mendukung mode terang/gelap.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "usn",
@@ -1911,18 +1761,23 @@
         "d": "Label/tag tambahan pada gambar."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/qcwa?usn=raja+iblis&phone=6287876034799&pp=https://clooud.my.id/uploder/uploads/BJLnsy.png&text=btw+ini+my+bini+gw&mode=light&tag=ara-ara",
-    "catalogId": "ep090",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "usn": "raja iblis",
+      "phone": "6287876034799",
+      "pp": "https://clooud.my.id/uploder/uploads/BJLnsy.png",
+      "text": "btw ini my bini gw",
+      "mode": "light",
+      "tag": "ara-ara"
+    }
   },
   {
-    "id": "cv14",
+    "catalogId": "ep091",
     "name": "QCWA (Quote Card WhatsApp) + Gambar",
-    "m": "GET",
-    "path": "/qcwa",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Quote card bergaya chat WhatsApp lengkap dengan lampiran gambar, mendukung mode terang/gelap.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "usn",
@@ -1967,18 +1822,24 @@
         "d": "URL gambar lampiran yang disertakan dalam chat."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/qcwa?usn=raja+iblis&phone=6287876034799&pp=https://clooud.my.id/uploder/uploads/BJLnsy.png&text=btw+ini+my+bini+gw&mode=light&tag=ara-ara&img=https://clooud.my.id/uploder/uploads/MRzOni.jpg",
-    "catalogId": "ep091",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "usn": "raja iblis",
+      "phone": "6287876034799",
+      "pp": "https://clooud.my.id/uploder/uploads/BJLnsy.png",
+      "text": "btw ini my bini gw",
+      "mode": "light",
+      "tag": "ara-ara",
+      "img": "https://clooud.my.id/uploder/uploads/MRzOni.jpg"
+    }
   },
   {
-    "id": "cv9",
+    "catalogId": "ep092",
     "name": "TTQC (TikTok Quote Card)",
-    "m": "GET",
-    "path": "/ttqc",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Buat quote card bergaya tangkapan layar komentar/chat TikTok.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -1999,18 +1860,20 @@
         "d": "Isi teks quote/komentar."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/ttqc?url=https://clooud.my.id/uploder/uploads/fRkHHO.jpeg&name=NexaDev&text=halo+gua+nexa",
-    "catalogId": "ep092",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "url": "https://clooud.my.id/uploder/uploads/fRkHHO.jpeg",
+      "name": "NexaDev",
+      "text": "halo gua nexa"
+    }
   },
   {
-    "id": "cv3",
+    "catalogId": "ep093",
     "name": "WMP1 Canvas",
-    "m": "GET",
-    "path": "/wmp1",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Render teks dalam visualisasi retro bergaya pemutar musik Windows Media Player v1.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -2019,18 +1882,18 @@
         "d": "Teks lirik, gunakan pembatas \"|\" untuk baris baru."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/wmp1?text=ngapain+cemburu|kan|cuman+sebatas|teman",
-    "catalogId": "ep093",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "text": "ngapain cemburu|kan|cuman sebatas|teman"
+    }
   },
   {
-    "id": "cv4",
+    "catalogId": "ep094",
     "name": "WMP2 Canvas",
-    "m": "GET",
-    "path": "/wmp2",
-    "folder": "Canvas",
-    "outputType": "image",
     "desc": "Render teks visualisasi audio bergaya Windows Media Player v2 retro.",
+    "folder": "Canvas",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -2039,66 +1902,50 @@
         "d": "Lirik teks dipisah dengan karakter \"|\"."
       }
     ],
-    "ex": "https://apii.nexadev.my.id/wmp2?text=ngapain+cemburu|kan|cuman+sebatas|teman",
-    "catalogId": "ep094",
-    "subfolder": ""
+    "outputType": "image",
+    "example_values": {
+      "text": "ngapain cemburu|kan|cuman sebatas|teman"
+    }
   },
   {
-    "id": "custom_1784547223_8158",
+    "catalogId": "ep095",
     "name": "quote bucin",
-    "m": "GET",
-    "path": "/api/random/quotebucin",
     "desc": "Endpoint untuk mendapatkan kata-kata romantis/bucin acak dalam format JSON.",
     "folder": "Random",
     "subfolder": "quotebucin",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/random/quotebucin/",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [],
-    "updated_at": "2026-07-20T11:34:41+00:00",
-    "created_at": "2026-07-20T11:34:41+00:00",
-    "catalogId": "ep095"
+    "outputType": ""
   },
   {
-    "id": "r2",
-    "name": "Random Anime",
-    "m": "GET",
-    "path": "/api/random/anime",
-    "folder": "Random",
-    "outputType": "image",
-    "desc": "Mengambil gambar wallpaper / fanart anime acak kualitas HD.",
-    "params": [],
-    "ex": "https://api.nexadev.my.id/api/random/anime",
     "catalogId": "ep096",
-    "subfolder": ""
-  },
-  {
-    "id": "r1",
-    "name": "Random PAP",
-    "m": "GET",
-    "path": "/api/random/pap",
+    "name": "Random Anime",
+    "desc": "Mengambil gambar wallpaper / fanart anime acak kualitas HD.",
     "folder": "Random",
-    "outputType": "image",
-    "desc": "Mengambil gambar PAP / foto kasual acak estetis dari server.",
+    "subfolder": "",
+    "m": "GET",
     "params": [],
-    "ex": "https://api.nexadev.my.id/api/random/pap",
-    "catalogId": "ep097",
-    "subfolder": ""
+    "outputType": "image"
   },
   {
-    "name": "detik search ",
+    "catalogId": "ep097",
+    "name": "Random PAP",
+    "desc": "Mengambil gambar PAP / foto kasual acak estetis dari server.",
+    "folder": "Random",
+    "subfolder": "",
     "m": "GET",
-    "path": "/api/detik",
+    "params": [],
+    "outputType": "image"
+  },
+  {
+    "catalogId": "ep098",
+    "name": "detik search ",
     "desc": "Endpoint ini berfungsi untuk melakukan pencarian artikel berita di seluruh ekosistem Detikcom berdasarkan kata kunci (query).",
     "folder": "Search",
     "subfolder": "detiksearch",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/detik/?query=gempa",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "query",
@@ -2107,24 +1954,19 @@
         "d": ""
       }
     ],
-    "id": "custom_1786697820_4799",
-    "updated_at": "2026-08-14T08:57:00+00:00",
-    "created_at": "2026-08-14T08:57:00+00:00",
-    "catalogId": "ep098"
+    "outputType": "",
+    "example_values": {
+      "query": "gempa"
+    }
   },
   {
-    "id": "custom_1786539989_4261",
+    "catalogId": "ep099",
     "name": "Lahelu search",
-    "m": "GET",
-    "path": "/api/lahelu",
     "desc": "Untuk mencari meme yg ada di lahelu ",
     "folder": "Search",
     "subfolder": "lahelu",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/lahelu/?query=sad",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "query",
@@ -2133,23 +1975,19 @@
         "d": "meme"
       }
     ],
-    "updated_at": "2026-08-14T19:42:35+00:00",
-    "created_at": "2026-08-14T19:42:35+00:00",
-    "catalogId": "ep099"
+    "outputType": "",
+    "example_values": {
+      "query": "sad"
+    }
   },
   {
-    "id": "custom_1785425590_5832",
+    "catalogId": "ep100",
     "name": "lyric",
-    "m": "GET",
-    "path": "/api/lyric",
     "desc": "API untuk melakukan pencarian daftar lirik lagu berdasarkan judul, nama penyanyi, atau potongan lirik. Mengembalikan daftar list hasil pencarian yang berisi judul lagu dan URL lirik terkait.",
     "folder": "Search",
     "subfolder": "lyric",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/lyric/?q=alone",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2158,23 +1996,19 @@
         "d": "search lyric"
       }
     ],
-    "updated_at": "2026-08-15T00:48:42+00:00",
-    "created_at": "2026-08-15T00:48:42+00:00",
-    "catalogId": "ep100"
+    "outputType": "",
+    "example_values": {
+      "q": "alone"
+    }
   },
   {
-    "id": "custom_1785425531_6123",
+    "catalogId": "ep101",
     "name": "lyric get",
-    "m": "GET",
-    "path": "/api/lyric",
     "desc": "API untuk  mengekstrak teks lirik lagu secara utuh berdasarkan link direct URL penyedia lirik (seperti Genius).",
     "folder": "Search",
     "subfolder": "lyricget",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/lyric/?q=https://genius.com/Drake-hate-sleeping-alone-lyrics",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2183,17 +2017,18 @@
         "d": "masukan url lyric"
       }
     ],
-    "updated_at": "2026-08-15T00:48:54+00:00",
-    "created_at": "2026-08-15T00:48:54+00:00",
-    "catalogId": "ep101"
+    "outputType": "",
+    "example_values": {
+      "q": "https://genius.com/Drake-hate-sleeping-alone-lyrics"
+    }
   },
   {
-    "id": "src1",
+    "catalogId": "ep102",
     "name": "MCPDL Search",
-    "m": "GET",
-    "path": "/api/mcpdl/",
-    "folder": "Search",
     "desc": "Mencari add-on, mod, skin, texture, atau map Minecraft PE/Bedrock dari MCPDL.",
+    "folder": "Search",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -2202,23 +2037,18 @@
         "d": "Kata kunci pencarian Minecraft."
       }
     ],
-    "ex": "https://api.nexadev.my.id/api/mcpdl/?q=lucky+block",
-    "catalogId": "ep102",
-    "subfolder": ""
+    "example_values": {
+      "q": "lucky block"
+    }
   },
   {
-    "id": "custom_1786581235_4978",
+    "catalogId": "ep104",
     "name": "sound effect detail",
-    "m": "GET",
-    "path": "/api/soundeffect/detail",
     "desc": "detail dari spesifik efek suara MyInstants. Dengan memberikan URL halaman MyInstants yang valid, sistem akan melakukan ekstraksi meta data untuk mengembalikan informasi lengkap, termasuk judul asli dan direct link file MP3 (audio) yang siap untuk diputar atau diunduh oleh client.",
     "folder": "Search",
     "subfolder": "soundeffect1",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/soundeffect/detail/?url=https://www.myinstants.com/en/instant/sad-violin-the-meme-one/",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "url",
@@ -2227,23 +2057,19 @@
         "d": ""
       }
     ],
-    "updated_at": "2026-08-14T04:52:02+00:00",
-    "created_at": "2026-08-14T04:52:02+00:00",
-    "catalogId": "ep104"
+    "outputType": "",
+    "example_values": {
+      "url": "https://www.myinstants.com/en/instant/sad-violin-the-meme-one/"
+    }
   },
   {
-    "id": "custom_1786581109_1167",
+    "catalogId": "ep105",
     "name": "sound effect search",
-    "m": "GET",
-    "path": "/api/soundeffect",
     "desc": "Endpoint ini berfungsi untuk melakukan pencarian efek suara (sound effect) meme berdasarkan kata kunci (query). ",
     "folder": "Search",
     "subfolder": "soundeffect",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/soundeffect/?q=sad",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2252,23 +2078,19 @@
         "d": "sad"
       }
     ],
-    "updated_at": "2026-08-14T04:51:52+00:00",
-    "created_at": "2026-08-14T04:51:52+00:00",
-    "catalogId": "ep105"
+    "outputType": "",
+    "example_values": {
+      "q": "sad"
+    }
   },
   {
-    "id": "custom_1784548512_7396",
+    "catalogId": "ep106",
     "name": "yt search",
-    "m": "GET",
-    "path": "/tools/ytsearch",
     "desc": "YouTube Search",
     "folder": "Search",
     "subfolder": "ytsearch",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/tools/ytsearch/?q=karna+kamu",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "q",
@@ -2277,17 +2099,18 @@
         "d": "karna kamu"
       }
     ],
-    "updated_at": "2026-08-15T00:48:24+00:00",
-    "created_at": "2026-08-15T00:48:24+00:00",
-    "catalogId": "ep106"
+    "outputType": "",
+    "example_values": {
+      "q": "karna kamu"
+    }
   },
   {
-    "id": "sm1",
+    "catalogId": "ep107",
     "name": "Cek Status Order",
-    "m": "GET",
-    "path": "/cekstatus",
-    "folder": "SMM",
     "desc": "Cek riwayat/status pesanan panel SMM berdasarkan ID transaksi.",
+    "folder": "SMM",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "id",
@@ -2296,65 +2119,48 @@
         "d": "Nomor order ID transaksi."
       }
     ],
-    "ex": "https://api.nexadev.my.id/cekstatus?id=123456",
-    "catalogId": "ep107",
-    "subfolder": ""
+    "example_values": {
+      "id": "123456"
+    }
   },
   {
-    "id": "nw1",
-    "name": "FF News Feed",
-    "m": "GET",
-    "path": "/berita/ffnews/",
-    "folder": "Berita",
-    "desc": "Mengambil berita, event, dan update terbaru seputar game Free Fire secara langsung.",
-    "params": [],
-    "ex": "https://api.nexadev.my.id/berita/ffnews/",
     "catalogId": "ep108",
-    "subfolder": ""
+    "name": "FF News Feed",
+    "desc": "Mengambil berita, event, dan update terbaru seputar game Free Fire secara langsung.",
+    "folder": "Berita",
+    "subfolder": "",
+    "m": "GET",
+    "params": []
   },
   {
+    "catalogId": "ep109",
     "name": "Kompas news",
-    "m": "GET",
-    "path": "/api/kompasnews",
     "desc": "untuk mendapatkan News berita di kompas.com",
     "folder": "Berita",
     "subfolder": "kompas news",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/kompasnews/",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [],
-    "id": "custom_1786736845_8221",
-    "updated_at": "2026-08-14T19:47:25+00:00",
-    "created_at": "2026-08-14T19:47:25+00:00",
-    "catalogId": "ep109"
+    "outputType": ""
   },
   {
+    "catalogId": "ep110",
     "name": "detik News",
-    "m": "GET",
-    "path": "/api/detiknews",
     "desc": "Endpoint ini digunakan untuk melakukan scraping daftar berita terbaru dan headline utama langsung dari halaman beranda DetikNews",
     "folder": "Info",
     "subfolder": "detiknews",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/detiknews/",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [],
-    "id": "custom_1786698336_4077",
-    "updated_at": "2026-08-14T09:05:36+00:00",
-    "created_at": "2026-08-14T09:05:36+00:00",
-    "catalogId": "ep110"
+    "outputType": ""
   },
   {
-    "id": "in2",
+    "catalogId": "ep111",
     "name": "Info Cuaca",
-    "m": "GET",
-    "path": "/api/cuaca",
-    "folder": "Info",
     "desc": "Cek informasi perkiraan cuaca kota tertentu secara real-time.",
+    "folder": "Info",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -2369,17 +2175,18 @@
         "d": "Indeks hari/sesi cuaca."
       }
     ],
-    "ex": "https://api.nexaadev.my.id/api/cuaca?q=bandung&index=1",
-    "catalogId": "ep111",
-    "subfolder": ""
+    "example_values": {
+      "q": "bandung",
+      "index": "1"
+    }
   },
   {
-    "id": "in3",
+    "catalogId": "ep113",
     "name": "Metadata Channel",
-    "m": "GET",
-    "path": "/api/channel/",
-    "folder": "Info",
     "desc": "Mengambil informasi metadata dan detail dari saluran (channel) WhatsApp.",
+    "folder": "Info",
+    "subfolder": "",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -2388,22 +2195,18 @@
         "d": "URL channel WhatsApp."
       }
     ],
-    "ex": "https://api.nexadev.my.id/api/channel/?url=https://whatsapp.com/channel/0029Vb7TkCcD38CStrAMMb3N",
-    "catalogId": "ep113",
-    "subfolder": ""
+    "example_values": {
+      "url": "https://whatsapp.com/channel/0029Vb7TkCcD38CStrAMMb3N"
+    }
   },
   {
+    "catalogId": "ep114",
     "name": "AL-Quran",
-    "m": "GET",
-    "path": "/api/quran/",
     "desc": "Endpoint pencarian ayat Al-Qur'an untuk mengambil teks Arab, latin, dan terjemahan berdasarkan nomor surah dan ayat.",
     "folder": "Islami",
     "subfolder": "quran",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/quran/?surah=5&verse=1",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "surah",
@@ -2418,23 +2221,20 @@
         "d": "1"
       }
     ],
-    "id": "custom_1784579293_2423",
-    "updated_at": "2026-07-20T20:28:13+00:00",
-    "created_at": "2026-07-20T20:28:13+00:00",
-    "catalogId": "ep114"
+    "outputType": "",
+    "example_values": {
+      "surah": "5",
+      "verse": "1"
+    }
   },
   {
+    "catalogId": "ep115",
     "name": "AL-Quran Full audio ",
-    "m": "GET",
-    "path": "/api/quranaudio/",
     "desc": "Quran Audio API Wrapper adalah skrip/endpoint berbasis PHP yang mengambil data ayat Al-Qur'an beserta audio bacaannya secara otomatis, kemudian menyajikannya kembali dalam format JSON yang rapi",
     "folder": "Islami",
     "subfolder": "quranaudio",
-    "outputType": "",
-    "ex": "https://api.nexadev.my.id/api/quranaudio/?surah=2",
+    "m": "GET",
     "needKey": false,
-    "keyParam": "key",
-    "keyDesc": "API Key Javin dari dasbor registrasi.",
     "params": [
       {
         "n": "surah",
@@ -2443,30 +2243,27 @@
         "d": "2"
       }
     ],
-    "id": "custom_1784687415_2512",
-    "updated_at": "2026-07-22T02:30:15+00:00",
-    "created_at": "2026-07-22T02:30:15+00:00",
-    "catalogId": "ep115"
+    "outputType": "",
+    "example_values": {
+      "surah": "2"
+    }
   },
   {
-    "id": "is1",
-    "name": "Doa Harian",
-    "m": "GET",
-    "path": "/api/doa",
-    "folder": "Islami",
-    "desc": "Kumpulan doa harian lengkap beserta transliterasi arab, latin, dan terjemahan bahasa Indonesia.",
-    "params": [],
-    "ex": "https://api.nexadev.my.id/api/doa",
     "catalogId": "ep116",
-    "subfolder": ""
+    "name": "Doa Harian",
+    "desc": "Kumpulan doa harian lengkap beserta transliterasi arab, latin, dan terjemahan bahasa Indonesia.",
+    "folder": "Islami",
+    "subfolder": "",
+    "m": "GET",
+    "params": []
   },
   {
-    "id": "up1",
+    "catalogId": "ep117",
     "name": "File Uploader",
-    "m": "POST",
-    "path": "/uploder/",
-    "folder": "Uploader",
     "desc": "Unggah file multimedia (JPG, PNG, WEBP, MP3, MP4, dll) via form-data. Mengembalikan response JSON dengan data URL file, tipe, ukuran, dan masa kedaluwarsa.",
+    "folder": "Uploader",
+    "subfolder": "",
+    "m": "POST",
     "params": [
       {
         "n": "files[]",
@@ -2474,20 +2271,15 @@
         "r": 1,
         "d": "Berkas biner file unggahan (multipart/form-data)."
       }
-    ],
-    "ex": "https://clooud.my.id/uploder/",
-    "catalogId": "ep117",
-    "subfolder": ""
+    ]
   },
   {
     "catalogId": "ep119",
     "name": "gita",
-    "m": "GET",
-    "path": "/api/ai/gita",
+    "desc": "gita",
     "folder": "AI",
     "subfolder": "gita",
-    "desc": "gita",
-    "ex": "https://api.siputzx.my.id/api/ai/gita?q=What+is+karma%3F",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -2495,17 +2287,18 @@
         "r": 0,
         "d": "q"
       }
-    ]
+    ],
+    "example_values": {
+      "q": "What is karma?"
+    }
   },
   {
     "catalogId": "ep120",
     "name": "QwQ 32B",
-    "m": "GET",
-    "path": "/api/ai/qwq32b",
+    "desc": "QwQ 32B",
     "folder": "AI",
     "subfolder": "qwq32b",
-    "desc": "QwQ 32B",
-    "ex": "https://api.siputzx.my.id/api/ai/qwq32b?prompt=Halo%2C+siapa+kamu%3F&system=You+are+a+helpful+assistant.&temperature=0.7",
+    "m": "GET",
     "params": [
       {
         "n": "prompt",
@@ -2525,17 +2318,20 @@
         "r": 0,
         "d": "temperature"
       }
-    ]
+    ],
+    "example_values": {
+      "prompt": "Halo, siapa kamu?",
+      "system": "You are a helpful assistant.",
+      "temperature": "0.7"
+    }
   },
   {
     "catalogId": "ep121",
     "name": "auratail detail",
-    "m": "GET",
-    "path": "/api/anime/auratail-detail",
+    "desc": "auratail detail",
     "folder": "Anime",
     "subfolder": "auratail-detail",
-    "desc": "auratail detail",
-    "ex": "https://api.siputzx.my.id/api/anime/auratail-detail?url=https%3A%2F%2Fauratail.vip%2Fthe-war-of-cards%2F",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -2543,28 +2339,27 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://auratail.vip/the-war-of-cards/"
+    }
   },
   {
     "catalogId": "ep122",
     "name": "auratail latest",
-    "m": "GET",
-    "path": "/api/anime/auratail-latest",
+    "desc": "auratail latest",
     "folder": "Anime",
     "subfolder": "auratail-latest",
-    "desc": "auratail latest",
-    "ex": "https://api.siputzx.my.id/api/anime/auratail-latest",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep123",
     "name": "auratail search",
-    "m": "GET",
-    "path": "/api/anime/auratail-search",
+    "desc": "auratail search",
     "folder": "Anime",
     "subfolder": "auratail-search",
-    "desc": "auratail search",
-    "ex": "https://api.siputzx.my.id/api/anime/auratail-search?query=war",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -2572,17 +2367,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "war"
+    }
   },
   {
     "catalogId": "ep128",
     "name": "otakudesu detail",
-    "m": "GET",
-    "path": "/api/anime/otakudesu/detail",
+    "desc": "otakudesu detail",
     "folder": "Anime",
     "subfolder": "detail",
-    "desc": "otakudesu detail",
-    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/detail?url=https%3A%2F%2Fotakudesu.cloud%2Fanime%2Fborto-sub-indo%2F",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -2590,17 +2386,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://otakudesu.cloud/anime/borto-sub-indo/"
+    }
   },
   {
     "catalogId": "ep129",
     "name": "otakudesu download",
-    "m": "GET",
-    "path": "/api/anime/otakudesu/download",
+    "desc": "otakudesu download",
     "folder": "Anime",
     "subfolder": "download",
-    "desc": "otakudesu download",
-    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/download?url=https%3A%2F%2Fotakudesu.cloud%2Flengkap%2Fbtr-nng-sub-indo-part-1%2F",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -2608,28 +2405,27 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://otakudesu.cloud/lengkap/btr-nng-sub-indo-part-1/"
+    }
   },
   {
     "catalogId": "ep130",
     "name": "otakudesu ongoing",
-    "m": "GET",
-    "path": "/api/anime/otakudesu/ongoing",
+    "desc": "otakudesu ongoing",
     "folder": "Anime",
     "subfolder": "ongoing",
-    "desc": "otakudesu ongoing",
-    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/ongoing",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep131",
     "name": "otakudesu search",
-    "m": "GET",
-    "path": "/api/anime/otakudesu/search",
+    "desc": "otakudesu search",
     "folder": "Anime",
     "subfolder": "search",
-    "desc": "otakudesu search",
-    "ex": "https://api.siputzx.my.id/api/anime/otakudesu/search?s=naruto",
+    "m": "GET",
     "params": [
       {
         "n": "s",
@@ -2637,17 +2433,18 @@
         "r": 0,
         "d": "s"
       }
-    ]
+    ],
+    "example_values": {
+      "s": "naruto"
+    }
   },
   {
     "catalogId": "ep132",
     "name": "samehadaku detail",
-    "m": "GET",
-    "path": "/api/anime/samehadaku/detail",
+    "desc": "samehadaku detail",
     "folder": "Anime",
     "subfolder": "detail",
-    "desc": "samehadaku detail",
-    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/detail?link=https%3A%2F%2Fv1.samehadaku.how%2Fanime%2Fblue-lock-season-2%2F",
+    "m": "GET",
     "params": [
       {
         "n": "link",
@@ -2655,17 +2452,18 @@
         "r": 0,
         "d": "link"
       }
-    ]
+    ],
+    "example_values": {
+      "link": "https://v1.samehadaku.how/anime/blue-lock-season-2/"
+    }
   },
   {
     "catalogId": "ep133",
     "name": "samehadaku download",
-    "m": "GET",
-    "path": "/api/anime/samehadaku/download",
+    "desc": "samehadaku download",
     "folder": "Anime",
     "subfolder": "download",
-    "desc": "samehadaku download",
-    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/download?url=https%3A%2F%2Fv1.samehadaku.how%2Frekishi-ni-nokoru-akujo-ni-naru-zo-episode-9",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -2673,39 +2471,36 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://v1.samehadaku.how/rekishi-ni-nokoru-akujo-ni-naru-zo-episode-9"
+    }
   },
   {
     "catalogId": "ep134",
     "name": "samehadaku latest",
-    "m": "GET",
-    "path": "/api/anime/samehadaku/latest",
+    "desc": "samehadaku latest",
     "folder": "Anime",
     "subfolder": "latest",
-    "desc": "samehadaku latest",
-    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/latest",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep135",
     "name": "samehadaku release",
-    "m": "GET",
-    "path": "/api/anime/samehadaku/release",
+    "desc": "samehadaku release",
     "folder": "Anime",
     "subfolder": "release",
-    "desc": "samehadaku release",
-    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/release",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep136",
     "name": "samehadaku search",
-    "m": "GET",
-    "path": "/api/anime/samehadaku/search",
+    "desc": "samehadaku search",
     "folder": "Anime",
     "subfolder": "search",
-    "desc": "samehadaku search",
-    "ex": "https://api.siputzx.my.id/api/anime/samehadaku/search?query=naruto",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -2713,17 +2508,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "naruto"
+    }
   },
   {
     "catalogId": "ep137",
     "name": "quoted anime",
-    "m": "GET",
-    "path": "/api/s/animequotes",
+    "desc": "quoted anime",
     "folder": "Anime",
     "subfolder": "animequotes",
-    "desc": "quoted anime",
-    "ex": "https://api.siputzx.my.id/api/s/animequotes?query=fate",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -2731,17 +2527,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "fate"
+    }
   },
   {
     "catalogId": "ep138",
     "name": "Affect Image",
-    "m": "GET",
-    "path": "/api/canvas/affect",
+    "desc": "Affect Image",
     "folder": "Canvas",
     "subfolder": "affect",
-    "desc": "Affect Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/affect?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -2749,17 +2546,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg"
+    }
   },
   {
     "catalogId": "ep139",
     "name": "Batslap Image",
-    "m": "GET",
-    "path": "/api/canvas/batslap",
+    "desc": "Batslap Image",
     "folder": "Canvas",
     "subfolder": "batslap",
-    "desc": "Batslap Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/batslap?image1=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&image2=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image1",
@@ -2773,17 +2571,19 @@
         "r": 0,
         "d": "image2"
       }
-    ]
+    ],
+    "example_values": {
+      "image1": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "image2": "https://i.ibb.co/G5mJZxs/rin.jpg"
+    }
   },
   {
     "catalogId": "ep140",
     "name": "Beautiful Image Effect",
-    "m": "GET",
-    "path": "/api/canvas/beautiful",
+    "desc": "Beautiful Image Effect",
     "folder": "Canvas",
     "subfolder": "beautiful",
-    "desc": "Beautiful Image Effect",
-    "ex": "https://api.siputzx.my.id/api/canvas/beautiful?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -2791,17 +2591,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/9rtTrVy/download-1.jpg"
+    }
   },
   {
     "catalogId": "ep141",
     "name": "Blur Image Effect",
-    "m": "GET",
-    "path": "/api/canvas/blur",
+    "desc": "Blur Image Effect",
     "folder": "Canvas",
     "subfolder": "blur",
-    "desc": "Blur Image Effect",
-    "ex": "https://api.siputzx.my.id/api/canvas/blur?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -2809,17 +2610,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/9rtTrVy/download-1.jpg"
+    }
   },
   {
     "catalogId": "ep142",
     "name": "Captcha Image",
-    "m": "GET",
-    "path": "/api/canvas/captcha",
+    "desc": "Captcha Image",
     "folder": "Canvas",
     "subfolder": "captcha",
-    "desc": "Captcha Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/captcha?background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&captchaKey=ABC123&border=%23f0f0f0&overlayOpacity=0.5",
+    "m": "GET",
     "params": [
       {
         "n": "background",
@@ -2845,17 +2647,21 @@
         "r": 0,
         "d": "overlayOpacity"
       }
-    ]
+    ],
+    "example_values": {
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg",
+      "captchaKey": "ABC123",
+      "border": "#f0f0f0",
+      "overlayOpacity": "0.5"
+    }
   },
   {
     "catalogId": "ep143",
     "name": "Circle Image",
-    "m": "GET",
-    "path": "/api/canvas/circle",
+    "desc": "Circle Image",
     "folder": "Canvas",
     "subfolder": "circle",
-    "desc": "Circle Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/circle?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -2863,17 +2669,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/9rtTrVy/download-1.jpg"
+    }
   },
   {
     "catalogId": "ep144",
     "name": "Darkness Image Effect",
-    "m": "GET",
-    "path": "/api/canvas/darkness",
+    "desc": "Darkness Image Effect",
     "folder": "Canvas",
     "subfolder": "darkness",
-    "desc": "Darkness Image Effect",
-    "ex": "https://api.siputzx.my.id/api/canvas/darkness?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg&amount=50",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -2887,17 +2694,19 @@
         "r": 0,
         "d": "amount"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/9rtTrVy/download-1.jpg",
+      "amount": "50"
+    }
   },
   {
     "catalogId": "ep145",
     "name": "Delete Image",
-    "m": "GET",
-    "path": "/api/canvas/delete",
+    "desc": "Delete Image",
     "folder": "Canvas",
     "subfolder": "delete",
-    "desc": "Delete Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/delete?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -2905,17 +2714,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg"
+    }
   },
   {
     "catalogId": "ep146",
     "name": "eKTP Generator",
-    "m": "GET",
-    "path": "/api/canvas/ektp",
+    "desc": "eKTP Generator",
     "folder": "Canvas",
     "subfolder": "ektp",
-    "desc": "eKTP Generator",
-    "ex": "https://api.siputzx.my.id/api/canvas/ektp?provinsi=JAWA+BARAT&kota=BANDUNG&nik=1234567890123456&nama=John+Doe&ttl=Bandung%2C+01-01-1990&jenis_kelamin=Laki-laki&golongan_darah=O&alamat=Jl.+Contoh+No.+123&rt%2Frw=001%2F002&kel%2Fdesa=Sukajadi&kecamatan=Sukajadi&agama=Islam&status=Belum+Kawin&pekerjaan=Pegawai+Swasta&kewarganegaraan=WNI&masa_berlaku=Seumur+Hidup&terbuat=01-01-2023&pas_photo=https%3A%2F%2Fi.pinimg.com%2F736x%2F0b%2F9f%2F0a%2F0b9f0a92a598e6c22629004c1027d23f.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "provinsi",
@@ -3025,17 +2835,35 @@
         "r": 0,
         "d": "pas_photo"
       }
-    ]
+    ],
+    "example_values": {
+      "provinsi": "JAWA BARAT",
+      "kota": "BANDUNG",
+      "nik": "1234567890123456",
+      "nama": "John Doe",
+      "ttl": "Bandung, 01-01-1990",
+      "jenis_kelamin": "Laki-laki",
+      "golongan_darah": "O",
+      "alamat": "Jl. Contoh No. 123",
+      "rt/rw": "001/002",
+      "kel/desa": "Sukajadi",
+      "kecamatan": "Sukajadi",
+      "agama": "Islam",
+      "status": "Belum Kawin",
+      "pekerjaan": "Pegawai Swasta",
+      "kewarganegaraan": "WNI",
+      "masa_berlaku": "Seumur Hidup",
+      "terbuat": "01-01-2023",
+      "pas_photo": "https://i.pinimg.com/736x/0b/9f/0a/0b9f0a92a598e6c22629004c1027d23f.jpg"
+    }
   },
   {
     "catalogId": "ep147",
     "name": "Facepalm Image",
-    "m": "GET",
-    "path": "/api/canvas/facepalm",
+    "desc": "Facepalm Image",
     "folder": "Canvas",
     "subfolder": "facepalm",
-    "desc": "Facepalm Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/facepalm?image=https%3A%2F%2Fi.ibb.co%2F9rtTrVy%2Fdownload-1.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -3043,17 +2871,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/9rtTrVy/download-1.jpg"
+    }
   },
   {
     "catalogId": "ep148",
     "name": "Gay Image",
-    "m": "GET",
-    "path": "/api/canvas/gay",
+    "desc": "Gay Image",
     "folder": "Canvas",
     "subfolder": "gay",
-    "desc": "Gay Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/gay?nama=Lendra&avatar=https%3A%2F%2Ffiles.catbox.moe%2Fg45kly.jpg&num=87",
+    "m": "GET",
     "params": [
       {
         "n": "nama",
@@ -3073,17 +2902,20 @@
         "r": 0,
         "d": "num"
       }
-    ]
+    ],
+    "example_values": {
+      "nama": "Lendra",
+      "avatar": "https://files.catbox.moe/g45kly.jpg",
+      "num": "87"
+    }
   },
   {
     "catalogId": "ep149",
     "name": "Goodbye V1",
-    "m": "GET",
-    "path": "/api/canvas/goodbyev1",
+    "desc": "Goodbye V1",
     "folder": "Canvas",
     "subfolder": "goodbyev1",
-    "desc": "Goodbye V1",
-    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev1?username=John&guildName=Anime+Club&guildIcon=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&quality=80",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3127,17 +2959,24 @@
         "r": 0,
         "d": "quality"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "John",
+      "guildName": "Anime Club",
+      "guildIcon": "https://i.ibb.co/G5mJZxs/rin.jpg",
+      "memberCount": "150",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg",
+      "quality": "80"
+    }
   },
   {
     "catalogId": "ep150",
     "name": "Goodbye V2",
-    "m": "GET",
-    "path": "/api/canvas/goodbyev2",
+    "desc": "Goodbye V2",
     "folder": "Canvas",
     "subfolder": "goodbyev2",
-    "desc": "Goodbye V2",
-    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev2?username=John&guildName=Siputzx+Api&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3169,17 +3008,22 @@
         "r": 0,
         "d": "background"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "John",
+      "guildName": "Siputzx Api",
+      "memberCount": "150",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg"
+    }
   },
   {
     "catalogId": "ep151",
     "name": "Goodbye V3",
-    "m": "GET",
-    "path": "/api/canvas/goodbyev3",
+    "desc": "Goodbye V3",
     "folder": "Canvas",
     "subfolder": "goodbyev3",
-    "desc": "Goodbye V3",
-    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev3?username=John&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3193,17 +3037,19 @@
         "r": 0,
         "d": "avatar"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "John",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg"
+    }
   },
   {
     "catalogId": "ep152",
     "name": "Goodbye V4",
-    "m": "GET",
-    "path": "/api/canvas/goodbyev4",
+    "desc": "Goodbye V4",
     "folder": "Canvas",
     "subfolder": "goodbyev4",
-    "desc": "Goodbye V4",
-    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev4?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&title=goodbye&description=goodbye+to+the+server%21&border=%232a2e35&avatarBorder=%232a2e35&overlayOpacity=0.3",
+    "m": "GET",
     "params": [
       {
         "n": "avatar",
@@ -3247,17 +3093,24 @@
         "r": 0,
         "d": "overlayOpacity"
       }
-    ]
+    ],
+    "example_values": {
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg",
+      "title": "goodbye",
+      "description": "goodbye to the server!",
+      "border": "#2a2e35",
+      "avatarBorder": "#2a2e35",
+      "overlayOpacity": "0.3"
+    }
   },
   {
     "catalogId": "ep153",
     "name": "Goodbye V5",
-    "m": "GET",
-    "path": "/api/canvas/goodbyev5",
+    "desc": "Goodbye V5",
     "folder": "Canvas",
     "subfolder": "goodbyev5",
-    "desc": "Goodbye V5",
-    "ex": "https://api.siputzx.my.id/api/canvas/goodbyev5?username=Zero+Two&guildName=Siputzx+Community&memberCount=219&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fmountain-sunset.jpg&quality=90",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3295,17 +3148,23 @@
         "r": 0,
         "d": "quality"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "Zero Two",
+      "guildName": "Siputzx Community",
+      "memberCount": "219",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/mountain-sunset.jpg",
+      "quality": "90"
+    }
   },
   {
     "catalogId": "ep154",
     "name": "Greyscale Image",
-    "m": "GET",
-    "path": "/api/canvas/greyscale",
+    "desc": "Greyscale Image",
     "folder": "Canvas",
     "subfolder": "greyscale",
-    "desc": "Greyscale Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/greyscale?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -3313,17 +3172,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg"
+    }
   },
   {
     "catalogId": "ep155",
     "name": "Invert Image",
-    "m": "GET",
-    "path": "/api/canvas/invert",
+    "desc": "Invert Image",
     "folder": "Canvas",
     "subfolder": "invert",
-    "desc": "Invert Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/invert?image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image",
@@ -3331,17 +3191,18 @@
         "r": 0,
         "d": "image"
       }
-    ]
+    ],
+    "example_values": {
+      "image": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg"
+    }
   },
   {
     "catalogId": "ep156",
     "name": "Kiss Image",
-    "m": "GET",
-    "path": "/api/canvas/kiss",
+    "desc": "Kiss Image",
     "folder": "Canvas",
     "subfolder": "kiss",
-    "desc": "Kiss Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/kiss?image1=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&image2=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "image1",
@@ -3355,17 +3216,19 @@
         "r": 0,
         "d": "image2"
       }
-    ]
+    ],
+    "example_values": {
+      "image1": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "image2": "https://i.ibb.co/G5mJZxs/rin.jpg"
+    }
   },
   {
     "catalogId": "ep157",
     "name": "Level Up Card",
-    "m": "GET",
-    "path": "/api/canvas/level-up",
+    "desc": "Level Up Card",
     "folder": "Canvas",
     "subfolder": "level-up",
-    "desc": "Level Up Card",
-    "ex": "https://api.siputzx.my.id/api/canvas/level-up?backgroundURL=https%3A%2F%2Fi.ibb.co.com%2F2jMjYXK%2FIMG-20250103-WA0469.jpg&avatarURL=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F159487561%3Fv%3D4&fromLevel=0&toLevel=1&name=putu",
+    "m": "GET",
     "params": [
       {
         "n": "backgroundURL",
@@ -3397,17 +3260,22 @@
         "r": 0,
         "d": "name"
       }
-    ]
+    ],
+    "example_values": {
+      "backgroundURL": "https://i.ibb.co.com/2jMjYXK/IMG-20250103-WA0469.jpg",
+      "avatarURL": "https://avatars.githubusercontent.com/u/159487561?v=4",
+      "fromLevel": "0",
+      "toLevel": "1",
+      "name": "putu"
+    }
   },
   {
     "catalogId": "ep158",
     "name": "Profile Card",
-    "m": "GET",
-    "path": "/api/canvas/profile",
+    "desc": "Profile Card",
     "folder": "Canvas",
     "subfolder": "profile",
-    "desc": "Profile Card",
-    "ex": "https://api.siputzx.my.id/api/canvas/profile?backgroundURL=https%3A%2F%2Fi.ibb.co.com%2F2jMjYXK%2FIMG-20250103-WA0469.jpg&avatarURL=https%3A%2F%2Favatars.githubusercontent.com%2Fu%2F159487561%3Fv%3D4&rankName=epik&rankId=0&exp=500&requireExp=1000&level=10&name=siputzx",
+    "m": "GET",
     "params": [
       {
         "n": "backgroundURL",
@@ -3457,17 +3325,25 @@
         "r": 0,
         "d": "name"
       }
-    ]
+    ],
+    "example_values": {
+      "backgroundURL": "https://i.ibb.co.com/2jMjYXK/IMG-20250103-WA0469.jpg",
+      "avatarURL": "https://avatars.githubusercontent.com/u/159487561?v=4",
+      "rankName": "epik",
+      "rankId": "0",
+      "exp": "500",
+      "requireExp": "1000",
+      "level": "10",
+      "name": "siputzx"
+    }
   },
   {
     "catalogId": "ep159",
     "name": "Security Card",
-    "m": "GET",
-    "path": "/api/canvas/security",
+    "desc": "Security Card",
     "folder": "Canvas",
     "subfolder": "security",
-    "desc": "Security Card",
-    "ex": "https://api.siputzx.my.id/api/canvas/security?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&createdTimestamp=1672531200000&suspectTimestamp=604800000&locale=en",
+    "m": "GET",
     "params": [
       {
         "n": "avatar",
@@ -3499,17 +3375,22 @@
         "r": 0,
         "d": "locale"
       }
-    ]
+    ],
+    "example_values": {
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg",
+      "createdTimestamp": "1672531200000",
+      "suspectTimestamp": "604800000",
+      "locale": "en"
+    }
   },
   {
     "catalogId": "ep160",
     "name": "Sertifikat Tolol",
-    "m": "GET",
-    "path": "/api/canvas/sertifikat-tolol",
+    "desc": "Sertifikat Tolol",
     "folder": "Canvas",
     "subfolder": "sertifikat-tolol",
-    "desc": "Sertifikat Tolol",
-    "ex": "https://api.siputzx.my.id/api/canvas/sertifikat-tolol?text=lorem+ipsum%21",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -3517,17 +3398,18 @@
         "r": 0,
         "d": "text"
       }
-    ]
+    ],
+    "example_values": {
+      "text": "lorem ipsum!"
+    }
   },
   {
     "catalogId": "ep161",
     "name": "Ship Image",
-    "m": "GET",
-    "path": "/api/canvas/ship",
+    "desc": "Ship Image",
     "folder": "Canvas",
     "subfolder": "ship",
-    "desc": "Ship Image",
-    "ex": "https://api.siputzx.my.id/api/canvas/ship?avatar1=https%3A%2F%2Fi.ibb.co.com%2FYc4MVdV%2Fimages.jpg&avatar2=https%3A%2F%2Fi.ibb.co.com%2FKKYxYQr%2Fdownload.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&persen=20",
+    "m": "GET",
     "params": [
       {
         "n": "avatar1",
@@ -3553,17 +3435,21 @@
         "r": 0,
         "d": "persen"
       }
-    ]
+    ],
+    "example_values": {
+      "avatar1": "https://i.ibb.co.com/Yc4MVdV/images.jpg",
+      "avatar2": "https://i.ibb.co.com/KKYxYQr/download.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg",
+      "persen": "20"
+    }
   },
   {
     "catalogId": "ep162",
     "name": "Spotify Card",
-    "m": "GET",
-    "path": "/api/canvas/spotify",
+    "desc": "Spotify Card",
     "folder": "Canvas",
     "subfolder": "spotify",
-    "desc": "Spotify Card",
-    "ex": "https://api.siputzx.my.id/api/canvas/spotify?title=Blinding+Lights&artist=The+Weeknd&start=100000&end=200000&image=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&border=%231DB954",
+    "m": "GET",
     "params": [
       {
         "n": "title",
@@ -3601,17 +3487,23 @@
         "r": 0,
         "d": "border"
       }
-    ]
+    ],
+    "example_values": {
+      "title": "Blinding Lights",
+      "artist": "The Weeknd",
+      "start": "100000",
+      "end": "200000",
+      "image": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "border": "#1DB954"
+    }
   },
   {
     "catalogId": "ep163",
     "name": "Tweet Card",
-    "m": "GET",
-    "path": "/api/canvas/tweet",
+    "desc": "Tweet Card",
     "folder": "Canvas",
     "subfolder": "tweet",
-    "desc": "Tweet Card",
-    "ex": "https://api.siputzx.my.id/api/canvas/tweet?displayName=Gemini&username=gemini_ai&comment=Hello+World%21&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&verified=true&theme=dark",
+    "m": "GET",
     "params": [
       {
         "n": "displayName",
@@ -3649,17 +3541,23 @@
         "r": 0,
         "d": "theme"
       }
-    ]
+    ],
+    "example_values": {
+      "displayName": "Gemini",
+      "username": "gemini_ai",
+      "comment": "Hello World!",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "verified": "true",
+      "theme": "dark"
+    }
   },
   {
     "catalogId": "ep164",
     "name": "Welcome V1",
-    "m": "GET",
-    "path": "/api/canvas/welcomev1",
+    "desc": "Welcome V1",
     "folder": "Canvas",
     "subfolder": "welcomev1",
-    "desc": "Welcome V1",
-    "ex": "https://api.siputzx.my.id/api/canvas/welcomev1?username=John&guildName=Anime+Club&guildIcon=https%3A%2F%2Fi.ibb.co%2FG5mJZxs%2Frin.jpg&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&quality=80",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3703,17 +3601,24 @@
         "r": 0,
         "d": "quality"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "John",
+      "guildName": "Anime Club",
+      "guildIcon": "https://i.ibb.co/G5mJZxs/rin.jpg",
+      "memberCount": "150",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg",
+      "quality": "80"
+    }
   },
   {
     "catalogId": "ep165",
     "name": "Welcome V2",
-    "m": "GET",
-    "path": "/api/canvas/welcomev2",
+    "desc": "Welcome V2",
     "folder": "Canvas",
     "subfolder": "welcomev2",
-    "desc": "Welcome V2",
-    "ex": "https://api.siputzx.my.id/api/canvas/welcomev2?username=John&guildName=Siputzx+Api&memberCount=150&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3745,17 +3650,22 @@
         "r": 0,
         "d": "background"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "John",
+      "guildName": "Siputzx Api",
+      "memberCount": "150",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg"
+    }
   },
   {
     "catalogId": "ep166",
     "name": "Welcome V3",
-    "m": "GET",
-    "path": "/api/canvas/welcomev3",
+    "desc": "Welcome V3",
     "folder": "Canvas",
     "subfolder": "welcomev3",
-    "desc": "Welcome V3",
-    "ex": "https://api.siputzx.my.id/api/canvas/welcomev3?username=John&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3769,17 +3679,19 @@
         "r": 0,
         "d": "avatar"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "John",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg"
+    }
   },
   {
     "catalogId": "ep167",
     "name": "Welcome V4",
-    "m": "GET",
-    "path": "/api/canvas/welcomev4",
+    "desc": "Welcome V4",
     "folder": "Canvas",
     "subfolder": "welcomev4",
-    "desc": "Welcome V4",
-    "ex": "https://api.siputzx.my.id/api/canvas/welcomev4?avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fimages-76.jpg&description=Welcome+friend%21",
+    "m": "GET",
     "params": [
       {
         "n": "avatar",
@@ -3799,17 +3711,20 @@
         "r": 0,
         "d": "description"
       }
-    ]
+    ],
+    "example_values": {
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/images-76.jpg",
+      "description": "Welcome friend!"
+    }
   },
   {
     "catalogId": "ep168",
     "name": "Welcome V5",
-    "m": "GET",
-    "path": "/api/canvas/welcomev5",
+    "desc": "Welcome V5",
     "folder": "Canvas",
     "subfolder": "welcomev5",
-    "desc": "Welcome V5",
-    "ex": "https://api.siputzx.my.id/api/canvas/welcomev5?username=Zero+Two&guildName=Siputzx+Community&memberCount=219&avatar=https%3A%2F%2Fi.ibb.co%2F1s8T3sY%2F48f7ce63c7aa.jpg&background=https%3A%2F%2Fi.ibb.co%2F4YBNyvP%2Fmountain-sunset.jpg&quality=90",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -3847,17 +3762,23 @@
         "r": 0,
         "d": "quality"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "Zero Two",
+      "guildName": "Siputzx Community",
+      "memberCount": "219",
+      "avatar": "https://i.ibb.co/1s8T3sY/48f7ce63c7aa.jpg",
+      "background": "https://i.ibb.co/4YBNyvP/mountain-sunset.jpg",
+      "quality": "90"
+    }
   },
   {
     "catalogId": "ep169",
     "name": "capcut",
-    "m": "GET",
-    "path": "/api/d/capcut",
+    "desc": "capcut",
     "folder": "Downloader",
     "subfolder": "capcut",
-    "desc": "capcut",
-    "ex": "https://api.siputzx.my.id/api/d/capcut?url=https%3A%2F%2Fwww.capcut.com%2Ftv2%2FZSmm1R7Sd%2F+jj+kece+banget",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3865,17 +3786,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://www.capcut.com/tv2/ZSmm1R7Sd/ jj kece banget"
+    }
   },
   {
     "catalogId": "ep170",
     "name": "douyin downloader",
-    "m": "GET",
-    "path": "/api/d/douyin",
+    "desc": "douyin downloader",
     "folder": "Downloader",
     "subfolder": "douyin",
-    "desc": "douyin downloader",
-    "ex": "https://api.siputzx.my.id/api/d/douyin?url=https%3A%2F%2Fwww.douyin.com%2Fvideo%2F7256984651137289483",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3883,17 +3805,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://www.douyin.com/video/7256984651137289483"
+    }
   },
   {
     "catalogId": "ep171",
     "name": "facebook",
-    "m": "GET",
-    "path": "/api/d/facebook",
+    "desc": "facebook",
     "folder": "Downloader",
     "subfolder": "facebook",
-    "desc": "facebook",
-    "ex": "https://api.siputzx.my.id/api/d/facebook?url=https%3A%2F%2Fwww.facebook.com%2Fshare%2Fr%2F1CbPCn9MQw%2F",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3901,17 +3824,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://www.facebook.com/share/r/1CbPCn9MQw/"
+    }
   },
   {
     "catalogId": "ep172",
     "name": "gdrive",
-    "m": "GET",
-    "path": "/api/d/gdrive",
+    "desc": "gdrive",
     "folder": "Downloader",
     "subfolder": "gdrive",
-    "desc": "gdrive",
-    "ex": "https://api.siputzx.my.id/api/d/gdrive?url=https%3A%2F%2Fdrive.google.com%2Ffile%2Fd%2F1YTD7Ymux9puFNqu__5WPlYdFZHcGI3Wz%2Fview%3Fusp%3Ddrivesdk",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3919,17 +3843,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://drive.google.com/file/d/1YTD7Ymux9puFNqu__5WPlYdFZHcGI3Wz/view?usp=drivesdk"
+    }
   },
   {
     "catalogId": "ep173",
     "name": "github downloader",
-    "m": "GET",
-    "path": "/api/d/github",
+    "desc": "github downloader",
     "folder": "Downloader",
     "subfolder": "github",
-    "desc": "github downloader",
-    "ex": "https://api.siputzx.my.id/api/d/github?url=https%3A%2F%2Fgist.github.com%2Fsiputzx%2F966268a3aa3c14695e80cc9f30da8e9f",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3937,17 +3862,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://gist.github.com/siputzx/966268a3aa3c14695e80cc9f30da8e9f"
+    }
   },
   {
     "catalogId": "ep174",
     "name": "lahelu downloader",
-    "m": "GET",
-    "path": "/api/d/lahelu",
+    "desc": "lahelu downloader",
     "folder": "Downloader",
     "subfolder": "lahelu",
-    "desc": "lahelu downloader",
-    "ex": "https://api.siputzx.my.id/api/d/lahelu?url=https%3A%2F%2Flahelu.com%2Fpost%2FPMujNAfxy",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3955,17 +3881,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://lahelu.com/post/PMujNAfxy"
+    }
   },
   {
     "catalogId": "ep176",
     "name": "soundCloud",
-    "m": "GET",
-    "path": "/api/d/soundcloud",
+    "desc": "soundCloud",
     "folder": "Downloader",
     "subfolder": "soundcloud",
-    "desc": "soundCloud",
-    "ex": "https://api.siputzx.my.id/api/d/soundcloud?url=https%3A%2F%2Fm.soundcloud.com%2Fteguh-hariyadi-652597010%2Fanji-dia",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3973,17 +3900,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://m.soundcloud.com/teguh-hariyadi-652597010/anji-dia"
+    }
   },
   {
     "catalogId": "ep177",
     "name": "sssinstagram downloader",
-    "m": "GET",
-    "path": "/api/d/sssinstagram",
+    "desc": "sssinstagram downloader",
     "folder": "Downloader",
     "subfolder": "sssinstagram",
-    "desc": "sssinstagram downloader",
-    "ex": "https://api.siputzx.my.id/api/d/sssinstagram?url=siputzx_",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -3991,17 +3919,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "siputzx_"
+    }
   },
   {
     "catalogId": "ep178",
     "name": "tiktok v2",
-    "m": "GET",
-    "path": "/api/d/tiktok/v2",
+    "desc": "tiktok v2",
     "folder": "Downloader",
     "subfolder": "v2",
-    "desc": "tiktok v2",
-    "ex": "https://api.siputzx.my.id/api/d/tiktok/v2?url=https%3A%2F%2Fvt.tiktok.com%2FZSjXNEnbC%2F",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -4009,17 +3938,18 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "https://vt.tiktok.com/ZSjXNEnbC/"
+    }
   },
   {
     "catalogId": "ep179",
     "name": "ummy downloader",
-    "m": "GET",
-    "path": "/api/d/ummy",
+    "desc": "ummy downloader",
     "folder": "Downloader",
     "subfolder": "ummy",
-    "desc": "ummy downloader",
-    "ex": "https://api.siputzx.my.id/api/d/ummy?url=nasaartemis",
+    "m": "GET",
     "params": [
       {
         "n": "url",
@@ -4027,39 +3957,36 @@
         "r": 0,
         "d": "url"
       }
-    ]
+    ],
+    "example_values": {
+      "url": "nasaartemis"
+    }
   },
   {
     "catalogId": "ep180",
     "name": "Asah Otak",
-    "m": "GET",
-    "path": "/api/games/asahotak",
+    "desc": "Asah Otak",
     "folder": "Games",
     "subfolder": "asahotak",
-    "desc": "Asah Otak",
-    "ex": "https://api.siputzx.my.id/api/games/asahotak",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep181",
     "name": "Cak Lontong",
-    "m": "GET",
-    "path": "/api/games/caklontong",
+    "desc": "Cak Lontong",
     "folder": "Games",
     "subfolder": "caklontong",
-    "desc": "Cak Lontong",
-    "ex": "https://api.siputzx.my.id/api/games/caklontong",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep182",
     "name": "Cerdas Cermat",
-    "m": "GET",
-    "path": "/api/games/cc-sd",
+    "desc": "Cerdas Cermat",
     "folder": "Games",
     "subfolder": "cc-sd",
-    "desc": "Cerdas Cermat",
-    "ex": "https://api.siputzx.my.id/api/games/cc-sd?matapelajaran=matematika&jumlahsoal=5",
+    "m": "GET",
     "params": [
       {
         "n": "matapelajaran",
@@ -4073,50 +4000,46 @@
         "r": 0,
         "d": "jumlahsoal"
       }
-    ]
+    ],
+    "example_values": {
+      "matapelajaran": "matematika",
+      "jumlahsoal": "5"
+    }
   },
   {
     "catalogId": "ep183",
     "name": "Family100",
-    "m": "GET",
-    "path": "/api/games/family100",
+    "desc": "Family100",
     "folder": "Games",
     "subfolder": "family100",
-    "desc": "Family100",
-    "ex": "https://api.siputzx.my.id/api/games/family100",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep184",
     "name": "Tebak Karakter Free Fire",
-    "m": "GET",
-    "path": "/api/games/karakter-freefire",
+    "desc": "Tebak Karakter Free Fire",
     "folder": "Games",
     "subfolder": "karakter-freefire",
-    "desc": "Tebak Karakter Free Fire",
-    "ex": "https://api.siputzx.my.id/api/games/karakter-freefire",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep185",
     "name": "Lengkapi Kalimat",
-    "m": "GET",
-    "path": "/api/games/lengkapikalimat",
+    "desc": "Lengkapi Kalimat",
     "folder": "Games",
     "subfolder": "lengkapikalimat",
-    "desc": "Lengkapi Kalimat",
-    "ex": "https://api.siputzx.my.id/api/games/lengkapikalimat",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep186",
     "name": "Maths",
-    "m": "GET",
-    "path": "/api/games/maths",
+    "desc": "Maths",
     "folder": "Games",
     "subfolder": "maths",
-    "desc": "Maths",
-    "ex": "https://api.siputzx.my.id/api/games/maths?level=easy",
+    "m": "GET",
     "params": [
       {
         "n": "level",
@@ -4124,204 +4047,171 @@
         "r": 0,
         "d": "level"
       }
-    ]
+    ],
+    "example_values": {
+      "level": "easy"
+    }
   },
   {
     "catalogId": "ep187",
     "name": "Siapakah Aku",
-    "m": "GET",
-    "path": "/api/games/siapakahaku",
+    "desc": "Siapakah Aku",
     "folder": "Games",
     "subfolder": "siapakahaku",
-    "desc": "Siapakah Aku",
-    "ex": "https://api.siputzx.my.id/api/games/siapakahaku",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep188",
     "name": "Tebak Surah",
-    "m": "GET",
-    "path": "/api/games/surah",
+    "desc": "Tebak Surah",
     "folder": "Games",
     "subfolder": "surah",
-    "desc": "Tebak Surah",
-    "ex": "https://api.siputzx.my.id/api/games/surah",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep189",
     "name": "Susun Kata",
-    "m": "GET",
-    "path": "/api/games/susunkata",
+    "desc": "Susun Kata",
     "folder": "Games",
     "subfolder": "susunkata",
-    "desc": "Susun Kata",
-    "ex": "https://api.siputzx.my.id/api/games/susunkata",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep190",
     "name": "Tebak Bendera",
-    "m": "GET",
-    "path": "/api/games/tebakbendera",
+    "desc": "Tebak Bendera",
     "folder": "Games",
     "subfolder": "tebakbendera",
-    "desc": "Tebak Bendera",
-    "ex": "https://api.siputzx.my.id/api/games/tebakbendera",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep191",
     "name": "Tebak Gambar",
-    "m": "GET",
-    "path": "/api/games/tebakgambar",
+    "desc": "Tebak Gambar",
     "folder": "Games",
     "subfolder": "tebakgambar",
-    "desc": "Tebak Gambar",
-    "ex": "https://api.siputzx.my.id/api/games/tebakgambar",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep192",
     "name": "Tebak Game",
-    "m": "GET",
-    "path": "/api/games/tebakgame",
+    "desc": "Tebak Game",
     "folder": "Games",
     "subfolder": "tebakgame",
-    "desc": "Tebak Game",
-    "ex": "https://api.siputzx.my.id/api/games/tebakgame",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep193",
     "name": "Tebak JKT",
-    "m": "GET",
-    "path": "/api/games/tebakjkt",
+    "desc": "Tebak JKT",
     "folder": "Games",
     "subfolder": "tebakjkt",
-    "desc": "Tebak JKT",
-    "ex": "https://api.siputzx.my.id/api/games/tebakjkt",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep194",
     "name": "Tebak Kalimat",
-    "m": "GET",
-    "path": "/api/games/tebakkalimat",
+    "desc": "Tebak Kalimat",
     "folder": "Games",
     "subfolder": "tebakkalimat",
-    "desc": "Tebak Kalimat",
-    "ex": "https://api.siputzx.my.id/api/games/tebakkalimat",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep195",
     "name": "Tebak Kartun",
-    "m": "GET",
-    "path": "/api/games/tebakkartun",
+    "desc": "Tebak Kartun",
     "folder": "Games",
     "subfolder": "tebakkartun",
-    "desc": "Tebak Kartun",
-    "ex": "https://api.siputzx.my.id/api/games/tebakkartun",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep196",
     "name": "Tebak Kata",
-    "m": "GET",
-    "path": "/api/games/tebakkata",
+    "desc": "Tebak Kata",
     "folder": "Games",
     "subfolder": "tebakkata",
-    "desc": "Tebak Kata",
-    "ex": "https://api.siputzx.my.id/api/games/tebakkata",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep197",
     "name": "Tebak Kimia",
-    "m": "GET",
-    "path": "/api/games/tebakkimia",
+    "desc": "Tebak Kimia",
     "folder": "Games",
     "subfolder": "tebakkimia",
-    "desc": "Tebak Kimia",
-    "ex": "https://api.siputzx.my.id/api/games/tebakkimia",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep198",
     "name": "Tebak Lagu",
-    "m": "GET",
-    "path": "/api/games/tebaklagu",
+    "desc": "Tebak Lagu",
     "folder": "Games",
     "subfolder": "tebaklagu",
-    "desc": "Tebak Lagu",
-    "ex": "https://api.siputzx.my.id/api/games/tebaklagu",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep199",
     "name": "Tebak Lirik",
-    "m": "GET",
-    "path": "/api/games/tebaklirik",
+    "desc": "Tebak Lirik",
     "folder": "Games",
     "subfolder": "tebaklirik",
-    "desc": "Tebak Lirik",
-    "ex": "https://api.siputzx.my.id/api/games/tebaklirik",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep200",
     "name": "Tebak Logo",
-    "m": "GET",
-    "path": "/api/games/tebaklogo",
+    "desc": "Tebak Logo",
     "folder": "Games",
     "subfolder": "tebaklogo",
-    "desc": "Tebak Logo",
-    "ex": "https://api.siputzx.my.id/api/games/tebaklogo",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep201",
     "name": "Tebak Tebakan",
-    "m": "GET",
-    "path": "/api/games/tebaktebakan",
+    "desc": "Tebak Tebakan",
     "folder": "Games",
     "subfolder": "tebaktebakan",
-    "desc": "Tebak Tebakan",
-    "ex": "https://api.siputzx.my.id/api/games/tebaktebakan",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep202",
     "name": "Tebak Warna",
-    "m": "GET",
-    "path": "/api/games/tebakwarna",
+    "desc": "Tebak Warna",
     "folder": "Games",
     "subfolder": "tebakwarna",
-    "desc": "Tebak Warna",
-    "ex": "https://api.siputzx.my.id/api/games/tebakwarna",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep203",
     "name": "Teka Teki",
-    "m": "GET",
-    "path": "/api/games/tekateki",
+    "desc": "Teka Teki",
     "folder": "Games",
     "subfolder": "tekateki",
-    "desc": "Teka Teki",
-    "ex": "https://api.siputzx.my.id/api/games/tekateki",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep204",
     "name": "8 font",
-    "m": "GET",
-    "path": "/api/s/8font",
+    "desc": "8 font",
     "folder": "Search",
     "subfolder": "8font",
-    "desc": "8 font",
-    "ex": "https://api.siputzx.my.id/api/s/8font?query=cartoon&page=1",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4335,17 +4225,19 @@
         "r": 0,
         "d": "page"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "cartoon",
+      "page": "1"
+    }
   },
   {
     "catalogId": "ep205",
     "name": "music apple",
-    "m": "GET",
-    "path": "/api/s/applemusic",
+    "desc": "music apple",
     "folder": "Search",
     "subfolder": "applemusic",
-    "desc": "music apple",
-    "ex": "https://api.siputzx.my.id/api/s/applemusic?query=duka&region=id",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4359,17 +4251,19 @@
         "r": 0,
         "d": "region"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "duka",
+      "region": "id"
+    }
   },
   {
     "catalogId": "ep206",
     "name": "bing image",
-    "m": "GET",
-    "path": "/api/s/bimg",
+    "desc": "bing image",
     "folder": "Search",
     "subfolder": "bimg",
-    "desc": "bing image",
-    "ex": "https://api.siputzx.my.id/api/s/bimg?query=kucing",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4377,17 +4271,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "kucing"
+    }
   },
   {
     "catalogId": "ep207",
     "name": "brave search",
-    "m": "GET",
-    "path": "/api/s/brave",
+    "desc": "brave search",
     "folder": "Search",
     "subfolder": "brave",
-    "desc": "brave search",
-    "ex": "https://api.siputzx.my.id/api/s/brave?query=apa+itu+nodejs",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4395,17 +4290,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "apa itu nodejs"
+    }
   },
   {
     "catalogId": "ep208",
     "name": "duckduckgo",
-    "m": "GET",
-    "path": "/api/s/duckduckgo",
+    "desc": "duckduckgo",
     "folder": "Search",
     "subfolder": "duckduckgo",
-    "desc": "duckduckgo",
-    "ex": "https://api.siputzx.my.id/api/s/duckduckgo?query=openai&kl=us-en&df=w",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4425,17 +4321,20 @@
         "r": 0,
         "d": "df"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "openai",
+      "kl": "us-en",
+      "df": "w"
+    }
   },
   {
     "catalogId": "ep209",
     "name": "gitagram search",
-    "m": "GET",
-    "path": "/api/s/gitagram",
+    "desc": "gitagram search",
     "folder": "Search",
     "subfolder": "gitagram",
-    "desc": "gitagram search",
-    "ex": "https://api.siputzx.my.id/api/s/gitagram?search=sekuat+hatimu",
+    "m": "GET",
     "params": [
       {
         "n": "search",
@@ -4443,17 +4342,18 @@
         "r": 0,
         "d": "search"
       }
-    ]
+    ],
+    "example_values": {
+      "search": "sekuat hatimu"
+    }
   },
   {
     "catalogId": "ep210",
     "name": "google image",
-    "m": "GET",
-    "path": "/api/s/googleimg",
+    "desc": "google image",
     "folder": "Search",
     "subfolder": "googleimg",
-    "desc": "google image",
-    "ex": "https://api.siputzx.my.id/api/s/googleimg?query=siputzx",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4461,17 +4361,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "siputzx"
+    }
   },
   {
     "catalogId": "ep211",
     "name": "gsmarena",
-    "m": "GET",
-    "path": "/api/s/gsmarena",
+    "desc": "gsmarena",
     "folder": "Search",
     "subfolder": "gsmarena",
-    "desc": "gsmarena",
-    "ex": "https://api.siputzx.my.id/api/s/gsmarena?query=iphone",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4479,17 +4380,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "iphone"
+    }
   },
   {
     "catalogId": "ep212",
     "name": "lahelu search",
-    "m": "GET",
-    "path": "/api/s/lahelu",
+    "desc": "lahelu search",
     "folder": "Search",
     "subfolder": "lahelu",
-    "desc": "lahelu search",
-    "ex": "https://api.siputzx.my.id/api/s/lahelu?query=drak",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4497,17 +4399,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "drak"
+    }
   },
   {
     "catalogId": "ep213",
     "name": "mangatoon search",
-    "m": "GET",
-    "path": "/api/s/mangatoon",
+    "desc": "mangatoon search",
     "folder": "Search",
     "subfolder": "mangatoon",
-    "desc": "mangatoon search",
-    "ex": "https://api.siputzx.my.id/api/s/mangatoon?query=cat",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4515,17 +4418,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "cat"
+    }
   },
   {
     "catalogId": "ep214",
     "name": "mcpedl search",
-    "m": "GET",
-    "path": "/api/s/mcpedl",
+    "desc": "mcpedl search",
     "folder": "Search",
     "subfolder": "mcpedl",
-    "desc": "mcpedl search",
-    "ex": "https://api.siputzx.my.id/api/s/mcpedl?q=shaders",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -4533,17 +4437,18 @@
         "r": 0,
         "d": "q"
       }
-    ]
+    ],
+    "example_values": {
+      "q": "shaders"
+    }
   },
   {
     "catalogId": "ep215",
     "name": "my instants search",
-    "m": "GET",
-    "path": "/api/s/myinstants",
+    "desc": "my instants search",
     "folder": "Search",
     "subfolder": "myinstants",
-    "desc": "my instants search",
-    "ex": "https://api.siputzx.my.id/api/s/myinstants?query=cihuyy",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4551,17 +4456,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "cihuyy"
+    }
   },
   {
     "catalogId": "ep216",
     "name": "otakotaku search",
-    "m": "GET",
-    "path": "/api/s/otakotaku",
+    "desc": "otakotaku search",
     "folder": "Search",
     "subfolder": "otakotaku",
-    "desc": "otakotaku search",
-    "ex": "https://api.siputzx.my.id/api/s/otakotaku?query=mahiru",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4569,17 +4475,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "mahiru"
+    }
   },
   {
     "catalogId": "ep217",
     "name": "pinterest",
-    "m": "GET",
-    "path": "/api/s/pinterest",
+    "desc": "pinterest",
     "folder": "Search",
     "subfolder": "pinterest",
-    "desc": "pinterest",
-    "ex": "https://api.siputzx.my.id/api/s/pinterest?query=cat&type=image",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4593,17 +4500,19 @@
         "r": 0,
         "d": "type"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "cat",
+      "type": "image"
+    }
   },
   {
     "catalogId": "ep218",
     "name": "resep koki search",
-    "m": "GET",
-    "path": "/api/s/resep",
+    "desc": "resep koki search",
     "folder": "Search",
     "subfolder": "resep",
-    "desc": "resep koki search",
-    "ex": "https://api.siputzx.my.id/api/s/resep?query=nasi+goreng",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4611,17 +4520,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "nasi goreng"
+    }
   },
   {
     "catalogId": "ep219",
     "name": "seegore search",
-    "m": "GET",
-    "path": "/api/s/seegore",
+    "desc": "seegore search",
     "folder": "Search",
     "subfolder": "seegore",
-    "desc": "seegore search",
-    "ex": "https://api.siputzx.my.id/api/s/seegore?query=train",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4629,17 +4539,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "train"
+    }
   },
   {
     "catalogId": "ep220",
     "name": "soundcloud search",
-    "m": "GET",
-    "path": "/api/s/soundcloud",
+    "desc": "soundcloud search",
     "folder": "Search",
     "subfolder": "soundcloud",
-    "desc": "soundcloud search",
-    "ex": "https://api.siputzx.my.id/api/s/soundcloud?query=duka",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4647,17 +4558,18 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "duka"
+    }
   },
   {
     "catalogId": "ep221",
     "name": "youtube",
-    "m": "GET",
-    "path": "/api/s/youtube",
+    "desc": "youtube",
     "folder": "Search",
     "subfolder": "youtube",
-    "desc": "youtube",
-    "ex": "https://api.siputzx.my.id/api/s/youtube?query=sc+bot",
+    "m": "GET",
     "params": [
       {
         "n": "query",
@@ -4665,215 +4577,180 @@
         "r": 0,
         "d": "query"
       }
-    ]
+    ],
+    "example_values": {
+      "query": "sc bot"
+    }
   },
   {
     "catalogId": "ep222",
     "name": "random blue archive",
-    "m": "GET",
-    "path": "/api/r/blue-archive",
+    "desc": "random blue archive",
     "folder": "Random",
     "subfolder": "blue-archive",
-    "desc": "random blue archive",
-    "ex": "https://api.siputzx.my.id/api/r/blue-archive",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep223",
     "name": "Random Cecan CHINA",
-    "m": "GET",
-    "path": "/api/r/cecan/china",
+    "desc": "Random Cecan CHINA",
     "folder": "Random",
     "subfolder": "china",
-    "desc": "Random Cecan CHINA",
-    "ex": "https://api.siputzx.my.id/api/r/cecan/china",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep224",
     "name": "Random Cecan Indonesia",
-    "m": "GET",
-    "path": "/api/r/cecan/indonesia",
+    "desc": "Random Cecan Indonesia",
     "folder": "Random",
     "subfolder": "indonesia",
-    "desc": "Random Cecan Indonesia",
-    "ex": "https://api.siputzx.my.id/api/r/cecan/indonesia",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep225",
     "name": "Random Cecan JAPAN",
-    "m": "GET",
-    "path": "/api/r/cecan/japan",
+    "desc": "Random Cecan JAPAN",
     "folder": "Random",
     "subfolder": "japan",
-    "desc": "Random Cecan JAPAN",
-    "ex": "https://api.siputzx.my.id/api/r/cecan/japan",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep226",
     "name": "Random Cecan KOREA",
-    "m": "GET",
-    "path": "/api/r/cecan/korea",
+    "desc": "Random Cecan KOREA",
     "folder": "Random",
     "subfolder": "korea",
-    "desc": "Random Cecan KOREA",
-    "ex": "https://api.siputzx.my.id/api/r/cecan/korea",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep227",
     "name": "Random Cecan THAILAND",
-    "m": "GET",
-    "path": "/api/r/cecan/thailand",
+    "desc": "Random Cecan THAILAND",
     "folder": "Random",
     "subfolder": "thailand",
-    "desc": "Random Cecan THAILAND",
-    "ex": "https://api.siputzx.my.id/api/r/cecan/thailand",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep228",
     "name": "Random Cecan VIETNAM",
-    "m": "GET",
-    "path": "/api/r/cecan/vietnam",
+    "desc": "Random Cecan VIETNAM",
     "folder": "Random",
     "subfolder": "vietnam",
-    "desc": "Random Cecan VIETNAM",
-    "ex": "https://api.siputzx.my.id/api/r/cecan/vietnam",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep229",
     "name": "lahelu",
-    "m": "GET",
-    "path": "/api/r/lahelu",
+    "desc": "lahelu",
     "folder": "Random",
     "subfolder": "lahelu",
-    "desc": "lahelu",
-    "ex": "https://api.siputzx.my.id/api/r/lahelu",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep230",
     "name": "animequotes",
-    "m": "GET",
-    "path": "/api/r/quotesanime",
+    "desc": "animequotes",
     "folder": "Random",
     "subfolder": "quotesanime",
-    "desc": "animequotes",
-    "ex": "https://api.siputzx.my.id/api/r/quotesanime",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep231",
     "name": "antara news",
-    "m": "GET",
-    "path": "/api/berita/antara",
+    "desc": "antara news",
     "folder": "Berita",
     "subfolder": "antara",
-    "desc": "antara news",
-    "ex": "https://api.siputzx.my.id/api/berita/antara",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep232",
     "name": "cnbc indonesia",
-    "m": "GET",
-    "path": "/api/berita/cnbcindonesia",
+    "desc": "cnbc indonesia",
     "folder": "Berita",
     "subfolder": "cnbcindonesia",
-    "desc": "cnbc indonesia",
-    "ex": "https://api.siputzx.my.id/api/berita/cnbcindonesia",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep233",
     "name": "cnn Indonesia",
-    "m": "GET",
-    "path": "/api/berita/cnn",
+    "desc": "cnn Indonesia",
     "folder": "Berita",
     "subfolder": "cnn",
-    "desc": "cnn Indonesia",
-    "ex": "https://api.siputzx.my.id/api/berita/cnn",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep234",
     "name": "kompas news",
-    "m": "GET",
-    "path": "/api/berita/kompas",
+    "desc": "kompas news",
     "folder": "Berita",
     "subfolder": "kompas",
-    "desc": "kompas news",
-    "ex": "https://api.siputzx.my.id/api/berita/kompas",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep235",
     "name": "liputan6",
-    "m": "GET",
-    "path": "/api/berita/liputan6",
+    "desc": "liputan6",
     "folder": "Berita",
     "subfolder": "liputan6",
-    "desc": "liputan6",
-    "ex": "https://api.siputzx.my.id/api/berita/liputan6",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep236",
     "name": "merdeka news",
-    "m": "GET",
-    "path": "/api/berita/merdeka",
+    "desc": "merdeka news",
     "folder": "Berita",
     "subfolder": "merdeka",
-    "desc": "merdeka news",
-    "ex": "https://api.siputzx.my.id/api/berita/merdeka",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep237",
     "name": "sindonews",
-    "m": "GET",
-    "path": "/api/berita/sindonews",
+    "desc": "sindonews",
     "folder": "Berita",
     "subfolder": "sindonews",
-    "desc": "sindonews",
-    "ex": "https://api.siputzx.my.id/api/berita/sindonews",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep238",
     "name": "suara news",
-    "m": "GET",
-    "path": "/api/berita/suara",
+    "desc": "suara news",
     "folder": "Berita",
     "subfolder": "suara",
-    "desc": "suara news",
-    "ex": "https://api.siputzx.my.id/api/berita/suara",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep239",
     "name": "tribunnews",
-    "m": "GET",
-    "path": "/api/berita/tribunnews",
+    "desc": "tribunnews",
     "folder": "Berita",
     "subfolder": "tribunnews",
-    "desc": "tribunnews",
-    "ex": "https://api.siputzx.my.id/api/berita/tribunnews",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep240",
     "name": "arti nama",
-    "m": "GET",
-    "path": "/api/primbon/artinama",
+    "desc": "arti nama",
     "folder": "Primbon",
     "subfolder": "artinama",
-    "desc": "arti nama",
-    "ex": "https://api.siputzx.my.id/api/primbon/artinama?nama=putu",
+    "m": "GET",
     "params": [
       {
         "n": "nama",
@@ -4881,17 +4758,18 @@
         "r": 0,
         "d": "nama"
       }
-    ]
+    ],
+    "example_values": {
+      "nama": "putu"
+    }
   },
   {
     "catalogId": "ep241",
     "name": "cek potensi penyakit",
-    "m": "GET",
-    "path": "/api/primbon/cek_potensi_penyakit",
+    "desc": "cek potensi penyakit",
     "folder": "Primbon",
     "subfolder": "cek_potensi_penyakit",
-    "desc": "cek potensi penyakit",
-    "ex": "https://api.siputzx.my.id/api/primbon/cek_potensi_penyakit?tgl=12&bln=05&thn=1998",
+    "m": "GET",
     "params": [
       {
         "n": "tgl",
@@ -4911,17 +4789,20 @@
         "r": 0,
         "d": "thn"
       }
-    ]
+    ],
+    "example_values": {
+      "tgl": "12",
+      "bln": "05",
+      "thn": "1998"
+    }
   },
   {
     "catalogId": "ep242",
     "name": "kecocokan nama pasangan",
-    "m": "GET",
-    "path": "/api/primbon/kecocokan_nama_pasangan",
+    "desc": "kecocokan nama pasangan",
     "folder": "Primbon",
     "subfolder": "kecocokan_nama_pasangan",
-    "desc": "kecocokan nama pasangan",
-    "ex": "https://api.siputzx.my.id/api/primbon/kecocokan_nama_pasangan?nama1=putu&nama2=keyla",
+    "m": "GET",
     "params": [
       {
         "n": "nama1",
@@ -4935,17 +4816,19 @@
         "r": 0,
         "d": "nama2"
       }
-    ]
+    ],
+    "example_values": {
+      "nama1": "putu",
+      "nama2": "keyla"
+    }
   },
   {
     "catalogId": "ep243",
     "name": "nomor hoki",
-    "m": "GET",
-    "path": "/api/primbon/nomorhoki",
+    "desc": "nomor hoki",
     "folder": "Primbon",
     "subfolder": "nomorhoki",
-    "desc": "nomor hoki",
-    "ex": "https://api.siputzx.my.id/api/primbon/nomorhoki?phoneNumber=6285658939117",
+    "m": "GET",
     "params": [
       {
         "n": "phoneNumber",
@@ -4953,17 +4836,18 @@
         "r": 0,
         "d": "phoneNumber"
       }
-    ]
+    ],
+    "example_values": {
+      "phoneNumber": "6285658939117"
+    }
   },
   {
     "catalogId": "ep244",
     "name": "ramalan jodoh",
-    "m": "GET",
-    "path": "/api/primbon/ramalanjodoh",
+    "desc": "ramalan jodoh",
     "folder": "Primbon",
     "subfolder": "ramalanjodoh",
-    "desc": "ramalan jodoh",
-    "ex": "https://api.siputzx.my.id/api/primbon/ramalanjodoh?nama1=putu&tgl1=16&bln1=11&thn1=2007&nama2=keyla&tgl2=1&bln2=1&thn2=2008",
+    "m": "GET",
     "params": [
       {
         "n": "nama1",
@@ -5013,17 +4897,25 @@
         "r": 0,
         "d": "thn2"
       }
-    ]
+    ],
+    "example_values": {
+      "nama1": "putu",
+      "tgl1": "16",
+      "bln1": "11",
+      "thn1": "2007",
+      "nama2": "keyla",
+      "tgl2": "1",
+      "bln2": "1",
+      "thn2": "2008"
+    }
   },
   {
     "catalogId": "ep245",
     "name": "ramalan jodoh bali",
-    "m": "GET",
-    "path": "/api/primbon/ramalanjodohbali",
+    "desc": "ramalan jodoh bali",
     "folder": "Primbon",
     "subfolder": "ramalanjodohbali",
-    "desc": "ramalan jodoh bali",
-    "ex": "https://api.siputzx.my.id/api/primbon/ramalanjodohbali?nama1=putu&tgl1=16&bln1=11&thn1=2007&nama2=keyla&tgl2=1&bln2=1&thn2=2008",
+    "m": "GET",
     "params": [
       {
         "n": "nama1",
@@ -5073,17 +4965,25 @@
         "r": 0,
         "d": "thn2"
       }
-    ]
+    ],
+    "example_values": {
+      "nama1": "putu",
+      "tgl1": "16",
+      "bln1": "11",
+      "thn1": "2007",
+      "nama2": "keyla",
+      "tgl2": "1",
+      "bln2": "1",
+      "thn2": "2008"
+    }
   },
   {
     "catalogId": "ep246",
     "name": "rejeki hoki weton",
-    "m": "GET",
-    "path": "/api/primbon/rejeki_hoki_weton",
+    "desc": "rejeki hoki weton",
     "folder": "Primbon",
     "subfolder": "rejeki_hoki_weton",
-    "desc": "rejeki hoki weton",
-    "ex": "https://api.siputzx.my.id/api/primbon/rejeki_hoki_weton?tgl=1&bln=1&thn=2025",
+    "m": "GET",
     "params": [
       {
         "n": "tgl",
@@ -5103,17 +5003,20 @@
         "r": 0,
         "d": "thn"
       }
-    ]
+    ],
+    "example_values": {
+      "tgl": "1",
+      "bln": "1",
+      "thn": "2025"
+    }
   },
   {
     "catalogId": "ep247",
     "name": "sifat usaha bisnis",
-    "m": "GET",
-    "path": "/api/primbon/sifat_usaha_bisnis",
+    "desc": "sifat usaha bisnis",
     "folder": "Primbon",
     "subfolder": "sifat_usaha_bisnis",
-    "desc": "sifat usaha bisnis",
-    "ex": "https://api.siputzx.my.id/api/primbon/sifat_usaha_bisnis?tgl=1&bln=1&thn=2000",
+    "m": "GET",
     "params": [
       {
         "n": "tgl",
@@ -5133,17 +5036,20 @@
         "r": 0,
         "d": "thn"
       }
-    ]
+    ],
+    "example_values": {
+      "tgl": "1",
+      "bln": "1",
+      "thn": "2000"
+    }
   },
   {
     "catalogId": "ep248",
     "name": "tafsir mimpi",
-    "m": "GET",
-    "path": "/api/primbon/tafsirmimpi",
+    "desc": "tafsir mimpi",
     "folder": "Primbon",
     "subfolder": "tafsirmimpi",
-    "desc": "tafsir mimpi",
-    "ex": "https://api.siputzx.my.id/api/primbon/tafsirmimpi?mimpi=bertemu",
+    "m": "GET",
     "params": [
       {
         "n": "mimpi",
@@ -5151,17 +5057,18 @@
         "r": 0,
         "d": "mimpi"
       }
-    ]
+    ],
+    "example_values": {
+      "mimpi": "bertemu"
+    }
   },
   {
     "catalogId": "ep249",
     "name": "zodiak",
-    "m": "GET",
-    "path": "/api/primbon/zodiak",
+    "desc": "zodiak",
     "folder": "Primbon",
     "subfolder": "zodiak",
-    "desc": "zodiak",
-    "ex": "https://api.siputzx.my.id/api/primbon/zodiak?zodiak=gemini",
+    "m": "GET",
     "params": [
       {
         "n": "zodiak",
@@ -5169,17 +5076,18 @@
         "r": 0,
         "d": "zodiak"
       }
-    ]
+    ],
+    "example_values": {
+      "zodiak": "gemini"
+    }
   },
   {
     "catalogId": "ep250",
     "name": "github",
-    "m": "GET",
-    "path": "/api/stalk/github",
+    "desc": "github",
     "folder": "Stalker",
     "subfolder": "github",
-    "desc": "github",
-    "ex": "https://api.siputzx.my.id/api/stalk/github?user=octocat",
+    "m": "GET",
     "params": [
       {
         "n": "user",
@@ -5187,17 +5095,18 @@
         "r": 0,
         "d": "user"
       }
-    ]
+    ],
+    "example_values": {
+      "user": "octocat"
+    }
   },
   {
     "catalogId": "ep251",
     "name": "pinterest",
-    "m": "GET",
-    "path": "/api/stalk/pinterest",
+    "desc": "pinterest",
     "folder": "Stalker",
     "subfolder": "pinterest",
-    "desc": "pinterest",
-    "ex": "https://api.siputzx.my.id/api/stalk/pinterest?q=dims",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -5205,17 +5114,18 @@
         "r": 0,
         "d": "q"
       }
-    ]
+    ],
+    "example_values": {
+      "q": "dims"
+    }
   },
   {
     "catalogId": "ep252",
     "name": "threads",
-    "m": "GET",
-    "path": "/api/stalk/threads",
+    "desc": "threads",
     "folder": "Stalker",
     "subfolder": "threads",
-    "desc": "threads",
-    "ex": "https://api.siputzx.my.id/api/stalk/threads?q=google",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -5223,17 +5133,18 @@
         "r": 0,
         "d": "q"
       }
-    ]
+    ],
+    "example_values": {
+      "q": "google"
+    }
   },
   {
     "catalogId": "ep253",
     "name": "twitter stalk",
-    "m": "GET",
-    "path": "/api/stalk/twitter",
+    "desc": "twitter stalk",
     "folder": "Stalker",
     "subfolder": "twitter",
-    "desc": "twitter stalk",
-    "ex": "https://api.siputzx.my.id/api/stalk/twitter?user=siputzx",
+    "m": "GET",
     "params": [
       {
         "n": "user",
@@ -5241,17 +5152,18 @@
         "r": 0,
         "d": "user"
       }
-    ]
+    ],
+    "example_values": {
+      "user": "siputzx"
+    }
   },
   {
     "catalogId": "ep254",
     "name": "youtube stalk",
-    "m": "GET",
-    "path": "/api/stalk/youtube",
+    "desc": "youtube stalk",
     "folder": "Stalker",
     "subfolder": "youtube",
-    "desc": "youtube stalk",
-    "ex": "https://api.siputzx.my.id/api/stalk/youtube?username=siputzx",
+    "m": "GET",
     "params": [
       {
         "n": "username",
@@ -5259,17 +5171,18 @@
         "r": 0,
         "d": "username"
       }
-    ]
+    ],
+    "example_values": {
+      "username": "siputzx"
+    }
   },
   {
     "catalogId": "ep255",
     "name": "country Info",
-    "m": "GET",
-    "path": "/api/tools/countryInfo",
+    "desc": "country Info",
     "folder": "Tools",
     "subfolder": "countryInfo",
-    "desc": "country Info",
-    "ex": "https://api.siputzx.my.id/api/tools/countryInfo?name=Indonesia",
+    "m": "GET",
     "params": [
       {
         "n": "name",
@@ -5277,17 +5190,18 @@
         "r": 0,
         "d": "name"
       }
-    ]
+    ],
+    "example_values": {
+      "name": "Indonesia"
+    }
   },
   {
     "catalogId": "ep256",
     "name": "kodepos",
-    "m": "GET",
-    "path": "/api/tools/kodepos",
+    "desc": "kodepos",
     "folder": "Tools",
     "subfolder": "kodepos",
-    "desc": "kodepos",
-    "ex": "https://api.siputzx.my.id/api/tools/kodepos?form=pasiran+jaya",
+    "m": "GET",
     "params": [
       {
         "n": "form",
@@ -5295,17 +5209,18 @@
         "r": 0,
         "d": "form"
       }
-    ]
+    ],
+    "example_values": {
+      "form": "pasiran jaya"
+    }
   },
   {
     "catalogId": "ep258",
     "name": "translate",
-    "m": "GET",
-    "path": "/api/tools/translate",
+    "desc": "translate",
     "folder": "Tools",
     "subfolder": "translate",
-    "desc": "translate",
-    "ex": "https://api.siputzx.my.id/api/tools/translate?text=I+love+you&source=en&target=id",
+    "m": "GET",
     "params": [
       {
         "n": "text",
@@ -5325,28 +5240,29 @@
         "r": 0,
         "d": "target"
       }
-    ]
+    ],
+    "example_values": {
+      "text": "I love you",
+      "source": "en",
+      "target": "id"
+    }
   },
   {
     "catalogId": "ep259",
     "name": "bmkg gempa",
-    "m": "GET",
-    "path": "/api/info/bmkg",
+    "desc": "bmkg gempa",
     "folder": "Info",
     "subfolder": "bmkg",
-    "desc": "bmkg gempa",
-    "ex": "https://api.siputzx.my.id/api/info/bmkg",
+    "m": "GET",
     "params": []
   },
   {
     "catalogId": "ep260",
     "name": "cuaca",
-    "m": "GET",
-    "path": "/api/info/cuaca",
+    "desc": "cuaca",
     "folder": "Info",
     "subfolder": "cuaca",
-    "desc": "cuaca",
-    "ex": "https://api.siputzx.my.id/api/info/cuaca?q=pasiran+jaya",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -5354,17 +5270,18 @@
         "r": 0,
         "d": "q"
       }
-    ]
+    ],
+    "example_values": {
+      "q": "pasiran jaya"
+    }
   },
   {
     "catalogId": "ep261",
     "name": "jadwalTV",
-    "m": "GET",
-    "path": "/api/info/jadwaltv",
+    "desc": "jadwalTV",
     "folder": "Info",
     "subfolder": "jadwaltv",
-    "desc": "jadwalTV",
-    "ex": "https://api.siputzx.my.id/api/info/jadwaltv?channel=sctv",
+    "m": "GET",
     "params": [
       {
         "n": "channel",
@@ -5372,17 +5289,18 @@
         "r": 0,
         "d": "channel"
       }
-    ]
+    ],
+    "example_values": {
+      "channel": "sctv"
+    }
   },
   {
     "catalogId": "ep266",
     "name": "combot sticker",
-    "m": "GET",
-    "path": "/api/sticker/combot-search",
+    "desc": "combot sticker",
     "folder": "Sticker",
     "subfolder": "combot-search",
-    "desc": "combot sticker",
-    "ex": "https://api.siputzx.my.id/api/sticker/combot-search?q=jomok+nye&page=1",
+    "m": "GET",
     "params": [
       {
         "n": "q",
@@ -5396,17 +5314,19 @@
         "r": 0,
         "d": "page"
       }
-    ]
+    ],
+    "example_values": {
+      "q": "jomok nye",
+      "page": "1"
+    }
   },
   {
     "catalogId": "ep267",
     "name": "Javin QR",
+    "desc": "Generate QR code dari teks, URL, atau apapun. Output: gambar PNG.",
     "folder": "Tools",
     "subfolder": "qr",
-    "desc": "Generate QR code dari teks, URL, atau apapun. Output: gambar PNG.",
     "m": "GET",
-    "path": "/v1/create-qr-code/",
-    "ex": "https://api.qrserver.com/v1/create-qr-code/?data=hello&size=300x300",
     "params": [
       {
         "n": "data",
@@ -5420,31 +5340,30 @@
         "r": 0,
         "d": "Ukuran, contoh: 300x300"
       }
-    ]
+    ],
+    "example_values": {
+      "data": "hello",
+      "size": "300x300"
+    }
   },
   {
     "catalogId": "ep268",
     "name": "Img to URL",
+    "desc": "Upload gambar (max 5 MB) dan dapatkan URL permanen. Support JPG, PNG, WEBP, GIF. Output: URL gambar.",
     "folder": "Canvas",
     "subfolder": "upload",
-    "desc": "Upload gambar (max 5 MB) dan dapatkan URL permanen. Support JPG, PNG, WEBP, GIF. Output: URL gambar.",
     "m": "POST",
-    "path": "/api/imgtourl",
-    "ex": "/upload.html",
-    "redirect": "/upload.html",
-    "params": []
+    "params": [],
+    "redirect": "/upload.html"
   },
   {
     "catalogId": "premium-amprem",
     "name": "AM Premium",
-    "m": "POST",
-    "path": "/api/premium/amprem",
+    "desc": "Endpoint untuk memproses verifikasi dan aktivasi akun Alight Motion premium.",
     "folder": "Tools",
     "subfolder": "premium",
-    "desc": "Endpoint untuk memproses verifikasi dan aktivasi akun Alight Motion premium.",
+    "m": "POST",
     "needKey": true,
-    "keyParam": "apikey",
-    "keyDesc": "API Key Premium untuk akses endpoint.",
     "params": [
       {
         "n": "apikey",
@@ -5481,14 +5400,11 @@
   {
     "catalogId": "premium-amfinder",
     "name": "am finder",
-    "m": "POST",
-    "path": "/api/premium/amfinder",
+    "desc": "Cari preset Alight Motion secara instan dari TikTok.",
     "folder": "Tools",
     "subfolder": "premium",
-    "desc": "Cari preset Alight Motion secara instan dari TikTok.",
+    "m": "POST",
     "needKey": true,
-    "keyParam": "apikey",
-    "keyDesc": "API Key Premium untuk akses endpoint.",
     "params": [
       {
         "n": "apikey",
