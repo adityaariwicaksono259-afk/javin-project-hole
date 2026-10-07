@@ -5,8 +5,8 @@ import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 
 // Kredit yang didapat per tier
 const TIER_CREDITS = {
-  basic: 50,
-  pro: 130,
+  basic: 70,
+  pro: 150,
   unlimited: 1000
 };
 
