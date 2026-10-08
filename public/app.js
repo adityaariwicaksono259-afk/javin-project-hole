@@ -284,16 +284,33 @@
       };
     }
 
-    // ===== Handler logout — buka modal konfirmasi =====
-    var logoutBtn = document.getElementById('pfLogout');
-    if (logoutBtn) {
-      logoutBtn.onclick = function() {
-        modal.style.display = 'none';
-        var cm = document.getElementById('logoutModal');
-        if (cm) cm.style.display = 'flex';
-      };
-    }
   }
+
+  // ===== Handler logout — dipasang independen dari profile fetch =====
+  (function setupProfileLogout() {
+    function initLogout() {
+      var logoutBtn = document.getElementById('pfLogout');
+      if (!logoutBtn || logoutBtn.__jvLogoutBound) return;
+      logoutBtn.__jvLogoutBound = true;
+
+      logoutBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var profileModal = document.getElementById('profileModal');
+        if (profileModal) profileModal.style.display = 'none';
+
+        var logoutModal = document.getElementById('logoutModal');
+        if (logoutModal) logoutModal.style.display = 'flex';
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLogout);
+    } else {
+      initLogout();
+    }
+  })();
 
   // ===== Modal Konfirmasi Logout =====
   (function setupLogoutConfirm() {
