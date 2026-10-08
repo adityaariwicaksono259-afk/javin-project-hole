@@ -36,13 +36,15 @@
   function applySettings(s){
     var body = document.body;
 
-    // Theme
+    // Theme — sinkron ke HTML + body
     var effectiveTheme = s.theme;
     if (s.theme === 'auto') {
       effectiveTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
+    document.documentElement.setAttribute('data-theme', effectiveTheme);
     body.classList.toggle('theme-dark', effectiveTheme === 'dark');
     body.classList.toggle('theme-light', effectiveTheme === 'light');
+    body.classList.add('theme-neobrutal');
 
     // UI iOS
     body.classList.toggle('ui-ios', s.uiIos);
@@ -54,6 +56,7 @@
     body.classList.remove('scale-12', 'scale-14');
     if (s.scale === '1.2') body.classList.add('scale-12');
     if (s.scale === '1.4') body.classList.add('scale-14');
+    body.setAttribute('data-ui-scale', s.scale || '1');
 
     // Update UI controls
     $$('#themeSeg button').forEach(function(b){

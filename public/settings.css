@@ -263,3 +263,282 @@ body.anim-3d .settings-item:active {
   font-size: 12px;
   font-weight: 800;
 }
+
+/* ============================================================
+   JAVIN SETTINGS — NEOBRUTALISM V1
+   ============================================================ */
+
+:root {
+  --nb-bg:#f4f4f0;
+  --nb-card:#fff;
+  --nb-text:#111;
+  --nb-muted:#555;
+  --nb-border:#000;
+  --nb-accent:#ffe600;
+  --nb-shadow:5px 5px 0 #000;
+}
+
+html,body {
+  min-height:100%;
+}
+
+body {
+  background:var(--nb-bg)!important;
+  background-image:none!important;
+  color:var(--nb-text)!important;
+}
+
+.fx-header {
+  background:var(--nb-card)!important;
+  border:3px solid #000!important;
+  border-radius:0 0 16px 16px!important;
+  box-shadow:4px 4px 0 #000!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+
+.fx-header h1,
+.fx-icon-btn {
+  color:var(--nb-text)!important;
+}
+
+.fx-icon-btn {
+  background:#fff!important;
+  border:3px solid #000!important;
+  border-radius:12px!important;
+  box-shadow:3px 3px 0 #000!important;
+}
+
+.fx-icon-btn:active {
+  transform:translate(3px,3px)!important;
+  box-shadow:0 0 0 #000!important;
+}
+
+.settings-wrap {
+  max-width:760px!important;
+  padding:22px 16px 70px!important;
+}
+
+.settings-group {
+  margin-bottom:28px!important;
+}
+
+.settings-group-title {
+  color:#111!important;
+  font-size:12px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+  padding:0 4px 12px!important;
+}
+
+.settings-item,
+.settings-item:first-of-type,
+.settings-item:last-of-type,
+.settings-item:only-of-type {
+  background:#fff!important;
+  border:3px solid #000!important;
+  border-radius:14px!important;
+  margin-bottom:12px!important;
+  box-shadow:var(--nb-shadow)!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+  color:#111!important;
+}
+
+.settings-item:not(:last-of-type) {
+  border-bottom:3px solid #000!important;
+}
+
+.settings-name {
+  color:#111!important;
+  font-weight:900!important;
+}
+
+.settings-sub {
+  color:#555!important;
+  font-weight:600!important;
+}
+
+.settings-value {
+  color:#111!important;
+  font-weight:900!important;
+}
+
+/* SWITCH */
+.switch {
+  width:56px!important;
+  height:32px!important;
+}
+
+.slider {
+  background:#fff!important;
+  border:3px solid #000!important;
+  border-radius:10px!important;
+  box-sizing:border-box;
+}
+
+.slider:before {
+  width:22px!important;
+  height:22px!important;
+  left:2px!important;
+  top:2px!important;
+  background:#000!important;
+  border-radius:6px!important;
+  box-shadow:none!important;
+}
+
+input:checked + .slider {
+  background:#ffe600!important;
+}
+
+input:checked + .slider:before {
+  transform:translateX(24px)!important;
+}
+
+/* SEGMENT */
+.seg-control {
+  background:#fff!important;
+  border:3px solid #000!important;
+  border-radius:12px!important;
+  padding:4px!important;
+  gap:5px!important;
+  box-shadow:3px 3px 0 #000!important;
+}
+
+.seg-control button {
+  color:#111!important;
+  background:#fff!important;
+  border:2px solid transparent!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+  font-weight:900!important;
+}
+
+.seg-control button.active {
+  background:#ffe600!important;
+  color:#000!important;
+  border-color:#000!important;
+  box-shadow:2px 2px 0 #000!important;
+}
+
+.seg-control button:active {
+  transform:translate(2px,2px);
+}
+
+/* BUTTON */
+.btn-mini,
+.btn-mini.ghost {
+  background:#ffe600!important;
+  color:#000!important;
+  border:3px solid #000!important;
+  border-radius:10px!important;
+  box-shadow:3px 3px 0 #000!important;
+  font-weight:900!important;
+}
+
+.btn-mini:active,
+.btn-mini.ghost:active {
+  transform:translate(3px,3px)!important;
+  box-shadow:0 0 0 #000!important;
+}
+
+/* LANGUAGE */
+#langSearch,
+#langList {
+  background:#fff!important;
+  color:#111!important;
+  border:3px solid #000!important;
+  border-radius:10px!important;
+  box-shadow:3px 3px 0 #000!important;
+  backdrop-filter:none!important;
+}
+
+#langSearch:focus {
+  border-color:#000!important;
+  box-shadow:4px 4px 0 #000!important;
+  outline:none!important;
+}
+
+.lang-row {
+  color:#111!important;
+  border-bottom:2px solid #000!important;
+  font-weight:800!important;
+}
+
+.lang-row:hover,
+.lang-row.active {
+  background:#ffe600!important;
+  color:#000!important;
+}
+
+/* IOS MODE: tetap NeoBrutalism, hanya lebih rounded */
+body.ui-ios .settings-item {
+  border-radius:18px!important;
+}
+
+body.ui-ios .seg-control {
+  border-radius:16px!important;
+}
+
+/* 3D ON */
+body.anim-3d .settings-item:active,
+body.anim-3d .btn-mini:active,
+body.anim-3d .seg-control button:active,
+body.anim-3d .fx-icon-btn:active {
+  transform:translate(3px,3px)!important;
+  box-shadow:0 0 0 #000!important;
+}
+
+/* 3D OFF */
+body:not(.anim-3d) .settings-item:active,
+body:not(.anim-3d) .btn-mini:active,
+body:not(.anim-3d) .seg-control button:active,
+body:not(.anim-3d) .fx-icon-btn:active {
+  transform:none!important;
+}
+
+/* SCALE — sekarang benar-benar terlihat */
+body.scale-12 .settings-wrap {
+  zoom:1.12;
+}
+
+body.scale-14 .settings-wrap {
+  zoom:1.25;
+}
+
+/* DARK — tetap NeoBrutalism */
+html[data-theme="dark"] body,
+body.theme-dark {
+  --nb-bg:#171717;
+  --nb-card:#242424;
+  --nb-text:#fff;
+  --nb-muted:#ccc;
+  background:#171717!important;
+  color:#fff!important;
+}
+
+html[data-theme="dark"] .settings-item,
+html[data-theme="dark"] .fx-header,
+html[data-theme="dark"] .fx-icon-btn,
+html[data-theme="dark"] .seg-control,
+html[data-theme="dark"] .seg-control button,
+html[data-theme="dark"] #langSearch,
+html[data-theme="dark"] #langList {
+  background:#242424!important;
+  color:#fff!important;
+}
+
+html[data-theme="dark"] .settings-name,
+html[data-theme="dark"] .settings-value {
+  color:#fff!important;
+}
+
+html[data-theme="dark"] .settings-sub {
+  color:#ccc!important;
+}
+
+html[data-theme="dark"] .seg-control button.active,
+html[data-theme="dark"] .lang-row.active {
+  background:#ffe600!important;
+  color:#000!important;
+}
