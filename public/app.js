@@ -333,6 +333,11 @@
       }
 
       if (confirmBtn) {
+        confirmBtn.onclick = function() {
+          if (typeof window.__jvDoLogout === 'function') {
+            window.__jvDoLogout();
+          }
+        };
       }
 
       cm.onclick = function(e) {
