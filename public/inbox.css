@@ -1,0 +1,83 @@
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;font-family:'Space Grotesk',system-ui,sans-serif;background:#FFE600;color:#0A0A0A;min-height:100vh}
+body{padding-bottom:90px}
+
+.inbox-header{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:10px;padding:14px 16px;background:#FFE600;border-bottom:3px solid #0A0A0A;box-shadow:0 4px 0 #0A0A0A}
+.inbox-title{flex:1;margin:0;font-family:'Archivo Black',sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:.5px}
+.inbox-hbtn{width:44px;height:44px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A;color:#0A0A0A;font-size:18px;font-weight:800;cursor:pointer;text-decoration:none;transition:transform .08s,box-shadow .08s}
+.inbox-hbtn:active{transform:translate(3px,3px);box-shadow:0 0 0 #0A0A0A}
+
+.inbox-tabs{display:flex;gap:8px;padding:14px 14px 4px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.inbox-tab{flex-shrink:0;padding:8px 14px;font-family:inherit;font-size:13px;font-weight:700;background:#FFFFFF;color:#0A0A0A;border:3px solid #0A0A0A;border-radius:10px;box-shadow:3px 3px 0 #0A0A0A;cursor:pointer;transition:transform .08s,box-shadow .08s}
+.inbox-tab:active{transform:translate(3px,3px);box-shadow:0 0 0 #0A0A0A}
+.inbox-tab.active{background:#FF7FE5}
+
+.inbox-list{padding:14px;display:flex;flex-direction:column;gap:12px}
+.inbox-loading{text-align:center;padding:40px 20px;font-weight:700;color:#4A4A4A}
+
+.inbox-item{display:flex;gap:12px;padding:14px;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:14px;box-shadow:4px 4px 0 #0A0A0A;cursor:pointer;transition:transform .08s,box-shadow .08s;position:relative}
+.inbox-item:active{transform:translate(4px,4px);box-shadow:0 0 0 #0A0A0A}
+.inbox-item.unread{background:#FFF9B0}
+.inbox-item.unread::after{content:'';position:absolute;top:10px;right:10px;width:10px;height:10px;background:#FF7FE5;border:2px solid #0A0A0A;border-radius:50%}
+
+.inbox-item-icon{width:46px;height:46px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;background:#7FDBFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:2px 2px 0 #0A0A0A}
+.inbox-item.type-announce .inbox-item-icon{background:#FF7FE5}
+.inbox-item.type-info .inbox-item-icon{background:#7FDBFF}
+.inbox-item.type-warning .inbox-item-icon{background:#FF9F45}
+.inbox-item.type-success .inbox-item-icon{background:#7FFFA0}
+
+.inbox-item-body{flex:1;min-width:0}
+.inbox-item-title{font-family:'Archivo Black',sans-serif;font-size:14px;margin:0 0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.inbox-item-preview{font-size:12px;color:#4A4A4A;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.inbox-item-time{font-size:10px;font-weight:700;color:#6A6A6A;margin-top:4px}
+
+.inbox-empty{padding:60px 24px;text-align:center}
+.inbox-empty-emoji{font-size:56px;margin-bottom:12px}
+.inbox-empty-title{font-family:'Archivo Black',sans-serif;font-size:18px;margin-bottom:6px}
+.inbox-empty-sub{font-size:13px;color:#4A4A4A;font-weight:500}
+
+.inbox-modal{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .15s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.inbox-modal-card{width:100%;max-width:520px;background:#FFFFFF;border:3px solid #0A0A0A;border-bottom:none;border-top-left-radius:20px;border-top-right-radius:20px;padding:22px 20px 28px;box-shadow:0 -6px 0 #0A0A0A;position:relative;animation:slideUp .22s cubic-bezier(.34,1.56,.64,1);max-height:85vh;overflow-y:auto}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.inbox-modal-close{position:absolute;top:14px;right:14px;width:36px;height:36px;background:#FF7FE5;border:3px solid #0A0A0A;border-radius:10px;box-shadow:2px 2px 0 #0A0A0A;font-size:16px;font-weight:800;cursor:pointer;color:#0A0A0A}
+.inbox-modal-close:active{transform:translate(2px,2px);box-shadow:0 0 0 #0A0A0A}
+.inbox-modal-icon{width:60px;height:60px;background:#7FDBFF;border:3px solid #0A0A0A;border-radius:14px;box-shadow:4px 4px 0 #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:14px}
+.inbox-modal-title{font-family:'Archivo Black',sans-serif;font-size:18px;margin:0 0 6px;padding-right:40px}
+.inbox-modal-time{font-size:11px;font-weight:700;color:#6A6A6A;margin-bottom:14px}
+.inbox-modal-body{font-size:14px;line-height:1.6;color:#2A2A2A;white-space:pre-wrap;word-wrap:break-word}
+
+html[data-theme="dark"] body{background:#08080c;color:#ffffff}
+html[data-theme="dark"] .inbox-header{background:#a855f7;border-color:#ffffff;box-shadow:0 4px 0 #ffffff}
+html[data-theme="dark"] .inbox-title{color:#ffffff}
+html[data-theme="dark"] .inbox-hbtn{background:#ffffff;color:#0A0A0A;border-color:#0A0A0A;box-shadow:3px 3px 0 #0A0A0A}
+html[data-theme="dark"] .inbox-tab{background:#181820;color:#ffffff;border-color:#ffffff;box-shadow:3px 3px 0 #ffffff}
+html[data-theme="dark"] .inbox-tab.active{background:#c084fc;color:#0A0A0A}
+html[data-theme="dark"] .inbox-item{background:#181820;border-color:#ffffff;box-shadow:4px 4px 0 #ffffff}
+html[data-theme="dark"] .inbox-item.unread{background:#241333}
+html[data-theme="dark"] .inbox-item-title{color:#ffffff}
+html[data-theme="dark"] .inbox-item-preview{color:#b8b8b8}
+html[data-theme="dark"] .inbox-item-time{color:#a0a0a0}
+html[data-theme="dark"] .inbox-modal-card{background:#181820;border-color:#ffffff;box-shadow:0 -6px 0 #ffffff}
+html[data-theme="dark"] .inbox-modal-title{color:#ffffff}
+html[data-theme="dark"] .inbox-modal-time{color:#a0a0a0}
+html[data-theme="dark"] .inbox-modal-body{color:#e0e0e0}
+html[data-theme="dark"] .inbox-modal-close{background:#c084fc;color:#0A0A0A}
+
+/* FIX: hidden attribute override display:flex */
+.inbox-modal[hidden],
+.inbox-empty[hidden],
+.inbox-loading[hidden] {
+  display: none !important;
+}
+
+/* FIX BRUTAL — anti override */
+.inbox-modal[hidden],
+.inbox-modal[style*="display: none"] {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+.inbox-modal:not([hidden]):not([style*="display: none"]) {
+  display: flex !important;
+}

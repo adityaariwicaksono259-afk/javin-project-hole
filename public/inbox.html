@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<title>Inbox — Javin Codex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style-neobrutalism.css?v=10">
+<link rel="stylesheet" href="/bottom-nav.css?v=2">
+<link rel="stylesheet" href="/theme-global.css?v=1">
+<link rel="stylesheet" href="/inbox.css?v=1">
+<script src="/theme-loader.js"></script>
+</head>
+<body>
+
+<div class="inbox-header">
+  <a href="/home" class="inbox-hbtn" aria-label="Home">←</a>
+  <h1 class="inbox-title">Inbox</h1>
+  <button class="inbox-hbtn" id="btnRefresh" aria-label="Refresh">🔄</button>
+</div>
+
+<div class="inbox-tabs" id="inboxTabs">
+  <button class="inbox-tab active" data-filter="all">Semua</button>
+  <button class="inbox-tab" data-filter="unread">Belum Dibaca</button>
+  <button class="inbox-tab" data-filter="read">Sudah Dibaca</button>
+</div>
+
+<div class="inbox-list" id="inboxList">
+  <div class="inbox-loading">Memuat...</div>
+</div>
+
+<div class="inbox-empty" id="inboxEmpty" hidden>
+  <div class="inbox-empty-emoji">📭</div>
+  <div class="inbox-empty-title">Belum ada notifikasi</div>
+  <div class="inbox-empty-sub">Semua info terbaru bakal muncul di sini</div>
+</div>
+
+<div class="inbox-modal" id="inboxModal" hidden>
+  <div class="inbox-modal-card">
+    <button class="inbox-modal-close" id="btnModalClose">✕</button>
+    <div class="inbox-modal-icon" id="modalIcon">📢</div>
+    <h2 class="inbox-modal-title" id="modalTitle">—</h2>
+    <div class="inbox-modal-time" id="modalTime">—</div>
+    <div class="inbox-modal-body" id="modalBody">—</div>
+  </div>
+</div>
+
+<script src="/inbox.js?v=1"></script>
+<script src="/bottom-nav.js?v=2"></script>
+</body>
+</html>
