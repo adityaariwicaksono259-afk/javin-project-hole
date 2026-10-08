@@ -399,22 +399,13 @@
 })();
 })();
 
-// === LOAD SETTINGS (theme, scale, dll) ===
+// === LOAD SETTINGS (UI, scale, dll) ===
 (function(){
   function applySettings() {
     try {
       var raw = localStorage.getItem('vinapiay_settings');
       var s = raw ? JSON.parse(raw) : { theme: 'light', uiIos: true, anim3d: true, scale: '1' };
       var body = document.body;
-      
-      // Theme
-      var theme = s.theme || 'light';
-      var eff = theme;
-      if (theme === 'auto') {
-        eff = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
-      body.classList.toggle('theme-dark', eff === 'dark');
-      body.classList.toggle('theme-light', eff === 'light');
       
       // UI iOS
       body.classList.toggle('ui-ios', s.uiIos !== false);
@@ -426,10 +417,8 @@
       body.classList.remove('scale-12', 'scale-14');
       if (s.scale === '1.2') body.classList.add('scale-12');
       if (s.scale === '1.4') body.classList.add('scale-14');
-      
-      console.log('[Theme] Applied:', theme, '→', eff);
     } catch(e) {
-      console.error('[Theme] Error:', e.message);
+      console.error('[Settings] Error:', e.message);
     }
   }
   
