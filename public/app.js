@@ -1031,21 +1031,28 @@ window.__jvCancelLogout = function() {
   if (lm) lm.style.display = 'none';
 };
 
-window.__jvDoLogout = function() {
+window.__jvDoLogout = async function() {
   var btn = document.getElementById('lcConfirm');
-  if (btn) { btn.disabled = true; btn.textContent = 'Logging out...'; }
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'Logging out...';
+  }
 
-  Promise.all([
-    fetch('/api/auth/logout-demo', { method: 'POST', credentials: 'same-origin' }).catch(function(){}),
-    fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){})
-  ]).then(function() {
-    try {
-      localStorage.removeItem('javin_user_id');
-      localStorage.removeItem('javin_user_name');
-      localStorage.removeItem('javin_user_avatar');
-      localStorage.removeItem('javin_user_code');
-      localStorage.removeItem('javin_session_token');
-    } catch(e) {}
-    location.replace('/login');
-  });
+  try {
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+  } catch(e) {}
+
+  try {
+    localStorage.removeItem('javin_user_id');
+    localStorage.removeItem('javin_user_name');
+    localStorage.removeItem('javin_user_avatar');
+    localStorage.removeItem('javin_user_code');
+    localStorage.removeItem('javin_session_token');
+  } catch(e) {}
+
+  window.location.replace('/login');
 };
