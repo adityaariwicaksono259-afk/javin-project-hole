@@ -648,6 +648,49 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
         }
       };
     }
+
+    var logout = document.getElementById('pfLogout');
+    var cancelLogout = document.getElementById('lcCancel');
+    var confirmLogout = document.getElementById('lcConfirm');
+
+    if (logout) {
+      logout.style.pointerEvents = 'auto';
+      logout.style.touchAction = 'manipulation';
+      logout.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (typeof window.__jvShowLogout === 'function') {
+          window.__jvShowLogout();
+        }
+      };
+    }
+
+    if (cancelLogout) {
+      cancelLogout.style.pointerEvents = 'auto';
+      cancelLogout.style.touchAction = 'manipulation';
+      cancelLogout.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (typeof window.__jvCancelLogout === 'function') {
+          window.__jvCancelLogout();
+        }
+      };
+    }
+
+    if (confirmLogout) {
+      confirmLogout.style.pointerEvents = 'auto';
+      confirmLogout.style.touchAction = 'manipulation';
+      confirmLogout.onclick = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (typeof window.__jvDoLogout === 'function') {
+          window.__jvDoLogout();
+        }
+      };
+    }
   }
 
   function startVideo() {
@@ -684,6 +727,7 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
     startVideo();
   });
 })();
+</script>
 <!-- END JAVIN-CLICK-FIX-V9 -->
 
 
