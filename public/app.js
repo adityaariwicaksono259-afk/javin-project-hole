@@ -333,36 +333,6 @@
       }
 
       if (confirmBtn) {
-        confirmBtn.onclick = async function() {
-          confirmBtn.disabled = true;
-          confirmBtn.textContent = 'Logging out...';
-          if (cancelBtn) cancelBtn.disabled = true;
-
-          try {
-            await fetch('/api/auth/logout-demo', {
-              method: 'POST',
-              credentials: 'same-origin'
-            });
-          } catch(e) {}
-          try {
-            await fetch('/api/auth/logout', {
-              method: 'POST',
-              credentials: 'same-origin'
-            });
-          } catch(e) {}
-
-          try {
-            localStorage.removeItem('javin_user_id');
-            localStorage.removeItem('javin_user_name');
-            localStorage.removeItem('javin_user_avatar');
-            localStorage.removeItem('javin_user_code');
-            localStorage.removeItem('javin_session_token');
-            // javin_display_name & javin_avatar_url DIPERTAHANKAN
-            // biar nama & foto profil tetap sama pas login lagi
-          } catch(e) {}
-
-          location.replace('/login');
-        };
       }
 
       cm.onclick = function(e) {
@@ -1047,56 +1017,6 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
 })();
 
 
-// ===== FIX-LOGOUT-DELEGATION =====
-// Pake event delegation biar nggak bergantung timing load
-(function() {
-  if (window.__logoutDelegationBound) return;
-  window.__logoutDelegationBound = true;
-
-  document.addEventListener('click', function(e) {
-    var target = e.target;
-    if (!target) return;
-
-    // Tombol "Logout" di modal profil
-    if (target.id === 'pfLogout' || target.closest('#pfLogout')) {
-      e.preventDefault();
-      var profileModal = document.getElementById('profileModal');
-      if (profileModal) profileModal.style.display = 'none';
-      var logoutModal = document.getElementById('logoutModal');
-      if (logoutModal) logoutModal.style.display = 'flex';
-      return;
-    }
-
-    // Tombol "Batal"
-    if (target.id === 'lcCancel' || target.closest('#lcCancel')) {
-      var logoutModal2 = document.getElementById('logoutModal');
-      if (logoutModal2) logoutModal2.style.display = 'none';
-      return;
-    }
-
-    // Tombol "Logout" di modal konfirmasi
-    if (target.id === 'lcConfirm' || target.closest('#lcConfirm')) {
-      e.preventDefault();
-      target.disabled = true;
-      target.textContent = 'Logging out...';
-
-      Promise.all([
-        fetch('/api/auth/logout-demo', { method: 'POST', credentials: 'same-origin' }).catch(function(){}),
-        fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){})
-      ]).then(function() {
-        try {
-          localStorage.removeItem('javin_user_id');
-          localStorage.removeItem('javin_user_name');
-          localStorage.removeItem('javin_user_avatar');
-          localStorage.removeItem('javin_user_code');
-          localStorage.removeItem('javin_session_token');
-        } catch(e) {}
-        location.replace('/login');
-      });
-      return;
-    }
-  }, true);
-})();
 
 // ===== FIX LOGOUT v2 — Fungsi global =====
 window.__jvShowLogout = function() {
