@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5">
+<title>Profil — Javin Codex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style-neobrutalism.css?v=10">
+<link rel="stylesheet" href="/bottom-nav.css?v=3">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#FFE600;font-family:'Space Grotesk',system-ui,sans-serif;color:#0A0A0A;overflow-x:hidden}
+body{padding-bottom:110px}
+
+/* Header */
+.pf-page-header{position:sticky;top:0;z-index:50;background:#FFE600;padding:14px 16px;border-bottom:3px solid #0A0A0A;box-shadow:0 4px 0 #0A0A0A}
+.pf-page-header h1{font-family:'Archivo Black',sans-serif;font-size:18px;margin:0;letter-spacing:0.5px}
+
+/* Avatar section */
+.pf-avatar-section{display:flex;flex-direction:column;align-items:center;padding:24px 16px 16px}
+.pf-avatar-big{width:96px;height:96px;border-radius:50%;background:#FF7FE5;border:3px solid #0A0A0A;box-shadow:5px 5px 0 #0A0A0A;display:flex;align-items:center;justify-content:center;font-family:'Archivo Black',sans-serif;font-size:36px;color:#0A0A0A;overflow:hidden;position:relative;cursor:pointer;transition:transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),box-shadow 0.15s ease}
+.pf-avatar-big:active{transform:scale(0.95) translate(2px, 2px);box-shadow:2px 2px 0 #0A0A0A}
+.pf-avatar-big img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.pf-avatar-big .pf-avatar-edit-badge{position:absolute;bottom:-2px;right:-2px;width:32px;height:32px;background:#0A0A0A;color:#FFE600;border:3px solid #FFE600;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px}
+.pf-upload-hint{font-size:11px;color:#4A4A4A;font-weight:600;margin-top:10px}
+
+/* Section */
+.pf-section{padding:0 16px;margin-bottom:18px}
+.pf-section-title{font-family:'Archivo Black',sans-serif;font-size:14px;margin:0 0 10px;text-transform:uppercase;letter-spacing:0.5px}
+.pf-section-title::before{content:'— ';color:#FF7FE5}
+
+/* Card */
+.pf-card{background:#FFFFFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:5px 5px 0 #0A0A0A;padding:16px;display:flex;flex-direction:column;gap:14px}
+.pf-item{padding-bottom:14px;border-bottom:2px dashed rgba(10,10,10,0.15)}
+.pf-item:last-child{border-bottom:none;padding-bottom:0}
+.pf-item-label{font-size:10px;color:#4A4A4A;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px}
+.pf-item-value{font-size:14px;font-weight:700;color:#0A0A0A}
+.pf-item-value.mono{font-family:monospace;letter-spacing:1px;word-break:break-all}
+.pf-item-value-row{display:flex;align-items:center;gap:8px}
+.pf-item-value-row .pf-item-value{flex:1}
+
+/* Buttons */
+.pf-icon-btn{background:#0A0A0A;color:#FFE600;border:2px solid #0A0A0A;border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;flex-shrink:0;transition:transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),box-shadow 0.15s ease;box-shadow:2px 2px 0 #FF7FE5}
+.pf-icon-btn:active{transform:scale(0.9) translate(1px, 1px);box-shadow:1px 1px 0 #FF7FE5}
+.pf-icon-btn.success{background:#00D97E;color:#0A0A0A;box-shadow:2px 2px 0 #0A0A0A}
+
+/* Status dot */
+.pf-status-dot-inline{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px;background:#94A3B8}
+.pf-status-dot-inline.google{background:#22C55E}
+.pf-status-dot-inline.demo{background:#F59E0B}
+
+/* Tier badge */
+.pf-tier-inline{display:inline-block;padding:4px 10px;border-radius:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;border:2px solid #0A0A0A}
+.pf-tier-inline.free{background:#F1F5F9;color:#0A0A0A}
+.pf-tier-inline.basic{background:#FFF9B0;color:#0A0A0A}
+.pf-tier-inline.pro{background:#FFD9F5;color:#0A0A0A}
+.pf-tier-inline.unlimited{background:#D9FFFF;color:#0A0A0A}
+.pf-tier-inline.demo{background:#FEF3C7;color:#92400E}
+
+/* Credits highlight */
+.pf-credits-big{font-family:'Archivo Black',sans-serif;font-size:24px;color:#0EA5E9}
+
+/* Logout */
+.pf-logout-big{width:100%;padding:16px;background:#FF4D6D;color:#FFFFFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:5px 5px 0 #0A0A0A;font-family:'Space Grotesk',sans-serif;font-weight:800;font-size:15px;text-transform:uppercase;letter-spacing:0.5px;cursor:pointer;transition:transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),box-shadow 0.15s ease}
+.pf-logout-big:active{transform:scale(0.97) translate(2px, 2px);box-shadow:2px 2px 0 #0A0A0A}
+
+/* Loading */
+.pf-loading{text-align:center;padding:20px;font-weight:700;color:#4A4A4A;font-size:12px}
+
+/* Edit modal */
+.pf-edit-overlay{position:fixed;inset:0;background:rgba(10,10,10,0.7);backdrop-filter:blur(4px);z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;box-sizing:border-box}
+.pf-edit-overlay.show{display:flex}
+.pf-edit-box{background:#FFFFFF;border:3px solid #0A0A0A;border-radius:16px;box-shadow:8px 8px 0 #0A0A0A;max-width:340px;width:100%;padding:20px;box-sizing:border-box}
+.pf-edit-title{font-family:'Archivo Black',sans-serif;font-size:18px;margin-bottom:12px;color:#0A0A0A}
+.pf-edit-input{width:100%;padding:12px 14px;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;outline:none;box-sizing:border-box;margin-bottom:12px}
+.pf-edit-input:focus{background:#FFF9B0}
+.pf-edit-btns{display:flex;gap:8px}
+.pf-edit-btn{flex:1;padding:12px;border:3px solid #0A0A0A;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;box-shadow:3px 3px 0 #0A0A0A;transition:transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),box-shadow 0.15s ease}
+.pf-edit-btn:active{transform:scale(0.94) translate(2px, 2px);box-shadow:1px 1px 0 #0A0A0A}
+.pf-edit-btn.cancel{background:#FFFFFF;color:#0A0A0A}
+.pf-edit-btn.save{background:#00D97E;color:#0A0A0A}
+
+.pf-icon-btn svg{width:18px;height:18px;display:block}
+.pf-avatar-edit-badge svg{width:14px;height:14px;display:block}
+.pf-logout-big{display:flex;align-items:center;justify-content:center;gap:8px}
+.pf-logout-big svg{width:20px;height:20px}
+</style>
+</head>
+<body>
+
+<div class="pf-page-header">
+  <h1>PROFIL</h1>
+</div>
+
+<!-- Avatar -->
+<div class="pf-avatar-section">
+  <div class="pf-avatar-big" id="pfAvatarBig" onclick="document.getElementById('pfAvatarFile').click()">
+    <div id="pfAvatarText" style="font-family:'Archivo Black',sans-serif;font-size:36px">J</div>
+    <img id="pfAvatarImg" style="display:none" alt="">
+    <div class="pf-avatar-edit-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+    <input type="file" id="pfAvatarFile" accept="image/*" style="display:none">
+  </div>
+  <div class="pf-upload-hint">Tap foto untuk ganti</div>
+</div>
+
+<!-- Info Akun -->
+<div class="pf-section">
+  <div class="pf-section-title">Akun</div>
+  <div class="pf-card">
+    <div class="pf-item">
+      <div class="pf-item-label">Kode User</div>
+      <div class="pf-item-value mono" id="pfUserCode">-</div>
+    </div>
+    <div class="pf-item">
+      <div class="pf-item-label">Nama Tampilan</div>
+      <div class="pf-item-value-row">
+        <div class="pf-item-value" id="pfDisplayName">-</div>
+        <button type="button" class="pf-icon-btn" id="pfEditName"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+      </div>
+    </div>
+    <div class="pf-item">
+      <div class="pf-item-label">Status Login</div>
+      <div class="pf-item-value">
+        <span class="pf-status-dot-inline" id="pfStatusDot"></span>
+        <span id="pfStatusText">-</span>
+      </div>
+    </div>
+    <div class="pf-item">
+      <div class="pf-item-label">Bergabung</div>
+      <div class="pf-item-value" id="pfJoined">-</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tier & Limit -->
+<div class="pf-section">
+  <div class="pf-section-title">Status</div>
+  <div class="pf-card">
+    <div class="pf-item">
+      <div class="pf-item-label">Tier</div>
+      <div class="pf-item-value">
+        <span class="pf-tier-inline" id="pfTier">-</span>
+      </div>
+    </div>
+    <div class="pf-item">
+      <div class="pf-item-label">Limit Harian</div>
+      <div class="pf-item-value">
+        <span id="pfLimit">-</span>
+        <span style="font-size:11px;color:#4A4A4A;font-weight:600" id="pfLimitReset"></span>
+      </div>
+    </div>
+    <div class="pf-item">
+      <div class="pf-item-label">Your API Key</div>
+      <div class="pf-item-value">
+        <span class="pf-credits-big" id="pfCredits">-</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API Key -->
+<div class="pf-section">
+  <div class="pf-section-title">API Key</div>
+  <div class="pf-card">
+    <div class="pf-item" style="border-bottom:none;padding-bottom:0">
+      <div class="pf-item-label">Rahasia</div>
+      <div class="pf-item-value-row">
+        <div class="pf-item-value mono" id="pfApiKey" style="word-break:break-all">-</div>
+        <button type="button" class="pf-icon-btn" id="pfApiKeyEye" title="Lihat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        <button type="button" class="pf-icon-btn success" id="pfApiKeyCopy" title="Salin"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Logout -->
+<div class="pf-section">
+  <button type="button" class="pf-logout-big" id="pfLogoutBig"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span>Logout</span></button>
+</div>
+
+<!-- Edit Name Modal -->
+<div class="pf-edit-overlay" id="pfEditOverlay">
+  <div class="pf-edit-box">
+    <div class="pf-edit-title">Ubah Nama</div>
+    <input type="text" class="pf-edit-input" id="pfEditInput" placeholder="Nama baru..." maxlength="60" autocomplete="off">
+    <div class="pf-edit-btns">
+      <button type="button" class="pf-edit-btn cancel" id="pfEditCancel">Batal</button>
+      <button type="button" class="pf-edit-btn save" id="pfEditSave">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<script src="/logout-modal.js?v=1"></script>
+<script src="/bottom-nav.js?v=3"></script>
+<script>
+(function(){
+  'use strict';
+
+  var ICON_EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+  var ICON_EYE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+  var state = { apiKey: '', revealed: false, user: null };
+
+  function maskApiKey(k) {
+    if (!k) return '-';
+    var s = String(k);
+    if (s.length <= 4) return '•'.repeat(s.length);
+    return s.slice(0, 2) + '•'.repeat(Math.max(0, s.length - 4)) + s.slice(-2);
+  }
+
+  function fmtReset(ms) {
+    if (!ms || ms < 0) return '';
+    var m = Math.floor(ms / 60000);
+    var h = Math.floor(m / 60);
+    var d = Math.floor(h / 24);
+    m = m % 60;
+    h = h % 24;
+    if (d > 0) return '(reset ' + d + 'h ' + h + 'j)';
+    if (h > 0) return '(reset ' + h + 'j ' + m + 'm)';
+    return '(reset ' + m + 'm)';
+  }
+
+  function fmtDate(ts) {
+    if (!ts) return '-';
+    try {
+      return new Date(ts).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
+    } catch(e) { return '-'; }
+  }
+
+  // Load profil
+  function loadProfile() {
+    var displayName = 'Javin';
+    try {
+      var saved = localStorage.getItem('javin_display_name');
+      if (saved && saved.trim()) displayName = saved.trim();
+    } catch(e) {}
+    var pfName = document.getElementById('pfDisplayName');
+    if (pfName) pfName.textContent = displayName;
+    var pfAvatarText = document.getElementById('pfAvatarText');
+    if (pfAvatarText) pfAvatarText.textContent = displayName.charAt(0).toUpperCase();
+
+    fetch('/api/auth/me', { credentials: 'same-origin', cache: 'no-store' })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if (!j || !j.ok || !j.user) {
+          // Belum login
+          var code = document.getElementById('pfUserCode');
+          if (code) code.textContent = 'Guest';
+          var st = document.getElementById('pfStatusText');
+          if (st) st.textContent = 'Tidak Login';
+          return;
+        }
+
+        state.user = j.user;
+
+        var pfUserCode = document.getElementById('pfUserCode');
+        if (pfUserCode) pfUserCode.textContent = j.user.user_code || '-';
+
+        var pfAvatarImg = document.getElementById('pfAvatarImg');
+        var pfAvatarText = document.getElementById('pfAvatarText');
+        if (j.user.avatar && pfAvatarImg) {
+          pfAvatarImg.src = j.user.avatar;
+          pfAvatarImg.style.display = 'block';
+          if (pfAvatarText) pfAvatarText.style.display = 'none';
+        }
+
+        // Status
+        var isDemo = j.is_demo === true || j.user.provider === 'demo';
+        var st = document.getElementById('pfStatusText');
+        var sd = document.getElementById('pfStatusDot');
+        var provider = isDemo ? 'Demo Mode' : (j.user.provider === 'google' ? 'Google' : (j.user.provider || 'User'));
+        if (st) st.textContent = provider;
+        if (sd) sd.className = 'pf-status-dot-inline ' + (isDemo ? 'demo' : 'google');
+
+        // Bergabung
+        var joined = document.getElementById('pfJoined');
+        if (joined) joined.textContent = fmtDate(j.user.created_at);
+
+        // API Key
+        state.apiKey = j.user.api_key || '';
+        var pfApiKey = document.getElementById('pfApiKey');
+        if (pfApiKey) {
+          pfApiKey.textContent = state.apiKey ? maskApiKey(state.apiKey) : '(belum ada)';
+        }
+
+        // Credits
+        var pfCredits = document.getElementById('pfCredits');
+        if (pfCredits) pfCredits.textContent = j.user.credits || 0;
+
+        // Tier
+        var tier = j.user.tier || 'free';
+        var pfTier = document.getElementById('pfTier');
+        if (pfTier) {
+          pfTier.textContent = tier;
+          pfTier.className = 'pf-tier-inline ' + tier;
+        }
+      })
+      .catch(function(e){
+        console.warn('[profil] auth/me error:', e.message);
+      });
+
+    // Load limit dari /api/user/me
+    fetch('/api/user/me', { credentials: 'same-origin', cache: 'no-store' })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if (!j || !j.ok) return;
+        var pfLimit = document.getElementById('pfLimit');
+        if (pfLimit) pfLimit.textContent = (j.remaining || 0) + '/' + (j.limit || 0);
+        var resetEl = document.getElementById('pfLimitReset');
+        if (resetEl) resetEl.textContent = fmtReset(j.reset_in_ms);
+      })
+      .catch(function(){});
+  }
+
+  // ==== Toggle Eye ====
+  function setupEye() {
+    var eye = document.getElementById('pfApiKeyEye');
+    var pfApiKey = document.getElementById('pfApiKey');
+    if (!eye || !pfApiKey) return;
+
+    eye.onclick = function() {
+      if (!state.apiKey) return;
+      state.revealed = !state.revealed;
+      pfApiKey.textContent = state.revealed ? state.apiKey : maskApiKey(state.apiKey);
+      eye.innerHTML = state.revealed ? ICON_EYE_OFF : ICON_EYE;
+    };
+  }
+
+  // ==== Copy ====
+  function setupCopy() {
+    var copy = document.getElementById('pfApiKeyCopy');
+    if (!copy) return;
+    copy.onclick = function() {
+      if (!state.apiKey) return;
+      var doCopy = function() {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(state.apiKey);
+        }
+        var ta = document.createElement('textarea');
+        ta.value = state.apiKey;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); } catch(e) {}
+        document.body.removeChild(ta);
+        return Promise.resolve();
+      };
+      doCopy().then(function() {
+        var old = copy.textContent;
+        copy.textContent = '✅';
+        setTimeout(function(){ copy.textContent = old; }, 1200);
+      });
+    };
+  }
+
+  // ==== Edit Name ====
+  function setupEditName() {
+    var btn = document.getElementById('pfEditName');
+    var overlay = document.getElementById('pfEditOverlay');
+    var input = document.getElementById('pfEditInput');
+    var cancel = document.getElementById('pfEditCancel');
+    var save = document.getElementById('pfEditSave');
+
+    if (btn) {
+      btn.onclick = function() {
+        var cur = document.getElementById('pfDisplayName').textContent;
+        input.value = cur;
+        overlay.classList.add('show');
+        setTimeout(function(){ input.focus(); }, 100);
+      };
+    }
+
+    if (cancel) {
+      cancel.onclick = function() { overlay.classList.remove('show'); };
+    }
+
+    if (overlay) {
+      overlay.onclick = function(e) {
+        if (e.target === overlay) overlay.classList.remove('show');
+      };
+    }
+
+    if (save) {
+      save.onclick = function() {
+        var newName = (input.value || '').trim();
+        if (!newName) { alert('Nama nggak boleh kosong'); return; }
+        try { localStorage.setItem('javin_display_name', newName); } catch(e) {}
+        var pfName = document.getElementById('pfDisplayName');
+        if (pfName) pfName.textContent = newName;
+        var pfAvatarText = document.getElementById('pfAvatarText');
+        if (pfAvatarText) pfAvatarText.textContent = newName.charAt(0).toUpperCase();
+        overlay.classList.remove('show');
+      };
+    }
+  }
+
+  // ==== Avatar upload ====
+  function setupAvatarUpload() {
+    var file = document.getElementById('pfAvatarFile');
+    var img = document.getElementById('pfAvatarImg');
+    var txt = document.getElementById('pfAvatarText');
+    if (!file) return;
+
+    file.onchange = function(e) {
+      var f = e.target.files && e.target.files[0];
+      if (!f) return;
+      if (f.size > 3 * 1024 * 1024) { alert('Max 3 MB'); return; }
+      var reader = new FileReader();
+      reader.onload = function(ev) {
+        img.src = ev.target.result;
+        img.style.display = 'block';
+        txt.style.display = 'none';
+
+        // Upload ke server
+        var fd = new FormData();
+        fd.append('file', f);
+        fetch('/api/user/avatar-upload', { method: 'POST', body: fd, credentials: 'same-origin' })
+          .then(function(r){ return r.json(); })
+          .then(function(j){
+            if (j && j.ok && j.url) {
+              try { localStorage.setItem('javin_avatar_url', j.url); } catch(e) {}
+            }
+          })
+          .catch(function(){});
+      };
+      reader.readAsDataURL(f);
+    };
+  }
+
+  // ==== Logout ====
+  function setupLogout() {
+    var btn = document.getElementById('pfLogoutBig');
+    if (!btn) return;
+    btn.onclick = function() {
+      if (typeof window.jvShowLogout === 'function') {
+        window.jvShowLogout();
+      } else {
+        // Fallback
+        if (!confirm('Yakin mau logout?')) return;
+        Promise.all([
+          fetch('/api/auth/logout-demo', { method: 'POST', credentials: 'same-origin' }).catch(function(){}),
+          fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){})
+        ]).then(function() {
+          try {
+            localStorage.removeItem('javin_user_id');
+            localStorage.removeItem('javin_user_name');
+            localStorage.removeItem('javin_user_avatar');
+            localStorage.removeItem('javin_user_code');
+            localStorage.removeItem('javin_session_token');
+          } catch(e) {}
+          location.href = '/login';
+        });
+      }
+    };
+  }
+
+  // ==== Init ====
+  function init() {
+    loadProfile();
+    setupEye();
+    setupCopy();
+    setupEditName();
+    setupAvatarUpload();
+    setupLogout();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+
+</body>
+</html>
