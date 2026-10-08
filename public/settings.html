@@ -13,309 +13,18 @@
 <script src="/theme-loader.js"></script>
 <link rel="stylesheet" href="/native-feel.css?v=1">
 <script src="/dialog.js?v=1"></script>
-<style>
-#langSearch {
-  width: 100%;
-  padding: 12px 16px 12px 42px;
-  border-radius: 14px;
-  border: 1px solid rgba(148,163,184,0.25);
-  background: rgba(255,255,255,0.85) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.35-4.35'/></svg>") no-repeat 14px center;
-  font-size: 14px;
-  font-family: inherit;
-  color: #0f172a;
-  outline: none;
-  transition: all 0.2s ease;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-}
-#langSearch:focus {
-  border-color: #6366F1;
-  background-color: #fff;
-  box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
-}
-#langList {
-  max-height: 280px;
-  overflow-y: auto;
-  border-radius: 14px;
-  border: 1px solid rgba(148,163,184,0.2);
-  background: #fff;
-  box-shadow: 0 4px 16px rgba(15,23,42,0.06);
-}
-.lang-row {
-  padding: 12px 16px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  color: #0f172a;
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  border-bottom: 1px solid rgba(148,163,184,0.08);
-  transition: background 0.15s, padding 0.15s;
-}
-.lang-row:last-child { border-bottom: none; }
-.lang-row:hover { background: rgba(99,102,241,0.08); padding-left: 20px; }
-.lang-row.active {
-  background: linear-gradient(90deg, rgba(99,102,241,0.15), rgba(14,165,233,0.1));
-  font-weight: 700;
-  color: #6366F1;
-}
-.lang-row .lang-code {
-  font-size: 11px;
-  font-weight: 600;
-  font-family: monospace;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: rgba(148,163,184,0.15);
-  color: #64748b;
-  flex-shrink: 0;
-}
-.lang-row.active .lang-code {
-  background: rgba(99,102,241,0.2);
-  color: #6366F1;
-}
-.lang-empty {
-  padding: 24px 16px;
-  text-align: center;
-  font-size: 13px;
-  color: #94a3b8;
-  font-style: italic;
-}
-body.theme-dark #langSearch {
-  background: rgba(15,23,42,0.7) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round'><circle cx='11' cy='11' r='7'/><path d='m21 21-4.35-4.35'/></svg>") no-repeat 14px center;
-  color: #f1f5f9;
-  border-color: rgba(255,255,255,0.1);
-}
-body.theme-dark #langSearch:focus {
-  border-color: #818cf8;
-  background-color: rgba(15,23,42,0.9);
-}
-body.theme-dark #langList {
-  background: rgba(15,23,42,0.8);
-  border-color: rgba(255,255,255,0.08);
-}
-body.theme-dark .lang-row { color: #cbd5e1; border-bottom-color: rgba(255,255,255,0.04); }
-body.theme-dark .lang-row:hover { background: rgba(129,140,248,0.1); }
-body.theme-dark .lang-row.active {
-  background: linear-gradient(90deg, rgba(129,140,248,0.18), rgba(14,165,233,0.1));
-  color: #a5b4fc;
-}
-body.theme-dark .lang-row .lang-code { background: rgba(255,255,255,0.06); color: #94a3b8; }
-body.theme-dark .lang-row.active .lang-code { background: rgba(129,140,248,0.25); color: #a5b4fc; }
-body.theme-dark .lang-empty { color: #64748b; }
-</style>
-<style>
-/* LANGUAGE PICKER — Dark Mode Override (paling akhir) */
-html[data-theme="dark"] #langSearch {
-  background: rgba(15,23,42,0.85) !important;
-  color: #f1f5f9 !important;
-  border-color: rgba(255,255,255,0.12) !important;
-}
-html[data-theme="dark"] #langSearch::placeholder { color: #64748b !important; }
-html[data-theme="dark"] #langSearch:focus {
-  border-color: #818cf8 !important;
-  box-shadow: 0 0 0 4px rgba(129,140,248,0.18) !important;
-}
-html[data-theme="dark"] #langList {
-  background: rgba(15,23,42,0.95) !important;
-  border-color: rgba(255,255,255,0.1) !important;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.4) !important;
-}
-html[data-theme="dark"] .lang-row {
-  color: #cbd5e1 !important;
-  border-bottom-color: rgba(255,255,255,0.05) !important;
-}
-html[data-theme="dark"] .lang-row:hover {
-  background: rgba(129,140,248,0.12) !important;
-}
-html[data-theme="dark"] .lang-row.active {
-  background: linear-gradient(90deg, rgba(129,140,248,0.25), rgba(14,165,233,0.12)) !important;
-  color: #c7d2fe !important;
-}
-html[data-theme="dark"] .lang-row .lang-code {
-  background: rgba(255,255,255,0.08) !important;
-  color: #94a3b8 !important;
-}
-html[data-theme="dark"] .lang-row.active .lang-code {
-  background: rgba(129,140,248,0.3) !important;
-  color: #c7d2fe !important;
-}
-html[data-theme="dark"] .lang-empty { color: #64748b !important; }
-
-/* Light Mode Fix */
-html[data-theme="light"] #langSearch {
-  background: rgba(255,255,255,0.95) !important;
-  color: #0f172a !important;
-  border-color: rgba(148,163,184,0.3) !important;
-}
-html[data-theme="light"] #langList {
-  background: #fff !important;
-  border-color: rgba(148,163,184,0.2) !important;
-}
-html[data-theme="light"] .lang-row {
-  color: #0f172a !important;
-}
-html[data-theme="light"] .lang-row:hover {
-  background: rgba(99,102,241,0.06) !important;
-}
-html[data-theme="light"] .lang-row.active {
-  background: linear-gradient(90deg, rgba(99,102,241,0.12), rgba(14,165,233,0.08)) !important;
-  color: #6366F1 !important;
-}
-</style>
 <link rel="stylesheet" href="/theme-global.css?v=1">
 <link rel="stylesheet" href="/ui-ios.css?v=1">
 </head>
 <body>
 <header class="fx-header">
   <div class="fx-header-row">
-    <a href="/" class="fx-icon-btn" id="btnBack">←</a>
+    <a href="/home" class="fx-icon-btn" id="btnBack">←</a>
     <h1 style="flex:1;font-size:17px;font-weight:800;margin:0;padding-left:8px">Pengaturan</h1>
-    <button class="fx-icon-btn" id="btnClose" style="display:none">✕</button>
   </div>
 </header>
 
 <div class="settings-wrap">
-  <div class="settings-group">
-    <div class="settings-group-title">UMUM &amp; TAMPILAN</div>
-
-    <div class="settings-item settings-item-col">
-      <div class="settings-label">
-        <span class="settings-icon">🎨</span>
-        <div>
-          <div class="settings-name">Tema Warna</div>
-          <div class="settings-sub" id="themeCurrent">Terang</div>
-        </div>
-      </div>
-      <div class="seg-control" id="themeSeg">
-        <button data-val="auto">💻 Sistem</button>
-        <button data-val="light" class="active">☀️ Terang</button>
-        <button data-val="dark">🌙 Gelap</button>
-      </div>
-    </div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">✨</span>
-        <div>
-          <div class="settings-name">Tampilan UI/UX iOS</div>
-          <div class="settings-sub">Aktifkan gaya visual iOS, efek kaca glassmorphic, dan sudut membulat</div>
-        </div>
-      </div>
-      <label class="switch"><input type="checkbox" id="tglIos" checked><span class="slider"></span></label>
-    </div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">🧊</span>
-        <div>
-          <div class="settings-name">Animasi Tombol 3D Smooth</div>
-          <div class="settings-sub">Efek kedalaman 3D tactile, pantulan pegas halus, dan elevasi saat tombol ditekan</div>
-        </div>
-      </div>
-      <label class="switch"><input type="checkbox" id="tgl3d" checked><span class="slider"></span></label>
-    </div>
-
-    <div class="settings-item settings-item-col">
-      <div class="settings-label">
-        <span class="settings-icon">🔍</span>
-        <div>
-          <div class="settings-name">Skala Tampilan</div>
-          <div class="settings-sub">Pilih kepadatan antarmuka &amp; ukuran teks layar</div>
-        </div>
-      </div>
-      <div class="seg-control" id="scaleSeg">
-        <button data-val="1" class="active">1x Standar</button>
-        <button data-val="1.2">1.2x Sedang</button>
-        <button data-val="1.4">1.4x Tinggi</button>
-      </div>
-    </div>
-
-    <div class="settings-item settings-item-col">
-      <div class="settings-label">
-        <span class="settings-icon">🌐</span>
-        <div>
-          <div class="settings-name">Bahasa</div>
-          <div class="settings-sub" id="langCurrent">Bahasa Indonesia</div>
-        </div>
-      </div>
-      <div style="width:100%;margin-top:8px">
-        <input type="text" id="langSearch" placeholder="Cari bahasa..." style="width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(148,163,184,0.3);background:rgba(255,255,255,0.7);font-size:14px;margin-bottom:8px;box-sizing:border-box">
-        <div id="langList" style="max-height:240px;overflow-y:auto;border-radius:10px;border:1px solid rgba(148,163,184,0.2);background:rgba(255,255,255,0.5)"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="settings-group">
-    <div class="settings-group-title">APLIKASI &amp; SISTEM</div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">📲</span>
-        <div>
-          <div class="settings-name">Download APK</div>
-          <div class="settings-sub" id="apkInfo">Versi 1.3.0 · 1.4 MB</div>
-        </div>
-      </div>
-      <button class="btn-mini" id="btnDownloadApk">⬇️ Download</button>
-    </div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">🌐</span>
-        <div>
-          <div class="settings-name">Pasang sebagai PWA</div>
-          <div class="settings-sub" id="installStatus">Siap Dipasang</div>
-        </div>
-      </div>
-      <button class="btn-mini ghost" id="btnInstall">📥 Pasang</button>
-    </div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">🔔</span>
-        <div>
-          <div class="settings-name">Notifikasi Sistem</div>
-          <div class="settings-sub" id="notifStatus">Belum diminta</div>
-        </div>
-      </div>
-      <button class="btn-mini" id="btnNotif">Minta Izin</button>
-    </div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">🏷️</span>
-        <div>
-          <div class="settings-name">Versi Aplikasi</div>
-          <div class="settings-sub" id="versionSub">Versi terbaru</div>
-        </div>
-      </div>
-      <span class="settings-value" id="appVersion">v1.3.0</span>
-    </div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">📡</span>
-        <div>
-          <div class="settings-name">Mode Koneksi</div>
-        </div>
-      </div>
-      <span class="settings-value status-online" id="connStatus">● Online</span>
-    </div>
-
-    <div class="settings-item">
-      <div class="settings-label">
-        <span class="settings-icon">🔄</span>
-        <div>
-          <div class="settings-name">Periksa Pembaruan</div>
-          <div class="settings-sub">Cek versi terbaru dari server</div>
-        </div>
-      </div>
-      <button class="btn-mini" id="btnCheckUpdate">🔄 Periksa</button>
-    </div>
-  </div>
-
   <div class="settings-group">
     <div class="settings-group-title">BANTUAN & SUPPORT</div>
 
@@ -332,15 +41,14 @@ html[data-theme="light"] .lang-row.active {
   </div>
 
   <div class="settings-footer">
-    <div>VinAPIay · <span id="footerVersion">v1.3.1</span></div>
+    <div>VinAPIay</div>
     <div style="margin-top:4px;opacity:.6">© 2026 Javin</div>
   </div>
 </div>
 
-<script src="/settings.js?v=2"></script>
+<script src="/settings.js?v=3"></script>
 <script src="/update-banner.js?v=1" defer></script>
 <script src="/announce.js?v=1" defer></script>
 <script src="/i18n.js"></script>
-<script src="/settings-lang.js"></script>
 </body>
 </html>
