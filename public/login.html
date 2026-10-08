@@ -329,7 +329,7 @@ async function startDemo() {
       localStorage.setItem('javin_user_name', 'Demo User');
     } catch(e){}
     noteEl.textContent = 'Demo aktif! Mengalihkan...';
-    setTimeout(function(){ location.replace('/?demo=1'); }, 800);
+    setTimeout(function(){ location.replace('/home?demo=1'); }, 800);
   } catch(e) {
     errorDemo.textContent = 'Koneksi error. Coba lagi.';
     errorDemo.classList.add('show');
@@ -348,7 +348,7 @@ fetch('/api/auth/me', { credentials: 'same-origin' })
         localStorage.setItem('javin_user_name', j.user.name || '');
         localStorage.setItem('javin_user_avatar', j.user.avatar || '');
       } catch(e){}
-      location.replace('/');
+      location.replace('/home');
     }
   })
   .catch(function(){});
@@ -443,7 +443,7 @@ async function verifyCode(){
       if (j.session_token) localStorage.setItem('javin_session_token', j.session_token);
     } catch(e){}
 
-    setTimeout(function(){ location.replace('/'); }, 400);
+    setTimeout(function(){ location.replace('/home'); }, 400);
   } catch(e) {
     loading2.classList.remove('show');
     btnVerify.disabled = false;

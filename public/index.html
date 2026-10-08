@@ -368,6 +368,7 @@ html[data-theme="dark"] .pf-avatar, html[data-theme="dark"] .pf-avatar-img {
 <footer>JAVIN · by Javin</footer>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"></script>
 <script src="/turnstile.js"></script>
+<script src="/logout-modal.js?v=1"></script>
 <script src="/app.js?v=20261010a"></script>
 <!-- Turnstile Script -->
 <div id="turnstileWrap" style="position:fixed;inset:0;z-index:9999;background:rgba(3,3,10,.95);display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)">
@@ -660,25 +661,14 @@ body.theme-dark .lc-btn.ghost:hover { background: rgba(255,255,255,0.15); }
         e.preventDefault();
         e.stopPropagation();
 
-        // Langsung logout pake confirm() — nggak butuh modal
-        if (!confirm('Yakin mau logout?')) return;
+        var pm = document.getElementById('profileModal');
+        if (pm) pm.style.display = 'none';
 
-        logout.disabled = true;
-        logout.textContent = 'Logging out...';
-
-        Promise.all([
-          fetch('/api/auth/logout-demo', { method: 'POST', credentials: 'same-origin' }).catch(function(){}),
-          fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){})
-        ]).then(function() {
-          try {
-            localStorage.removeItem('javin_user_id');
-            localStorage.removeItem('javin_user_name');
-            localStorage.removeItem('javin_user_avatar');
-            localStorage.removeItem('javin_user_code');
-            localStorage.removeItem('javin_session_token');
-          } catch(err) {}
-          location.href = '/login';
-        });
+        if (typeof window.jvShowLogout === 'function') {
+          window.jvShowLogout();
+        } else {
+          console.warn('[logout] jvShowLogout belum ke-load');
+        }
       };
     }
 
