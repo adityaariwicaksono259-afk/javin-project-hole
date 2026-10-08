@@ -161,3 +161,94 @@ html[data-theme="dark"] {
 html[data-theme="light"] {
   background-color: var(--javin-bg) !important;
 }
+
+/* JAVIN-DARK-NEOBRUTAL-V1 */
+html[data-theme="dark"],
+body.theme-dark {
+  --javin-bg: #08080c !important;
+  --javin-surface: #181820 !important;
+  --javin-surface-2: #111118 !important;
+  --javin-text: #ffffff !important;
+  --javin-muted: #c4b5fd !important;
+  --javin-input: #111118 !important;
+  --javin-border: #ffffff !important;
+  --javin-accent: #a855f7 !important;
+  --javin-accent-2: #c084fc !important;
+}
+
+html[data-theme="dark"] body,
+body.theme-dark {
+  background: #08080c !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .fx-card,
+body.theme-dark .fx-card,
+html[data-theme="dark"] .card,
+body.theme-dark .card,
+html[data-theme="dark"] .settings-item,
+body.theme-dark .settings-item {
+  background: #181820 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+body.theme-dark input,
+body.theme-dark textarea,
+body.theme-dark select {
+  background: #111118 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+html[data-theme="dark"] button,
+body.theme-dark button {
+  color: #ffffff;
+}
+
+html[data-theme="dark"] .fx-cat.active,
+body.theme-dark .fx-cat.active,
+html[data-theme="dark"] .active,
+body.theme-dark .active {
+  background: #a855f7 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] a,
+body.theme-dark a {
+  color: #c084fc;
+}
+
+html[data-theme="dark"] .pf-tier-inline.basic,
+body.theme-dark .pf-tier-inline.basic,
+html[data-theme="dark"] .tier-pill.basic,
+body.theme-dark .tier-pill.basic {
+  background: #a855f7 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="dark"] .pf-edit-input:focus,
+body.theme-dark .pf-edit-input:focus,
+html[data-theme="dark"] input:focus,
+body.theme-dark input:focus,
+html[data-theme="dark"] textarea:focus,
+body.theme-dark textarea:focus {
+  background: #241333 !important;
+  border-color: #c084fc !important;
+}
+
+html[data-theme="dark"] .fx-header,
+body.theme-dark .fx-header {
+  background: rgba(8,8,12,.92) !important;
+  border-color: rgba(255,255,255,.18) !important;
+}
+
+html[data-theme="dark"] .fx-card,
+body.theme-dark .fx-card {
+  box-shadow: 5px 5px 0 #a855f7 !important;
+}
+
+/* JAVIN-DARK-NEOBRUTAL-V1-END */
