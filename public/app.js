@@ -370,6 +370,33 @@
 
   // Expose ke window biar bisa dipanggil dari tempat lain
   window.openProfileModal = openProfileModal;
+
+// ===== LOGOUT PROFILE — DIRECT HANDLER =====
+(function() {
+  function bindProfileLogout() {
+    var logoutBtn = document.getElementById('pfLogout');
+    if (!logoutBtn || logoutBtn.__javinLogoutBound) return;
+
+    logoutBtn.__javinLogoutBound = true;
+    logoutBtn.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      var modal = document.getElementById('profileModal');
+      if (modal) modal.style.display = 'none';
+
+      if (typeof window.__jvShowLogout === 'function') {
+        window.__jvShowLogout();
+      }
+    };
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindProfileLogout, { once: true });
+  } else {
+    bindProfileLogout();
+  }
+})();
 })();
 
 // === LOAD SETTINGS (theme, scale, dll) ===
