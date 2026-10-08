@@ -1080,3 +1080,35 @@ function esc(v){return String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&l
     }
   }, true);
 })();
+
+// ===== FIX LOGOUT v2 — Fungsi global =====
+window.__jvShowLogout = function() {
+  var pm = document.getElementById('profileModal');
+  if (pm) pm.style.display = 'none';
+  var lm = document.getElementById('logoutModal');
+  if (lm) lm.style.display = 'flex';
+};
+
+window.__jvCancelLogout = function() {
+  var lm = document.getElementById('logoutModal');
+  if (lm) lm.style.display = 'none';
+};
+
+window.__jvDoLogout = function() {
+  var btn = document.getElementById('lcConfirm');
+  if (btn) { btn.disabled = true; btn.textContent = 'Logging out...'; }
+
+  Promise.all([
+    fetch('/api/auth/logout-demo', { method: 'POST', credentials: 'same-origin' }).catch(function(){}),
+    fetch('/api/auth/logout', { method: 'POST', credentials: 'same-origin' }).catch(function(){})
+  ]).then(function() {
+    try {
+      localStorage.removeItem('javin_user_id');
+      localStorage.removeItem('javin_user_name');
+      localStorage.removeItem('javin_user_avatar');
+      localStorage.removeItem('javin_user_code');
+      localStorage.removeItem('javin_session_token');
+    } catch(e) {}
+    location.replace('/login');
+  });
+};
