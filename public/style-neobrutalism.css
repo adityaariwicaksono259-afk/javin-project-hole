@@ -4024,3 +4024,33 @@ body {
   font-weight: 600 !important;
   margin-bottom: 20px !important;
 }
+
+/* ============================================
+   FIX LOGOUT MODAL — Z-INDEX & DISPLAY
+   ============================================ */
+
+/* Logout modal di ATAS profile modal */
+#logoutModal,
+.lc-overlay {
+  z-index: 999999 !important;
+}
+
+/* Logout modal pake flex kalau display inline = flex */
+#logoutModal[style*="flex"] {
+  display: flex !important;
+}
+
+/* Profile modal MUST be hideable */
+#profileModal[style*="none"] {
+  display: none !important;
+  pointer-events: none !important;
+}
+
+/* Pastikan tombol di logout modal bisa di-klik */
+#logoutModal button,
+.lc-overlay button {
+  pointer-events: auto !important;
+  cursor: pointer !important;
+  z-index: 10 !important;
+  position: relative !important;
+}
