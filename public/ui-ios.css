@@ -1,0 +1,102 @@
+/* JAVIN GLOBAL IOS UX V2
+ * Global mobile interaction layer.
+ * Does not alter page layout or existing visual design.
+ */
+
+:root {
+  --javin-safe-top: env(safe-area-inset-top, 0px);
+  --javin-safe-right: env(safe-area-inset-right, 0px);
+  --javin-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --javin-safe-left: env(safe-area-inset-left, 0px);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Native-feeling touch behavior */
+button,
+a,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Lightweight iOS-style press feedback */
+button:active,
+input[type="button"]:active,
+input[type="submit"]:active,
+input[type="reset"]:active,
+[role="button"]:active {
+  opacity: 0.82;
+}
+
+/* Links */
+a:active {
+  opacity: 0.82;
+}
+
+/* Existing interactive JAVIN surfaces */
+.fx-card,
+.fx-ibtn,
+.fx-cat,
+.nav-item,
+.bottom-nav a,
+.bottom-nav button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* Header controls must remain clickable */
+#profileCard,
+#notifBell,
+#profileCard *,
+#notifBell * {
+  pointer-events: auto;
+}
+
+/* Native font inheritance */
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* Prevent mobile browser form-field zoom */
+@media (max-width: 767px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Safe-area helper variables only.
+ * No global padding/margin is applied so existing layouts remain unchanged.
+ */
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+html {
+  overscroll-behavior-x: none;
+}
