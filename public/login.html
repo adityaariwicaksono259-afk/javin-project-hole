@@ -332,7 +332,7 @@ async function startDemo() {
       localStorage.setItem('javin_user_name', 'Demo User');
     } catch(e){}
     noteEl.textContent = 'Demo aktif! Mengalihkan...';
-    setTimeout(function(){ goAfterLogin(null, true); }, 800);
+    setTimeout(function(){ goAfterLogin(null); }, 800);
   } catch(e) {
     errorDemo.textContent = 'Koneksi error. Coba lagi.';
     errorDemo.classList.add('show');
@@ -351,7 +351,7 @@ fetch('/api/auth/me', { credentials: 'same-origin' })
         localStorage.setItem('javin_user_name', j.user.name || '');
         localStorage.setItem('javin_user_avatar', j.user.avatar || '');
       } catch(e){}
-      goAfterLogin(j.user, false);
+      goAfterLogin(j.user);
     }
   })
   .catch(function(){});
@@ -446,7 +446,7 @@ async function verifyCode(){
       if (j.session_token) localStorage.setItem('javin_session_token', j.session_token);
     } catch(e){}
 
-    setTimeout(function(){ goAfterLogin(j.user, false); }, 400);
+    setTimeout(function(){ goAfterLogin(j.user); }, 400);
   } catch(e) {
     loading2.classList.remove('show');
     btnVerify.disabled = false;
@@ -478,8 +478,8 @@ async function verifyCode(){
   }, 3000);
 })();
 
-// Helper: redirect setelah login (cek onboarded)
-function goAfterLogin(user, isDemo){
+// Helper: redirect setelah login (semua user wajib cek onboarded)
+function goAfterLogin(user){
   try {
     if(user){
       localStorage.setItem('javin_user_id', user.user_code || '');
@@ -487,11 +487,29 @@ function goAfterLogin(user, isDemo){
       localStorage.setItem('javin_user_avatar', user.avatar || '');
     }
   } catch(e){}
-  if(isDemo){
-    location.replace('/home');
+
+  // Kalau user object nggak dikasih, fetch sendiri
+  if(!user){
+    fetch('/api/auth/me', { credentials: 'same-origin', cache: 'no-store' })
+      .then(function(r){ return r.json(); })
+      .then(function(j){
+        if(j && j.ok && j.user){
+          try {
+            localStorage.setItem('javin_user_id', j.user.user_code || '');
+            localStorage.setItem('javin_user_name', j.user.name || '');
+            localStorage.setItem('javin_user_avatar', j.user.avatar || '');
+          } catch(e){}
+          if(j.user.onboarded === 1) location.replace('/home');
+          else location.replace('/onboarding.html');
+        } else {
+          location.replace('/onboarding.html');
+        }
+      })
+      .catch(function(){ location.replace('/onboarding.html'); });
     return;
   }
-  if(user && user.onboarded === 1){
+
+  if(user.onboarded === 1){
     location.replace('/home');
   } else {
     location.replace('/onboarding.html');
