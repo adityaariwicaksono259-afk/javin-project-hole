@@ -57,10 +57,23 @@ export async function onRequestGet({ request, env }) {
   const lastSeen = (otherUser && otherUser.last_seen) || 0;
   const online = lastSeen > 0 && (now - lastSeen) < 30000;
 
+  // Typing status (kalau diminta)
+  var typing = false;
+  if (url.searchParams.get('with_typing') === '1') {
+    try {
+      await db.prepare('DELETE FROM chat_typing WHERE until < ?').bind(now).run();
+      const t = await db.prepare(
+        'SELECT 1 FROM chat_typing WHERE room_id = ? AND user_code != ? AND until > ? LIMIT 1'
+      ).bind(roomId, me.code, now).first();
+      typing = !!t;
+    } catch(e) {}
+  }
+
   return json({
     ok: true,
     messages: list,
-    other: { online: online, last_seen: lastSeen }
+    other: { online: online, last_seen: lastSeen },
+    typing: typing
   });
 }
 

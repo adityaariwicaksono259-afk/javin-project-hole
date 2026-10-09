@@ -439,6 +439,7 @@ export async function onRequest(context) {
     else if (pathname.startsWith('/api/premium/')) MAX_REQ = 5;
     else if (pathname.startsWith('/api/javin')) MAX_REQ = 30;
     else if (pathname.startsWith('/api/user/')) MAX_REQ = 30;
+    else if (pathname.startsWith('/api/chat/')) MAX_REQ = 300;
     else if (pathname.startsWith('/api/proxy')) MAX_REQ = 60;
 
     if (db && !isWhitelisted) {
@@ -488,7 +489,7 @@ export async function onRequest(context) {
     try {
       var __ddosNow = Date.now();
       var __ddosWindow = Math.floor(__ddosNow / 60000) * 60000;
-      var __ddosLimit = __ddosIsApi ? 200 : 300; // API: 200/menit, page: 300/menit
+      var __ddosLimit = __ddosIsApi ? 500 : 300; // API: 500/menit, page: 300/menit
 
       var __ddosRow = await __db.prepare(
         'INSERT INTO ip_rate_limit (ip, window_start, count) VALUES (?, ?, 1) ' +

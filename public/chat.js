@@ -271,15 +271,9 @@ function hideTypingIndicator(){
 
 function loadMessages(scroll){
   if(!currentRoom) return;
-  fetchJson('/api/chat/messages?room_id='+currentRoom.id).then(function(r){
+  fetchJson('/api/chat/messages?room_id='+currentRoom.id+'&with_typing=1').then(function(r){
     if(r.body && r.body.ok){
       renderMessages(r.body.messages || [], r.body.other);
-    }
-  }).catch(function(){});
-
-  // Cek typing status
-  fetchJson('/api/chat/typing?room_id='+currentRoom.id).then(function(r){
-    if(r.body && r.body.ok){
       if(r.body.typing) showTypingIndicator();
       else hideTypingIndicator();
     }
