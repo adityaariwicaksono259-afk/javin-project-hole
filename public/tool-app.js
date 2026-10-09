@@ -314,8 +314,6 @@
       '  <p class="desc">' + esc(ep.desc || '') + '</p>',
       '</div>',
       '<div class="card">',
-      '  <div class="field"><label>API Key <span style="color:#dc2626">*</span></label>',
-      '  <input type="text" id="afApiKey" placeholder="Your API Key" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
       '  <div class="field"><label>Link TikTok <span style="color:#dc2626">*</span></label>',
       '  <input type="url" id="afUrl" placeholder="https://vt.tiktok.com/xxx" autocomplete="off" inputmode="url"></div>',
       '  <button class="submit" id="afBtn">Cari Preset</button>',
@@ -327,12 +325,10 @@
     var afBtn = document.getElementById('afBtn');
     if (!afBtn) return;
     afBtn.onclick = function() {
-      var key = (document.getElementById('afApiKey').value || '').trim().toUpperCase();
       var url = (document.getElementById('afUrl').value || '').trim();
       var res = document.getElementById('afRes');
       var out = document.getElementById('afResult');
 
-      if (!key) { res.className = 'result show err'; res.textContent = '❌ API Key wajib.'; return; }
       if (!url || !/tiktok\.com/i.test(url)) { res.className = 'result show err'; res.textContent = '❌ Link TikTok tidak valid.'; return; }
 
       afBtn.disabled = true; afBtn.textContent = 'Mencari...';
@@ -340,17 +336,17 @@
       res.textContent = 'Scan TikTok... (bisa 5-30 detik)';
       out.innerHTML = '';
 
-      premiumApiCall('/api/premium/amfinder', { apikey: key, tiktokUrl: url }).then(function(j) {
-        if (!j.success) throw new Error(j.message || 'Gagal');
-        if (!j.found || !j.presetLinks || j.presetLinks.length === 0) {
+      fetch('/api/amfinder?url=' + encodeURIComponent(url), { credentials: 'same-origin' }).then(function(r){ return r.json(); }).then(function(j) {
+        if (!j || (j.status !== 'ok' && !j.success)) throw new Error((j && (j.message || j.code)) || 'Gagal');
+        var links = j.presetLinks || j.links || (j.result && j.result.presetLinks) || [];
+        if (!links || links.length === 0) {
           res.className = 'result show info';
           res.textContent = '⚠️ Preset tidak ditemukan di video ini.';
           return;
         }
-        var remain = (j._counter && j._counter.remaining != null) ? j._counter.remaining : '-';
         res.className = 'result show ok';
-        res.textContent = '✅ Ditemukan ' + j.presetLinks.length + ' preset. Sisa API Key: ' + remain;
-        out.innerHTML = j.presetLinks.map(function(p) {
+        res.textContent = '✅ Ditemukan ' + links.length + ' preset.';
+        out.innerHTML = links.map(function(p) {
           var label = p.type === '5mb' ? '5MB' : (p.type === 'xml' ? 'XML' : 'LINK');
           var title = p.title || 'Tanpa judul';
           var meta = p.size ? ' · ' + p.size : '';
@@ -1488,7 +1484,7 @@ function renderError(c, msg){
     if (ep.redirect) { window.location.href = ep.redirect; return; }
 
     // Premium tools pakai wizard khusus
-    if (ep.catalogId === 'premium-amprem' || ep.catalogId === 'premium-amfinder') {
+    if (ep.catalogId === 'premium-amprem') {
       document.title = ep.name + ' — JAVIN';
       headerTitle.textContent = ep.name;
       renderPremiumTool(ep);

@@ -5402,18 +5402,12 @@
     "name": "am finder",
     "desc": "Cari preset Alight Motion secara instan dari TikTok.",
     "folder": "Tools",
-    "subfolder": "premium",
-    "m": "POST",
-    "needKey": true,
+    "subfolder": "free",
+    "m": "GET",
+    "needKey": false,
     "params": [
       {
-        "n": "apikey",
-        "t": "string",
-        "r": 1,
-        "d": "Your API Key."
-      },
-      {
-        "n": "tiktokUrl",
+        "n": "url",
         "t": "string",
         "r": 1,
         "d": "Link TikTok yang berisi preset Alight Motion."
