@@ -1578,11 +1578,19 @@ function renderError(c, msg){
 
     if (ep.redirect) { window.location.href = ep.redirect; return; }
 
-    // Premium tools pakai wizard khusus
-    if (ep.catalogId === 'premium-amprem') {
+    // Custom tools pakai wizard khusus
+    if (ep.catalogId === 'premium-amprem' || ep.catalogId === 'premium-amfinder') {
       document.title = ep.name + ' — JAVIN';
       headerTitle.textContent = ep.name;
       renderPremiumTool(ep);
+      return;
+    }
+
+    // Am preset search (free tool, tapi punya renderer sendiri)
+    if (ep.catalogId === 'am-preset-search') {
+      document.title = ep.name + ' — JAVIN';
+      headerTitle.textContent = ep.name;
+      renderAmPresetSearch(ep);
       return;
     }
 
