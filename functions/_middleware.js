@@ -550,7 +550,7 @@ export async function onRequest(context) {
     var __isStatic = __staticExts.indexOf(__ext) !== -1;
     var __isApi = pathname.indexOf('/api/') === 0;
     var __isWellKnown = pathname.indexOf('/.well-known/') === 0;
-    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html'];
+    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html', '/banned', '/banned.html', '/api/chat/ban-status'];
     var __isPublicPage = __publicPages.indexOf(pathname) !== -1;
 
     if (!__isStatic && !__isApi && !__isWellKnown && !__isPublicPage) {
@@ -587,6 +587,51 @@ export async function onRequest(context) {
       }
     }
   }
+  // ==== BAN CHECK: kalau user di-ban, redirect ke /banned.html ====
+  if ((method === 'GET' || method === 'HEAD') && context.env && context.env.JAVIN_DB) {
+    var __banExt = pathname.split('.').pop().toLowerCase();
+    var __banStaticExts = ['js','css','png','jpg','jpeg','gif','svg','ico','woff','woff2','ttf','mp3','mp4','webm','json','txt','xml','webp','avif'];
+    var __banIsStatic = __banStaticExts.indexOf(__banExt) !== -1;
+    var __banIsApi = pathname.indexOf('/api/') === 0;
+    var __banBypass = ['/banned', '/banned.html', '/login', '/login.html', '/maintenance', '/maintenance.html', '/api/chat/ban-status'];
+    var __banIsBypass = __banBypass.indexOf(pathname) !== -1;
+
+    if (!__banIsStatic && !__banIsApi && !__banIsBypass) {
+      var __banCookie = request.headers.get('Cookie') || '';
+      var __banUser = null;
+
+      // Ambil user_code dari session
+      var __banDemoMatch = __banCookie.match(/(?:^|;\s*)javin_demo=([^;]+)/);
+      var __banMatch = __banDemoMatch || __banCookie.match(/(?:^|;\s*)javin_session=([^;]+)/);
+      if (__banMatch) {
+        try {
+          var __banToken = decodeURIComponent(__banMatch[1]);
+          var __banSess = await context.env.JAVIN_DB.prepare(
+            'SELECT user_id FROM auth_sessions WHERE token = ? AND expires_at > ?'
+          ).bind(__banToken, Date.now()).first();
+          if (__banSess) {
+            var __banU = await context.env.JAVIN_DB.prepare(
+              'SELECT user_code FROM auth_users WHERE id = ?'
+            ).bind(__banSess.user_id).first();
+            if (__banU) __banUser = __banU.user_code;
+          }
+        } catch(e) { console.error('[BAN-CHECK]', e.message); }
+      }
+
+      if (__banUser) {
+        try {
+          var __banRow = await context.env.JAVIN_DB.prepare(
+            'SELECT reason, until FROM user_bans WHERE user_code = ? AND until > ?'
+          ).bind(__banUser, Date.now()).first();
+          if (__banRow) {
+            return Response.redirect(new URL('/banned.html', request.url).toString(), 302);
+          }
+        } catch(e) { console.error('[BAN-CHECK-DB]', e.message); }
+      }
+    }
+  }
+  // ==== END BAN CHECK ====
+
   // ==== END AUTH GATE ====
 
   const response = await context.next();

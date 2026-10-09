@@ -116,6 +116,17 @@ body{padding-bottom:120px}
   z-index: 1;
   pointer-events: none;
 }
+
+.chat-cta{display:flex;align-items:center;gap:14px;padding:16px;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:14px;box-shadow:5px 5px 0 #0A0A0A;text-decoration:none;color:#0A0A0A;transition:transform .15s cubic-bezier(0.34, 1.56, 0.64, 1),box-shadow .15s ease}
+.chat-cta:active{transform:scale(0.98) translate(3px,3px);box-shadow:1px 1px 0 #0A0A0A}
+.chat-cta-icon{width:52px;height:52px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:26px;background:#FF7FE5;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A}
+.chat-cta-body{flex:1;min-width:0}
+.chat-cta-title{font-family:'Archivo Black',sans-serif;font-size:16px;margin-bottom:2px}
+.chat-cta-sub{font-size:12px;color:#4A4A4A;font-weight:500}
+.chat-cta-arrow{font-size:22px;font-weight:800;flex-shrink:0}
+html[data-theme="dark"] .chat-cta{background:#181820;color:#FFFFFF;border-color:#FFFFFF;box-shadow:5px 5px 0 #FFFFFF}
+html[data-theme="dark"] .chat-cta-sub{color:#B8B8B8}
+html[data-theme="dark"] .chat-cta-icon{border-color:#0A0A0A;box-shadow:3px 3px 0 #0A0A0A}
 </style>
 </head>
 <body>
@@ -153,10 +164,16 @@ body{padding-bottom:120px}
   </div>
 </div>
 
-<!-- TOP FITUR -->
+<!-- CHAT -->
 <div class="section">
-  <div class="section-title">Top Fitur</div>
-  <div id="topFeatures" class="loading">Memuat...</div>
+  <div class="section-title">Chat</div>
+  <a href="/chat.html" class="chat-cta">
+    <div class="chat-cta-icon"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+    <div class="chat-cta-body">
+      <div class="chat-cta-title">Chat</div>
+    </div>
+    <div class="chat-cta-arrow"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#0A0A0A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+  </a>
 </div>
 
 <!-- USER TIER -->
@@ -197,20 +214,6 @@ body{padding-bottom:120px}
       if (elU) elU.textContent = j.total_users || 0;
       if (elE) elE.textContent = j.total_endpoints || 0;
       if (elR) elR.textContent = j.total_requests || 0;
-
-      // Top Fitur (dari hits)
-      var topEl = document.getElementById('topFeatures');
-      if (topEl) {
-        if (j.top_fitur && j.top_fitur.length > 0) {
-          topEl.innerHTML = j.top_fitur.map(function(t, i){
-            return '<div class="feature-item">' +
-              '<div class="feature-name">' + (t.name || '-') + '</div>' +
-              '<div class="feature-badge">#' + (i+1) + ' · ' + (t.hits || 0) + '</div>' +
-              '</div>';
-          }).join('');
-        } else {
-          topEl.innerHTML = '<div class="loading">Belum ada data hits</div>';
-        }
       }
 
       // User Tier

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<title>Akun Diblokir — Javin Codex</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo+Black&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/theme-global.css?v=1">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100vh;font-family:'Space Grotesk',system-ui,sans-serif;background:#FFE600;color:#0A0A0A;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{max-width:440px;width:100%;background:#FFFFFF;border:4px solid #0A0A0A;border-radius:20px;box-shadow:8px 8px 0 #0A0A0A;padding:32px 24px;text-align:center}
+.icon{width:88px;height:88px;margin:0 auto 20px;background:#FF4545;border:4px solid #0A0A0A;border-radius:50%;box-shadow:5px 5px 0 #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#FFFFFF;font-family:'Archivo Black',sans-serif}
+h1{font-family:'Archivo Black',sans-serif;font-size:24px;margin:0 0 8px;letter-spacing:-.5px;line-height:1.15}
+.sub{font-size:13px;color:#4A4A4A;font-weight:500;line-height:1.5;margin-bottom:24px}
+.info{background:#F7F7F7;border:3px solid #0A0A0A;border-radius:14px;box-shadow:4px 4px 0 #0A0A0A;padding:16px;text-align:left;margin-bottom:16px}
+.info-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed #CCC;font-size:13px}
+.info-row:last-child{border-bottom:none}
+.info-row .lbl{font-weight:700;color:#0A0A0A;flex-shrink:0}
+.info-row .val{color:#4A4A4A;font-weight:600;text-align:right;word-break:break-word}
+.note{font-size:12px;color:#4A4A4A;line-height:1.6;margin-top:16px;padding:14px;background:#FFF9B0;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A;text-align:left}
+.note b{display:block;margin-bottom:6px;font-family:'Archivo Black',sans-serif;font-size:13px}
+.btn{display:inline-block;margin-top:20px;padding:14px 24px;background:#7FDBFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:#0A0A0A;text-decoration:none;cursor:pointer;transition:transform .08s,box-shadow .08s}
+.btn:active{transform:translate(4px,4px);box-shadow:0 0 0 #0A0A0A}
+.footer{margin-top:24px;font-size:11px;color:#6A6A6A;font-weight:600}
+html[data-theme="dark"] body{background:#08080c;color:#FFFFFF}
+html[data-theme="dark"] .card{background:#181820;border-color:#FFFFFF;box-shadow:8px 8px 0 #FFFFFF}
+html[data-theme="dark"] h1{color:#FFFFFF}
+html[data-theme="dark"] .sub{color:#B8B8B8}
+html[data-theme="dark"] .info{background:#111118;border-color:#FFFFFF;box-shadow:4px 4px 0 #FFFFFF}
+html[data-theme="dark"] .info-row{border-color:#333}
+html[data-theme="dark"] .info-row .lbl{color:#FFFFFF}
+html[data-theme="dark"] .info-row .val{color:#B8B8B8}
+html[data-theme="dark"] .note{background:#241333;border-color:#FFFFFF;color:#E0E0E0;box-shadow:3px 3px 0 #FFFFFF}
+html[data-theme="dark"] .btn{background:#a855f7;color:#FFFFFF;border-color:#FFFFFF;box-shadow:4px 4px 0 #FFFFFF}
+html[data-theme="dark"] .footer{color:#8B8B8B}
+</style>
+<script src="/theme-loader.js"></script>
+</head>
+<body>
+<div class="card">
+  <div class="icon">!</div>
+  <h1>Akun Kamu Diblokir</h1>
+  <div class="sub">Akun kamu nggak bisa digunakan sementara waktu</div>
+
+  <div class="info">
+    <div class="info-row">
+      <span class="lbl">Status</span>
+      <span class="val" id="bannedStatus">Diblokir</span>
+    </div>
+    <div class="info-row">
+      <span class="lbl">Alasan</span>
+      <span class="val" id="bannedReason">—</span>
+    </div>
+    <div class="info-row">
+      <span class="lbl">Berakhir</span>
+      <span class="val" id="bannedUntil">—</span>
+    </div>
+    <div class="info-row">
+      <span class="lbl">Sisa</span>
+      <span class="val" id="bannedRemaining">—</span>
+    </div>
+  </div>
+
+  <div class="note">
+    <b>Kenapa ini terjadi?</b>
+    Akun kamu dilaporkan oleh banyak pengguna lain karena melanggar aturan. Kalau kamu merasa ini kesalahan, kirim banding lewat email atau hubungi admin.
+  </div>
+
+  <a href="/login" class="btn">← Kembali ke Login</a>
+
+  <div class="footer">JAVIN CODEX · © 2026</div>
+</div>
+
+<script>
+(async function(){
+  try {
+    var r = await fetch('/api/chat/ban-status', { credentials: 'same-origin', cache: 'no-store' });
+    var j = await r.json();
+    if (!j || !j.ok) {
+      document.getElementById('bannedStatus').textContent = 'Diblokir';
+      return;
+    }
+    if (!j.banned) {
+      document.getElementById('bannedStatus').textContent = 'Tidak diblokir';
+      document.getElementById('bannedReason').textContent = '—';
+      document.getElementById('bannedUntil').textContent = '—';
+      document.getElementById('bannedRemaining').textContent = '—';
+      return;
+    }
+    document.getElementById('bannedReason').textContent = j.reason || 'Melanggar aturan';
+    var until = new Date(j.until);
+    document.getElementById('bannedUntil').textContent = until.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
+    var diff = j.until - Date.now();
+    var days = Math.floor(diff / 86400000);
+    var hours = Math.floor((diff % 86400000) / 3600000);
+    document.getElementById('bannedRemaining').textContent = days + ' hari ' + hours + ' jam';
+  } catch(e) {}
+})();
+</script>
+</body>
+</html>
