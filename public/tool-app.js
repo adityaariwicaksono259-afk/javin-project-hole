@@ -90,6 +90,7 @@
   function renderPremiumTool(ep) {
     if (ep.catalogId === 'premium-amprem') return renderAmpemWizard(ep);
     if (ep.catalogId === 'premium-amfinder') return renderAmfinder(ep);
+    if (ep.catalogId === 'am-preset-search') return renderAmPresetSearch(ep);
   }
 
   function premiumApiCall(path, body) {
@@ -374,6 +375,100 @@
       }).then(function() {
         afBtn.disabled = false; afBtn.textContent = 'Cari Preset';
       });
+    };
+  }
+
+  function renderAmPresetSearch(ep) {
+    wrap.innerHTML = [
+      '<div class="hero">',
+      '  <div class="badge">' + esc(ep.folder) + (ep.subfolder ? ' · ' + esc(ep.subfolder) : '') + '</div>',
+      '  <h1 class="title">' + esc(ep.name) + '</h1>',
+      '  <p class="desc">' + esc(ep.desc || '') + '</p>',
+      '</div>',
+      '<div class="card">',
+      '  <div class="field"><label>Keyword <span style="color:#dc2626">*</span></label>',
+      '  <input type="text" id="apsQ" placeholder="contoh: dji, smooth, jj" autocomplete="off"></div>',
+      '  <button class="submit" id="apsBtn">Cari Video</button>',
+      '  <div class="result" id="apsRes"></div>',
+      '</div>',
+      '<div id="apsResult" style="margin-top:16px"></div>'
+    ].join('\n');
+
+    var apsBtn = document.getElementById('apsBtn');
+    if (!apsBtn) return;
+
+    apsBtn.onclick = function() {
+      var q = (document.getElementById('apsQ').value || '').trim();
+      var res = document.getElementById('apsRes');
+      var out = document.getElementById('apsResult');
+
+      if (!q) { res.className = 'result show err'; res.textContent = '❌ Keyword wajib.'; return; }
+
+      apsBtn.disabled = true; apsBtn.textContent = 'Mencari...';
+      res.className = 'result show info';
+      res.textContent = 'Mencari video preset... (bisa 10-30 detik)';
+      out.innerHTML = '';
+
+      fetch('/api/amsearch?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
+        .then(function(r){ return r.json(); })
+        .then(function(j) {
+          if (!j || !j.ok) throw new Error((j && j.message) || 'Gagal');
+
+          if (!j.videos || j.videos.length === 0) {
+            res.className = 'result show info';
+            res.textContent = '⚠️ Tidak ada video ditemukan untuk "' + q + '".';
+            return;
+          }
+
+          res.className = 'result show ok';
+          res.textContent = '✅ Ditemukan ' + j.videos.length + ' video · ' + j.foundCount + ' punya preset · ' + (j.elapsed_ms/1000).toFixed(1) + 's';
+
+          var html = '';
+          j.videos.forEach(function(v) {
+            var badge = v.found
+              ? '<span style="background:#22C55E;color:#fff;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px">PRESET DITEMUKAN</span>'
+              : '<span style="background:#DDD;color:#555;font-size:10px;font-weight:800;padding:2px 8px;border-radius:6px">TIDAK ADA</span>';
+
+            var thumb = v.thumb
+              ? '<img src="' + esc(v.thumb) + '" style="width:72px;height:96px;object-fit:cover;border-radius:8px;flex-shrink:0" loading="lazy" onerror="this.style.display=\'none\'">'
+              : '';
+
+            html += '<div style="background:#fff;border:3px solid #0A0A0A;border-radius:14px;box-shadow:4px 4px 0 #0A0A0A;padding:12px;margin-bottom:12px">';
+            html += '  <div style="display:flex;gap:12px">';
+            html += thumb;
+            html += '    <div style="flex:1;min-width:0">';
+            html += '      <div style="margin-bottom:6px">' + badge + '</div>';
+            html += '      <div style="font-size:12px;font-weight:700;color:#0EA5E9;margin-bottom:2px">' + esc(v.handle || '-') + '</div>';
+            html += '      <div style="font-size:12px;color:#0f172a;line-height:1.4;margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + esc(v.snippet || '') + '</div>';
+            html += '    </div>';
+            html += '  </div>';
+
+            if (v.presetLinks && v.presetLinks.length > 0) {
+              html += '  <div style="margin-top:10px;border-top:2px dashed #DDD;padding-top:10px">';
+              v.presetLinks.forEach(function(p) {
+                var label = p.type === '5mb' ? '5MB' : (p.type === 'xml' ? 'XML' : 'LINK');
+                html += '    <div style="display:flex;gap:8px;margin-bottom:6px;align-items:center">';
+                html += '      <span style="font-size:10px;font-weight:800;background:#7FDBFF;color:#0A0A0A;padding:3px 8px;border-radius:6px;flex-shrink:0">' + label + '</span>';
+                html += '      <a href="' + esc(p.url) + '" target="_blank" rel="noopener" style="flex:1;font-size:12px;color:#0EA5E9;text-decoration:none;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Buka Preset →</a>';
+                html += '    </div>';
+              });
+              html += '  </div>';
+            } else {
+              html += '  <div style="margin-top:8px;font-size:11px;color:#888;font-style:italic">' + esc(v.message || 'Preset tidak ditemukan') + '</div>';
+            }
+
+            html += '  <a href="' + esc(v.url) + '" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;padding:8px 14px;background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;text-decoration:none;border-radius:8px;font-size:11px;font-weight:700">Lihat Video di TikTok</a>';
+            html += '</div>';
+          });
+          out.innerHTML = html;
+        })
+        .catch(function(e) {
+          res.className = 'result show err';
+          res.textContent = '❌ ' + e.message;
+        })
+        .then(function() {
+          apsBtn.disabled = false; apsBtn.textContent = 'Cari Video';
+        });
     };
   }
 

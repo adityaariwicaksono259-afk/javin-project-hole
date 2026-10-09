@@ -5413,5 +5413,22 @@
         "d": "Link TikTok yang berisi preset Alight Motion."
       }
     ]
+  },
+  {
+    "catalogId": "am-preset-search",
+    "name": "am preset search",
+    "desc": "Cari video TikTok yang punya preset Alight Motion — by keyword.",
+    "folder": "Tools",
+    "subfolder": "free",
+    "m": "GET",
+    "needKey": false,
+    "params": [
+      {
+        "n": "q",
+        "t": "string",
+        "r": 1,
+        "d": "Keyword pencarian (contoh: dji, smooth, jj)"
+      }
+    ]
   }
 ]
