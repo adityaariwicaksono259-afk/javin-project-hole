@@ -5417,7 +5417,7 @@
   {
     "catalogId": "am-preset-search",
     "name": "am preset search",
-    "desc": "Cari preset Alight Motion berdasarkan lagu atau kata kunci, lalu pilih video untuk ekstrak.",
+    "desc": "Cari pakai nama lagu atau kata kunci, lalu pilih video untuk mencari link preset",
     "folder": "Tools",
     "subfolder": "free",
     "m": "GET",
@@ -5427,7 +5427,7 @@
         "n": "q",
         "t": "string",
         "r": 1,
-        "d": "Cari nama lagu atau kata kunci"
+        "d": "cari nama lagu atau kata kunci"
       }
     ]
   }
