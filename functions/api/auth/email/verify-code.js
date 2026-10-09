@@ -188,7 +188,7 @@ export async function onRequestPost({ request, env }) {
 
   } catch(e) {
     console.error('[VERIFY-CODE]', e.message);
-    return json({ ok: false, message: 'Error: ' + e.message }, 500);
+    return json({ ok: false, message: 'Verifikasi gagal. Coba lagi.' }, 500);
   }
 }
 

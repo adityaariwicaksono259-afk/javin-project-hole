@@ -41,7 +41,7 @@ export async function onRequestPost({ request, env }) {
     });
   } catch(e) {
     console.error('[APPEAL]', e.message);
-    return json({ ok: false, message: 'Gagal kirim banding: ' + e.message }, 500);
+    console.error('[API-ERROR]', e.message); return json({ ok: false, message: 'Gagal kirim banding: (silakan hubungi admin)' }, 500);
   }
 }
 
@@ -63,6 +63,6 @@ export async function onRequestGet({ request, env }) {
       appeal: appeal || null
     });
   } catch(e) {
-    return json({ ok: false, message: e.message }, 500);
+    console.error('[API-ERROR]', e.message); return json({ ok: false, message: 'Internal error' }, 500);
   }
 }

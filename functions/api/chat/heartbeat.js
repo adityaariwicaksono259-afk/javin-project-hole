@@ -15,6 +15,6 @@ export async function onRequestPost({ request, env }) {
     ).bind(Date.now(), me.code).run();
     return json({ ok: true });
   } catch(e) {
-    return json({ ok: false, message: e.message }, 500);
+    console.error('[API-ERROR]', e.message); return json({ ok: false, message: 'Internal error' }, 500);
   }
 }

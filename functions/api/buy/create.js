@@ -72,7 +72,7 @@ export async function onRequestPost({ request, env }) {
     ).bind(orderCode, userId, userName, pkg.price, totalAmount, pkg.tier, uniqueCode, expiresAt, now, now).run();
   } catch (e) {
     console.error('[BUY-CREATE]', e.message);
-    return json({ ok: false, message: 'Gagal bikin order: ' + e.message }, 500);
+    return json({ ok: false, message: 'Gagal bikin order. Coba lagi.' }, 500);
   }
 
   // Ambil info pembayaran

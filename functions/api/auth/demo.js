@@ -118,7 +118,7 @@ export async function onRequestPost({ request, env }) {
     ).bind(fingerprint, demoUserId, now).run();
   } catch(e) {
     console.error('[DEMO] insert error:', e.message);
-    return json({ ok: false, message: 'Gagal bikin demo: ' + e.message }, 500);
+    return json({ ok: false, message: 'Gagal bikin demo. Coba lagi.' }, 500);
   }
 
   const cookieVal = 'javin_demo=' + sessionToken + '; Path=/; Max-Age=' + (DEMO_TTL_MS / 1000) + '; HttpOnly; Secure; SameSite=Lax';

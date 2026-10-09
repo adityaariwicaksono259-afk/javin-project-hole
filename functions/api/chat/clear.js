@@ -33,6 +33,6 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: true, cleared_at: now });
   } catch(e) {
     console.error('[CLEAR]', e.message);
-    return json({ ok: false, message: e.message }, 500);
+    console.error('[API-ERROR]', e.message); return json({ ok: false, message: 'Internal error' }, 500);
   }
 }

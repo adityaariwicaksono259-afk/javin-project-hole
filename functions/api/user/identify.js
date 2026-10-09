@@ -129,7 +129,7 @@ export async function onRequestPost({ request, env }) {
 
   } catch (e) {
     console.error('[IDENTIFY] Error:', e.message);
-    return json({ ok: false, message: 'DB error: ' + e.message }, 500);
+    console.error('[IDENTIFY]', e.message); return json({ ok: false, message: 'Internal error' }, 500);
   }
 }
 

@@ -1,5 +1,6 @@
 // Global Middleware — 24 Layer Security
 import { sendTelegram, escapeHtml, formatSecurityAlert } from './_lib/telegram.js';
+import { csrfGuard } from './_lib/security.js';
 import { fingerprint, detectPattern } from './_lib/detect.js';
 function jsonResp(status, data, extraHeaders) {
   return new Response(JSON.stringify(data), {
@@ -215,6 +216,13 @@ export async function onRequest(context) {
   if (!allowedMethods.includes(method)) {
     return jsonResp(405, { ok: false, message: 'Method tidak diizinkan.' });
   }
+
+  // ==== CSRF PROTECTION: Cek Origin untuk POST/PUT/DELETE ====
+  const csrfResponse = csrfGuard(request, context.env);
+  if (csrfResponse) {
+    return csrfResponse;
+  }
+  // ==== END CSRF PROTECTION ====
 
   // ==== LAYER 16: User-Agent filter ====
   if (pathname.startsWith('/api/')) {
@@ -686,16 +694,22 @@ export async function onRequest(context) {
   // ==== LAYER 1: Security headers ====
   newHeaders.set('X-Frame-Options', 'SAMEORIGIN');
   newHeaders.set('X-Content-Type-Options', 'nosniff');
-  newHeaders.set('X-XSS-Protection', '0');
+  newHeaders.set('X-XSS-Protection', '1; mode=block');
   newHeaders.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   newHeaders.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
-  newHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=()');
+  newHeaders.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=(), ambient-light-sensor=(), autoplay=(self), encrypted-media=(self), fullscreen=(self), picture-in-picture=(self), interest-cohort=()');
   newHeaders.set('X-DNS-Prefetch-Control', 'off');
   newHeaders.set('X-Permitted-Cross-Domain-Policies', 'none');
   newHeaders.set('X-Download-Options', 'noopen');
   newHeaders.set('Cross-Origin-Resource-Policy', 'same-origin');
   newHeaders.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
   newHeaders.set('Origin-Agent-Cluster', '?1');
+
+  // Additional hardening
+  newHeaders.set('X-Content-Security-Policy', "default-src 'self'");
+  newHeaders.set('X-WebKit-CSP', "default-src 'self'");
+  newHeaders.delete('X-Powered-By');
+  newHeaders.delete('Server');
 
   // X-Robots-Tag untuk file spesifik
   if (url.pathname === '/endpoints.json' || url.pathname.endsWith('.bak') || url.pathname.endsWith('.bak.json')) {

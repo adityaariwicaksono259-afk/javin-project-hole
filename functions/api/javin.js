@@ -44,7 +44,7 @@ export async function onRequestGet({ request }) {
       }
     });
   } catch (e) {
-    return jsonRes(502, { ok: false, message: 'Gagal: ' + e.message });
+    console.error('[JAVIN]', e.message); return jsonRes(502, { ok: false, message: 'Internal error' });
   }
 }
 

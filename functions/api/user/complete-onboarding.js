@@ -32,6 +32,6 @@ export async function onRequestPost({ request, env }) {
     });
   } catch(e) {
     console.error('[ONBOARD]', e.message);
-    return json({ ok: false, message: 'Gagal simpan: ' + e.message }, 500);
+    console.error('[API-ERROR]', e.message); return json({ ok: false, message: 'Gagal simpan: (silakan hubungi admin)' }, 500);
   }
 }

@@ -29,7 +29,7 @@ export async function onRequestGet({ request, env }) {
     return json({ ok: false, message: 'Kasih ?code= atau ?user_id=' }, 400);
   } catch (e) {
     console.error('[BUY-STATUS]', e.message);
-    return json({ ok: false, message: 'DB error: ' + e.message }, 500);
+    return json({ ok: false, message: 'Internal error' }, 500);
   }
 }
 

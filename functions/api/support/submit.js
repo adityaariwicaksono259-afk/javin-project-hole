@@ -48,7 +48,7 @@ export async function onRequestPost({ request, env }) {
     ticketId = r.meta.last_row_id;
   } catch (e) {
     console.error('[SUPPORT] DB error:', e.message);
-    return json({ ok: false, message: 'Server error: ' + e.message }, 500);
+    return json({ ok: false, message: 'Gagal kirim. Coba lagi.' }, 500);
   }
 
   // ==== Kirim ke Telegram admin dengan inline buttons ====

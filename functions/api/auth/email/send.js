@@ -154,7 +154,7 @@ export async function onRequestPost({ request, env }) {
     }
   } catch(e) {
     console.error('[SEND] Error:', e.message);
-    return json({ ok: false, message: 'Error: ' + e.message }, 500);
+    return json({ ok: false, message: 'Gagal kirim email. Coba lagi.' }, 500);
   }
 }
 

@@ -67,7 +67,7 @@ export async function onRequestPost({ request, env }) {
     });
   } catch(e) {
     console.error('[CLIENT-INIT]', e.message);
-    return json({ ok: false, message: 'Error: ' + e.message }, 500);
+    return json({ ok: false, message: 'Internal error' }, 500);
   }
 }
 

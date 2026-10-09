@@ -31,6 +31,6 @@ export async function onRequestPost({ request, env }) {
     return json({ ok: true, enabled: enabled });
   } catch(e) {
     console.error('[DISAPPEAR]', e.message);
-    return json({ ok: false, message: e.message }, 500);
+    console.error('[API-ERROR]', e.message); return json({ ok: false, message: 'Internal error' }, 500);
   }
 }

@@ -112,7 +112,7 @@ export async function verifyApiKey(db, apiKey) {
       credits: user.credits || 0
     };
   } catch (e) {
-    return { ok: false, code: 500, message: 'DB error: ' + e.message };
+    return { ok: false, code: 500, message: 'Internal error' };
   }
 }
 
@@ -151,7 +151,7 @@ export async function deductCredits(db, userId, cost) {
       deducted: cost
     };
   } catch (e) {
-    return { ok: false, message: 'DB error: ' + e.message };
+    return { ok: false, message: 'Internal error' };
   }
 }
 
@@ -182,7 +182,7 @@ export async function addCredits(db, userId, amount) {
       old: oldCredits
     };
   } catch (e) {
-    return { ok: false, message: 'DB error: ' + e.message };
+    return { ok: false, message: 'Internal error' };
   }
 }
 

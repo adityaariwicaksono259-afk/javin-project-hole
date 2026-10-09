@@ -138,6 +138,6 @@ export async function onRequestGet({ request, env }) {
     });
   } catch (e) {
     console.error('[STATS]', e.message);
-    return json({ ok: false, message: e.message }, 500);
+    return json({ ok: false, message: 'Internal error' }, 500);
   }
 }

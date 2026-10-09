@@ -87,3 +87,14 @@ export async function getMe(request, db) {
     lastSeen: user.last_seen || 0
   };
 }
+
+// ============ HTML ESCAPE (defense-in-depth) ============
+// Walaupun frontend pakai esc(), backend juga escape biar double layer
+export function escapeHtml(str) {
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
