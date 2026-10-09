@@ -1428,3 +1428,35 @@ export async function handleEditStep(env, chatId, text, reply) {
 
   return false;
 }
+
+
+// ==================== /testgithub — CEK KONEKSI GITHUB ====================
+
+import { testConnection } from './github.js';
+
+export async function cmdTestGithub(env, chatId, reply) {
+  await reply(env, chatId, '🔍 Cek koneksi GitHub...');
+
+  const result = await testConnection(env);
+
+  if (!result.ok) {
+    await reply(env, chatId,
+      '❌ <b>GITHUB ERROR</b>\n\n' +
+      'Reason: <code>' + esc(result.message) + '</code>\n\n' +
+      '<b>Kemungkinan penyebab:</b>\n' +
+      '• <code>GITHUB_TOKEN</code> belum di-set di CF env\n' +
+      '• Token sudah expired/revoked\n' +
+      '• Scope token kurang (harus ada <b>repo</b>)\n' +
+      '• Typo di nama token'
+    );
+    return;
+  }
+
+  await reply(env, chatId,
+    '✅ <b>GITHUB OK</b>\n\n' +
+    '📦 Repo: <code>' + esc(result.repo) + '</code>\n' +
+    '🌿 Branch: <code>' + esc(result.default_branch) + '</code>\n' +
+    '🔒 Private: ' + (result.private ? 'Ya' : 'Tidak') + '\n\n' +
+    'Coba: <code>/apilist</code> buat cek endpoint bot.'
+  );
+}

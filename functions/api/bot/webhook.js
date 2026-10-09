@@ -2,7 +2,7 @@
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
 import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup, cmdAnnounce } from '../../_lib/bot-admin.js';
-import { cmdWhitelistAdd, cmdUnban, cmdBan, cmdAppeals, cmdApprove, cmdReject, cmdUserBan, cmdUserUnban, cmdUserBanList, cmdPemberitahuan, cmdApiAdd, handleApiStep, handleEditStep, cmdCancel, cmdApiList, cmdApiEdit, cmdApiHide, cmdApiRestore } from '../../_lib/bot-admin.js';
+import { cmdWhitelistAdd, cmdUnban, cmdBan, cmdAppeals, cmdApprove, cmdReject, cmdUserBan, cmdUserUnban, cmdUserBanList, cmdPemberitahuan, cmdApiAdd, handleApiStep, handleEditStep, cmdCancel, cmdApiList, cmdApiEdit, cmdApiHide, cmdApiRestore, cmdTestGithub } from '../../_lib/bot-admin.js';
 import { cmdSetTier, cmdRemoveTier, cmdTierInfo } from '../../_lib/bot-admin.js';
 import { editTelegramMessage, answerCallbackQuery } from '../../_lib/telegram.js';
 import { SUPPORT_TEMPLATES, getTemplatesByCategory } from '../../_lib/support-templates.js';
@@ -612,6 +612,10 @@ export async function onRequestPost({ request, env }) {
   }
   if (cmd === '/cancel') {
     await cmdCancel(env, chatId, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/testgithub') {
+    await cmdTestGithub(env, chatId, reply);
     return new Response('ok');
   }
 
