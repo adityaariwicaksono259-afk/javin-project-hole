@@ -213,6 +213,7 @@ function openRoom(roomId, other){
 
 function closeRoom(){
   currentRoom = null;
+  currentDisappear = 0;
   cachedMessages = [];
   stopPolling();
   stopHeartbeat();
@@ -274,6 +275,7 @@ function loadMessages(scroll){
   fetchJson('/api/chat/messages?room_id='+currentRoom.id+'&with_typing=1').then(function(r){
     if(r.body && r.body.ok){
       renderMessages(r.body.messages || [], r.body.other);
+      if(typeof r.body.disappear !== 'undefined') currentDisappear = r.body.disappear;
       if(r.body.typing) showTypingIndicator();
       else hideTypingIndicator();
     }
@@ -374,13 +376,59 @@ $('btnNewChat').addEventListener('click', function(){
   chatSearch.value = '';
   renderTab();
 });
+var currentDisappear = 0;
+
 $('btnRoomMenu').addEventListener('click', function(){
   if(!currentRoom) return;
   $('sheetName').textContent = currentRoom.other.name || 'User';
+  var lbl = document.getElementById('disappearLabel');
+  if(lbl) lbl.textContent = currentDisappear ? 'Matikan Pesan Sementara' : 'Pesan Sementara (24 jam)';
   roomMenuSheet.hidden = false;
 });
-$('sheetClose').addEventListener('click', function(){ roomMenuSheet.hidden = true; });
 roomMenuSheet.addEventListener('click', function(e){ if(e.target === roomMenuSheet) roomMenuSheet.hidden = true; });
+
+// ==== Bersihkan Chat ====
+$('btnClearChat').addEventListener('click', function(){
+  if(!currentRoom) return;
+  if(!confirm('Bersihkan seluruh chat ini?\n\nChat di device kamu akan hilang. Chat di sisi ' + currentRoom.other.name + ' tetap ada.')) return;
+
+  fetchJson('/api/chat/clear', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ room_id: currentRoom.id })
+  }).then(function(r){
+    if(r.body && r.body.ok){
+      roomMenuSheet.hidden = true;
+      cachedMessages = [];
+      renderMessages([], null);
+      alert('Chat dibersihkan');
+    } else {
+      alert((r.body && r.body.message) || 'Gagal bersihkan chat');
+    }
+  }).catch(function(){ alert('Koneksi error'); });
+});
+
+// ==== Pesan Sementara (24 jam) ====
+$('btnDisappear').addEventListener('click', function(){
+  if(!currentRoom) return;
+  var enable = !currentDisappear;
+
+  fetchJson('/api/chat/disappear', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ room_id: currentRoom.id, enabled: enable })
+  }).then(function(r){
+    if(r.body && r.body.ok){
+      currentDisappear = r.body.enabled ? 1 : 0;
+      roomMenuSheet.hidden = true;
+      alert(currentDisappear
+        ? 'Pesan sementara aktif.\nPesan baru akan hilang otomatis dalam 24 jam.'
+        : 'Pesan sementara dimatikan.');
+    } else {
+      alert((r.body && r.body.message) || 'Gagal ubah pengaturan');
+    }
+  }).catch(function(){ alert('Koneksi error'); });
+});
 
 $('btnBlock').addEventListener('click', function(){
   if(!currentRoom) return;

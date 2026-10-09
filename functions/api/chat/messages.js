@@ -2,7 +2,7 @@ import { json, ensureSchema, getMe } from './_lib.js';
 
 async function roomGuard(db, roomId, meCode) {
   const r = await db.prepare(
-    'SELECT id, user_a, user_b FROM chat_rooms WHERE id = ?'
+    'SELECT id, user_a, user_b, cleared_a, cleared_b, disappear FROM chat_rooms WHERE id = ?'
   ).bind(roomId).first();
   if (!r) return null;
   if (r.user_a !== meCode && r.user_b !== meCode) return null;
@@ -26,19 +26,29 @@ export async function onRequestGet({ request, env }) {
 
   const now = Date.now();
 
-  // 1. Tandai delivered: pesan dari lawan yang belum delivered
+  // Auto-delete pesan sementara yang expired
+  try {
+    await db.prepare(
+      'DELETE FROM chat_messages WHERE disappear_until > 0 AND disappear_until < ?'
+    ).bind(now).run();
+  } catch(e) {}
+
+  // Tandai delivered + read untuk pesan dari lawan
   await db.prepare(
     'UPDATE chat_messages SET delivered_at = ? WHERE room_id = ? AND sender_code != ? AND delivered_at = 0'
   ).bind(now, roomId, me.code).run();
 
-  // 2. Tandai read: pesan dari lawan yang belum read
   await db.prepare(
     'UPDATE chat_messages SET read_at = ? WHERE room_id = ? AND sender_code != ? AND read_at = 0'
   ).bind(now, roomId, me.code).run();
 
+  // Hitung cleared_at user sendiri
+  const myCleared = (room.user_a === me.code) ? (room.cleared_a || 0) : (room.cleared_b || 0);
+
+  // Ambil pesan — kalau ada cleared_at, cuma yang lebih baru
   const msgs = await db.prepare(
-    'SELECT id, sender_code, text, created_at, read_at, delivered_at FROM chat_messages WHERE room_id = ? ORDER BY created_at ASC LIMIT 500'
-  ).bind(roomId).all();
+    'SELECT id, sender_code, text, created_at, read_at, delivered_at FROM chat_messages WHERE room_id = ? AND created_at > ? ORDER BY created_at ASC LIMIT 500'
+  ).bind(roomId, myCleared).all();
 
   const list = (msgs.results || []).map(m => ({
     id: m.id,
@@ -49,7 +59,7 @@ export async function onRequestGet({ request, env }) {
     read: (m.read_at || 0) > 0
   }));
 
-  // 3. Ambil last_seen lawan
+  // Ambil last_seen lawan
   const otherCode = room.user_a === me.code ? room.user_b : room.user_a;
   const otherUser = await db.prepare(
     'SELECT last_seen FROM auth_users WHERE user_code = ?'
@@ -57,7 +67,7 @@ export async function onRequestGet({ request, env }) {
   const lastSeen = (otherUser && otherUser.last_seen) || 0;
   const online = lastSeen > 0 && (now - lastSeen) < 30000;
 
-  // Typing status (kalau diminta)
+  // Typing status
   var typing = false;
   if (url.searchParams.get('with_typing') === '1') {
     try {
@@ -73,7 +83,8 @@ export async function onRequestGet({ request, env }) {
     ok: true,
     messages: list,
     other: { online: online, last_seen: lastSeen },
-    typing: typing
+    typing: typing,
+    disappear: room.disappear || 0
   });
 }
 
@@ -101,15 +112,22 @@ export async function onRequestPost({ request, env }) {
   if (blocked) return json({ ok: false, message: 'Chat diblokir' }, 403);
 
   const now = Date.now();
+  const disappearUntil = (room.disappear || 0) === 1 ? (now + 24 * 60 * 60 * 1000) : 0;
+
   const ins = await db.prepare(
-    'INSERT INTO chat_messages (room_id, sender_code, text, created_at, read_at, delivered_at) VALUES (?, ?, ?, ?, 0, 0)'
-  ).bind(roomId, me.code, text, now).run();
+    'INSERT INTO chat_messages (room_id, sender_code, text, created_at, read_at, delivered_at, disappear_until) VALUES (?, ?, ?, ?, 0, 0, ?)'
+  ).bind(roomId, me.code, text, now, disappearUntil).run();
 
   await db.prepare(
     'UPDATE chat_rooms SET last_message_at = ? WHERE id = ?'
   ).bind(now, roomId).run();
 
-  // Hapus status typing (udah kirim pesan)
+  // Reset cleared kedua sisi (pesan baru muncul lagi di list)
+  await db.prepare(
+    'UPDATE chat_rooms SET cleared_a = 0, cleared_b = 0 WHERE id = ?'
+  ).bind(roomId).run();
+
+  // Hapus status typing
   try {
     await db.prepare(
       'DELETE FROM chat_typing WHERE room_id = ? AND user_code = ?'
@@ -124,7 +142,8 @@ export async function onRequestPost({ request, env }) {
       text: text,
       time: now,
       delivered: false,
-      read: false
+      read: false,
+      disappearUntil: disappearUntil
     }
   });
 }

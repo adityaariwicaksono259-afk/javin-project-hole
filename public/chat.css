@@ -65,18 +65,34 @@ body.chat-page{padding-bottom:90px;overscroll-behavior:none}
 .chat-send{width:46px;height:46px;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;background:#FF7FE5;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A;color:#0A0A0A;font-size:18px;font-weight:800;cursor:pointer;padding:0;transition:transform .08s,box-shadow .08s;font-family:inherit}
 .chat-send:active{transform:translate(3px,3px);box-shadow:0 0 0 #0A0A0A}
 
-.chat-sheet{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .15s ease}
+.chat-sheet{position:fixed;inset:0;z-index:9999;background:transparent;display:block;animation:fadeIn .15s ease}
 .chat-sheet[hidden]{display:none!important}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.chat-sheet-card{width:100%;max-width:520px;background:#FFFFFF;border:3px solid #0A0A0A;border-bottom:none;border-top-left-radius:20px;border-top-right-radius:20px;padding:22px 20px 28px;box-shadow:0 -6px 0 #0A0A0A;position:relative;animation:slideUp .22s cubic-bezier(.34,1.56,.64,1);max-height:85vh;overflow-y:auto}
+.chat-sheet-card{position:absolute;top:70px;right:14px;width:220px;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:14px;box-shadow:5px 5px 0 #0A0A0A;padding:8px;animation:dropIn .18s cubic-bezier(.34,1.56,.64,1);transform-origin:top right}
+@keyframes dropIn{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* Buat report sheet tetap pakai bottom sheet */
+.chat-sheet.report-sheet .chat-sheet-card{
+  position:absolute;
+  top:auto;bottom:0;right:0;left:0;
+  width:100%;max-width:520px;margin:0 auto;
+  border-bottom:none;border-top-left-radius:20px;border-top-right-radius:20px;
+  box-shadow:0 -6px 0 #0A0A0A;
+  padding:22px 20px 28px;
+  animation:slideUp .22s cubic-bezier(.34,1.56,.64,1);
+}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.chat-sheet.report-sheet{background:rgba(0,0,0,.6)}
 .chat-sheet-close{position:absolute;top:14px;right:14px;width:36px;height:36px;background:#FF7FE5;border:3px solid #0A0A0A;border-radius:10px;box-shadow:2px 2px 0 #0A0A0A;font-size:16px;font-weight:800;cursor:pointer;color:#0A0A0A;font-family:inherit}
 .chat-sheet-close:active{transform:translate(2px,2px);box-shadow:0 0 0 #0A0A0A}
 .chat-sheet-title{font-family:'Archivo Black',sans-serif;font-size:18px;margin:0 0 6px;padding-right:40px}
 .chat-sheet-sub{font-size:13px;color:#4A4A4A;margin-bottom:14px;font-weight:500}
-.chat-sheet-item{display:flex;align-items:center;gap:12px;width:100%;padding:14px 16px;margin-bottom:10px;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A;font-family:inherit;font-size:14px;font-weight:700;color:#0A0A0A;cursor:pointer;text-align:left;transition:transform .08s,box-shadow .08s}
-.chat-sheet-item:active{transform:translate(3px,3px);box-shadow:0 0 0 #0A0A0A}
-.chat-sheet-item.danger{background:#FFD9D9}
+.chat-sheet-item{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;margin:0;background:#FFFFFF;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:700;color:#0A0A0A;cursor:pointer;text-align:left;transition:background .1s}
+.chat-sheet-item:hover{background:#F0F0F0}
+.chat-sheet-item:active{background:#E0E0E0}
+.chat-sheet-item.danger{color:#DC2626}
+.chat-sheet-item.danger:hover{background:#FEF2F2}
+.chat-sheet-item svg{flex-shrink:0}
 .chat-reasons{display:flex;flex-direction:column;gap:8px}
 .chat-reason{padding:12px 14px;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:10px;box-shadow:3px 3px 0 #0A0A0A;font-family:inherit;font-size:13px;font-weight:700;color:#0A0A0A;cursor:pointer;text-align:left;transition:transform .08s,box-shadow .08s}
 .chat-reason:active{transform:translate(3px,3px);box-shadow:0 0 0 #0A0A0A}
@@ -214,3 +230,33 @@ body.kb-open.chat-page {
 body.kb-open #viewRoom {
   min-height: auto !important;
 }
+
+
+/* Dropdown header kecil (bukan title besar) */
+.chat-sheet .chat-sheet-title{
+  font-family:'Space Grotesk',sans-serif;
+  font-size:11px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  color:#8B8B8B;
+  padding:6px 12px 4px;
+  margin:0;
+}
+.chat-sheet .chat-sheet-close{display:none}
+.chat-sheet.report-sheet .chat-sheet-close{display:flex}
+.chat-sheet.report-sheet .chat-sheet-title{
+  font-family:'Archivo Black',sans-serif;
+  font-size:18px;
+  text-transform:none;
+  letter-spacing:0;
+  color:#0A0A0A;
+  padding:0 0 6px;
+}
+
+/* Dark mode dropdown */
+html[data-theme="dark"] .chat-sheet-card{background:#181820;border-color:#FFFFFF;box-shadow:5px 5px 0 #FFFFFF}
+html[data-theme="dark"] .chat-sheet-item{background:#181820;color:#FFFFFF}
+html[data-theme="dark"] .chat-sheet-item:hover{background:#241333}
+html[data-theme="dark"] .chat-sheet-item.danger{color:#FF6B6B}
+html[data-theme="dark"] .chat-sheet-item.danger:hover{background:#3D1A1A}
