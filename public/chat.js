@@ -16,6 +16,19 @@ var roomStatus = $('roomStatus');
 var chatTabs = $('chatTabs');
 var roomMenuSheet = $('roomMenuSheet');
 var reportSheet = $('reportSheet');
+var profileModal = $('profileModal');
+var profileAvatar = $('profileAvatar');
+var profileName = $('profileName');
+var profileCode = $('profileCode');
+var profileBio = $('profileBio');
+var profileStatus = $('profileStatus');
+var profileJoined = $('profileJoined');
+var profileLastSeen = $('profileLastSeen');
+var profileBtnBlock = $('profileBtnBlock');
+var profileBlockLabel = $('profileBlockLabel');
+var profileBtnReport = $('profileBtnReport');
+var profileClose = $('profileClose');
+var profileActions = $('profileActions');
 
 var currentTab = 'rooms';
 var currentRoom = null;
@@ -63,6 +76,87 @@ function onlineStatus(other){
   if(other.online) return 'online';
   if(!other.last_seen || other.last_seen === 0) return 'offline';
   return 'terakhir dilihat ' + relTime(other.last_seen) + ' lalu';
+}
+
+function fmtDate(ts){
+  if(!ts) return '-';
+  try {
+    return new Date(ts).toLocaleDateString('id-ID', { day:'numeric', month:'long', year:'numeric' });
+  } catch(e){ return '-'; }
+}
+
+function profileAvatarHtml(user){
+  var initial = (user.name||'U').charAt(0).toUpperCase();
+  if(user.avatar){
+    return '<img src="'+esc(user.avatar)+'" alt="" onerror="this.replaceWith(document.createTextNode(\''+esc(initial)+'\'))">';
+  }
+  return esc(initial);
+}
+
+function openProfile(contact){
+  if(!contact || !contact.code) return;
+
+  // Reset + tampilin loading state
+  profileModal.hidden = false;
+  profileName.textContent = contact.name || 'User';
+  profileCode.textContent = contact.code;
+  profileAvatar.innerHTML = profileAvatarHtml(contact);
+  profileBio.textContent = 'Memuat...';
+  profileStatus.textContent = '-';
+  profileJoined.textContent = '-';
+  profileLastSeen.textContent = '-';
+  profileActions.style.display = 'none';
+
+  fetchJson('/api/user/profile?code=' + encodeURIComponent(contact.code)).then(function(r){
+    if(!r.body || !r.body.ok){
+      profileBio.textContent = (r.body && r.body.message) || 'Gagal memuat profil';
+      profileActions.style.display = 'flex';
+      return;
+    }
+    var p = r.body.profile;
+    profileName.textContent = p.name || 'User';
+    profileCode.textContent = p.code;
+    profileAvatar.innerHTML = profileAvatarHtml(p);
+    profileBio.textContent = p.bio || 'Belum ada bio';
+    profileJoined.textContent = fmtDate(p.joinedAt);
+
+    // Status
+    var now = Date.now();
+    if(p.lastSeen && (now - p.lastSeen) < 30000){
+      profileStatus.textContent = 'Online';
+      profileStatus.classList.add('online');
+    } else {
+      profileStatus.textContent = p.lastSeen ? relTime(p.lastSeen) + ' lalu' : 'offline';
+      profileStatus.classList.remove('online');
+    }
+    profileLastSeen.textContent = p.lastSeen ? fmtDate(p.lastSeen) + ' ' + fmtTime(p.lastSeen) : 'Belum pernah';
+
+    // Kalau profil ini = diri sendiri, sembunyikan action
+    if(p.isMe){
+      profileActions.style.display = 'none';
+      return;
+    }
+
+    // Set label block/unblock
+    if(p.blockedByMe){
+      profileBlockLabel.textContent = 'Buka Blokir';
+      profileBtnBlock.classList.remove('danger');
+    } else {
+      profileBlockLabel.textContent = 'Blokir';
+      profileBtnBlock.classList.add('danger');
+    }
+
+    profileActions.style.display = 'flex';
+    profileActions.dataset.code = p.code;
+    profileActions.dataset.blocked = p.blockedByMe ? '1' : '0';
+  }).catch(function(){
+    profileBio.textContent = 'Koneksi error';
+    profileActions.style.display = 'flex';
+  });
+}
+
+function closeProfile(){
+  profileModal.hidden = true;
 }
 
 function avatarHtml(user){
@@ -210,6 +304,20 @@ function openRoom(roomId, other){
   startHeartbeat();
   setTimeout(function(){ chatInput.focus(); }, 100);
 }
+
+// Klik header room -> buka profil
+(function bindProfileClick(){
+  var header = document.querySelector('#viewRoom .chat-header');
+  if(!header) return;
+  var clickable = [roomAvatar, header.querySelector('.room-meta')];
+  clickable.forEach(function(el){
+    if(!el) return;
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', function(){
+      if(currentRoom && currentRoom.other) openProfile(currentRoom.other);
+    });
+  });
+})();
 
 function closeRoom(){
   currentRoom = null;
@@ -377,6 +485,50 @@ $('btnNewChat').addEventListener('click', function(){
   renderTab();
 });
 var currentDisappear = 0;
+
+// Profile modal close
+if(profileClose) profileClose.addEventListener('click', closeProfile);
+if(profileModal) profileModal.addEventListener('click', function(e){
+  if(e.target === profileModal) closeProfile();
+});
+
+// Profile modal: blokir/buka blokir
+if(profileBtnBlock) profileBtnBlock.addEventListener('click', function(){
+  var code = profileActions.dataset.code;
+  if(!code) return;
+  var isBlocked = profileActions.dataset.blocked === '1';
+  var action = isBlocked ? 'unblock' : 'block';
+  var confirmMsg = isBlocked
+    ? 'Buka blokir ' + profileName.textContent + '?'
+    : 'Blokir ' + profileName.textContent + '?\n\nKamu nggak akan bisa chat dengan user ini.';
+
+  if(!confirm(confirmMsg)) return;
+
+  fetchJson('/api/chat/block', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ target: code, action: action })
+  }).then(function(r){
+    if(r.body && r.body.ok){
+      alert(isBlocked ? 'Blokir dibuka' : 'User diblokir');
+      closeProfile();
+      // Refresh room & list
+      if(currentRoom && currentRoom.other && currentRoom.other.code === code){
+        if(!isBlocked) closeRoom();
+      }
+      loadRooms();
+      loadContacts();
+    } else {
+      alert((r.body && r.body.message) || 'Gagal');
+    }
+  }).catch(function(){ alert('Koneksi error'); });
+});
+
+// Profile modal: lapor
+if(profileBtnReport) profileBtnReport.addEventListener('click', function(){
+  closeProfile();
+  reportSheet.hidden = false;
+});
 
 $('btnRoomMenu').addEventListener('click', function(){
   if(!currentRoom) return;
