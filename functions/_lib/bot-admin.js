@@ -977,3 +977,454 @@ export async function cmdPemberitahuan(env, chatId, args, reply) {
     await reply(env, chatId, '❌ Error: ' + esc(e.message));
   }
 }
+
+
+// ==================== ENDPOINT MANAGEMENT (v3.0) ====================
+
+import { addEndpoint, editEndpoint, hideEndpoint, restoreEndpoint, listBotEndpoints, autoDetectParams } from './endpoints-editor.js';
+
+// ============================================
+// /api — tambah endpoint (interactive atau quick)
+// ============================================
+export async function cmdApiAdd(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const arg = (args || '').trim();
+
+  // ==== QUICK MODE: /api url, nama, folder, desc, params ====
+  if (arg) {
+    const parts = arg.split(',').map(s => s.trim());
+    if (parts.length < 4) {
+      await reply(env, chatId,
+        '❓ <b>Format quick:</b>\n' +
+        '<code>/api url, nama, folder, deskripsi, params</code>\n\n' +
+        '<b>Contoh:</b>\n' +
+        '<code>/api https://api.com/cek, cek-ai, ai, Cari metadata AI, query</code>\n\n' +
+        'Atau ketik <code>/api</code> aja buat mode step-by-step.'
+      );
+      return;
+    }
+
+    const [url, name, folder, desc, params, ...rest] = parts;
+    // Cek flag -post
+    const allRest = [params, ...rest].filter(Boolean).join(' ');
+    const method = /-post/i.test(allRest) ? 'POST' : 'GET';
+    const cleanParams = (params || '').replace(/-post/gi, '').trim();
+
+    await reply(env, chatId, '⏳ Memproses...');
+    const result = await addEndpoint(env, { url, name, folder, desc: desc || name, params: cleanParams, method });
+
+    if (!result.ok) {
+      await reply(env, chatId, '❌ Gagal: ' + esc(result.message));
+      return;
+    }
+
+    const ep = result.endpoint;
+    await reply(env, chatId,
+      '✅ <b>ENDPOINT DITAMBAHKAN</b>\n\n' +
+      '📛 Nama: <b>' + esc(ep.name) + '</b>\n' +
+      '📁 Folder: ' + esc(ep.folder) + '\n' +
+      '🔗 URL: <code>' + esc(ep.upstream) + '</code>\n' +
+      '🚪 Method: ' + ep.m + '\n' +
+      '📋 Params: ' + (ep.params.length ? ep.params.map(p => p.n).join(', ') : '-') + '\n' +
+      '🆔 ID: <code>' + ep.catalogId + '</code>\n\n' +
+      '⏱️ Live dalam 1-2 menit.'
+    );
+    return;
+  }
+
+  // ==== INTERACTIVE MODE ====
+  await db.prepare(
+    'INSERT INTO bot_sessions (chat_id, state, data, updated_at) VALUES (?, ?, ?, ?) ' +
+    'ON CONFLICT(chat_id) DO UPDATE SET state = excluded.state, data = excluded.data, updated_at = excluded.updated_at'
+  ).bind(String(chatId), 'api_await_url', '{}', Date.now()).run();
+
+  await reply(env, chatId,
+    '🔧 <b>TAMBAH ENDPOINT BARU</b>\n\n' +
+    '<b>Step 1/5:</b> Kirim URL upstream\n\n' +
+    'Contoh:\n' +
+    '<code>https://api.nexadev.my.id/c.ai</code>\n\n' +
+    'Ketik <code>/cancel</code> buat batalin.'
+  );
+}
+
+// ============================================
+// HANDLE STEP INTERACTIVE
+// ============================================
+export async function handleApiStep(env, chatId, text, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) return false;
+
+  // Ambil session
+  const sess = await db.prepare(
+    'SELECT state, data FROM bot_sessions WHERE chat_id = ? LIMIT 1'
+  ).bind(String(chatId)).first();
+
+  if (!sess || !sess.state || sess.state === 'idle') return false;
+  if (!sess.state.startsWith('api_await_')) return false;
+
+  // Cek timeout (10 menit)
+  // (updated_at di-cek di caller atau auto-handled)
+  let data = {};
+  try { data = JSON.parse(sess.data || '{}'); } catch(e) {}
+
+  // ==== STEP 1: URL ====
+  if (sess.state === 'api_await_url') {
+    const url = text.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      await reply(env, chatId, '❌ URL harus mulai dengan <code>http://</code> atau <code>https://</code>\n\nCoba lagi:');
+      return true;
+    }
+    data.url = url;
+    await updateSession(db, chatId, 'api_await_name', data);
+    await reply(env, chatId,
+      '✅ URL disimpan.\n\n' +
+      '<b>Step 2/5:</b> Nama tool? (contoh: cek-ai)'
+    );
+    return true;
+  }
+
+  // ==== STEP 2: NAMA ====
+  if (sess.state === 'api_await_name') {
+    const name = text.trim();
+    if (name.length < 2 || name.length > 40) {
+      await reply(env, chatId, '❌ Nama harus 2-40 karakter. Coba lagi:');
+      return true;
+    }
+    data.name = name;
+    await updateSession(db, chatId, 'api_await_folder', data);
+    await reply(env, chatId,
+      '✅ Nama disimpan.\n\n' +
+      '<b>Step 3/5:</b> Folder?\n\n' +
+      'Contoh: <code>ai</code>, <code>tools</code>, <code>downloader</code>, <code>search</code>, <code>osint</code>, <code>canvas</code>'
+    );
+    return true;
+  }
+
+  // ==== STEP 3: FOLDER ====
+  if (sess.state === 'api_await_folder') {
+    const folder = text.trim().toLowerCase();
+    if (!/^[a-z0-9_-]{2,30}$/.test(folder)) {
+      await reply(env, chatId, '❌ Folder cuma boleh huruf kecil, angka, -, _. Coba lagi:');
+      return true;
+    }
+    data.folder = folder;
+    await updateSession(db, chatId, 'api_await_desc', data);
+    await reply(env, chatId,
+      '✅ Folder disimpan.\n\n' +
+      '<b>Step 4/5:</b> Deskripsi singkat?'
+    );
+    return true;
+  }
+
+  // ==== STEP 4: DESKRIPSI ====
+  if (sess.state === 'api_await_desc') {
+    const desc = text.trim();
+    if (desc.length < 5 || desc.length > 200) {
+      await reply(env, chatId, '❌ Deskripsi 5-200 karakter. Coba lagi:');
+      return true;
+    }
+    data.desc = desc;
+
+    // Auto-detect params
+    await reply(env, chatId, '🔍 Auto-detect params...\n\nMencoba akses URL...');
+    const detect = await autoDetectParams(data.url);
+
+    if (detect.ok) {
+      data.params = detect.param;
+      data._autoDetected = true;
+      await updateSession(db, chatId, 'api_preview', data);
+      await reply(env, chatId,
+        '✅ Params terdeteksi: <b>' + (detect.param || '(tanpa param)') + '</b>\n\n' +
+        '<b>Step 5/5: Preview</b>\n' +
+        '─────────────────\n' +
+        '📛 Nama: <b>' + esc(data.name) + '</b>\n' +
+        '📁 Folder: ' + esc(data.folder) + '\n' +
+        '🔗 URL: <code>' + esc(data.url) + '</code>\n' +
+        '📝 Desc: ' + esc(data.desc) + '\n' +
+        '📋 Params: ' + (detect.param || '-') + '\n' +
+        '🚪 Method: GET\n' +
+        '─────────────────\n\n' +
+        'Kirim <code>ya</code> buat simpan, atau ketik params manual (contoh: <code>query|limit</code>)'
+      );
+    } else {
+      await updateSession(db, chatId, 'api_await_params', data);
+      await reply(env, chatId,
+        '⚠️ Auto-detect gagal.\n\n' +
+        'Kirim params manual?\n' +
+        '• <code>query</code> (1 param)\n' +
+        '• <code>query|limit</code> (2 param)\n' +
+        '• <code>-</code> (tanpa param)'
+      );
+    }
+    return true;
+  }
+
+  // ==== STEP 5a: PARAMS MANUAL ====
+  if (sess.state === 'api_await_params') {
+    const params = text.trim();
+    data.params = params === '-' ? '' : params;
+    await updateSession(db, chatId, 'api_preview', data);
+
+    await reply(env, chatId,
+      '<b>Step 5/5: Preview</b>\n' +
+      '─────────────────\n' +
+      '📛 Nama: <b>' + esc(data.name) + '</b>\n' +
+      '📁 Folder: ' + esc(data.folder) + '\n' +
+      '🔗 URL: <code>' + esc(data.url) + '</code>\n' +
+      '📝 Desc: ' + esc(data.desc) + '\n' +
+      '📋 Params: ' + (data.params || '-') + '\n' +
+      '🚀 Method: GET\n' +
+      '─────────────────\n\n' +
+      'Kirim <code>ya</code> buat simpan, atau <code>/cancel</code>'
+    );
+    return true;
+  }
+
+  // ==== STEP 5b: PREVIEW & CONFIRM ====
+  if (sess.state === 'api_preview') {
+    if (!/^ya$/i.test(text.trim())) {
+      await reply(env, chatId, '❓ Kirim <code>ya</code> buat simpan, atau <code>/cancel</code> buat batal.');
+      return true;
+    }
+
+    await reply(env, chatId, '⏳ Menyimpan ke GitHub...');
+    const result = await addEndpoint(env, {
+      url: data.url,
+      name: data.name,
+      folder: data.folder,
+      desc: data.desc,
+      params: data.params,
+      method: 'GET'
+    });
+
+    await clearSession(db, chatId);
+
+    if (!result.ok) {
+      await reply(env, chatId, '❌ Gagal: ' + esc(result.message));
+      return true;
+    }
+
+    const ep = result.endpoint;
+    await reply(env, chatId,
+      '✅ <b>ENDPOINT BERHASIL DITAMBAHKAN</b>\n\n' +
+      '📛 Nama: <b>' + esc(ep.name) + '</b>\n' +
+      '📁 Folder: ' + esc(ep.folder) + '\n' +
+      '🆔 ID: <code>' + ep.catalogId + '</code>\n\n' +
+      '⏱️ Live dalam 1-2 menit.\n' +
+      'Edit: <code>/edit ' + esc(ep.name) + '</code>\n' +
+      'Hide: <code>/hapus ' + esc(ep.name) + '</code>'
+    );
+    return true;
+  }
+
+  return false;
+}
+
+// Helper: update session state
+async function updateSession(db, chatId, state, data) {
+  await db.prepare(
+    'INSERT INTO bot_sessions (chat_id, state, data, updated_at) VALUES (?, ?, ?, ?) ' +
+    'ON CONFLICT(chat_id) DO UPDATE SET state = excluded.state, data = excluded.data, updated_at = excluded.updated_at'
+  ).bind(String(chatId), state, JSON.stringify(data), Date.now()).run();
+}
+
+// Helper: clear session
+async function clearSession(db, chatId) {
+  await db.prepare('DELETE FROM bot_sessions WHERE chat_id = ?').bind(String(chatId)).run();
+}
+
+// ============================================
+// /cancel — batalin flow
+// ============================================
+export async function cmdCancel(env, chatId, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+  await clearSession(db, chatId);
+  await reply(env, chatId, '✅ Dibatalkan.');
+}
+
+// ============================================
+// /apilist — list endpoint dari bot
+// ============================================
+export async function cmdApiList(env, chatId, args, reply) {
+  const mode = (args || '').trim().toLowerCase();
+
+  await reply(env, chatId, '⏳ Ambil dari GitHub...');
+  const result = await listBotEndpoints(env);
+  if (!result.ok) {
+    await reply(env, chatId, '❌ Gagal: ' + esc(result.message));
+    return;
+  }
+
+  let list = result.endpoints;
+  if (mode === 'hidden') list = list.filter(e => e.hidden);
+  else if (mode !== 'all') list = list.filter(e => !e.hidden);
+
+  if (list.length === 0) {
+    await reply(env, chatId, '📭 Belum ada endpoint dari bot' + (mode === 'hidden' ? ' yang di-hide.' : '.'));
+    return;
+  }
+
+  let h = '📋 <b>ENDPOINT BOT</b> — ' + list.length + '\n\n';
+  list.forEach((ep, i) => {
+    if (i >= 25) return;
+    const status = ep.hidden ? '🚫' : '✅';
+    h += status + ' <b>' + esc(ep.name) + '</b>\n';
+    h += '   📁 ' + esc(ep.folder) + ' · 🆔 <code>' + esc(ep.catalogId) + '</code>\n';
+  });
+  if (list.length > 25) h += '\n... dan ' + (list.length - 25) + ' lainnya';
+  h += '\n\nEdit: <code>/edit &lt;nama&gt;</code>\nHide: <code>/hapus &lt;nama&gt;</code>';
+  await reply(env, chatId, h);
+}
+
+// ============================================
+// /edit <nama> — edit endpoint
+// ============================================
+export async function cmdApiEdit(env, chatId, args, reply) {
+  const name = (args || '').trim();
+  if (!name) {
+    await reply(env, chatId, '❓ Format: <code>/edit &lt;nama&gt;</code>');
+    return;
+  }
+
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  // Cek endpoint ada
+  const list = await listBotEndpoints(env);
+  if (!list.ok) { await reply(env, chatId, '❌ ' + esc(list.message)); return; }
+
+  const target = list.endpoints.find(e => (e.name || '').toLowerCase() === name.toLowerCase() || e.catalogId === name);
+  if (!target) { await reply(env, chatId, '❌ Endpoint "' + esc(name) + '" tidak ditemukan.'); return; }
+
+  // Simpan session
+  const data = { targetName: target.name };
+  await db.prepare(
+    'INSERT INTO bot_sessions (chat_id, state, data, updated_at) VALUES (?, ?, ?, ?) ' +
+    'ON CONFLICT(chat_id) DO UPDATE SET state = excluded.state, data = excluded.data, updated_at = excluded.updated_at'
+  ).bind(String(chatId), 'edit_choose_field', JSON.stringify(data), Date.now()).run();
+
+  await reply(env, chatId,
+    '✏️ <b>EDIT: ' + esc(target.name) + '</b>\n\n' +
+    '<b>Data sekarang:</b>\n' +
+    '📛 Nama: ' + esc(target.name) + '\n' +
+    '📁 Folder: ' + esc(target.folder) + '\n' +
+    '🔗 URL: <code>' + esc(target.upstream || '-') + '</code>\n' +
+    '📝 Desc: ' + esc(target.desc || '-') + '\n' +
+    '📋 Params: ' + (target.params && target.params.length ? target.params.map(p => p.n).join(', ') : '-') + '\n\n' +
+    '<b>Pilih yang mau di-edit:</b>\n' +
+    '1️⃣ Nama\n' +
+    '2️⃣ Deskripsi\n' +
+    '3️⃣ Folder\n' +
+    '4️⃣ Params\n' +
+    '5️⃣ URL\n\n' +
+    'Kirim angka (1-5) atau <code>/cancel</code>'
+  );
+}
+
+// ============================================
+// /hapus <nama> — hide endpoint
+// ============================================
+export async function cmdApiHide(env, chatId, args, reply) {
+  const name = (args || '').trim();
+  if (!name) {
+    await reply(env, chatId, '❓ Format: <code>/hapus &lt;nama&gt;</code>');
+    return;
+  }
+
+  await reply(env, chatId, '⏳ Memproses...');
+  const result = await hideEndpoint(env, name);
+
+  if (!result.ok) {
+    await reply(env, chatId, '❌ ' + esc(result.message));
+    return;
+  }
+
+  await reply(env, chatId,
+    '✅ <b>' + esc(name) + '</b> di-hide dari halaman user.\n\n' +
+    'Data tetap tersimpan di endpoints.json.\n' +
+    'Pulihkan: <code>/pulihkan ' + esc(name) + '</code>\n' +
+    'Live dalam 1-2 menit.'
+  );
+}
+
+// ============================================
+// /pulihkan <nama> — restore endpoint
+// ============================================
+export async function cmdApiRestore(env, chatId, args, reply) {
+  const name = (args || '').trim();
+  if (!name) {
+    await reply(env, chatId, '❓ Format: <code>/pulihkan &lt;nama&gt;</code>');
+    return;
+  }
+
+  await reply(env, chatId, '⏳ Memproses...');
+  const result = await restoreEndpoint(env, name);
+
+  if (!result.ok) {
+    await reply(env, chatId, '❌ ' + esc(result.message));
+    return;
+  }
+
+  await reply(env, chatId,
+    '✅ <b>' + esc(name) + '</b> muncul lagi di halaman user.' +
+    (result.was_hidden ? '' : '\n\nℹ️ Sebelumnya nggak dalam status hidden.') + '\n\n' +
+    'Live dalam 1-2 menit.'
+  );
+}
+
+// ============================================
+// HANDLE EDIT STEP (dipanggil dari handleApiStep atau standalone)
+// ============================================
+export async function handleEditStep(env, chatId, text, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) return false;
+
+  const sess = await db.prepare(
+    'SELECT state, data FROM bot_sessions WHERE chat_id = ? LIMIT 1'
+  ).bind(String(chatId)).first();
+
+  if (!sess || !sess.state || !sess.state.startsWith('edit_')) return false;
+
+  let data = {};
+  try { data = JSON.parse(sess.data || '{}'); } catch(e) {}
+
+  // ==== Pilih field ====
+  if (sess.state === 'edit_choose_field') {
+    const choice = text.trim();
+    const map = { '1': 'name', '2': 'desc', '3': 'folder', '4': 'params', '5': 'url' };
+    const field = map[choice];
+    if (!field) {
+      await reply(env, chatId, '❓ Kirim angka 1-5, atau <code>/cancel</code>');
+      return true;
+    }
+    data.field = field;
+    await updateSession(db, chatId, 'edit_await_value', data);
+    const labelMap = { name: 'Nama baru', desc: 'Deskripsi baru', folder: 'Folder baru', params: 'Params baru (contoh: query|limit atau -)', url: 'URL baru' };
+    await reply(env, chatId, labelMap[field] + '?');
+    return true;
+  }
+
+  // ==== Input value ====
+  if (sess.state === 'edit_await_value') {
+    const val = text.trim();
+    const fields = {};
+    fields[data.field] = val;
+
+    await reply(env, chatId, '⏳ Menyimpan...');
+    const result = await editEndpoint(env, data.targetName, fields);
+    await clearSession(db, chatId);
+
+    if (!result.ok) {
+      await reply(env, chatId, '❌ Gagal: ' + esc(result.message));
+      return true;
+    }
+
+    await reply(env, chatId, '✅ Berhasil di-update.\n\nLive dalam 1-2 menit.');
+    return true;
+  }
+
+  return false;
+}

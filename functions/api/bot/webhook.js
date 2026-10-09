@@ -2,7 +2,7 @@
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
 import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup, cmdAnnounce } from '../../_lib/bot-admin.js';
-import { cmdWhitelistAdd, cmdUnban, cmdBan, cmdAppeals, cmdApprove, cmdReject, cmdUserBan, cmdUserUnban, cmdUserBanList, cmdPemberitahuan } from '../../_lib/bot-admin.js';
+import { cmdWhitelistAdd, cmdUnban, cmdBan, cmdAppeals, cmdApprove, cmdReject, cmdUserBan, cmdUserUnban, cmdUserBanList, cmdPemberitahuan, cmdApiAdd, handleApiStep, handleEditStep, cmdCancel, cmdApiList, cmdApiEdit, cmdApiHide, cmdApiRestore } from '../../_lib/bot-admin.js';
 import { cmdSetTier, cmdRemoveTier, cmdTierInfo } from '../../_lib/bot-admin.js';
 import { editTelegramMessage, answerCallbackQuery } from '../../_lib/telegram.js';
 import { SUPPORT_TEMPLATES, getTemplatesByCategory } from '../../_lib/support-templates.js';
@@ -268,6 +268,21 @@ export async function onRequestPost({ request, env }) {
   const adminId = String(env.SHOP_ADMIN_CHAT_ID || '').trim();
   const isAdmin = chatId === adminId;
   
+  // ==== INTERACTIVE SESSION CHECK (sebelum parse command) ====
+  // Kalau user lagi di tengah flow interactive, forward ke handler session
+  // Skip kalau text-nya command (mulai dengan /)
+  if (!text.startsWith('/')) {
+    try {
+      const handledApi = await handleApiStep(env, chatId, text, reply);
+      if (handledApi) return new Response('ok');
+
+      const handledEdit = await handleEditStep(env, chatId, text, reply);
+      if (handledEdit) return new Response('ok');
+    } catch(e) {
+      console.error('[INTERACTIVE]', e.message);
+    }
+  }
+
   // Normalize command: hapus @bot, trim
   let cmd = text.split(/\s+/)[0].split('@')[0].toLowerCase();
   const args = text.slice(text.indexOf(cmd) + cmd.length).trim();
@@ -571,6 +586,32 @@ export async function onRequestPost({ request, env }) {
   }
   if (cmd === '/pemberitahuan' || cmd === '/pemberitahuan' || cmd === '/broadcast') {
     await cmdPemberitahuan(env, chatId, args, reply);
+    return new Response('ok');
+  }
+
+  // ==== ENDPOINT MANAGEMENT ====
+  if (cmd === '/api') {
+    await cmdApiAdd(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/apilist') {
+    await cmdApiList(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/edit') {
+    await cmdApiEdit(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/hapus') {
+    await cmdApiHide(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/pulihkan') {
+    await cmdApiRestore(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/cancel') {
+    await cmdCancel(env, chatId, reply);
     return new Response('ok');
   }
 
