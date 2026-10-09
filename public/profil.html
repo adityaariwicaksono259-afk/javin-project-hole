@@ -249,8 +249,6 @@ body{padding-bottom:110px}
       var saved = localStorage.getItem('javin_display_name');
       if (saved && saved.trim()) displayName = saved.trim();
     } catch(e) {}
-    var pfBio = document.getElementById('pfDisplayBio');
-    if (pfBio) pfBio.textContent = user.bio || 'Belum ada bio';
     var pfName = document.getElementById('pfDisplayName');
     if (pfName) pfName.textContent = displayName;
     var pfAvatarText = document.getElementById('pfAvatarText');
@@ -269,6 +267,14 @@ body{padding-bottom:110px}
         }
 
         state.user = j.user;
+
+        // Set bio
+        var pfBio = document.getElementById('pfDisplayBio');
+        if (pfBio) pfBio.textContent = j.user.bio || 'Belum ada bio';
+
+        // Set name dari server
+        var pfName2 = document.getElementById('pfDisplayName');
+        if (pfName2 && j.user.name) pfName2.textContent = j.user.name;
 
         var pfUserCode = document.getElementById('pfUserCode');
         if (pfUserCode) pfUserCode.textContent = j.user.user_code || '-';
