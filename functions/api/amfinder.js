@@ -1,5 +1,6 @@
 // functions/api/amfinder.js — Simple proxy ke amfinder.web.id
-// Nggak ada cache, langsung forward + parse SSE
+// Wajib login (session cookie). No API key, no credits.
+import { getMe } from './chat/_lib.js';
 
 const AMFINDER_BASE = 'https://amfinder.web.id/api/find';
 
@@ -24,7 +25,7 @@ export async function onRequestOptions() {
   }});
 }
 
-export async function onRequest({ request }) {
+export async function onRequest({ request, env }) {
   if (request.method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: {
       'Access-Control-Allow-Origin': '*',
@@ -46,6 +47,19 @@ export async function onRequest({ request }) {
 
   if (!/tiktok\.com/i.test(tiktokUrl)) {
     return json({ status: 'error', code: 'INVALID_URL', message: 'URL harus dari TikTok.' }, 400);
+  }
+
+  // ==== WAJIB LOGIN ====
+  const db = env && env.JAVIN_DB;
+  if (!db) {
+    return json({ status: 'error', code: 'DB_ERROR', message: 'DB nggak siap.' }, 503);
+  }
+  const me = await getMe(request, db);
+  if (!me) {
+    return json({ status: 'error', code: 'UNAUTHORIZED', message: 'Login dulu untuk pakai fitur ini.' }, 401);
+  }
+  if (me.banned) {
+    return json({ status: 'error', code: 'BANNED', message: 'Akun kamu sedang dibatasi.' }, 403);
   }
 
   const started = Date.now();
