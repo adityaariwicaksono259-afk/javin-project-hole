@@ -187,3 +187,30 @@ html[data-theme="dark"] .typing-dot { background: #0A0A0A; }
 html[data-theme="dark"] .msg-check.read { color: #7FDBFF; }
 html[data-theme="dark"] .room-status.is-online { color: #4ADE80; }
 html[data-theme="dark"] .room-status.is-online::before { background: #4ADE80; border-color: #0A0A0A; }
+
+/* ============================================
+   KEYBOARD HANDLING — sembunyikan bottom-nav
+   ============================================ */
+body.kb-open .jv-nav,
+body.kb-open #jvNav {
+  display: none !important;
+}
+
+/* Input bar nempel di atas keyboard */
+body.kb-open .chat-inputbar {
+  position: fixed !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 99999 !important;
+}
+
+/* Body padding juga hilang biar chat full */
+body.kb-open.chat-page {
+  padding-bottom: 0 !important;
+}
+
+/* Messages area auto-shrink */
+body.kb-open #viewRoom {
+  min-height: auto !important;
+}

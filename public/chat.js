@@ -448,5 +448,42 @@ startHeartbeat();
 loadRooms();
 loadContacts();
 renderTab();
+// ===== KEYBOARD HANDLING =====
+// Deteksi keyboard mobile pakai visualViewport API
+(function initKeyboardHandler(){
+  if (!window.visualViewport) return;
+
+  var initialHeight = window.visualViewport.height;
+  var threshold = 150; // px — kalau viewport mengecil lebih dari ini, keyboard kebuka
+
+  function onResize(){
+    var vv = window.visualViewport;
+    var shrunk = initialHeight - vv.height;
+    var isOpen = shrunk > threshold;
+    document.body.classList.toggle('kb-open', isOpen);
+
+    if (isOpen) {
+      // Scroll ke bawah biar pesan terakhir keliatan
+      setTimeout(function(){
+        if (chatMessages) chatMessages.scrollTop = chatMessages.scrollHeight;
+      }, 100);
+    }
+  }
+
+  window.visualViewport.addEventListener('resize', onResize);
+  window.visualViewport.addEventListener('scroll', onResize);
+
+  // Fallback: kalau visualViewport nggak deteksi, pakai focus/blur input
+  var input = document.getElementById('chatInput');
+  if (input) {
+    input.addEventListener('focus', function(){
+      setTimeout(function(){ document.body.classList.add('kb-open'); }, 200);
+    });
+    input.addEventListener('blur', function(){
+      setTimeout(function(){ document.body.classList.remove('kb-open'); }, 100);
+    });
+  }
+})();
+
 console.log('[JavinChat] Loaded');
 })();
