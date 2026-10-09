@@ -890,3 +890,90 @@ export async function cmdUserBanList(env, chatId, args, reply) {
     await reply(env, chatId, '❌ Error: ' + esc(e.message));
   }
 }
+
+
+// ==================== /pemberitahuan — BROADCAST SIMPLE ====================
+
+// /pemberitahuan <teks>
+// Kirim pemberitahuan ke inbox semua user. Format simpel.
+export async function cmdPemberitahuan(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const message = (args || '').trim();
+  if (!message) {
+    await reply(env, chatId,
+      '❓ <b>Format:</b>\n' +
+      '<code>/pemberitahuan &lt;teks&gt;</code>\n\n' +
+      '<b>Contoh:</b>\n' +
+      '<code>/pemberitahuan Server maintenance jam 12 malam ya</code>\n\n' +
+      '<b>Subcommand:</b>\n' +
+      '<code>/pemberitahuan list</code> — list semua pemberitahuan\n' +
+      '<code>/pemberitahuan hapus &lt;id&gt;</code> — hapus'
+    );
+    return;
+  }
+
+  // Subcommand: list
+  if (message.toLowerCase() === 'list') {
+    try {
+      const rows = await db.prepare(
+        'SELECT id, title, message, active, created_at FROM announcements ORDER BY created_at DESC LIMIT 20'
+      ).all();
+      const list = rows.results || [];
+      if (!list.length) { await reply(env, chatId, '📭 Belum ada pemberitahuan.'); return; }
+
+      let h = '📢 <b>DAFTAR PEMBERITAHUAN</b> — ' + list.length + '\n\n';
+      list.forEach(function(a) {
+        const status = a.active ? '🟢' : '🔴';
+        h += status + ' <b>#' + a.id + '</b> · ' + new Date(a.created_at).toISOString().slice(0, 16).replace('T', ' ') + '\n';
+        h += '   <b>' + esc(a.title) + '</b>\n';
+        h += '   ' + esc(a.message.slice(0, 100)) + (a.message.length > 100 ? '...' : '') + '\n\n';
+      });
+      h += '<code>/pemberitahuan hapus &lt;id&gt;</code>';
+      await reply(env, chatId, h);
+    } catch(e) {
+      await reply(env, chatId, '❌ Error: ' + esc(e.message));
+    }
+    return;
+  }
+
+  // Subcommand: hapus <id>
+  const hapusMatch = message.match(/^hapus\s+(\d+)$/i);
+  if (hapusMatch) {
+    const id = parseInt(hapusMatch[1], 10);
+    try {
+      await db.prepare('DELETE FROM announcements WHERE id = ?').bind(id).run();
+      await reply(env, chatId, '🗑️ Pemberitahuan <b>#' + id + '</b> dihapus.');
+    } catch(e) {
+      await reply(env, chatId, '❌ Error: ' + esc(e.message));
+    }
+    return;
+  }
+
+  // Kirim pemberitahuan baru
+  // Auto-generate title dari 50 karakter pertama
+  const title = message.length > 50 ? message.slice(0, 47) + '...' : message;
+  const type = 'info';
+
+  try {
+    const ins = await db.prepare(
+      'INSERT INTO announcements (title, message, type, active, created_at, expires_at) VALUES (?, ?, ?, 1, ?, NULL)'
+    ).bind(title, message, type, Date.now()).run();
+
+    // Hitung total user untuk konfirmasi
+    const cnt = await db.prepare('SELECT COUNT(*) as c FROM auth_users').first();
+    const total = (cnt && cnt.c) || 0;
+
+    await reply(env, chatId,
+      '✅ <b>PEMBERITAHUAN TERKIRIM</b>\n\n' +
+      '🆔 ID: <code>' + ins.meta.last_row_id + '</code>\n' +
+      '📌 Judul: ' + esc(title) + '\n' +
+      '💬 Pesan: ' + esc(message.slice(0, 200)) + (message.length > 200 ? '...' : '') + '\n' +
+      '👥 Terkirim ke <b>' + total + '</b> user (via inbox)\n\n' +
+      'Batalkan: <code>/pemberitahuan hapus ' + ins.meta.last_row_id + '</code>'
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}
