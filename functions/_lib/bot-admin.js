@@ -981,7 +981,7 @@ export async function cmdPemberitahuan(env, chatId, args, reply) {
 
 // ==================== ENDPOINT MANAGEMENT (v3.0) ====================
 
-import { addEndpoint, editEndpoint, hideEndpoint, restoreEndpoint, listBotEndpoints, autoDetectParams } from './endpoints-editor.js';
+import { addEndpoint, editEndpoint, hideEndpoint, restoreEndpoint, listBotEndpoints, autoDetectParams, scanEndpoint, formatScanResult } from './endpoints-editor.js';
 
 // ============================================
 // /api — tambah endpoint (interactive atau quick)
@@ -1127,36 +1127,92 @@ export async function handleApiStep(env, chatId, text, reply) {
     }
     data.desc = desc;
 
-    // Auto-detect params
-    await reply(env, chatId, '🔍 Auto-detect params...\n\nMencoba akses URL...');
-    const detect = await autoDetectParams(data.url);
+    // Scan comprehensive
+    await reply(env, chatId, '🔍 Scanning endpoint...\n\nCek reachable, SSL, auth, param, response shape...');
 
-    if (detect.ok) {
-      data.params = detect.param;
+    let scan;
+    try {
+      scan = await scanEndpoint(data.url);
+    } catch (e) {
+      scan = { ok: false, errors: ['Scan error: ' + e.message], checks: {}, warnings: [], detected_param: '' };
+    }
+
+    // Format hasil scan pakai HTML (bukan markdown)
+    const scanLines = [];
+    scanLines.push('🔍 <b>HASIL SCAN</b>');
+    scanLines.push('─────────────────');
+    scanLines.push((scan.checks?.reachable ? '✅' : '❌') + ' Reachable: ' + (scan.status || '-'));
+    scanLines.push((scan.checks?.ssl ? '✅' : '⚠️') + ' SSL: ' + (scan.checks?.ssl ? 'Valid' : 'HTTP only'));
+    scanLines.push((scan.checks?.fast ? '✅' : '⚠️') + ' Speed: ' + (scan.elapsed_ms || 0) + 'ms');
+    scanLines.push((scan.checks?.auth ? '⚠️' : '✅') + ' Auth: ' + (scan.checks?.auth ? '<b>BUTUH</b>' : 'Tidak butuh'));
+    scanLines.push('📄 Content: ' + (scan.content_type ? esc(scan.content_type) : '-'));
+    scanLines.push('🎯 Shape: ' + (scan.response_shape ? esc(scan.response_shape) : '-'));
+    scanLines.push('📋 Param: ' + (scan.detected_param ? '<b>' + esc(scan.detected_param) + '</b>' : '(tidak butuh / tidak terdeteksi)'));
+    scanLines.push('─────────────────');
+
+    if (scan.warnings && scan.warnings.length) {
+      scanLines.push('⚠️ <b>Warnings:</b>');
+      scan.warnings.slice(0, 4).forEach(w => scanLines.push('• ' + esc(w)));
+    }
+
+    if (scan.errors && scan.errors.length) {
+      scanLines.push('❌ <b>Errors:</b>');
+      scan.errors.slice(0, 4).forEach(e => scanLines.push('• ' + esc(e)));
+    }
+
+    scanLines.push('');
+
+    // Kalau ada API key / umbrella
+    if (scan.is_umbrella) {
+      scanLines.push('❌ <b>Endpoint umbrella</b> — butuh API key / auth.');
+      scanLines.push('');
+      scanLines.push('Mau lanjut tetep tambah? Endpoint bakal ada di katalog, tapi user harus akses manual (nggak bisa auto-proxy).');
+      scanLines.push('');
+      scanLines.push('Kirim <code>ya</code> buat tetep tambah, atau <code>/cancel</code>');
+      data._umbrellaWarning = true;
+      await updateSession(db, chatId, 'api_preview_umbrella', data);
+      await reply(env, chatId, scanLines.join('\n'));
+      return true;
+    }
+
+    // Kalau scan sukses
+    if (scan.ok) {
+      scanLines.push('✅ <b>Bisa di-proxy dari CF</b>');
+      data.params = scan.detected_param;
       data._autoDetected = true;
+      data._scanInfo = {
+        content_type: scan.content_type,
+        response_shape: scan.response_shape,
+        elapsed_ms: scan.elapsed_ms
+      };
       await updateSession(db, chatId, 'api_preview', data);
-      await reply(env, chatId,
-        '✅ Params terdeteksi: <b>' + (detect.param || '(tanpa param)') + '</b>\n\n' +
-        '<b>Step 5/5: Preview</b>\n' +
-        '─────────────────\n' +
-        '📛 Nama: <b>' + esc(data.name) + '</b>\n' +
-        '📁 Folder: ' + esc(data.folder) + '\n' +
-        '🔗 URL: <code>' + esc(data.url) + '</code>\n' +
-        '📝 Desc: ' + esc(data.desc) + '\n' +
-        '📋 Params: ' + (detect.param || '-') + '\n' +
-        '🚪 Method: GET\n' +
-        '─────────────────\n\n' +
-        'Kirim <code>ya</code> buat simpan, atau ketik params manual (contoh: <code>query|limit</code>)'
-      );
+
+      scanLines.push('');
+      scanLines.push('<b>Step 5/5: Preview</b>');
+      scanLines.push('─────────────────');
+      scanLines.push('📛 Nama: <b>' + esc(data.name) + '</b>');
+      scanLines.push('📁 Folder: ' + esc(data.folder));
+      scanLines.push('🔗 URL: <code>' + esc(data.url) + '</code>');
+      scanLines.push('📝 Desc: ' + esc(data.desc));
+      scanLines.push('📋 Params: ' + (scan.detected_param || '-'));
+      scanLines.push('🚪 Method: GET');
+      scanLines.push('─────────────────');
+      scanLines.push('');
+      scanLines.push('Kirim <code>ya</code> buat simpan, atau ketik params manual (contoh: <code>query|limit</code>)');
+
+      await reply(env, chatId, scanLines.join('\n'));
     } else {
+      // Gagal scan
+      scanLines.push('⚠️ <b>Scan gagal total</b>');
+      scanLines.push('');
+      scanLines.push('Kemungkinan:');
+      scanLines.push('• Upstream block CF');
+      scanLines.push('• Butuh konfigurasi khusus');
+      scanLines.push('• URL salah / server down');
+      scanLines.push('');
+      scanLines.push('Kirim params manual buat tetep lanjut, atau <code>/cancel</code>');
       await updateSession(db, chatId, 'api_await_params', data);
-      await reply(env, chatId,
-        '⚠️ Auto-detect gagal.\n\n' +
-        'Kirim params manual?\n' +
-        '• <code>query</code> (1 param)\n' +
-        '• <code>query|limit</code> (2 param)\n' +
-        '• <code>-</code> (tanpa param)'
-      );
+      await reply(env, chatId, scanLines.join('\n'));
     }
     return true;
   }
@@ -1178,6 +1234,40 @@ export async function handleApiStep(env, chatId, text, reply) {
       '🚀 Method: GET\n' +
       '─────────────────\n\n' +
       'Kirim <code>ya</code> buat simpan, atau <code>/cancel</code>'
+    );
+    return true;
+  }
+
+  // ==== STEP 5a-bis: PREVIEW UMBRELLA ====
+  if (sess.state === 'api_preview_umbrella') {
+    if (!/^ya$/i.test(text.trim())) {
+      await reply(env, chatId, '❓ Kirim <code>ya</code> buat tetep tambah, atau <code>/cancel</code>');
+      return true;
+    }
+
+    await reply(env, chatId, '⏳ Menyimpan...');
+    const result = await addEndpoint(env, {
+      url: data.url,
+      name: data.name,
+      folder: data.folder,
+      desc: data.desc + ' [UMBRELLA — akses manual]',
+      params: data.params || '',
+      method: 'GET'
+    });
+
+    await clearSession(db, chatId);
+
+    if (!result.ok) {
+      await reply(env, chatId, '❌ Gagal: ' + esc(result.message));
+      return true;
+    }
+
+    await reply(env, chatId,
+      '✅ <b>DITAMBAHKAN (UMBRELLA)</b>\n\n' +
+      '📛 Nama: <b>' + esc(result.endpoint.name) + '</b>\n' +
+      '⚠️ Status: Butuh API key / auth\n' +
+      '🆔 ID: <code>' + result.endpoint.catalogId + '</code>\n\n' +
+      'Catatan: User mungkin perlu akses manual.'
     );
     return true;
   }

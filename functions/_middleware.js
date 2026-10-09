@@ -448,6 +448,7 @@ export async function onRequest(context) {
     else if (pathname.startsWith('/api/javin')) MAX_REQ = 30;
     else if (pathname.startsWith('/api/user/')) MAX_REQ = 30;
     else if (pathname.startsWith('/api/chat/')) MAX_REQ = 300;
+    else if (pathname.startsWith('/api/proxy-ext')) MAX_REQ = 120;
     else if (pathname.startsWith('/api/proxy')) MAX_REQ = 60;
 
     if (db && !isWhitelisted) {
@@ -647,7 +648,7 @@ export async function onRequest(context) {
     var __obStaticExts = ['js','css','png','jpg','jpeg','gif','svg','ico','woff','woff2','ttf','mp3','mp4','webm','json','txt','xml','webp','avif'];
     var __obIsStatic = __obStaticExts.indexOf(__obExt) !== -1;
     var __obIsApi = pathname.indexOf('/api/') === 0;
-    var __obBypass = ['/onboarding', '/onboarding.html', '/banned', '/banned.html', '/login', '/login.html', '/maintenance', '/maintenance.html', '/api/user/complete-onboarding', '/api/user/avatar-upload', '/api/chat/ban-status'];
+    var __obBypass = ['/onboarding', '/onboarding.html', '/banned', '/banned.html', '/login', '/login.html', '/maintenance', '/maintenance.html', '/api/user/complete-onboarding', '/api/user/avatar-upload', '/api/chat/ban-status', '/api/proxy-ext'];
     var __obIsBypass = __obBypass.indexOf(pathname) !== -1;
 
     if (!__obIsStatic && !__obIsApi && !__obIsBypass) {

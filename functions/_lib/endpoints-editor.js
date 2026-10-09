@@ -3,6 +3,7 @@
 // ============================================
 
 import { getFile, putFile, updateJsonFile } from './github.js';
+import { browserHeaders, jsonHeaders, pickUA } from './ua-pool.js';
 
 const FILE_PATH = 'public/endpoints.json';
 
@@ -178,46 +179,241 @@ export async function listBotEndpoints(env) {
 // AUTO-DETECT PARAMS — coba beberapa nama param
 // ============================================
 export async function autoDetectParams(url) {
-  const candidates = ['', '?q=test', '?query=test', '?prompt=test', '?url=test', '?text=test', '?search=test', '?keyword=test'];
-  const paramNames = ['(tanpa param)', 'q', 'query', 'prompt', 'url', 'text', 'search', 'keyword'];
+  // Wrapper lama — sekarang pakai scanEndpoint
+  const result = await scanEndpoint(url);
+  if (result.ok && result.detected_param !== undefined) {
+    return {
+      ok: true,
+      param: result.detected_param || '',
+      url_tested: url + (result.detected_param ? '?' + result.detected_param + '=test' : ''),
+      status: result.status,
+      response_preview: (result.response_preview || '').slice(0, 200)
+    };
+  }
+  return {
+    ok: false,
+    message: result.message || 'Nggak bisa auto-detect.'
+  };
+}
 
-  for (let i = 0; i < candidates.length; i++) {
+// ============================================
+// SCAN ENDPOINT — comprehensive check
+// ============================================
+export async function scanEndpoint(url) {
+  const result = {
+    ok: false,
+    checks: {},
+    warnings: [],
+    errors: [],
+    detected_param: '',
+    status: 0,
+    elapsed_ms: 0,
+    content_type: '',
+    response_preview: '',
+    response_shape: '',
+    is_umbrella: false
+  };
+
+  if (!url || !/^https?:\/\//i.test(url)) {
+    result.errors.push('URL tidak valid (harus http/https)');
+    return result;
+  }
+
+  const started = Date.now();
+
+  // ==== 1. Reachable check (no param) ====
+  let baseRes;
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 15000);
+    baseRes = await fetch(url, {
+      method: 'GET',
+      headers: browserHeaders(url),
+      signal: controller.signal,
+      redirect: 'follow'
+    });
+    clearTimeout(timer);
+  } catch (e) {
+    result.errors.push('Reachable: GAGAL (' + (e.message || 'timeout') + ')');
+    result.elapsed_ms = Date.now() - started;
+    return result;
+  }
+
+  result.elapsed_ms = Date.now() - started;
+  result.status = baseRes.status;
+  result.checks.reachable = baseRes.status < 500;
+
+  // ==== 2. SSL check ====
+  // Kalau fetch sukses lewat HTTPS tanpa error certificate → SSL valid
+  result.checks.ssl = url.startsWith('https://');
+
+  // ==== 3. Response time ====
+  result.checks.fast = result.elapsed_ms < 5000;
+  if (result.elapsed_ms > 10000) {
+    result.warnings.push('Response time lambat (>10s)');
+  }
+
+  // ==== 4. Content-Type ====
+  const ct = baseRes.headers.get('Content-Type') || '';
+  result.content_type = ct;
+
+  // ==== 5. Auth check (401/403) ====
+  if (baseRes.status === 401 || baseRes.status === 403) {
+    result.checks.auth = true;
+    result.is_umbrella = true;
+    result.warnings.push('Upstream butuh auth (HTTP ' + baseRes.status + ')');
+  } else {
+    result.checks.auth = false;
+  }
+
+  // ==== 6. Cloudflare challenge detection ====
+  const serverHdr = baseRes.headers.get('Server') || '';
+  if (/cloudflare/i.test(serverHdr) && baseRes.status === 503) {
+    result.warnings.push('Kemungkinan Cloudflare challenge aktif di upstream');
+    result.is_umbrella = true;
+  }
+
+  // ==== 7. Ambil response body (cuma 100KB max) ====
+  let bodyText = '';
+  try {
+    const reader = baseRes.body.getReader();
+    const chunks = [];
+    let total = 0;
+    while (total < 100 * 1024) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      total += value.length;
+    }
+    const buf = new Uint8Array(total);
+    let off = 0;
+    for (const c of chunks) { buf.set(c, off); off += c.length; }
+    bodyText = new TextDecoder('utf-8', { fatal: false }).decode(buf);
+  } catch (e) {
+    bodyText = '';
+  }
+
+  result.response_preview = bodyText.slice(0, 500);
+
+  // ==== 8. Response shape detection ====
+  let parsedJson = null;
+  if (ct.includes('json')) {
+    try { parsedJson = JSON.parse(bodyText); } catch (e) {}
+  }
+
+  // Auto-try parse kalau content-type salah tapi isi kayak JSON
+  if (!parsedJson && bodyText.trim().startsWith('{')) {
+    try { parsedJson = JSON.parse(bodyText); } catch (e) {}
+  }
+
+  if (parsedJson) {
+    result.response_shape = 'json';
+    result.checks.json = true;
+
+    // Cek apakah ini error message
+    const lower = JSON.stringify(parsedJson).toLowerCase().slice(0, 1000);
+    if (/"error"|"success"\s*:\s*false|"status"\s*:\s*"error"|not found|invalid|missing|required/i.test(lower)) {
+      // Kemungkinan butuh param
+    }
+  } else if (ct.startsWith('image/')) {
+    result.response_shape = 'image';
+  } else if (ct.startsWith('video/')) {
+    result.response_shape = 'video';
+  } else if (ct.startsWith('audio/')) {
+    result.response_shape = 'audio';
+  } else if (ct.includes('html')) {
+    result.response_shape = 'html';
+    result.warnings.push('Response HTML (mungkin bukan API murni)');
+  } else {
+    result.response_shape = 'text';
+  }
+
+  // ==== 9. Auto-detect param ====
+  const candidates = ['', '?q=test', '?query=test', '?prompt=test', '?url=test', '?text=test', '?search=test', '?keyword=test'];
+  const paramNames = ['', 'q', 'query', 'prompt', 'url', 'text', 'search', 'keyword'];
+
+  for (let i = 1; i < candidates.length; i++) {
     const testUrl = url + candidates[i];
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 8000);
+      const timer = setTimeout(() => controller.abort(), 12000);
       const r = await fetch(testUrl, {
         method: 'GET',
-        headers: { 'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36' },
-        signal: controller.signal
+        headers: jsonHeaders(url),
+        signal: controller.signal,
+        redirect: 'follow'
       });
-      clearTimeout(timeout);
+      clearTimeout(timer);
 
-      // Cek response
       if (r.status >= 200 && r.status < 300) {
-        const text = await r.text();
-        // Cek apakah response keliatan valid (bukan error message)
-        const lower = text.toLowerCase().slice(0, 500);
-        const isError = /"error"|"success"\s*:\s*false|"status"\s*:\s*"error"|not found|invalid|missing|required/i.test(lower);
-
-        if (!isError) {
-          return {
-            ok: true,
-            param: paramNames[i] === '(tanpa param)' ? '' : paramNames[i],
-            url_tested: testUrl,
-            status: r.status,
-            response_preview: text.slice(0, 200)
-          };
+        const txt = await r.text();
+        const lower = txt.toLowerCase().slice(0, 500);
+        const isErr = /"error"|"success"\s*:\s*false|"status"\s*:\s*"error"|not found|invalid|missing|required/i.test(lower);
+        if (!isErr) {
+          result.detected_param = paramNames[i];
+          result.checks.param_detected = true;
+          break;
         }
       }
     } catch (e) {
-      // Timeout atau error, lanjut ke candidate berikutnya
       continue;
     }
   }
 
-  return {
-    ok: false,
-    message: 'Nggak bisa auto-detect. Semua percobaan gagal.'
+  if (!result.detected_param) {
+    result.checks.param_detected = false;
+  }
+
+  // ==== 10. Kesimpulan ====
+  result.ok = result.checks.reachable && !result.is_umbrella;
+
+  if (result.is_umbrella) {
+    result.errors.push('Endpoint umbrella (butuh auth/API key)');
+  }
+
+  return result;
+}
+
+// ============================================
+// FORMAT HASIL SCAN buat bot
+// ============================================
+export function formatScanResult(scan) {
+  const lines = [];
+  lines.push('🔍 *HASIL SCAN*');
+  lines.push('─────────────────');
+
+  const check = (icon, label, val) => {
+    lines.push(icon + ' ' + label + ': ' + val);
   };
+
+  check(scan.checks.reachable ? '✅' : '❌', 'Reachable', scan.status || '-');
+  check(scan.checks.ssl ? '✅' : '⚠️', 'SSL', scan.checks.ssl ? 'Valid' : 'HTTP');
+  check(scan.checks.fast ? '✅' : '⚠️', 'Speed', (scan.elapsed_ms || 0) + 'ms');
+  check(scan.checks.auth ? '⚠️' : '✅', 'Auth', scan.checks.auth ? 'BUTUH' : 'Tidak butuh');
+  check('📄', 'Content', scan.content_type || '-');
+  check('🎯', 'Shape', scan.response_shape || '-');
+  check('📋', 'Param', scan.detected_param || '(tidak butuh / tidak terdeteksi)');
+
+  lines.push('─────────────────');
+
+  if (scan.warnings.length) {
+    lines.push('⚠️ *WARNINGS:*');
+    scan.warnings.forEach(w => lines.push('• ' + w));
+  }
+
+  if (scan.errors.length) {
+    lines.push('❌ *ERRORS:*');
+    scan.errors.forEach(e => lines.push('• ' + e));
+  }
+
+  lines.push('');
+  if (scan.ok) {
+    lines.push('✅ *Bisa di-proxy dari CF*');
+  } else if (scan.is_umbrella) {
+    lines.push('❌ *Umbrella* — butuh API key / auth. Bisa lanjut kalau kalian punya key-nya.');
+  } else {
+    lines.push('❌ *Nggak bisa otomatis* — perlu cek manual');
+  }
+
+  return lines.join('\n');
 }

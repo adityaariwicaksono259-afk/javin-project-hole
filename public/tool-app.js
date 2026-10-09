@@ -472,6 +472,212 @@
     };
   }
 
+  // ============================================
+  // BOT ENDPOINT RENDERER — auto-generic
+  // ============================================
+  function renderBotEndpoint(ep) {
+    var params = ep.params || [];
+
+    // Build form dari params
+    var formFields = params.map(function(p) {
+      var required = p.r ? ' <span style="color:#dc2626">*</span>' : '';
+      var placeholder = p.d || p.n;
+      return '<div class="field">' +
+        '<label>' + esc(p.n) + required + '</label>' +
+        '<input type="text" id="bot-p-' + esc(p.n) + '" data-param="' + esc(p.n) + '" placeholder="' + esc(placeholder) + '" autocomplete="off">' +
+        '</div>';
+    }).join('');
+
+    if (params.length === 0) {
+      formFields = '<div style="font-size:13px;color:#888;padding:8px 0;font-style:italic">Tool ini nggak butuh input.</div>';
+    }
+
+    wrap.innerHTML =
+      '<div class="hero">' +
+        '<div class="badge">' + esc(ep.folder || 'tools') + (ep.subfolder ? ' · ' + esc(ep.subfolder) : '') + '</div>' +
+        '<h1 class="title">' + esc(ep.name) + '</h1>' +
+        '<p class="desc">' + esc(ep.desc || '') + '</p>' +
+      '</div>' +
+      '<div class="card">' +
+        formFields +
+        '<button class="submit" id="botBtn">🚀 Jalankan</button>' +
+        '<div class="result" id="botRes"></div>' +
+      '</div>' +
+      '<div id="botOutput" style="margin-top:16px"></div>';
+
+    var btn = document.getElementById('botBtn');
+    var res = document.getElementById('botRes');
+    var out = document.getElementById('botOutput');
+    if (!btn) return;
+
+    btn.onclick = function() {
+      // Kumpulin params dari input
+      var payload = {};
+      var missing = [];
+      params.forEach(function(p) {
+        var el = document.getElementById('bot-p-' + p.n);
+        var val = (el && el.value || '').trim();
+        if (p.r && !val) missing.push(p.n);
+        payload[p.n] = val;
+      });
+
+      if (missing.length) {
+        res.className = 'result show err';
+        res.textContent = '❌ Wajib diisi: ' + missing.join(', ');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Memproses...';
+      res.className = 'result show info';
+      res.textContent = 'Menghubungi server...';
+      out.innerHTML = '';
+
+      // Bangun URL proxy-ext dengan query params
+      var qs = Object.keys(payload).map(function(k) {
+        return encodeURIComponent(k) + '=' + encodeURIComponent(payload[k]);
+      }).join('&');
+      var proxyUrl = '/api/proxy-ext?id=' + encodeURIComponent(ep.catalogId) + (qs ? '&' + qs : '');
+
+      fetch(proxyUrl, { credentials: 'same-origin' })
+        .then(function(r) { return r.json(); })
+        .then(function(j) {
+          if (!j) throw new Error('Response kosong');
+          if (!j.ok && j.message) throw new Error(j.message);
+
+          res.className = 'result show ok';
+          var elapsed = j.elapsed_ms ? ' · ' + (j.elapsed_ms/1000).toFixed(1) + 's' : '';
+          res.textContent = '✅ Selesai' + elapsed;
+
+          // Auto-render response
+          renderBotResponse(out, j.data || j.text || j);
+        })
+        .catch(function(e) {
+          res.className = 'result show err';
+          res.textContent = '❌ ' + e.message;
+        })
+        .then(function() {
+          btn.disabled = false;
+          btn.textContent = '🚀 Jalankan';
+        });
+    };
+  }
+
+  // ============================================
+  // AUTO-RENDER RESPONSE — deteksi tipe & render
+  // ============================================
+  function renderBotResponse(container, data) {
+    if (data === null || data === undefined) {
+      container.innerHTML = '<div style="padding:16px;text-align:center;color:#888">(tidak ada data)</div>';
+      return;
+    }
+
+    // Kalau string
+    if (typeof data === 'string') {
+      container.innerHTML = '<pre style="background:#0A0A0A;color:#7FDBFF;padding:14px;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;font-size:12px;overflow-x:auto;max-height:500px;white-space:pre-wrap;word-break:break-word">' + esc(data) + '</pre>';
+      return;
+    }
+
+    // Kalau object — cek field khusus
+    if (typeof data === 'object') {
+
+      // Cari URL gambar/video/audio dalam objek (rekursif max 3 level)
+      var found = {
+        images: [],
+        videos: [],
+        audios: [],
+        other: []
+      };
+
+      function scanObj(obj, depth, parentKey) {
+        if (depth > 3 || !obj) return;
+        if (Array.isArray(obj)) {
+          obj.forEach(function(item, i) { scanObj(item, depth + 1, parentKey); });
+          return;
+        }
+        if (typeof obj !== 'object') return;
+
+        Object.keys(obj).forEach(function(k) {
+          var v = obj[k];
+          var kLower = k.toLowerCase();
+
+          if (typeof v === 'string' && /^https?:\/\//i.test(v)) {
+            var vLower = v.toLowerCase();
+
+            // Cek extension / path
+            if (/\.(jpg|jpeg|png|gif|webp|avif)(\?|$)/i.test(vLower) || /image|thumb|thumb|photo|img|pic/i.test(kLower)) {
+              found.images.push({ url: v, key: k });
+            } else if (/\.(mp4|webm|mov|mkv)(\?|$)/i.test(vLower) || /video|mp4|movie|clip/i.test(kLower)) {
+              found.videos.push({ url: v, key: k });
+            } else if (/\.(mp3|m4a|wav|ogg|aac)(\?|$)/i.test(vLower) || /audio|music|sound|mp3/i.test(kLower)) {
+              found.audios.push({ url: v, key: k });
+            }
+          } else if (typeof v === 'object') {
+            scanObj(v, depth + 1, k);
+          }
+        });
+      }
+
+      scanObj(data, 0, '');
+
+      // Render media kalau ada
+      var html = '';
+
+      if (found.videos.length) {
+        html += '<div style="margin-bottom:16px">';
+        html += '<div style="font-family:Archivo Black,sans-serif;font-size:13px;text-transform:uppercase;margin-bottom:8px">🎬 Video (' + found.videos.length + ')</div>';
+        found.videos.slice(0, 5).forEach(function(v) {
+          html += '<div style="background:#fff;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;padding:12px;margin-bottom:10px">';
+          html += '<video controls preload="metadata" style="width:100%;border-radius:8px;margin-bottom:8px;max-height:400px;background:#000" src="' + esc(v.url) + '"></video>';
+          html += '<div style="display:flex;gap:6px"><a href="' + esc(v.url) + '" target="_blank" rel="noopener" style="flex:1;text-align:center;padding:8px;background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff;text-decoration:none;border-radius:8px;font-size:11px;font-weight:700">Buka</a>';
+          html += '<button onclick="navigator.clipboard.writeText(\'' + v.url + '\').then(()=>this.textContent=\'✓\')" style="flex:1;padding:8px;background:#7FDBFF;color:#0A0A0A;border:2px solid #0A0A0A;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer">Copy</button></div>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      if (found.images.length) {
+        html += '<div style="margin-bottom:16px">';
+        html += '<div style="font-family:Archivo Black,sans-serif;font-size:13px;text-transform:uppercase;margin-bottom:8px">🖼️ Gambar (' + found.images.length + ')</div>';
+        html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px">';
+        found.images.slice(0, 12).forEach(function(img) {
+          html += '<a href="' + esc(img.url) + '" target="_blank" rel="noopener" style="display:block;border:3px solid #0A0A0A;border-radius:10px;box-shadow:3px 3px 0 #0A0A0A;overflow:hidden;background:#fff">';
+          html += '<img src="' + esc(img.url) + '" loading="lazy" style="width:100%;height:120px;object-fit:cover;display:block" onerror="this.parentElement.style.display=\'none\'">';
+          html += '</a>';
+        });
+        html += '</div></div>';
+      }
+
+      if (found.audios.length) {
+        html += '<div style="margin-bottom:16px">';
+        html += '<div style="font-family:Archivo Black,sans-serif;font-size:13px;text-transform:uppercase;margin-bottom:8px">🎵 Audio (' + found.audios.length + ')</div>';
+        found.audios.slice(0, 3).forEach(function(a) {
+          html += '<div style="background:#fff;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;padding:12px;margin-bottom:10px">';
+          html += '<audio controls style="width:100%" src="' + esc(a.url) + '"></audio>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      // Kalau nggak ada media, render JSON pretty
+      if (!found.videos.length && !found.images.length && !found.audios.length) {
+        html += '<div style="font-family:Archivo Black,sans-serif;font-size:13px;text-transform:uppercase;margin-bottom:8px">📄 Response</div>';
+        html += '<pre style="background:#0A0A0A;color:#7FDBFF;padding:14px;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;font-size:11px;overflow-x:auto;max-height:500px;white-space:pre-wrap;word-break:break-word">' + esc(JSON.stringify(data, null, 2)) + '</pre>';
+      } else {
+        // Ada media, tapi tetep kasih raw JSON (collapsed)
+        html += '<details style="margin-top:16px"><summary style="cursor:pointer;font-size:12px;font-weight:700;padding:8px;color:#666">📄 Lihat raw JSON</summary>';
+        html += '<pre style="background:#0A0A0A;color:#7FDBFF;padding:14px;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;font-size:11px;overflow-x:auto;max-height:400px;white-space:pre-wrap;word-break:break-word;margin-top:8px">' + esc(JSON.stringify(data, null, 2)) + '</pre>';
+        html += '</details>';
+      }
+
+      container.innerHTML = html;
+      return;
+    }
+
+    // Fallback
+    container.innerHTML = '<pre style="background:#0A0A0A;color:#7FDBFF;padding:14px;border:3px solid #0A0A0A;border-radius:12px;font-size:12px">' + esc(String(data)) + '</pre>';
+  }
+
   // ===== BUILD FORM =====
   function buildForm(type, ep){
     var allParams = ep.params || [];
@@ -1591,6 +1797,14 @@ function renderError(c, msg){
       document.title = ep.name + ' — JAVIN';
       headerTitle.textContent = ep.name;
       renderAmPresetSearch(ep);
+      return;
+    }
+
+    // Endpoint dari bot (catalogId prefix 'bot-') — renderer generic
+    if ((ep.catalogId || '').startsWith('bot-') && ep.upstream) {
+      document.title = ep.name + ' — JAVIN';
+      headerTitle.textContent = ep.name;
+      renderBotEndpoint(ep);
       return;
     }
 
