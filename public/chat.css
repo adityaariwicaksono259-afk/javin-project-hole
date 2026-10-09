@@ -108,3 +108,82 @@ html[data-theme="dark"] .chat-reason.active{background:#a855f7;color:#FFFFFF}
 html[data-theme="dark"] .chat-empty-title{color:#FFFFFF}
 html[data-theme="dark"] .chat-empty-sub{color:#A0A0A0}
 html[data-theme="dark"] .room-name,html[data-theme="dark"] .room-status{color:#0A0A0A}
+
+/* ============================================
+   REALTIME ADD-ONS
+   ============================================ */
+
+/* Room status online indicator */
+.room-status.is-online {
+  color: #22C55E;
+  font-weight: 700;
+}
+.room-status.is-online::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: #22C55E;
+  border: 1.5px solid #0A0A0A;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: middle;
+  animation: pulseDot 1.5s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.85); }
+}
+
+/* Message bubble time row alignment */
+.msg-time {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+.msg-row.them .msg-time {
+  justify-content: flex-start;
+}
+
+/* Checkmark styles */
+.msg-check {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+.msg-check svg {
+  display: block;
+}
+.msg-check.sent { opacity: 0.55; }
+.msg-check.delivered { opacity: 0.75; }
+.msg-check.read { color: #2196F3; opacity: 1; }
+
+/* Typing indicator */
+.msg-bubble.typing {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 16px;
+  min-width: 54px;
+  justify-content: center;
+}
+.typing-dot {
+  width: 7px;
+  height: 7px;
+  background: #0A0A0A;
+  border-radius: 50%;
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.15s; }
+.typing-dot:nth-child(3) { animation-delay: 0.3s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Dark mode adjustments */
+html[data-theme="dark"] .typing-dot { background: #0A0A0A; }
+html[data-theme="dark"] .msg-check.read { color: #7FDBFF; }
+html[data-theme="dark"] .room-status.is-online { color: #4ADE80; }
+html[data-theme="dark"] .room-status.is-online::before { background: #4ADE80; border-color: #0A0A0A; }

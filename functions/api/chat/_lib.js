@@ -12,13 +12,13 @@ export async function ensureSchema(db) {
     'CREATE TABLE IF NOT EXISTS user_blocks (id INTEGER PRIMARY KEY AUTOINCREMENT, blocker_code TEXT NOT NULL, blocked_code TEXT NOT NULL, created_at INTEGER NOT NULL, UNIQUE(blocker_code, blocked_code))',
     'CREATE TABLE IF NOT EXISTS user_reports (id INTEGER PRIMARY KEY AUTOINCREMENT, reporter_code TEXT NOT NULL, reported_code TEXT NOT NULL, reason TEXT NOT NULL, detail TEXT, created_at INTEGER NOT NULL)',
     'CREATE TABLE IF NOT EXISTS user_bans (id INTEGER PRIMARY KEY AUTOINCREMENT, user_code TEXT, device_hash TEXT, email_hash TEXT, level TEXT NOT NULL DEFAULT "ringan", reason TEXT NOT NULL, until INTEGER NOT NULL DEFAULT 0, created_at INTEGER NOT NULL)',
+    'CREATE TABLE IF NOT EXISTS chat_typing (room_id INTEGER NOT NULL, user_code TEXT NOT NULL, until INTEGER NOT NULL, PRIMARY KEY (room_id, user_code))',
     'CREATE INDEX IF NOT EXISTS idx_chat_rooms_a ON chat_rooms(user_a)',
     'CREATE INDEX IF NOT EXISTS idx_chat_rooms_b ON chat_rooms(user_b)',
     'CREATE INDEX IF NOT EXISTS idx_chat_msgs_room ON chat_messages(room_id, created_at DESC)',
     'CREATE INDEX IF NOT EXISTS idx_blocks_blocker ON user_blocks(blocker_code)',
     'CREATE INDEX IF NOT EXISTS idx_ban_usercode ON user_bans(user_code)',
-    'CREATE INDEX IF NOT EXISTS idx_ban_device ON user_bans(device_hash)',
-    'CREATE INDEX IF NOT EXISTS idx_ban_email ON user_bans(email_hash)'
+    'CREATE INDEX IF NOT EXISTS idx_typing_room ON chat_typing(room_id)'
   ];
   for (const s of stmts) {
     try { await db.prepare(s).run(); } catch(e) {}
@@ -37,10 +37,20 @@ export async function getMe(request, db) {
   ).bind(token, now).first();
   if (!session) return null;
   const user = await db.prepare(
-    'SELECT id, user_code, name, avatar, email, bio, onboarded FROM auth_users WHERE id = ?'
+    'SELECT id, user_code, name, avatar, email, bio, onboarded, last_seen FROM auth_users WHERE id = ?'
   ).bind(session.user_id).first();
   if (!user) return null;
 
+  // Auto-update last_seen (throttle 10 detik biar hemat write)
+  try {
+    const ls = user.last_seen || 0;
+    if ((now - ls) > 10000) {
+      await db.prepare('UPDATE auth_users SET last_seen = ? WHERE user_code = ?')
+        .bind(now, user.user_code).run();
+    }
+  } catch(e) {}
+
+  // Cek ban
   try {
     const ban = await db.prepare(
       'SELECT reason, until FROM user_bans WHERE user_code = ? AND until > ?'
@@ -55,6 +65,7 @@ export async function getMe(request, db) {
     avatar: user.avatar || '',
     email: user.email || '',
     bio: user.bio || '',
-    onboarded: user.onboarded || 0
+    onboarded: user.onboarded || 0,
+    lastSeen: user.last_seen || 0
   };
 }
