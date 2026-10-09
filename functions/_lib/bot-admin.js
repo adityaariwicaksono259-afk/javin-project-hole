@@ -1162,6 +1162,12 @@ export async function handleApiStep(env, chatId, text, reply) {
 
     scanLines.push('');
 
+    // Kalau scan deteksi website HTML — kasih user pilihan (skip/generate/tutorial)
+    if (scan.type === 'website' || (scan.response_shape === 'html' && !scan.checks?.reachable)) {
+      await handleWebsiteFound(env, chatId, data, reply);
+      return true;
+    }
+
     // Kalau ada API key / umbrella
     if (scan.is_umbrella) {
       scanLines.push('❌ <b>Endpoint umbrella</b> — butuh API key / auth.');
@@ -1548,5 +1554,193 @@ export async function cmdTestGithub(env, chatId, reply) {
     '🌿 Branch: <code>' + esc(result.default_branch) + '</code>\n' +
     '🔒 Private: ' + (result.private ? 'Ya' : 'Tidak') + '\n\n' +
     'Coba: <code>/apilist</code> buat cek endpoint bot.'
+  );
+}
+
+
+// ==================== WEBSITE SCRAPER GENERATOR ====================
+
+import {
+  generateScraperScript,
+  generatePackageJson,
+  generateReadme,
+  createGithubRepo,
+  commitGeneratedFiles
+} from './script-generator.js';
+
+// ============================================
+// HANDLE WEBSITE DETECTION — setelah scan
+// ============================================
+export async function handleWebsiteFound(env, chatId, data, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  await reply(env, chatId,
+    '🌐 <b>WEBSITE TERDETEKSI</b>\n\n' +
+    'URL yang kamu kasih ini <b>website HTML</b>, bukan API.\n' +
+    'Biar bisa dipakai di Javin, perlu di-scrape dulu (butuh Node.js server).\n\n' +
+    '<b>Pilih:</b>\n' +
+    '1️⃣ <b>Skip</b> — jangan tambah\n' +
+    '2️⃣ <b>Generate template</b> — bot bikin script Node.js + deploy guide\n' +
+    '3️⃣ <b>Setup manual</b> — kasih tutorial Render\n\n' +
+    'Kirim angka (1-3) atau <code>/cancel</code>'
+  );
+
+  await db.prepare(
+    'INSERT INTO bot_sessions (chat_id, state, data, updated_at) VALUES (?, ?, ?, ?) ' +
+    'ON CONFLICT(chat_id) DO UPDATE SET state = excluded.state, data = excluded.data, updated_at = excluded.updated_at'
+  ).bind(String(chatId), 'website_choose', JSON.stringify(data), Date.now()).run();
+}
+
+// ============================================
+// HANDLE WEBSITE STEP (dipanggil dari handleApiStep)
+// ============================================
+export async function handleWebsiteStep(env, chatId, text, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) return false;
+
+  const sess = await db.prepare(
+    'SELECT state, data FROM bot_sessions WHERE chat_id = ? LIMIT 1'
+  ).bind(String(chatId)).first();
+
+  if (!sess || !sess.state || !sess.state.startsWith('website_')) return false;
+
+  let data = {};
+  try { data = JSON.parse(sess.data || '{}'); } catch(e) {}
+
+  // ==== Choose 1/2/3 ====
+  if (sess.state === 'website_choose') {
+    const choice = text.trim();
+
+    if (choice === '1') {
+      await clearSession(db, chatId);
+      await reply(env, chatId, '✅ Dibatalkan. Endpoint nggak ditambah.');
+      return true;
+    }
+
+    if (choice === '2') {
+      // Bot auto-generate script + repo GitHub
+      await generateScraperRepo(env, chatId, data, reply);
+      return true;
+    }
+
+    if (choice === '3') {
+      await reply(env, chatId,
+        '📖 <b>TUTORIAL SETUP MANUAL</b>\n\n' +
+        '<b>Yang dibutuhkan:</b>\n' +
+        '• Akun GitHub\n' +
+        '• Akun Render (gratis)\n\n' +
+        '<b>Langkah:</b>\n' +
+        '1. Buat repo GitHub: <code>' + esc((data.name || 'scraper') + '-backend') + '</code>\n' +
+        '2. Buat file <code>server.js</code> (pakai code dari bot)\n' +
+        '3. Buat <code>package.json</code> dengan deps: express, axios, cheerio\n' +
+        '4. Push ke GitHub\n' +
+        '5. Buat Web Service di render.com\n' +
+        '6. Copy URL Render → register ke bot\n\n' +
+        'Atau balik ke menu dan pilih <b>2</b> buat auto-generate.\n\n' +
+        'Ketik <code>/cancel</code> buat keluar.'
+      );
+      return true;
+    }
+
+    await reply(env, chatId, '❓ Kirim 1, 2, atau 3. Atau /cancel.');
+    return true;
+  }
+
+  return false;
+}
+
+// ============================================
+// AUTO-GENERATE REPO + SCRIPT
+// ============================================
+async function generateScraperRepo(env, chatId, data, reply) {
+  const db = env.JAVIN_DB;
+  const repoName = (data.name || 'scraper').toLowerCase().replace(/[^a-z0-9-]/g, '-') + '-backend';
+
+  await reply(env, chatId,
+    '🤖 <b>Auto-generate script...</b>\n\n' +
+    '📦 Bikin repo: <code>' + repoName + '</code>\n' +
+    '📝 Generate server.js\n' +
+    '📄 Generate package.json + README\n' +
+    '🚀 Commit ke GitHub\n\n' +
+    'Tunggu 10-30 detik...'
+  );
+
+  // 1. Buat repo
+  const repoResult = await createGithubRepo(env, repoName, true);
+  if (!repoResult.ok) {
+    await clearSession(db, chatId);
+    await reply(env, chatId,
+      '❌ <b>Gagal bikin repo</b>\n\n' +
+      'Error: <code>' + esc(repoResult.message) + '</code>\n\n' +
+      'Kemungkinan:\n' +
+      '• Repo <code>' + repoName + '</code> udah ada di akun kamu\n' +
+      '• Token GitHub expired\n' +
+      '• Rate limit GitHub'
+    );
+    return;
+  }
+
+  // 2. Generate file
+  const serverCode = generateScraperScript({
+    name: data.name,
+    upstream: data.url,
+    path: '/scrape',
+    params: data.params ? data.params.split('|') : ['q']
+  });
+
+  const pkgJson = generatePackageJson(repoName);
+  const readme = generateReadme(data.name, data.url, '/scrape');
+
+  // 3. Commit file ke repo
+  const commitResult = await commitGeneratedFiles(
+    env,
+    env.GITHUB_OWNER || 'adityaariwicaksono259-afk',
+    repoName,
+    [
+      { path: 'server.js', content: serverCode },
+      { path: 'package.json', content: pkgJson },
+      { path: 'README.md', content: readme }
+    ],
+    'Initial commit: auto-generated by JAVIN Bot'
+  );
+
+  await clearSession(db, chatId);
+
+  if (!commitResult.ok) {
+    await reply(env, chatId,
+      '⚠️ Repo dibuat tapi commit gagal.\n\n' +
+      'Repo: <code>' + repoResult.repo + '</code>\n' +
+      'Error: <code>' + esc(commitResult.message) + '</code>\n\n' +
+      'Upload manual via GitHub web UI.'
+    );
+    return;
+  }
+
+  await reply(env, chatId,
+    '✅ <b>REPO BERHASIL DIBUAT</b>\n\n' +
+    '📦 Repo: <code>' + repoResult.repo + '</code>\n' +
+    '🔗 URL: ' + repoResult.url + '\n' +
+    '📄 Files: ' + commitResult.committed.join(', ') + '\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    '<b>🚀 LANJUT DEPLOY (5 menit):</b>\n\n' +
+    '<b>1.</b> Buka https://dashboard.render.com\n' +
+    '<b>2.</b> Login pakai GitHub\n' +
+    '<b>3.</b> Klik <b>New</b> → <b>Web Service</b>\n' +
+    '<b>4.</b> Connect repo: <code>' + repoName + '</code>\n' +
+    '<b>5.</b> Isi setting:\n' +
+    '   • Name: <code>' + repoName + '</code>\n' +
+    '   • Region: <b>Singapore</b>\n' +
+    '   • Branch: main\n' +
+    '   • Build: <code>npm install</code>\n' +
+    '   • Start: <code>npm start</code>\n' +
+    '   • Plan: <b>Free</b>\n' +
+    '<b>6.</b> Klik <b>Create Web Service</b>\n' +
+    '<b>7.</b> Tunggu 2-5 menit\n' +
+    '<b>8.</b> Copy URL Render (contoh: <code>https://' + repoName + '.onrender.com</code>)\n' +
+    '<b>9.</b> Register ke bot:\n\n' +
+    '<code>/api https://' + repoName + '.onrender.com/scrape, ' + esc(data.name) + ', tools, ' + esc(data.desc) + ', ' + (data.params || 'q') + '</code>\n\n' +
+    '━━━━━━━━━━━━━━━━━━━━\n' +
+    '📝 <b>Note:</b> Setelah di Render, edit <code>server.js</code> buat sesuaikan parsing selector dengan struktur HTML target. Template yang bot kasih cuma generik.'
   );
 }

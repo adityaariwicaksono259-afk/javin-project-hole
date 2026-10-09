@@ -364,11 +364,42 @@ export async function scanEndpoint(url) {
     result.checks.param_detected = false;
   }
 
-  // ==== 10. Kesimpulan ====
-  result.ok = result.checks.reachable && !result.is_umbrella;
+  // ==== 10. Kesimpulan (FIXED) ====
+  result.checks.reachable = baseRes.status >= 200 && baseRes.status < 400;
+
+  const isJson = result.response_shape === 'json';
+  const isHtml = result.response_shape === 'html';
+  const isImage = result.response_shape === 'image';
+  const isVideo = result.response_shape === 'video';
+  const isAudio = result.response_shape === 'audio';
+
+  const isApiLike = isJson || isImage || isVideo || isAudio;
+
+  if (baseRes.status === 404) {
+    result.errors.push('HTTP 404 — endpoint tidak ditemukan di root');
+  } else if (baseRes.status >= 500) {
+    result.errors.push('HTTP ' + baseRes.status + ' — server error');
+  }
+
+  if (isHtml) {
+    result.errors.push('Response HTML — ini website, bukan API');
+    result.suggestion = 'Butuh scraping via Node.js (host di Render)';
+    result.type = 'website';
+  }
 
   if (result.is_umbrella) {
     result.errors.push('Endpoint umbrella (butuh auth/API key)');
+    result.suggestion = 'Butuh API key. Kalau punya, lanjut + simpan key di env CF.';
+    result.type = 'umbrella';
+  }
+
+  result.ok = result.checks.reachable && !result.is_umbrella && isApiLike;
+
+  if (result.ok) {
+    result.type = 'api';
+  } else if (!result.type) {
+    result.type = 'unknown';
+    result.suggestion = 'Cek dokumentasi endpoint atau pakai URL spesifik.';
   }
 
   return result;
