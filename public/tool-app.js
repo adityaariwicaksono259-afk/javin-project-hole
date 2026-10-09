@@ -386,8 +386,8 @@
       '  <p class="desc">' + esc(ep.desc || '') + '</p>',
       '</div>',
       '<div class="card">',
-      '  <div class="field"><label>Keyword <span style="color:#dc2626">*</span></label>',
-      '  <input type="text" id="apsQ" placeholder="contoh: dji, smooth, jj" autocomplete="off"></div>',
+      '  <div class="field"><label>Lagu / Kata Kunci <span style="color:#dc2626">*</span></label>',
+      '  <input type="text" id="apsQ" placeholder="contoh: judul lagu, nama preset" autocomplete="off"></div>',
       '  <button class="submit" id="apsBtn">Cari Video</button>',
       '  <div class="result" id="apsRes"></div>',
       '</div>',
@@ -402,11 +402,11 @@
       var res = document.getElementById('apsRes');
       var out = document.getElementById('apsResult');
 
-      if (!q) { res.className = 'result show err'; res.textContent = '❌ Keyword wajib.'; return; }
+      if (!q) { res.className = 'result show err'; res.textContent = '❌ Lagu atau kata kunci wajib diisi.'; return; }
 
       apsBtn.disabled = true; apsBtn.textContent = 'Mencari...';
       res.className = 'result show info';
-      res.textContent = 'Mencari video preset... (bisa 10-30 detik)';
+      res.textContent = 'Mencari video dengan preset... (bisa 10-30 detik)';
       out.innerHTML = '';
 
       fetch('/api/amsearch?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
