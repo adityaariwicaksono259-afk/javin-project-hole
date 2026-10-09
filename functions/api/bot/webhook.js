@@ -2,7 +2,7 @@
 import { sendTelegram, escapeHtml } from '../../_lib/telegram.js';
 import { handleSoundCommand, handleSoundFile } from '../../_lib/sound-commands.js';
 import { cmdAdmin, cmdUsers, cmdUserDel, cmdKeys, cmdLogs, cmdLogsClear, cmdConfig, cmdBackup, cmdAnnounce } from '../../_lib/bot-admin.js';
-import { cmdWhitelistAdd, cmdUnban, cmdBan } from '../../_lib/bot-admin.js';
+import { cmdWhitelistAdd, cmdUnban, cmdBan, cmdAppeals, cmdApprove, cmdReject, cmdUserBan, cmdUserUnban, cmdUserBanList } from '../../_lib/bot-admin.js';
 import { cmdSetTier, cmdRemoveTier, cmdTierInfo } from '../../_lib/bot-admin.js';
 import { editTelegramMessage, answerCallbackQuery } from '../../_lib/telegram.js';
 import { SUPPORT_TEMPLATES, getTemplatesByCategory } from '../../_lib/support-templates.js';
@@ -542,6 +542,31 @@ export async function onRequestPost({ request, env }) {
   }
   if (cmd === '/announce') {
     await cmdAnnounce(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  // ==== USER BAN & APPEAL COMMANDS ====
+  if (cmd === '/appeals') {
+    await cmdAppeals(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/approve') {
+    await cmdApprove(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/reject') {
+    await cmdReject(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/userban') {
+    await cmdUserBan(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/userunban') {
+    await cmdUserUnban(env, chatId, args, reply);
+    return new Response('ok');
+  }
+  if (cmd === '/userbanlist') {
+    await cmdUserBanList(env, chatId, args, reply);
     return new Response('ok');
   }
 

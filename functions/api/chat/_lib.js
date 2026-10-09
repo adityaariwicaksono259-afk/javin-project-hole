@@ -53,9 +53,27 @@ export async function getMe(request, db) {
   // Cek ban
   try {
     const ban = await db.prepare(
-      'SELECT reason, until FROM user_bans WHERE user_code = ? AND until > ?'
+      'SELECT id, level, reason, until FROM user_bans WHERE user_code = ? AND (until = 0 OR until > ?) LIMIT 1'
     ).bind(user.user_code, now).first();
-    if (ban) return { banned: true, reason: ban.reason, until: ban.until };
+    if (ban) {
+      // Cek apakah user udah appeal
+      var appealStatus = null;
+      try {
+        const ap = await db.prepare(
+          'SELECT status, created_at FROM ban_appeals WHERE ban_id = ? ORDER BY created_at DESC LIMIT 1'
+        ).bind(ban.id).first();
+        if (ap) appealStatus = { status: ap.status, created_at: ap.created_at };
+      } catch(e) {}
+
+      return {
+        banned: true,
+        ban_id: ban.id,
+        level: ban.level || 'ringan',
+        reason: ban.reason,
+        until: ban.until,
+        appeal: appealStatus
+      };
+    }
   } catch(e) {}
 
   return {

@@ -683,3 +683,210 @@ export async function cmdTierInfo(env, chatId, args, reply) {
     await reply(env, chatId, '❌ Error: ' + e.message);
   }
 }
+
+
+// ==================== USER BAN MANAGEMENT (v2.0) ====================
+
+// /appeals — list banding pending
+export async function cmdAppeals(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const status = (args || 'pending').trim().toLowerCase();
+
+  try {
+    const rows = await db.prepare(
+      'SELECT a.id, a.ban_id, a.user_code, a.message, a.created_at, ' +
+      'b.level AS ban_level, b.reason AS ban_reason, b.until AS ban_until ' +
+      'FROM ban_appeals a LEFT JOIN user_bans b ON a.ban_id = b.id ' +
+      'WHERE a.status = ? ORDER BY a.created_at DESC LIMIT 20'
+    ).bind(status).all();
+
+    const list = rows.results || [];
+    if (!list.length) {
+      await reply(env, chatId, '📭 Tidak ada banding dengan status: <b>' + esc(status) + '</b>');
+      return;
+    }
+
+    let h = '📋 <b>BANDING (' + esc(status.toUpperCase()) + ')</b> — ' + list.length + '\n\n';
+    list.forEach(function(a) {
+      h += '<b>#' + a.id + '</b> · <code>' + esc(a.user_code) + '</code>\n';
+      h += '   Level ban: ' + esc(a.ban_level || '?') + '\n';
+      h += '   Alasan ban: ' + esc((a.ban_reason || '').slice(0, 60)) + '\n';
+      h += '   Pesan: ' + esc(a.message.slice(0, 100)) + (a.message.length > 100 ? '...' : '') + '\n';
+      h += '   → <code>/approve ' + a.id + '</code> atau <code>/reject ' + a.id + ' [catatan]</code>\n\n';
+    });
+    await reply(env, chatId, h);
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}
+
+// /approve <appeal_id> — setujui banding, cabut ban
+export async function cmdApprove(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const appealId = parseInt((args || '').trim().split(/\s+/)[0], 10);
+  if (!appealId) { await reply(env, chatId, '❓ Format: <code>/approve &lt;id&gt;</code>'); return; }
+
+  try {
+    const appeal = await db.prepare(
+      'SELECT id, ban_id, user_code, status FROM ban_appeals WHERE id = ?'
+    ).bind(appealId).first();
+
+    if (!appeal) { await reply(env, chatId, '❌ Banding #' + appealId + ' tidak ditemukan.'); return; }
+    if (appeal.status !== 'pending') {
+      await reply(env, chatId, '⚠️ Banding #' + appealId + ' udah diproses sebelumnya (' + appeal.status + ').');
+      return;
+    }
+
+    const now = Date.now();
+    await db.prepare(
+      'UPDATE ban_appeals SET status = "approved", admin_note = "Approved via Telegram", resolved_at = ? WHERE id = ?'
+    ).bind(now, appealId).run();
+
+    await db.prepare('DELETE FROM user_bans WHERE id = ?').bind(appeal.ban_id).run();
+
+    await reply(env, chatId,
+      '✅ <b>BANDING DISETUJUI</b>\n\n' +
+      '🆔 Appeal: <code>#' + appealId + '</code>\n' +
+      '👤 User: <code>' + esc(appeal.user_code) + '</code>\n' +
+      '🔓 Ban dicabut, user bisa akses lagi.'
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}
+
+// /reject <appeal_id> [catatan] — tolak banding
+export async function cmdReject(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const parts = (args || '').trim().split(/\s+/);
+  const appealId = parseInt(parts[0], 10);
+  const note = parts.slice(1).join(' ') || 'Ditolak via Telegram';
+
+  if (!appealId) { await reply(env, chatId, '❓ Format: <code>/reject &lt;id&gt; [catatan]</code>'); return; }
+
+  try {
+    const appeal = await db.prepare(
+      'SELECT id, ban_id, user_code, status FROM ban_appeals WHERE id = ?'
+    ).bind(appealId).first();
+
+    if (!appeal) { await reply(env, chatId, '❌ Banding #' + appealId + ' tidak ditemukan.'); return; }
+    if (appeal.status !== 'pending') {
+      await reply(env, chatId, '⚠️ Banding #' + appealId + ' udah diproses (' + appeal.status + ').');
+      return;
+    }
+
+    const now = Date.now();
+    await db.prepare(
+      'UPDATE ban_appeals SET status = "rejected", admin_note = ?, resolved_at = ? WHERE id = ?'
+    ).bind(note, now, appealId).run();
+
+    await reply(env, chatId,
+      '❌ <b>BANDING DITOLAK</b>\n\n' +
+      '🆔 Appeal: <code>#' + appealId + '</code>\n' +
+      '👤 User: <code>' + esc(appeal.user_code) + '</code>\n' +
+      '📝 Catatan: ' + esc(note)
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}
+
+// /userban <user_code> [alasan] — ban manual user
+export async function cmdUserBan(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const parts = (args || '').trim().split(/\s+/);
+  const userCode = parts[0];
+  const reason = parts.slice(1).join(' ') || 'Manual ban via Telegram';
+
+  if (!userCode) { await reply(env, chatId, '❓ Format: <code>/userban &lt;user_code&gt; [alasan]</code>'); return; }
+
+  try {
+    const user = await db.prepare(
+      'SELECT id, user_code, name FROM auth_users WHERE user_code = ? LIMIT 1'
+    ).bind(userCode).first();
+
+    if (!user) { await reply(env, chatId, '❌ User <code>' + esc(userCode) + '</code> tidak ditemukan.'); return; }
+
+    const now = Date.now();
+    // Permanen (until = 0)
+    await db.prepare(
+      'INSERT INTO user_bans (user_code, level, reason, until, created_at) VALUES (?, ?, ?, 0, ?) ' +
+      'ON CONFLICT(id) DO NOTHING'
+    ).bind(user.user_code, 'parah', 'Manual ban: ' + reason, now).run();
+
+    await reply(env, chatId,
+      '🚫 <b>USER BANNED</b>\n\n' +
+      '👤 User: <code>' + esc(user.user_code) + '</code>\n' +
+      '📛 Nama: ' + esc(user.name || '-') + '\n' +
+      '📝 Alasan: ' + esc(reason) + '\n' +
+      '⏱️ Durasi: <b>Permanen</b>'
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}
+
+// /userunban <user_code> — cabut ban
+export async function cmdUserUnban(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  const userCode = (args || '').trim().split(/\s+/)[0];
+  if (!userCode) { await reply(env, chatId, '❓ Format: <code>/userunban &lt;user_code&gt;</code>'); return; }
+
+  try {
+    const ban = await db.prepare(
+      'SELECT id, level, reason FROM user_bans WHERE user_code = ? LIMIT 1'
+    ).bind(userCode).first();
+
+    if (!ban) { await reply(env, chatId, 'ℹ️ User <code>' + esc(userCode) + '</code> tidak sedang dibanned.'); return; }
+
+    await db.prepare('DELETE FROM user_bans WHERE user_code = ?').bind(userCode).run();
+
+    await reply(env, chatId,
+      '✅ <b>USER UNBANNED</b>\n\n' +
+      '👤 User: <code>' + esc(userCode) + '</code>\n' +
+      '📝 Alasan ban sebelumnya: ' + esc(ban.reason || '-')
+    );
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}
+
+// /userbanlist — list user yang dibanned
+export async function cmdUserBanList(env, chatId, args, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) { await reply(env, chatId, '❌ DB gak tersedia.'); return; }
+
+  try {
+    const rows = await db.prepare(
+      'SELECT user_code, level, reason, until, created_at FROM user_bans ORDER BY created_at DESC LIMIT 30'
+    ).all();
+
+    const list = rows.results || [];
+    if (!list.length) { await reply(env, chatId, '📭 Tidak ada user yang dibanned.'); return; }
+
+    const now = Date.now();
+    let h = '🚫 <b>DAFTAR USER BANNED</b> — ' + list.length + '\n\n';
+    list.forEach(function(b) {
+      const isPerm = !b.until || b.until === 0;
+      const untilStr = isPerm ? '<b>Permanen</b>' : new Date(b.until).toISOString().slice(0, 16).replace('T', ' ');
+      const expire = !isPerm && b.until < now ? ' ⏰(expired)' : '';
+      h += '👤 <code>' + esc(b.user_code) + '</code> · <b>' + esc(b.level || '?') + '</b>\n';
+      h += '   📝 ' + esc((b.reason || '').slice(0, 60)) + '\n';
+      h += '   ⏱️ ' + untilStr + expire + '\n\n';
+    });
+    h += 'Unban: <code>/userunban &lt;user_code&gt;</code>';
+    await reply(env, chatId, h);
+  } catch(e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+  }
+}

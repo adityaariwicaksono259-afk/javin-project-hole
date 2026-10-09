@@ -1,3 +1,4 @@
+// GET /api/chat/ban-status — cek status ban user
 import { json, ensureSchema, getMe } from './_lib.js';
 
 export async function onRequestGet({ request, env }) {
@@ -9,7 +10,15 @@ export async function onRequestGet({ request, env }) {
   if (!me) return json({ ok: false, message: 'Belum login' }, 401);
 
   if (me.banned) {
-    return json({ ok: true, banned: true, reason: me.reason || 'Melanggar aturan', until: me.until });
+    return json({
+      ok: true,
+      banned: true,
+      ban_id: me.ban_id,
+      level: me.level || 'ringan',
+      reason: me.reason || 'Melanggar aturan',
+      until: me.until || 0,
+      appeal: me.appeal || null
+    });
   }
 
   return json({ ok: true, banned: false });

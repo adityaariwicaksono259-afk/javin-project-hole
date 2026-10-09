@@ -10,21 +10,38 @@
 <link rel="stylesheet" href="/theme-global.css?v=1">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{min-height:100vh;font-family:'Space Grotesk',system-ui,sans-serif;background:#FFE600;color:#0A0A0A;display:flex;align-items:center;justify-content:center;padding:20px}
-.card{max-width:440px;width:100%;background:#FFFFFF;border:4px solid #0A0A0A;border-radius:20px;box-shadow:8px 8px 0 #0A0A0A;padding:32px 24px;text-align:center}
-.icon{width:88px;height:88px;margin:0 auto 20px;background:#FF4545;border:4px solid #0A0A0A;border-radius:50%;box-shadow:5px 5px 0 #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#FFFFFF;font-family:'Archivo Black',sans-serif}
-h1{font-family:'Archivo Black',sans-serif;font-size:24px;margin:0 0 8px;letter-spacing:-.5px;line-height:1.15}
-.sub{font-size:13px;color:#4A4A4A;font-weight:500;line-height:1.5;margin-bottom:24px}
-.info{background:#F7F7F7;border:3px solid #0A0A0A;border-radius:14px;box-shadow:4px 4px 0 #0A0A0A;padding:16px;text-align:left;margin-bottom:16px}
+html,body{min-height:100vh;font-family:'Space Grotesk',system-ui,sans-serif;background:#FFE600;color:#0A0A0A;display:flex;align-items:flex-start;justify-content:center;padding:20px}
+.card{max-width:480px;width:100%;background:#FFFFFF;border:4px solid #0A0A0A;border-radius:20px;box-shadow:8px 8px 0 #0A0A0A;padding:28px 22px;text-align:center;margin:auto 0}
+.icon{width:88px;height:88px;margin:0 auto 18px;background:#FF4545;border:4px solid #0A0A0A;border-radius:50%;box-shadow:5px 5px 0 #0A0A0A;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:900;color:#FFFFFF;font-family:'Archivo Black',sans-serif}
+h1{font-family:'Archivo Black',sans-serif;font-size:22px;margin:0 0 8px;letter-spacing:-.5px;line-height:1.15}
+.sub{font-size:13px;color:#4A4A4A;font-weight:500;line-height:1.5;margin-bottom:20px}
+.level-badge{display:inline-block;padding:5px 12px;border:2px solid #0A0A0A;border-radius:999px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
+.level-ringan{background:#FFE066}
+.level-sedang{background:#FF9F45}
+.level-parah{background:#FF4545;color:#FFF}
+.info{background:#F7F7F7;border:3px solid #0A0A0A;border-radius:14px;box-shadow:4px 4px 0 #0A0A0A;padding:14px 16px;text-align:left;margin-bottom:14px}
 .info-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px dashed #CCC;font-size:13px}
 .info-row:last-child{border-bottom:none}
 .info-row .lbl{font-weight:700;color:#0A0A0A;flex-shrink:0}
 .info-row .val{color:#4A4A4A;font-weight:600;text-align:right;word-break:break-word}
-.note{font-size:12px;color:#4A4A4A;line-height:1.6;margin-top:16px;padding:14px;background:#FFF9B0;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A;text-align:left}
-.note b{display:block;margin-bottom:6px;font-family:'Archivo Black',sans-serif;font-size:13px}
-.btn{display:inline-block;margin-top:20px;padding:14px 24px;background:#7FDBFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:800;color:#0A0A0A;text-decoration:none;cursor:pointer;transition:transform .08s,box-shadow .08s}
+.appeal-section{background:#F7F7F7;border:3px solid #0A0A0A;border-radius:14px;box-shadow:4px 4px 0 #0A0A0A;padding:16px;text-align:left;margin-top:14px}
+.appeal-title{font-family:'Archivo Black',sans-serif;font-size:14px;margin-bottom:10px;text-transform:uppercase;letter-spacing:.4px}
+.appeal-hint{font-size:12px;color:#4A4A4A;margin-bottom:10px;line-height:1.5}
+.appeal-textarea{width:100%;padding:12px;font-size:13px;font-family:inherit;font-weight:500;color:#0A0A0A;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:10px;box-shadow:3px 3px 0 #0A0A0A;outline:none;resize:vertical;min-height:90px;line-height:1.5;margin-bottom:10px}
+.appeal-textarea:focus{box-shadow:5px 5px 0 #0A0A0A}
+.appeal-btn{width:100%;padding:13px;background:#7FDBFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;font-family:inherit;font-size:13px;font-weight:800;color:#0A0A0A;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:transform .08s,box-shadow .08s}
+.appeal-btn:active{transform:translate(4px,4px);box-shadow:0 0 0 #0A0A0A}
+.appeal-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:4px 4px 0 #0A0A0A}
+.appeal-status{padding:12px 14px;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A;font-size:13px;font-weight:600;line-height:1.5}
+.status-pending{background:#FFF9B0}
+.status-approved{background:#D9F9D9}
+.status-rejected{background:#FFD9D9}
+.appeal-error{margin-top:8px;font-size:12px;color:#DC2626;font-weight:600;line-height:1.5}
+.note{font-size:12px;color:#4A4A4A;line-height:1.6;margin-top:14px;padding:12px;background:#FFF9B0;border:3px solid #0A0A0A;border-radius:12px;box-shadow:3px 3px 0 #0A0A0A;text-align:left}
+.note b{display:block;margin-bottom:6px;font-family:'Archivo Black',sans-serif;font-size:12px}
+.btn{display:inline-block;margin-top:16px;padding:12px 22px;background:#FFFFFF;border:3px solid #0A0A0A;border-radius:12px;box-shadow:4px 4px 0 #0A0A0A;font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:800;color:#0A0A0A;text-decoration:none;cursor:pointer;transition:transform .08s,box-shadow .08s}
 .btn:active{transform:translate(4px,4px);box-shadow:0 0 0 #0A0A0A}
-.footer{margin-top:24px;font-size:11px;color:#6A6A6A;font-weight:600}
+.footer{margin-top:20px;font-size:11px;color:#6A6A6A;font-weight:600}
 html[data-theme="dark"] body{background:#08080c;color:#FFFFFF}
 html[data-theme="dark"] .card{background:#181820;border-color:#FFFFFF;box-shadow:8px 8px 0 #FFFFFF}
 html[data-theme="dark"] h1{color:#FFFFFF}
@@ -33,8 +50,17 @@ html[data-theme="dark"] .info{background:#111118;border-color:#FFFFFF;box-shadow
 html[data-theme="dark"] .info-row{border-color:#333}
 html[data-theme="dark"] .info-row .lbl{color:#FFFFFF}
 html[data-theme="dark"] .info-row .val{color:#B8B8B8}
+html[data-theme="dark"] .appeal-section{background:#111118;border-color:#FFFFFF;box-shadow:4px 4px 0 #FFFFFF}
+html[data-theme="dark"] .appeal-title{color:#FFFFFF}
+html[data-theme="dark"] .appeal-hint{color:#B8B8B8}
+html[data-theme="dark"] .appeal-textarea{background:#0F0F17;color:#FFFFFF;border-color:#FFFFFF;box-shadow:3px 3px 0 #FFFFFF}
+html[data-theme="dark"] .appeal-btn{background:#a855f7;color:#FFFFFF;border-color:#0A0A0A;box-shadow:4px 4px 0 #0A0A0A}
+html[data-theme="dark"] .appeal-status{border-color:#FFFFFF;box-shadow:3px 3px 0 #FFFFFF}
+html[data-theme="dark"] .status-pending{background:#4A3A00;color:#FFFFFF}
+html[data-theme="dark"] .status-approved{background:#0F3D1A;color:#FFFFFF}
+html[data-theme="dark"] .status-rejected{background:#3D0F0F;color:#FFFFFF}
 html[data-theme="dark"] .note{background:#241333;border-color:#FFFFFF;color:#E0E0E0;box-shadow:3px 3px 0 #FFFFFF}
-html[data-theme="dark"] .btn{background:#a855f7;color:#FFFFFF;border-color:#FFFFFF;box-shadow:4px 4px 0 #FFFFFF}
+html[data-theme="dark"] .btn{background:#181820;color:#FFFFFF;border-color:#FFFFFF;box-shadow:4px 4px 0 #FFFFFF}
 html[data-theme="dark"] .footer{color:#8B8B8B}
 </style>
 <script src="/theme-loader.js"></script>
@@ -42,14 +68,11 @@ html[data-theme="dark"] .footer{color:#8B8B8B}
 <body>
 <div class="card">
   <div class="icon">!</div>
+  <div class="level-badge level-ringan" id="levelBadge">Ringan</div>
   <h1>Akun Kamu Diblokir</h1>
-  <div class="sub">Akun kamu nggak bisa digunakan sementara waktu</div>
+  <div class="sub" id="bannedSub">Akun kamu nggak bisa digunakan sementara waktu</div>
 
   <div class="info">
-    <div class="info-row">
-      <span class="lbl">Status</span>
-      <span class="val" id="bannedStatus">Diblokir</span>
-    </div>
     <div class="info-row">
       <span class="lbl">Alasan</span>
       <span class="val" id="bannedReason">—</span>
@@ -64,40 +87,172 @@ html[data-theme="dark"] .footer{color:#8B8B8B}
     </div>
   </div>
 
+  <div class="appeal-section" id="appealSection">
+    <div class="appeal-title">Kirim Banding</div>
+    <div class="appeal-hint" id="appealHint">Kalau kamu merasa ban ini salah, kirim banding. Admin akan review dalam 1-3 hari.</div>
+    <div id="appealForm">
+      <textarea class="appeal-textarea" id="appealMessage" placeholder="Jelaskan kenapa kamu merasa ban ini salah..." maxlength="1000"></textarea>
+      <button class="appeal-btn" id="btnAppeal">Kirim Banding</button>
+      <div class="appeal-error" id="appealError" hidden></div>
+    </div>
+    <div id="appealStatusBox" hidden></div>
+  </div>
+
   <div class="note">
-    <b>Kenapa ini terjadi?</b>
-    Akun kamu dilaporkan oleh banyak pengguna lain karena melanggar aturan. Kalau kamu merasa ini kesalahan, kirim banding lewat email atau hubungi admin.
+    <b>Apa yang bisa dilakukan?</b>
+    Kalau banding di-approve, ban langsung dicabut. Kalau ditolak, kamu harus tunggu sampai waktu habis. Ban permanen cuma bisa dicabut via banding yang di-approve.
   </div>
 
   <a href="/login" class="btn">← Kembali ke Login</a>
-
   <div class="footer">JAVIN CODEX · © 2026</div>
 </div>
 
 <script>
-(async function(){
-  try {
-    var r = await fetch('/api/chat/ban-status', { credentials: 'same-origin', cache: 'no-store' });
-    var j = await r.json();
-    if (!j || !j.ok) {
-      document.getElementById('bannedStatus').textContent = 'Diblokir';
+(function(){
+  var $ = function(id){ return document.getElementById(id); };
+  var state = { banned: false, level: 'ringan', appeal: null, banId: null };
+
+  function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g,function(c){return({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+
+  function fmtDate(ts){
+    try { return new Date(ts).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }); }
+    catch(e){ return '-'; }
+  }
+
+  function fmtRemaining(ms){
+    if (ms <= 0) return 'sudah berakhir';
+    var days = Math.floor(ms / 86400000);
+    var hours = Math.floor((ms % 86400000) / 3600000);
+    var mins = Math.floor((ms % 3600000) / 60000);
+    if (days > 0) return days + ' hari ' + hours + ' jam';
+    if (hours > 0) return hours + ' jam ' + mins + ' menit';
+    return mins + ' menit';
+  }
+
+  function setLevel(lvl){
+    var badge = $('levelBadge');
+    badge.className = 'level-badge level-' + (lvl || 'ringan');
+    badge.textContent = lvl === 'parah' ? 'Permanen' : (lvl === 'sedang' ? 'Sedang' : 'Ringan');
+    state.level = lvl || 'ringan';
+  }
+
+  function renderAppeal(appeal){
+    var form = $('appealForm');
+    var box = $('appealStatusBox');
+
+    if (!appeal) {
+      form.hidden = false;
+      box.hidden = true;
       return;
     }
-    if (!j.banned) {
-      document.getElementById('bannedStatus').textContent = 'Tidak diblokir';
-      document.getElementById('bannedReason').textContent = '—';
-      document.getElementById('bannedUntil').textContent = '—';
-      document.getElementById('bannedRemaining').textContent = '—';
+
+    form.hidden = true;
+    box.hidden = false;
+
+    var statusMap = {
+      pending: { cls: 'status-pending', label: '⏳ Sedang Ditinjau' },
+      approved: { cls: 'status-approved', label: '✅ Disetujui — ban dicabut' },
+      rejected: { cls: 'status-rejected', label: '❌ Ditolak' }
+    };
+    var s = statusMap[appeal.status] || statusMap.pending;
+
+    var html = '<div class="appeal-status ' + s.cls + '">';
+    html += '<div style="font-weight:800;margin-bottom:6px">' + s.label + '</div>';
+    html += '<div style="font-size:12px;opacity:.8">Dikirim: ' + fmtDate(appeal.created_at) + '</div>';
+    if (appeal.admin_note) {
+      html += '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed currentColor;font-size:12px"><b>Catatan admin:</b> ' + esc(appeal.admin_note) + '</div>';
+    }
+    html += '</div>';
+    box.innerHTML = html;
+  }
+
+  async function loadStatus(){
+    try {
+      var r = await fetch('/api/chat/ban-status', { credentials:'same-origin', cache:'no-store' });
+      var j = await r.json();
+
+      if (!j || !j.ok || !j.banned) {
+        $('bannedReason').textContent = 'Tidak ada ban aktif';
+        $('bannedUntil').textContent = '—';
+        $('bannedRemaining').textContent = '—';
+        $('appealSection').hidden = true;
+        return;
+      }
+
+      state.banned = true;
+      setLevel(j.level);
+      $('bannedReason').textContent = j.reason || 'Melanggar aturan';
+
+      if (j.level === 'parah' || !j.until || j.until === 0) {
+        $('bannedUntil').textContent = 'Permanen';
+        $('bannedRemaining').textContent = '—';
+        $('bannedSub').textContent = 'Akun kamu dibanned permanen. Kirim banding untuk pertimbangan ulang.';
+      } else {
+        $('bannedUntil').textContent = fmtDate(j.until);
+        $('bannedRemaining').textContent = fmtRemaining(j.until - Date.now());
+        var days = Math.ceil((j.until - Date.now()) / 86400000);
+        $('bannedSub').textContent = 'Akun kamu nggak bisa digunakan selama ' + (days > 0 ? days + ' hari' : 'beberapa jam') + ' ke depan';
+      }
+
+      // Cek appeal
+      try {
+        var r2 = await fetch('/api/chat/appeal', { credentials:'same-origin', cache:'no-store' });
+        var j2 = await r2.json();
+        if (j2 && j2.ok && j2.appeal) {
+          state.appeal = j2.appeal;
+          renderAppeal(j2.appeal);
+        } else {
+          renderAppeal(null);
+        }
+      } catch(e) { renderAppeal(null); }
+    } catch(e) {
+      console.error('[BANNED]', e);
+    }
+  }
+
+  $('btnAppeal').addEventListener('click', async function(){
+    var msg = ($('appealMessage').value || '').trim();
+    var err = $('appealError');
+
+    if (msg.length < 20) {
+      err.textContent = 'Pesan minimal 20 karakter';
+      err.hidden = false;
       return;
     }
-    document.getElementById('bannedReason').textContent = j.reason || 'Melanggar aturan';
-    var until = new Date(j.until);
-    document.getElementById('bannedUntil').textContent = until.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
-    var diff = j.until - Date.now();
-    var days = Math.floor(diff / 86400000);
-    var hours = Math.floor((diff % 86400000) / 3600000);
-    document.getElementById('bannedRemaining').textContent = days + ' hari ' + hours + ' jam';
-  } catch(e) {}
+
+    err.hidden = true;
+    this.disabled = true;
+    var orig = this.textContent;
+    this.textContent = 'Mengirim...';
+
+    try {
+      var r = await fetch('/api/chat/appeal', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      });
+      var j = await r.json();
+
+      if (!j || !j.ok) {
+        err.textContent = (j && j.message) || 'Gagal kirim banding';
+        err.hidden = false;
+        this.disabled = false;
+        this.textContent = orig;
+        return;
+      }
+
+      // Reload status
+      setTimeout(loadStatus, 300);
+    } catch(e) {
+      err.textContent = 'Koneksi error';
+      err.hidden = false;
+      this.disabled = false;
+      this.textContent = orig;
+    }
+  });
+
+  loadStatus();
 })();
 </script>
 </body>
