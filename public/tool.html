@@ -97,12 +97,27 @@ header h1{font-size:16px;font-weight:800;flex:1;text-align:center;padding-right:
 <!-- END JAVIN-PLAYFUL-BG-V99 -->
 
 <header>
-  <a href="/" class="back">← Kembali</a>
+  <a href="/home" class="back" id="btnBack">← Kembali</a>
   <h1 id="headerTitle">Loading...</h1>
 </header>
 <div class="wrap" id="wrap">
   <div class="loading"><div class="loading-spin"></div>Memuat tool...</div>
 </div>
+<script>
+// Tombol kembali: pakai history.back() kalau ada, fallback ke /home
+(function(){
+  var btn = document.getElementById('btnBack');
+  if (!btn) return;
+  btn.addEventListener('click', function(e){
+    e.preventDefault();
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = '/home';
+    }
+  });
+})();
+</script>
 <script src="/tool-app.js?v=2"></script>
 <script src="/update-banner.js?v=1" defer></script>
 <script src="/announce.js?v=1" defer></script>
