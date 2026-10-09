@@ -74,7 +74,9 @@ export async function onRequestGet({ request, env }) {
       credits: user.credits || 0,
       tier: user.tier || 'free',
       tier_expires_at: user.tier_expires_at || 0,
-      created_at: user.created_at || null
+      created_at: user.created_at || null,
+      bio: user.bio || '',
+      onboarded: user.onboarded || 0
     }
   });
 }

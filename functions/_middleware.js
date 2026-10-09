@@ -550,7 +550,7 @@ export async function onRequest(context) {
     var __isStatic = __staticExts.indexOf(__ext) !== -1;
     var __isApi = pathname.indexOf('/api/') === 0;
     var __isWellKnown = pathname.indexOf('/.well-known/') === 0;
-    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html', '/banned', '/banned.html', '/api/chat/ban-status'];
+    var __publicPages = ['/login', '/login.html', '/maintenance', '/maintenance.html', '/buy', '/buy.html', '/banned', '/banned.html', '/onboarding', '/onboarding.html', '/api/chat/ban-status'];
     var __isPublicPage = __publicPages.indexOf(pathname) !== -1;
 
     if (!__isStatic && !__isApi && !__isWellKnown && !__isPublicPage) {
@@ -631,6 +631,44 @@ export async function onRequest(context) {
     }
   }
   // ==== END BAN CHECK ====
+
+  // ==== ONBOARD CHECK: kalau user udah login tapi belum onboarded, redirect ke /onboarding.html ====
+  if ((method === 'GET' || method === 'HEAD') && context.env && context.env.JAVIN_DB) {
+    var __obExt = pathname.split('.').pop().toLowerCase();
+    var __obStaticExts = ['js','css','png','jpg','jpeg','gif','svg','ico','woff','woff2','ttf','mp3','mp4','webm','json','txt','xml','webp','avif'];
+    var __obIsStatic = __obStaticExts.indexOf(__obExt) !== -1;
+    var __obIsApi = pathname.indexOf('/api/') === 0;
+    var __obBypass = ['/onboarding', '/onboarding.html', '/banned', '/banned.html', '/login', '/login.html', '/maintenance', '/maintenance.html', '/api/user/complete-onboarding', '/api/user/avatar-upload', '/api/chat/ban-status'];
+    var __obIsBypass = __obBypass.indexOf(pathname) !== -1;
+
+    if (!__obIsStatic && !__obIsApi && !__obIsBypass) {
+      var __obCookie = request.headers.get('Cookie') || '';
+      var __obUser = null;
+
+      var __obDemoMatch = __obCookie.match(/(?:^|;\s*)javin_demo=([^;]+)/);
+      var __obMatch = __obDemoMatch || __obCookie.match(/(?:^|;\s*)javin_session=([^;]+)/);
+
+      if (__obMatch) {
+        try {
+          var __obToken = decodeURIComponent(__obMatch[1]);
+          var __obSess = await context.env.JAVIN_DB.prepare(
+            'SELECT user_id FROM auth_sessions WHERE token = ? AND expires_at > ?'
+          ).bind(__obToken, Date.now()).first();
+          if (__obSess) {
+            var __obU = await context.env.JAVIN_DB.prepare(
+              'SELECT user_code, onboarded FROM auth_users WHERE id = ?'
+            ).bind(__obSess.user_id).first();
+            if (__obU) __obUser = __obU;
+          }
+        } catch(e) { console.error('[ONBOARD-CHECK]', e.message); }
+      }
+
+      if (__obUser && (__obUser.onboarded || 0) !== 1) {
+        return Response.redirect(new URL('/onboarding.html', request.url).toString(), 302);
+      }
+    }
+  }
+  // ==== END ONBOARD CHECK ====
 
   // ==== END AUTH GATE ====
 

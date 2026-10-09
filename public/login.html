@@ -332,7 +332,7 @@ async function startDemo() {
       localStorage.setItem('javin_user_name', 'Demo User');
     } catch(e){}
     noteEl.textContent = 'Demo aktif! Mengalihkan...';
-    setTimeout(function(){ location.replace('/home?demo=1'); }, 800);
+    setTimeout(function(){ goAfterLogin(null, true); }, 800);
   } catch(e) {
     errorDemo.textContent = 'Koneksi error. Coba lagi.';
     errorDemo.classList.add('show');
@@ -351,7 +351,7 @@ fetch('/api/auth/me', { credentials: 'same-origin' })
         localStorage.setItem('javin_user_name', j.user.name || '');
         localStorage.setItem('javin_user_avatar', j.user.avatar || '');
       } catch(e){}
-      location.replace('/home');
+      goAfterLogin(j.user, false);
     }
   })
   .catch(function(){});
@@ -446,7 +446,7 @@ async function verifyCode(){
       if (j.session_token) localStorage.setItem('javin_session_token', j.session_token);
     } catch(e){}
 
-    setTimeout(function(){ location.replace('/home'); }, 400);
+    setTimeout(function(){ goAfterLogin(j.user, false); }, 400);
   } catch(e) {
     loading2.classList.remove('show');
     btnVerify.disabled = false;
@@ -477,6 +477,26 @@ async function verifyCode(){
     if (v.paused) v.play().catch(function(){});
   }, 3000);
 })();
+
+// Helper: redirect setelah login (cek onboarded)
+function goAfterLogin(user, isDemo){
+  try {
+    if(user){
+      localStorage.setItem('javin_user_id', user.user_code || '');
+      localStorage.setItem('javin_user_name', user.name || '');
+      localStorage.setItem('javin_user_avatar', user.avatar || '');
+    }
+  } catch(e){}
+  if(isDemo){
+    location.replace('/home');
+    return;
+  }
+  if(user && user.onboarded === 1){
+    location.replace('/home');
+  } else {
+    location.replace('/onboarding.html');
+  }
+}
 </script>
 <script src="/fingerprint.js"></script>
 
