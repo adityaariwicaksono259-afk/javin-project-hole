@@ -415,8 +415,8 @@ export async function onRequestPost({ request, env }) {
             h += '<b>Status aktif:</b>\n';
             list.forEach(r => {
               const status = r.maintenance === 1 ? '🔧' : '✅';
-              const reason = r.maintenance === 1 && r.reason ? ' · <i>' + esc(r.reason) + '</i>' : '';
-              h += status + ' <code>' + esc(r.feature_key) + '</code>' + reason + '\n';
+              const reason = r.maintenance === 1 && r.reason ? ' · <i>' + escapeHtml(r.reason) + '</i>' : '';
+              h += status + ' <code>' + escapeHtml(r.feature_key) + '</code>' + reason + '\n';
             });
           }
 
@@ -430,7 +430,7 @@ export async function onRequestPost({ request, env }) {
 
           await reply(env, chatId, h);
         } catch (e) {
-          await reply(env, chatId, '❌ Error: ' + esc(e.message));
+          await reply(env, chatId, '❌ Error: ' + escapeHtml(e.message));
         }
         return new Response('ok');
       }
@@ -530,7 +530,7 @@ export async function onRequestPost({ request, env }) {
       if (!resolvedKeys.length) {
         await reply(env, chatId,
           '❌ <b>Nggak ada yang bisa diproses</b>\n\n' +
-          (errors.length ? 'Nama nggak ketemu: ' + errors.map(e => '<code>' + esc(e) + '</code>').join(', ') + '\n\n' : '') +
+          (errors.length ? 'Nama nggak ketemu: ' + errors.map(e => '<code>' + escapeHtml(e) + '</code>').join(', ') + '\n\n' : '') +
           'Cek di /apilist atau /endpoints buat list nama tool yang tersedia.'
         );
         return new Response('ok');
@@ -574,13 +574,13 @@ export async function onRequestPost({ request, env }) {
         }
 
         let h = '🔧 <b>MAINTENANCE AKTIF</b>\n\n';
-        h += '📝 Alasan: ' + esc(finalReason) + '\n';
+        h += '📝 Alasan: ' + escapeHtml(finalReason) + '\n';
         h += '⏰ Sejak: ' + new Date().toISOString().replace('T', ' ').slice(0, 19) + '\n\n';
         h += '<b>Fitur yang di-maintenance (' + success.length + '):</b>\n';
-        success.forEach(k => { h += '• <code>' + esc(k) + '</code>\n'; });
+        success.forEach(k => { h += '• <code>' + escapeHtml(k) + '</code>\n'; });
         if (failed.length) {
           h += '\n<b>Gagal:</b>\n';
-          failed.forEach(f => { h += '• ' + esc(f) + '\n'; });
+          failed.forEach(f => { h += '• ' + escapeHtml(f) + '\n'; });
         }
         h += '\n📢 Pemberitahuan terkirim ke inbox: <b>' + broadcastCount + '</b> user.\n';
         h += 'IP admin tetap bisa akses.\n\n';
@@ -608,17 +608,17 @@ export async function onRequestPost({ request, env }) {
 
         let h = '✅ <b>FITUR NORMAL KEMBALI</b>\n\n';
         h += '<b>Fitur aktif kembali (' + success.length + '):</b>\n';
-        success.forEach(k => { h += '• <code>' + esc(k) + '</code>\n'; });
+        success.forEach(k => { h += '• <code>' + escapeHtml(k) + '</code>\n'; });
         if (failed.length) {
           h += '\n<b>Gagal:</b>\n';
-          failed.forEach(f => { h += '• ' + esc(f) + '\n'; });
+          failed.forEach(f => { h += '• ' + escapeHtml(f) + '\n'; });
         }
         await reply(env, chatId, h);
         return new Response('ok');
       }
 
       await reply(env, chatId,
-        '❓ Action nggak dikenal: <code>' + esc(action) + '</code>\n' +
+        '❓ Action nggak dikenal: <code>' + escapeHtml(action) + '</code>\n' +
         'Gunakan <code>on</code> atau <code>off</code>.'
       );
       return new Response('ok');
@@ -679,7 +679,7 @@ export async function onRequestPost({ request, env }) {
         await reply(env, chatId, '✅ <b>MAINTENANCE OFF</b>\n\nWebsite kembali normal.');
       }
     } catch (e) {
-      await reply(env, chatId, '❌ Error: ' + esc(e.message));
+      await reply(env, chatId, '❌ Error: ' + escapeHtml(e.message));
     }
     return new Response('ok');
   }
