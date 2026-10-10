@@ -1717,30 +1717,279 @@ async function generateScraperRepo(env, chatId, data, reply) {
     return;
   }
 
+  // Summary singkat
   await reply(env, chatId,
     '✅ <b>REPO BERHASIL DIBUAT</b>\n\n' +
     '📦 Repo: <code>' + repoResult.repo + '</code>\n' +
     '🔗 URL: ' + repoResult.url + '\n' +
     '📄 Files: ' + commitResult.committed.join(', ') + '\n\n' +
-    '━━━━━━━━━━━━━━━━━━━━\n' +
-    '<b>🚀 LANJUT DEPLOY (5 menit):</b>\n\n' +
-    '<b>1.</b> Buka https://dashboard.render.com\n' +
-    '<b>2.</b> Login pakai GitHub\n' +
-    '<b>3.</b> Klik <b>New</b> → <b>Web Service</b>\n' +
-    '<b>4.</b> Connect repo: <code>' + repoName + '</code>\n' +
-    '<b>5.</b> Isi setting:\n' +
-    '   • Name: <code>' + repoName + '</code>\n' +
-    '   • Region: <b>Singapore</b>\n' +
-    '   • Branch: main\n' +
-    '   • Build: <code>npm install</code>\n' +
-    '   • Start: <code>npm start</code>\n' +
-    '   • Plan: <b>Free</b>\n' +
-    '<b>6.</b> Klik <b>Create Web Service</b>\n' +
-    '<b>7.</b> Tunggu 2-5 menit\n' +
-    '<b>8.</b> Copy URL Render (contoh: <code>https://' + repoName + '.onrender.com</code>)\n' +
-    '<b>9.</b> Register ke bot:\n\n' +
-    '<code>/api https://' + repoName + '.onrender.com/scrape, ' + esc(data.name) + ', tools, ' + esc(data.desc) + ', ' + (data.params || 'q') + '</code>\n\n' +
-    '━━━━━━━━━━━━━━━━━━━━\n' +
-    '📝 <b>Note:</b> Setelah di Render, edit <code>server.js</code> buat sesuaikan parsing selector dengan struktur HTML target. Template yang bot kasih cuma generik.'
+    '📨 Mengirim file + panduan lengkap...'
   );
+
+  // Kirim file server.js + package.json + panduan lengkap
+  await sendSetupGuide(env, chatId, data, reply);
+}
+
+
+// ==================== SEND FILE VIA TELEGRAM ====================
+
+// Kirim file via Telegram sendDocument
+async function sendFileTelegram(env, chatId, filename, content, caption) {
+  const token = env.TELEGRAM_BOT_TOKEN;
+  if (!token) return { ok: false, message: 'TELEGRAM_BOT_TOKEN kosong.' };
+
+  // Telegram pakai multipart/form-data untuk sendDocument
+  const boundary = '----JavinBot' + Date.now();
+  const parts = [];
+
+  // Field: chat_id
+  parts.push('--' + boundary + '\r\n');
+  parts.push('Content-Disposition: form-data; name="chat_id"\r\n\r\n');
+  parts.push(String(chatId) + '\r\n');
+
+  // Field: caption
+  if (caption) {
+    parts.push('--' + boundary + '\r\n');
+    parts.push('Content-Disposition: form-data; name="caption"\r\n\r\n');
+    parts.push(caption + '\r\n');
+  }
+
+  // Field: parse_mode
+  parts.push('--' + boundary + '\r\n');
+  parts.push('Content-Disposition: form-data; name="parse_mode"\r\n\r\n');
+  parts.push('HTML\r\n');
+
+  // Field: document (file)
+  parts.push('--' + boundary + '\r\n');
+  parts.push(`Content-Disposition: form-data; name="document"; filename="${filename}"\r\n`);
+  parts.push('Content-Type: text/javascript\r\n\r\n');
+  parts.push(content + '\r\n');
+
+  // Closing
+  parts.push('--' + boundary + '--\r\n');
+
+  const body = parts.join('');
+
+  try {
+    const r = await fetch(`https://api.telegram.org/bot${token}/sendDocument`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'multipart/form-data; boundary=' + boundary },
+      body: body
+    });
+    const j = await r.json();
+    if (j && j.ok) return { ok: true };
+    return { ok: false, message: (j && j.description) || 'Telegram error' };
+  } catch (e) {
+    return { ok: false, message: e.message };
+  }
+}
+
+// ============================================
+// KIRIM PANDUAN LENGKAP KE USER
+// ============================================
+export async function sendSetupGuide(env, chatId, data, reply) {
+  const db = env.JAVIN_DB;
+  if (!db) return;
+
+  const name = data.name || 'scraper';
+  const repoName = name.toLowerCase().replace(/[^a-z0-9-]/g, '-') + '-backend';
+  const upstream = data.url || '';
+  const params = data.params || 'q';
+  const paramsList = params.split('|').map(s => s.trim()).filter(Boolean);
+
+  // ============================================
+  // 1. KIRIM FILE server.js
+  // ============================================
+  const serverCode = generateScraperScript({
+    name: name,
+    upstream: upstream,
+    path: '/scrape',
+    params: paramsList
+  });
+
+  await sendFileTelegram(env, chatId, 'server.js', serverCode,
+    '📄 <b>server.js</b>\nFile utama. Upload ke repo GitHub.'
+  );
+
+  // ============================================
+  // 2. KIRIM FILE package.json
+  // ============================================
+  const pkgJson = generatePackageJson(repoName);
+  await sendFileTelegram(env, chatId, 'package.json', pkgJson,
+    '📄 <b>package.json</b>\nDependencies. Upload ke repo GitHub.'
+  );
+
+  // ============================================
+  // 3. KIRIM PANDUAN + KODE YANG HARUS DIEDIT
+  // ============================================
+  const startIdx = serverCode.indexOf('// ====== PARSING ======');
+  const endIdx = serverCode.indexOf('res.json({', startIdx);
+  const parsingCode = startIdx !== -1 && endIdx !== -1
+    ? serverCode.slice(startIdx, endIdx).trim()
+    : '// (bagian parsing nggak terdeteksi)';
+
+  const guide = [
+    '📖 <b>PANDUAN LENGKAP</b>',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+    '<b>📋 Yang barusan gua kirim:</b>',
+    '• <code>server.js</code> — file utama',
+    '• <code>package.json</code> — dependencies',
+    '',
+    '<b>🚀 LANGKAH DEPLOY:</b>',
+    '',
+    '<b>1. Bikin repo GitHub</b>',
+    '   • Buka: https://github.com/new',
+    '   • Nama: <code>' + repoName + '</code>',
+    '   • Private: ✅',
+    '   • JANGAN centang "Add README"',
+    '   • Klik <b>Create repository</b>',
+    '',
+    '<b>2. Upload 2 file</b>',
+    '   • Di repo baru, klik <b>Add file</b> → <b>Upload files</b>',
+    '   • Upload <code>server.js</code> + <code>package.json</code>',
+    '   • Klik <b>Commit changes</b>',
+    '',
+    '<b>3. Deploy ke Render</b>',
+    '   • Buka: https://dashboard.render.com',
+    '   • Login pakai GitHub',
+    '   • Klik <b>New</b> → <b>Web Service</b>',
+    '   • Connect repo <code>' + repoName + '</code>',
+    '   • Setting:',
+    '      - Name: <code>' + repoName + '</code>',
+    '      - Region: <b>Singapore</b>',
+    '      - Build: <code>npm install</code>',
+    '      - Start: <code>npm start</code>',
+    '      - Plan: <b>Free</b>',
+    '   • Klik <b>Create Web Service</b>',
+    '   • Tunggu 2-5 menit',
+    '',
+    '<b>4. Register ke bot</b>',
+    '   Setelah Render live, dapet URL kayak:',
+    '   <code>https://' + repoName + '.onrender.com</code>',
+    '',
+    '   Kirim ke gua:',
+    '   <code>/api https://' + repoName + '.onrender.com/scrape, ' + name + ', tools, ' + (data.desc || name) + ', ' + params + '</code>',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '<b>⚠️ YANG HARUS DIGANTI DI server.js</b>',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '',
+    'Cari komentar: <code>⚠️ EDIT BAGIAN INI</code>',
+    '',
+    'Ada <b>2 bagian</b> yang perlu diganti:',
+    '',
+    '<b>A. Build URL</b> — sesuaikan format param:',
+    '<pre>' + escapeHtml(
+`// SEKARANG (generik):
+const targetUrl = UPSTREAM_BASE + '?q=' + encodeURIComponent(q);
+
+// CONTOH (kalau target beda format):
+const targetUrl = UPSTREAM_BASE + '/search/' + q;
+// atau
+const targetUrl = UPSTREAM_BASE + '/api?keyword=' + q + '&limit=20';`
+    ) + '</pre>',
+    '',
+    '<b>B. Selector Parsing</b> — sesuaikan dengan struktur HTML target:',
+    '<pre>' + escapeHtml(
+`// SEKARANG (generik):
+$('article, .item, .card, .result').each((i, el) => {
+  const link = $el.find('a').first().attr('href');
+  const title = $el.find('h1, h2, h3').first().text();
+  const image = $el.find('img').first().attr('src');
+  ...
+});
+
+// CONTOH (spesifik LK21):
+$('article.card').each((i, el) => {
+  const link = $el.find('figure a').attr('href');
+  const title = $el.find('h3.poster-title').text().trim();
+  const image = $el.find('img').attr('data-src');
+  ...
+});`
+    ) + '</pre>',
+    '',
+    '<b>🔍 Cara nemu selector yang bener:</b>',
+    '1. Buka website target di Chrome HP',
+    '2. Long-press elemen (judul/poster) → <b>Inspect</b>',
+    '3. Catat <code>class</code> atau <code>id</code>-nya',
+    '4. Ganti selector di <code>server.js</code>',
+    '5. Commit ulang ke GitHub (Render auto-redeploy)',
+    '',
+    '━━━━━━━━━━━━━━━━━━━━',
+    '<b>💡 TIPS:</b>',
+    '• Bot udah kasih template kerja — tinggal edit selector',
+    '• Test hasil dulu di browser: <code>' + upstream + '</code>',
+    '• Kalau bingung, kirim screenshot ke gua (via support page)',
+    '• Render free tier sleep 15 menit, bangun butuh 30 detik'
+  ].join('\n');
+
+  await reply(env, chatId, guide);
+
+  // Clear session
+  await db.prepare('DELETE FROM bot_sessions WHERE chat_id = ?').bind(String(chatId)).run();
+}
+
+
+// ==================== /cariendpoint — cari endpoint dari website ====================
+
+import { findEndpoints, formatFinderResult } from './endpoint-finder.js';
+
+export async function cmdCariEndpoint(env, chatId, args, reply) {
+  const url = (args || '').trim();
+
+  if (!url) {
+    await reply(env, chatId,
+      '❓ <b>Format:</b>\n' +
+      '<code>/cariendpoint &lt;url&gt;</code>\n\n' +
+      '<b>Contoh:</b>\n' +
+      '<code>/cariendpoint manhwadesu.wiki</code>\n' +
+      '<code>/cariendpoint https://lk21official.cc</code>'
+    );
+    return;
+  }
+
+  await reply(env, chatId,
+    '🔍 <b>Cari endpoint</b>\n' +
+    '🌐 <code>' + esc(url) + '</code>\n\n' +
+    'Proses: 15-30 detik...\n' +
+    'Tunggu ya.'
+  );
+
+  let result;
+  try {
+    result = await findEndpoints(url, function(progress) {
+      // Progress callback — skip biar nggak spam chat
+      console.log('[FINDER]', progress);
+    });
+  } catch (e) {
+    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+    return;
+  }
+
+  const formatted = formatFinderResult(result, 50);
+
+  // Kirim hasil. Kalau kepanjangan, split
+  if (formatted.length > 4000) {
+    const chunks = [];
+    let current = '';
+    const lines = formatted.split('\n');
+
+    for (const line of lines) {
+      if ((current + '\n' + line).length > 3800) {
+        chunks.push(current);
+        current = line;
+      } else {
+        current += (current ? '\n' : '') + line;
+      }
+    }
+    if (current) chunks.push(current);
+
+    for (let i = 0; i < chunks.length; i++) {
+      const prefix = chunks.length > 1 ? '📄 <b>Part ' + (i+1) + '/' + chunks.length + '</b>\n\n' : '';
+      await reply(env, chatId, prefix + chunks[i]);
+    }
+  } else {
+    await reply(env, chatId, formatted);
+  }
 }
