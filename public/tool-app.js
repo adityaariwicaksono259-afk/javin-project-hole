@@ -155,7 +155,6 @@
 
       if (state.step === 1) {
         body.innerHTML = [
-          '<div class="wz-info">ℹ️ Fitur ini <b>gratis</b>. Cukup login, terus isi email Alight Motion kamu. Kami akan mengirim magic link ke email tersebut untuk verifikasi.</div>',
           '<div class="field"><label>Email Alight Motion <span style="color:#dc2626">*</span></label>',
           '<input type="email" id="wzEmail" placeholder="nama@gmail.com" autocomplete="email" inputmode="email"></div>',
           '<button class="submit" id="wzBtn1">Kirim Magic Link</button>',
