@@ -309,54 +309,71 @@ export async function onRequestPost({ request, env }) {
     if (isAdmin) {
       help += '\n\n🛡️ <b>ADMIN PANEL</b>\n' +
         '<code>/admin</code> — Menu admin panel\n' +
-        '<code>/users</code> — List user (atau <code>/users &lt;id&gt;</code>)\n' +
+        '<code>/users</code> — List user\n' +
         '<code>/userdel &lt;id&gt;</code> — Hapus user\n' +
-        '<code>/keys</code> — Premium keys (<code>gen N</code>, <code>revoke</code>, <code>del</code>)\n' +
+        '<code>/keys</code> — Premium keys\n' +
         '<code>/logs [n]</code> — Log terakhir\n' +
         '<code>/logsclear</code> — Hapus semua log\n' +
-        '<code>/config</code> — Config server (<code>KEY=VALUE</code> untuk set)\n' +
+        '<code>/config</code> — Config server\n' +
         '<code>/backup</code> — Backup database\n' +
         '<code>/announce</code> — Manage announcement\n' +
-        '<code>/tambahlimit &lt;id&gt; &lt;jumlah&gt;</code> — Tambah limit user\n' +
-        '<code>/resetlimit [id]</code> — Reset limit user\n' +
-        '\n🔧 <b>MAINTENANCE</b>\n' +
-        '<code>/maintenance on</code> — Aktifkan maintenance\n' +
-        '<code>/maintenance off</code> — Matikan\n' +
-        '<code>/maintenance status</code> — Cek status\n' +
-        '<code>/stats</code> — Statistik server\n' +
-        '\n🎵 <b>SOUND</b>\n' +
-        '<code>/addsound</code> — Panduan upload sound\n' +
-        '<code>/listsound</code> — Liat semua sound\n' +
-        '<code>/setsound &lt;id&gt;</code> — Ganti sound aktif\n' +
-        '<code>/delsound &lt;id&gt;</code> — Hapus sound\n' +
-        '<code>/soundstatus</code> — Liat sound aktif' +
-        '\n\n🔍 <b>OSINT COMMANDS</b>\n' +
-        '<code>/ip &lt;target&gt;</code> — IP lookup lengkap\n' +
-        '<code>/ipinfo</code> — Info IP kamu\n' +
-        '<code>/dns &lt;domain&gt;</code> — DNS records\n' +
-        '<code>/reverse &lt;ip&gt;</code> — Reverse DNS\n' +
-        '<code>/whois &lt;domain&gt;</code> — WHOIS lookup\n' +
-        '<code>/subdomain &lt;domain&gt;</code> — Cari subdomain\n' +
-        '<code>/cve &lt;keyword&gt;</code> — CVE finder\n' +
-        '<code>/headers &lt;url&gt;</code> — Cek security headers\n' +
-        '<code>/ssl &lt;domain&gt;</code> — SSL check\n' +
-        '<code>/phone &lt;nomor&gt;</code> — Validasi nomor\n' +
-        '<code>/qr &lt;teks&gt;</code> — QR code generator\n' +
-        '<code>/hash &lt;teks&gt;</code> — Hash generator\n' +
-        '<code>/password &lt;teks&gt;</code> — Cek password strength\n' +
-        '<code>/username &lt;user&gt;</code> — Username search\n' +
-        '<code>/portscan &lt;target&gt;</code> — Port scan (IP sendiri!)' +
-        '\n\n🌐 <b>IP MANAGEMENT</b>\n' +
-        '<code>/whitelist &lt;ip&gt; [alasan]</code> — Whitelist IP\n' +
-        '<code>/unban &lt;ip&gt;</code> — Unban IP\n' +
-        '<code>/ban &lt;ip&gt; [alasan]</code> — Ban IP manual' +
-        '\n\n🎫 <b>TIER MANAGEMENT</b>\n' +
-        '<code>/settier &lt;user_id&gt; &lt;tier&gt; [hari]</code> — Set tier user\n' +
-        '<code>/removetier &lt;user_id&gt;</code> — Turunin ke free\n' +
-        '<code>/tier &lt;user_id&gt;</code> — Cek tier user';
+        '<code>/stats</code> — Statistik server';
+
+      help += '\n\n📢 <b>BROADCAST</b>\n' +
+        '<code>/pemberitahuan &lt;teks&gt;</code> — Kirim pemberitahuan ke inbox semua user\n' +
+        '<code>/pemberitahuan list</code> — List pemberitahuan\n' +
+        '<code>/pemberitahuan hapus &lt;id&gt;</code> — Hapus';
+
+      help += '\n\n🚫 <b>USER MODERATION</b>\n' +
+        '<code>/appeals [status]</code> — List banding\n' +
+        '<code>/approve &lt;id&gt;</code> — Setujui banding\n' +
+        '<code>/reject &lt;id&gt; [note]</code> — Tolak banding\n' +
+        '<code>/userban &lt;code&gt; [alasan]</code> — Ban user\n' +
+        '<code>/userunban &lt;code&gt;</code> — Cabut ban\n' +
+        '<code>/userbanlist</code> — List user dibanned';
+
+      help += '\n\n🔧 <b>MAINTENANCE</b>\n' +
+        '<code>/maintenance on|off|status</code>';
+
+      help += '\n\n🎵 <b>SOUND</b>\n' +
+        '<code>/addsound</code> — Upload sound\n' +
+        '<code>/listsound</code> — List sound\n' +
+        '<code>/setsound &lt;id&gt;</code> — Set aktif\n' +
+        '<code>/delsound &lt;id&gt;</code> — Hapus\n' +
+        '<code>/soundstatus</code> — Cek aktif';
+
+      help += '\n\n🌐 <b>ENDPOINT MANAGEMENT</b>\n' +
+        '<code>/api</code> — Tambah endpoint (interactive)\n' +
+        '<code>/api &lt;url&gt;, &lt;nama&gt;, &lt;folder&gt;, &lt;desc&gt;</code> — Quick add\n' +
+        '<code>/apilist [hidden|all]</code> — List endpoint bot\n' +
+        '<code>/edit &lt;nama&gt;</code> — Edit endpoint\n' +
+        '<code>/hapus &lt;nama&gt;</code> — Hide endpoint\n' +
+        '<code>/pulihkan &lt;nama&gt;</code> — Restore endpoint\n' +
+        '<code>/cariendpoint &lt;url&gt;</code> — Scan endpoint website\n' +
+        '<code>/testgithub</code> — Test koneksi GitHub';
+
+      help += '\n\n🌐 <b>IP MANAGEMENT</b>\n' +
+        '<code>/whitelist &lt;ip&gt; [alasan]</code>\n' +
+        '<code>/unban &lt;ip&gt;</code>\n' +
+        '<code>/ban &lt;ip&gt; [alasan]</code>';
+
+      help += '\n\n🎫 <b>TIER MANAGEMENT</b>\n' +
+        '<code>/settier &lt;user_id&gt; &lt;tier&gt; [hari]</code>\n' +
+        '<code>/removetier &lt;user_id&gt;</code>\n' +
+        '<code>/tier &lt;user_id&gt;</code> — Cek tier\n' +
+        '<code>/tambahlimit &lt;id&gt; &lt;jumlah&gt;</code>\n' +
+        '<code>/resetlimit [id]</code>';
+
+      help += '\n\n🔍 <b>OSINT</b>\n' +
+        '<code>/ip &lt;target&gt;</code> · <code>/ipinfo</code> · <code>/dns</code> · <code>/reverse</code> · <code>/whois</code>\n' +
+        '<code>/subdomain</code> · <code>/cve</code> · <code>/headers</code> · <code>/ssl</code> · <code>/phone</code>\n' +
+        '<code>/qr</code> · <code>/hash</code> · <code>/password</code> · <code>/username</code> · <code>/portscan</code>';
+
+      help += '\n\n⚙️ <b>OTHER</b>\n' +
+        '<code>/cancel</code> — Batalin flow yang jalan';
     }
 
-    await reply(env, chatId, help);
+    await reply(env, chatId, help);;
     return new Response('ok');
   }
 
