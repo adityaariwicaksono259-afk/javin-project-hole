@@ -439,17 +439,44 @@ export async function findEndpoints(websiteUrl, onProgress) {
   for (const path of COMMON_PATHS) {
     const testUrl = baseUrl + path;
     const r = await safeFetch(testUrl, 5000);
-    if (r && r.status < 400) {
-      const ct = r.headers.get('Content-Type') || '';
-      // Cuma accept JSON/XML/text/HTML (bukan asset)
-      if (ct.includes('json') || ct.includes('xml') || ct.includes('text/') || ct.includes('javascript')) {
+    if (!r || r.status >= 400) continue;
+
+    const ct = (r.headers.get('Content-Type') || '').toLowerCase();
+
+    // Skip asset
+    if (ct.includes('image/') || ct.includes('video/') || ct.includes('audio/') || ct.includes('font/')) continue;
+
+    // Untuk HTML — cek body apakah beneran JSON atau HTML
+    if (ct.includes('text/html')) {
+      try {
+        const text = await r.text();
+        const trimmed = text.trim();
+        // HTML yang balikin status 200 tapi isinya HTML = SPA catch-all (false positive)
+        // Accept hanya kalau jelas JSON/XML (bukan tag <html>)
+        const isHtmlDoc = /^<!doctype html|^<html|^<!DOCTYPE/i.test(trimmed);
+        const isJsonLike = trimmed.startsWith('{') || trimmed.startsWith('[');
+        const isXmlLike = trimmed.startsWith('<?xml');
+        if (isHtmlDoc && !isJsonLike && !isXmlLike) {
+          // Ini HTML document — bukan API. Skip.
+          continue;
+        }
+        // Kalau JSON/XML, tetap masuk
         probeResults.push({
           url: testUrl,
           status: r.status,
           content_type: ct,
-          size: r.headers.get('Content-Length') || '0'
+          size: String(text.length)
         });
+      } catch (e) {
+        continue;
       }
+    } else if (ct.includes('json') || ct.includes('xml') || ct.includes('text/plain') || ct.includes('javascript')) {
+      probeResults.push({
+        url: testUrl,
+        status: r.status,
+        content_type: ct,
+        size: r.headers.get('Content-Length') || '0'
+      });
     }
   }
   result.stats.probe_urls = probeResults.length;

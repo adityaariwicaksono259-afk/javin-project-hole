@@ -1952,44 +1952,64 @@ export async function cmdCariEndpoint(env, chatId, args, reply) {
   await reply(env, chatId,
     '🔍 <b>Cari endpoint</b>\n' +
     '🌐 <code>' + esc(url) + '</code>\n\n' +
-    'Proses: 15-30 detik...\n' +
+    '⏳ Proses: 10-30 detik...\n' +
     'Tunggu ya.'
   );
 
   let result;
   try {
     result = await findEndpoints(url, function(progress) {
-      // Progress callback — skip biar nggak spam chat
       console.log('[FINDER]', progress);
     });
   } catch (e) {
-    await reply(env, chatId, '❌ Error: ' + esc(e.message));
+    console.error('[CARIENDPOINT]', e);
+    await reply(env, chatId,
+      '❌ <b>Scan gagal</b>\n\n' +
+      'Error: <code>' + esc(e.message || 'unknown') + '</code>\n\n' +
+      'Coba lagi atau kirim screenshot ke gue.'
+    );
     return;
   }
 
-  const formatted = formatFinderResult(result, 50);
+  // Format hasil — max 20 endpoint biar nggak kepanjangan
+  const formatted = formatFinderResult(result, 20);
 
-  // Kirim hasil. Kalau kepanjangan, split
-  if (formatted.length > 4000) {
-    const chunks = [];
-    let current = '';
-    const lines = formatted.split('\n');
+  // Split jadi chunk max 3500 char (aman dari 4096 limit)
+  const chunks = splitText(formatted, 3500);
 
-    for (const line of lines) {
-      if ((current + '\n' + line).length > 3800) {
-        chunks.push(current);
-        current = line;
-      } else {
-        current += (current ? '\n' : '') + line;
-      }
-    }
-    if (current) chunks.push(current);
-
-    for (let i = 0; i < chunks.length; i++) {
-      const prefix = chunks.length > 1 ? '📄 <b>Part ' + (i+1) + '/' + chunks.length + '</b>\n\n' : '';
+  for (let i = 0; i < chunks.length; i++) {
+    const prefix = chunks.length > 1 ? '<i>📄 Part ' + (i+1) + '/' + chunks.length + '</i>\n\n' : '';
+    try {
       await reply(env, chatId, prefix + chunks[i]);
+    } catch (e) {
+      console.error('[CARIENDPOINT-SEND]', e);
+      // Kalau kirim gagal, coba tanpa prefix
+      try { await reply(env, chatId, chunks[i]); } catch (e2) {}
     }
-  } else {
-    await reply(env, chatId, formatted);
+    // Delay antar chunk (rate limit Telegram)
+    if (i < chunks.length - 1) {
+      await new Promise(r => setTimeout(r, 500));
+    }
   }
+}
+
+// Helper: split text jadi chunks max char, tidak motong HTML tag
+function splitText(text, maxLen) {
+  if (text.length <= maxLen) return [text];
+
+  const lines = text.split('\n');
+  const chunks = [];
+  let current = '';
+
+  for (const line of lines) {
+    const wouldBe = current ? current + '\n' + line : line;
+    if (wouldBe.length > maxLen && current) {
+      chunks.push(current);
+      current = line;
+    } else {
+      current = wouldBe;
+    }
+  }
+  if (current) chunks.push(current);
+  return chunks;
 }
