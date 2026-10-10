@@ -288,7 +288,7 @@ export async function onRequestPost({ request, env }) {
 
   // Normalize command: hapus @bot, trim
   let cmd = text.split(/\s+/)[0].split('@')[0].toLowerCase();
-  const args = text.slice(text.indexOf(cmd) + cmd.length).trim();
+  let args = text.slice(text.indexOf(cmd) + cmd.length).trim();
   console.log('[BOT-CMD]', cmd, '| args:', args, '| raw:', text);
 
   // Batasi command publik — hanya admin yang bisa akses command lain
