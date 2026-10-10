@@ -225,20 +225,45 @@ export async function onRequest(context) {
   // ==== END CSRF PROTECTION ====
 
   // ==== FEATURE MAINTENANCE CHECK ====
-  // Cek apakah fitur yang diakses sedang maintenance
   if (context.env && context.env.JAVIN_DB) {
     var __featPath = pathname;
-    var __featKey = null;
+    var __featQuery = url.searchParams;
+    var __featKeys = [];
 
-    // Mapping path -> feature key
-    if (__featPath.startsWith('/api/chat/')) __featKey = 'chat';
-    else if (__featPath.startsWith('/api/proxy-ext')) __featKey = 'endpoint';
-    else if (__featPath.startsWith('/api/amfinder')) __featKey = 'endpoint';
-    else if (__featPath.startsWith('/api/amsearch')) __featKey = 'endpoint';
-    else if (__featPath.startsWith('/api/premium/')) __featKey = 'endpoint';
+    // ==== Mapping: chat, endpoint, atau tool:<catalogId> ====
+    if (__featPath.startsWith('/api/chat/')) {
+      __featKeys.push('chat');
+    }
 
-    if (__featKey) {
-      // Cek admin bypass
+    if (__featPath.startsWith('/api/proxy-ext')) {
+      // Prioritas 1: cek per tool via ?id=<catalogId>
+      var __toolId = __featQuery.get('id');
+      if (__toolId) {
+        __featKeys.push('tool:' + __toolId.toLowerCase());
+      }
+      // Prioritas 2: fallback grup 'endpoint'
+      __featKeys.push('endpoint');
+    }
+
+    if (__featPath.startsWith('/api/amfinder')) {
+      __featKeys.push('tool:premium-amfinder');
+      __featKeys.push('endpoint');
+    }
+    if (__featPath.startsWith('/api/amsearch')) {
+      __featKeys.push('tool:am-preset-search');
+      __featKeys.push('endpoint');
+    }
+    if (__featPath.startsWith('/api/premium/amfinder')) {
+      __featKeys.push('tool:premium-amfinder');
+      __featKeys.push('endpoint');
+    }
+    if (__featPath.startsWith('/api/premium/amprem')) {
+      __featKeys.push('tool:premium-amprem');
+      __featKeys.push('endpoint');
+    }
+
+    if (__featKeys.length) {
+      // Admin bypass
       var __featIP = request.headers.get('CF-Connecting-IP') ||
                      (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
                      'unknown';
@@ -247,28 +272,32 @@ export async function onRequest(context) {
 
       if (!__featIsAdmin) {
         try {
-          var __featRow = await context.env.JAVIN_DB.prepare(
-            'SELECT maintenance, reason FROM feature_status WHERE feature_key = ?'
-          ).bind(__featKey).first();
+          // Cek SEMUA key (prioritas paling atas dulu)
+          for (var __i = 0; __i < __featKeys.length; __i++) {
+            var __key = __featKeys[__i];
+            var __featRow = await context.env.JAVIN_DB.prepare(
+              'SELECT maintenance, reason FROM feature_status WHERE feature_key = ?'
+            ).bind(__key).first();
 
-          if (__featRow && __featRow.maintenance === 1) {
-            var __featMsg = 'Fitur sedang dalam perbaikan.';
-            if (__featRow.reason) __featMsg += ' Alasan: ' + __featRow.reason;
+            if (__featRow && __featRow.maintenance === 1) {
+              var __featMsg = 'Fitur sedang dalam perbaikan.';
+              if (__featRow.reason) __featMsg += ' Alasan: ' + __featRow.reason;
 
-            return new Response(JSON.stringify({
-              ok: false,
-              maintenance: true,
-              feature: __featKey,
-              message: __featMsg,
-              reason: __featRow.reason || ''
-            }), {
-              status: 503,
-              headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'Retry-After': '300',
-                'Cache-Control': 'no-store'
-              }
-            });
+              return new Response(JSON.stringify({
+                ok: false,
+                maintenance: true,
+                feature: __key,
+                message: __featMsg,
+                reason: __featRow.reason || ''
+              }), {
+                status: 503,
+                headers: {
+                  'Content-Type': 'application/json; charset=utf-8',
+                  'Retry-After': '300',
+                  'Cache-Control': 'no-store'
+                }
+              });
+            }
           }
         } catch (e) {
           console.error('[FEATURE-MAINT]', e.message);

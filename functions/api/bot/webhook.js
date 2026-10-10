@@ -397,26 +397,22 @@ export async function onRequestPost({ request, env }) {
 
     // ============ SUBCOMMAND: /maintenance fitur ============
     if (args && args.startsWith('fitur')) {
-      const sub = args.slice(5).trim(); // setelah 'fitur'
-      const parts = sub.split(/\s+/).filter(Boolean);
+      const sub = args.slice(5).trim();
 
-      // /maintenance fitur  → list status
-      // /maintenance fitur <key> on [alasan]
-      // /maintenance fitur <key> off
-
-      // Kalau kosong → tampil list
-      if (!parts.length) {
+      // ==== LIST (no arg) ====
+      if (!sub) {
         try {
           const rows = await db.prepare(
-            'SELECT feature_key, maintenance, reason, started_at FROM feature_status ORDER BY feature_key'
+            'SELECT feature_key, maintenance, reason, started_at FROM feature_status ORDER BY maintenance DESC, feature_key'
           ).all();
 
           let h = '🔧 <b>FITUR MAINTENANCE</b>\n\n';
           const list = rows.results || [];
 
           if (!list.length) {
-            h += '<i>Belum ada fitur terdaftar.</i>';
+            h += '<i>Belum ada fitur maintenance.</i>';
           } else {
+            h += '<b>Status aktif:</b>\n';
             list.forEach(r => {
               const status = r.maintenance === 1 ? '🔧' : '✅';
               const reason = r.maintenance === 1 && r.reason ? ' · <i>' + esc(r.reason) + '</i>' : '';
@@ -425,11 +421,12 @@ export async function onRequestPost({ request, env }) {
           }
 
           h += '\n<b>Cara pakai:</b>\n';
-          h += '<code>/maintenance fitur &lt;key&gt; on [alasan]</code>\n';
-          h += '<code>/maintenance fitur &lt;key&gt; off</code>\n\n';
-          h += '<b>Key tersedia:</b>\n';
-          h += '• <code>chat</code> — Chat semua user\n';
-          h += '• <code>endpoint</code> — Endpoint bot/AM/proxy';
+          h += '<code>/maintenance fitur &lt;nama&gt; on [alasan]</code>\n';
+          h += '<code>/maintenance fitur &lt;nama&gt; off</code>\n\n';
+          h += '<b>Format nama:</b>\n';
+          h += '• Fitur grup: <code>chat</code>, <code>endpoint</code>\n';
+          h += '• Nama tool: <code>\"aio Downloader\"</code>, <code>c.ai</code>\n';
+          h += '• Bulk (koma): <code>c.ai,amfinder,amsearch</code>\n';
 
           await reply(env, chatId, h);
         } catch (e) {
@@ -438,82 +435,195 @@ export async function onRequestPost({ request, env }) {
         return new Response('ok');
       }
 
-      const key = parts[0].toLowerCase();
-      const action = (parts[1] || '').toLowerCase();
-      const reason = parts.slice(2).join(' ') || '';
+      // ==== PARSE ARGS ====
+      // Format: <nama> <action> [alasan]
+      // Nama bisa: 'chat' / 'endpoint' / '"aio Downloader"' / 'c.ai,amfinder'
+      // Nama dengan spasi wajib pakai quote atau koma (auto-detect)
 
-      const validKeys = ['chat', 'endpoint'];
-      if (!validKeys.includes(key)) {
+      // Strategi:
+      // 1. Cek kalau ada quote di awal → ambil sampe quote penutup
+      // 2. Kalau nggak ada quote → ambil kata pertama (sampai spasi)
+      // 3. Setelah nama → action (on/off) → sisanya alasan
+
+      let namaRaw, action, reason;
+
+      const quoteMatch = sub.match(/^"([^"]+)"\s+(\S+)\s*(.*)$/) ||
+                         sub.match(/^'([^']+)'\s+(\S+)\s*(.*)$/);
+
+      if (quoteMatch) {
+        namaRaw = quoteMatch[1].trim();
+        action = (quoteMatch[2] || '').toLowerCase();
+        reason = (quoteMatch[3] || '').trim();
+      } else {
+        // Tanpa quote
+        const parts = sub.split(/\s+/);
+        // Cek kalau ada koma (bulk) → semua sebelum on/off adalah nama
+        const onOffIdx = parts.findIndex(p => /^(on|off|aktif|mati)$/i.test(p));
+
+        if (onOffIdx === -1) {
+          await reply(env, chatId,
+            '❓ Format: <code>/maintenance fitur &lt;nama&gt; on|off [alasan]</code>\n\n' +
+            'Kalau nama ada spasi, pakai quote:\n' +
+            '<code>/maintenance fitur \"aio Downloader\" on Update</code>'
+          );
+          return new Response('ok');
+        }
+
+        namaRaw = parts.slice(0, onOffIdx).join(' ').trim();
+        action = parts[onOffIdx].toLowerCase();
+        reason = parts.slice(onOffIdx + 1).join(' ').trim();
+      }
+
+      if (!namaRaw || !action) {
+        await reply(env, chatId, '❓ Nama atau action kosong.');
+        return new Response('ok');
+      }
+
+      // ==== RESOLVE NAMA → KEY ====
+      const validGroups = ['chat', 'endpoint'];
+      const resolvedKeys = [];
+      const errors = [];
+
+      // Split by koma (bulk)
+      const namaList = namaRaw.split(',').map(s => s.trim()).filter(Boolean);
+
+      // Load endpoints.json untuk validasi nama tool
+      let endpointsList = [];
+      try {
+        const epRes = await fetch(new URL('/endpoints.json', request.url).toString());
+        if (epRes.ok) {
+          endpointsList = await epRes.json();
+        }
+      } catch (e) {
+        console.error('[LOAD-ENDPOINTS]', e.message);
+      }
+
+      function findCatalogId(nama) {
+        // Match case-insensitive, by name atau catalogId
+        const n = nama.toLowerCase().trim();
+        for (const ep of endpointsList) {
+          if (!ep || typeof ep !== 'object') continue;
+          if ((ep.name || '').toLowerCase() === n) return ep.catalogId;
+          if ((ep.catalogId || '').toLowerCase() === n) return ep.catalogId;
+        }
+        return null;
+      }
+
+      for (const nama of namaList) {
+        const lower = nama.toLowerCase();
+
+        // Cek grup dulu
+        if (validGroups.includes(lower)) {
+          resolvedKeys.push(lower);
+          continue;
+        }
+
+        // Cek tool via endpoints.json
+        const cid = findCatalogId(nama);
+        if (cid) {
+          resolvedKeys.push('tool:' + cid);
+        } else {
+          errors.push(nama);
+        }
+      }
+
+      if (!resolvedKeys.length) {
         await reply(env, chatId,
-          '❌ Fitur <code>' + esc(key) + '</code> tidak dikenal.\n\n' +
-          'Yang tersedia: <code>' + validKeys.join(', ') + '</code>'
+          '❌ <b>Nggak ada yang bisa diproses</b>\n\n' +
+          (errors.length ? 'Nama nggak ketemu: ' + errors.map(e => '<code>' + esc(e) + '</code>').join(', ') + '\n\n' : '') +
+          'Cek di /apilist atau /endpoints buat list nama tool yang tersedia.'
         );
         return new Response('ok');
       }
 
+      // ==== ACTION: ON ====
       if (action === 'on' || action === 'aktif') {
         const finalReason = reason || 'Sedang dalam perbaikan';
-        try {
-          await db.prepare(
-            'INSERT INTO feature_status (feature_key, maintenance, reason, started_at, by_user) ' +
-            'VALUES (?, 1, ?, ?, ?) ' +
-            'ON CONFLICT(feature_key) DO UPDATE SET maintenance = 1, reason = excluded.reason, started_at = excluded.started_at, by_user = excluded.by_user'
-          ).bind(key, finalReason, Date.now(), String(chatId)).run();
+        const success = [];
+        const failed = [];
 
-          // Auto broadcast pemberitahuan (300 kata, sopan)
-          let broadcastMsg = '';
+        for (const key of resolvedKeys) {
           try {
-            broadcastMsg = await generateMaintenanceNotice(env, key, finalReason);
+            await db.prepare(
+              'INSERT INTO feature_status (feature_key, maintenance, reason, started_at, by_user) ' +
+              'VALUES (?, 1, ?, ?, ?) ' +
+              'ON CONFLICT(feature_key) DO UPDATE SET maintenance = 1, reason = excluded.reason, started_at = excluded.started_at, by_user = excluded.by_user'
+            ).bind(key, finalReason, Date.now(), String(chatId)).run();
+            success.push(key);
+          } catch (e) {
+            failed.push(key + ': ' + e.message);
+          }
+        }
+
+        // Broadcast per key
+        let broadcastCount = 0;
+        for (const key of success) {
+          try {
+            const displayName = key.startsWith('tool:') ? key.slice(5) : key;
+            const notice = await generateMaintenanceNotice(env, displayName, finalReason);
             await db.prepare(
               'INSERT INTO announcements (title, message, type, active, created_at, expires_at) VALUES (?, ?, ?, 1, ?, NULL)'
             ).bind(
-              'Pemberitahuan: Fitur ' + key + ' sedang dalam perbaikan',
-              broadcastMsg,
+              'Pemberitahuan: ' + displayName + ' sedang dalam perbaikan',
+              notice,
               'maintenance',
               Date.now()
             ).run();
+            broadcastCount++;
           } catch (e) { console.error('[BROADCAST]', e.message); }
-
-          await reply(env, chatId,
-            '🔧 <b>FITUR MAINTENANCE AKTIF</b>\n\n' +
-            '🎯 Fitur: <code>' + esc(key) + '</code>\n' +
-            '📝 Alasan: ' + esc(finalReason) + '\n' +
-            '⏰ Sejak: ' + new Date().toISOString().replace('T', ' ').slice(0, 19) + '\n\n' +
-            'User akan lihat pesan maintenance saat akses fitur ini.\n' +
-            'IP admin tetap bisa akses.\n\n' +
-            (broadcastMsg ? '📢 <b>Pemberitahuan otomatis</b> sudah dikirim ke inbox user.\n\n' : '') +
-            'Matikan: <code>/maintenance fitur ' + key + ' off</code>'
-          );
-        } catch (e) {
-          await reply(env, chatId, '❌ Error: ' + esc(e.message));
         }
+
+        let h = '🔧 <b>MAINTENANCE AKTIF</b>\n\n';
+        h += '📝 Alasan: ' + esc(finalReason) + '\n';
+        h += '⏰ Sejak: ' + new Date().toISOString().replace('T', ' ').slice(0, 19) + '\n\n';
+        h += '<b>Fitur yang di-maintenance (' + success.length + '):</b>\n';
+        success.forEach(k => { h += '• <code>' + esc(k) + '</code>\n'; });
+        if (failed.length) {
+          h += '\n<b>Gagal:</b>\n';
+          failed.forEach(f => { h += '• ' + esc(f) + '\n'; });
+        }
+        h += '\n📢 Pemberitahuan terkirim ke inbox: <b>' + broadcastCount + '</b> user.\n';
+        h += 'IP admin tetap bisa akses.\n\n';
+        h += 'Matikan: <code>/maintenance fitur ' + namaRaw + ' off</code>';
+
+        await reply(env, chatId, h);
         return new Response('ok');
       }
 
+      // ==== ACTION: OFF ====
       if (action === 'off' || action === 'mati') {
-        try {
-          await db.prepare(
-            'UPDATE feature_status SET maintenance = 0, reason = \'\' WHERE feature_key = ?'
-          ).bind(key).run();
+        const success = [];
+        const failed = [];
 
-          await reply(env, chatId,
-            '✅ <b>FITUR NORMAL KEMBALI</b>\n\n' +
-            '🎯 Fitur: <code>' + esc(key) + '</code>\n' +
-            'User bisa akses lagi.'
-          );
-        } catch (e) {
-          await reply(env, chatId, '❌ Error: ' + esc(e.message));
+        for (const key of resolvedKeys) {
+          try {
+            await db.prepare(
+              'UPDATE feature_status SET maintenance = 0, reason = \'\' WHERE feature_key = ?'
+            ).bind(key).run();
+            success.push(key);
+          } catch (e) {
+            failed.push(key + ': ' + e.message);
+          }
         }
+
+        let h = '✅ <b>FITUR NORMAL KEMBALI</b>\n\n';
+        h += '<b>Fitur aktif kembali (' + success.length + '):</b>\n';
+        success.forEach(k => { h += '• <code>' + esc(k) + '</code>\n'; });
+        if (failed.length) {
+          h += '\n<b>Gagal:</b>\n';
+          failed.forEach(f => { h += '• ' + esc(f) + '\n'; });
+        }
+        await reply(env, chatId, h);
         return new Response('ok');
       }
 
       await reply(env, chatId,
-        '❓ Format:\n' +
-        '<code>/maintenance fitur &lt;key&gt; on [alasan]</code>\n' +
-        '<code>/maintenance fitur &lt;key&gt; off</code>'
+        '❓ Action nggak dikenal: <code>' + esc(action) + '</code>\n' +
+        'Gunakan <code>on</code> atau <code>off</code>.'
       );
       return new Response('ok');
     }
+
 
     // ============ SUBCOMMAND EXISTING: on/off/status (mode global) ============
     if (!args || (args !== 'on' && args !== 'off' && args !== 'status')) {
