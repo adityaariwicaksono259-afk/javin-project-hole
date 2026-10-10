@@ -387,7 +387,12 @@ export async function onRequestPost({ request, env }) {
   }
 
   if (!isAdmin) {
-    await reply(env, chatId, '⛔ Command tidak dikenal.');
+    await reply(env, chatId,
+      '⛔ <b>Akses ditolak</b>\n\n' +
+      'Chat ID kamu: <code>' + chatId + '</code>\n' +
+      'Chat ID ini nggak terdaftar sebagai admin.\n\n' +
+      'Kalau kamu admin, tambahkan chat_id di atas ke env <code>ADMIN_CHAT_IDS</code> di Cloudflare.'
+    );
     return new Response('ok');
   }
 
