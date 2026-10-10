@@ -108,7 +108,7 @@
   }
 
   function renderAmpemWizard(ep) {
-    var state = { step: 1, apikey: '', email: '', idToken: '', credits: 0 };
+    var state = { step: 1, email: '', idToken: '' };
 
     wrap.innerHTML = [
       '<div class="hero">',
@@ -129,9 +129,7 @@
         '.wz-step{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:#f1f5f9;color:#94a3b8;font-size:12px;font-weight:700}',
         '.wz-step.active{background:linear-gradient(135deg,#0EA5E9,#6366F1);color:#fff}',
         '.wz-step.done{background:rgba(34,197,94,.15);color:#16a34a}',
-        '.wz-info{background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);color:#0369a1;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.6;margin-bottom:14px}',
-        '.wz-credits{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;margin-bottom:8px}',
-        '.wz-credits b{color:#0EA5E9;font-size:16px}'
+        '.wz-info{background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.2);color:#0369a1;padding:10px 14px;border-radius:12px;font-size:12px;line-height:1.6;margin-bottom:14px}'
       ].join('');
       document.head.appendChild(st);
     }
@@ -140,9 +138,8 @@
       var el = document.getElementById('wzSteps');
       if (!el) return;
       var steps = [
-        { n: 1, label: 'API Key' },
-        { n: 2, label: 'Email' },
-        { n: 3, label: 'Verifikasi' }
+        { n: 1, label: 'Email' },
+        { n: 2, label: 'Verifikasi' }
       ];
       el.innerHTML = steps.map(function(s) {
         var cls = 'wz-step';
@@ -158,69 +155,33 @@
 
       if (state.step === 1) {
         body.innerHTML = [
-          '<div class="field"><label>API Key <span style="color:#dc2626">*</span></label>',
-          '<input type="text" id="wzApiKey" placeholder="Your API Key" autocomplete="off" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px;text-align:center"></div>',
-          '<button class="submit" id="wzBtn1">Lanjut</button>',
+          '<div class="wz-info">ℹ️ Fitur ini <b>gratis</b>. Cukup login, terus isi email Alight Motion kamu. Kami akan mengirim magic link ke email tersebut untuk verifikasi.</div>',
+          '<div class="field"><label>Email Alight Motion <span style="color:#dc2626">*</span></label>',
+          '<input type="email" id="wzEmail" placeholder="nama@gmail.com" autocomplete="email" inputmode="email"></div>',
+          '<button class="submit" id="wzBtn1">Kirim Magic Link</button>',
           '<div class="result" id="wzRes1"></div>'
         ].join('\n');
         var b1 = document.getElementById('wzBtn1');
         if (b1) b1.onclick = doStep1;
-        var i1 = document.getElementById('wzApiKey');
+        var i1 = document.getElementById('wzEmail');
         if (i1) i1.addEventListener('keydown', function(e){ if (e.key === 'Enter') doStep1(); });
       } else if (state.step === 2) {
-        body.innerHTML = [
-          '<div class="wz-credits"><span>Sisa API Key:</span><b>' + state.credits + '</b></div>',
-          '<div class="wz-info">Masukkan email Alight Motion kamu. Kami akan mengirim magic link ke email tersebut.</div>',
-          '<div class="field"><label>Email Alight Motion <span style="color:#dc2626">*</span></label>',
-          '<input type="email" id="wzEmail" placeholder="nama@gmail.com" autocomplete="email" inputmode="email"></div>',
-          '<button class="submit" id="wzBtn2">Kirim Magic Link</button>',
-          '<div class="result" id="wzRes2"></div>'
-        ].join('\n');
-        var b2 = document.getElementById('wzBtn2');
-        if (b2) b2.onclick = doStep2;
-        var i2 = document.getElementById('wzEmail');
-        if (i2) i2.addEventListener('keydown', function(e){ if (e.key === 'Enter') doStep2(); });
-      } else if (state.step === 3) {
         body.innerHTML = [
           '<div class="wz-info">Cek inbox <b>' + esc(state.email) + '</b> (juga folder spam).<br>Copy <b>seluruh isi email</b>, paste di bawah ini.</div>',
           '<div class="field"><label>Isi Email / Magic Link <span style="color:#dc2626">*</span></label>',
           '<textarea id="wzRawLink" placeholder="Paste isi email di sini..." rows="6" style="min-height:120px;font-family:monospace;font-size:12px"></textarea></div>',
-          '<button class="submit" id="wzBtn3">Verifikasi &amp; Aktifkan Premium</button>',
-          '<div class="result" id="wzRes3"></div>'
+          '<button class="submit" id="wzBtn2">Verifikasi &amp; Aktifkan Premium</button>',
+          '<div class="result" id="wzRes2"></div>'
         ].join('\n');
-        var b3 = document.getElementById('wzBtn3');
-        if (b3) b3.onclick = doStep3;
+        var b2 = document.getElementById('wzBtn2');
+        if (b2) b2.onclick = doStep2;
       }
     }
 
     function doStep1() {
-      var key = (document.getElementById('wzApiKey').value || '').trim().toUpperCase();
+      var email = (document.getElementById('wzEmail').value || '').trim();
       var btn = document.getElementById('wzBtn1');
       var res = document.getElementById('wzRes1');
-      if (!key) { res.className = 'result show err'; res.textContent = '❌ Masukkan API Key dulu.'; return; }
-      btn.disabled = true; btn.textContent = 'Memvalidasi...';
-      res.className = 'result show info';
-      res.textContent = 'Memvalidasi API Key...';
-      premiumApiCall('/api/premium/validate-key', { apikey: key }).then(function(j) {
-        if (!j.ok) throw new Error(j.message || 'API Key tidak valid');
-        state.apikey = key;
-        state.credits = j.credits || 0;
-        if (state.credits < 15) throw new Error('Kredit tidak cukup. Butuh 15, punya ' + state.credits + '.');
-        state.step = 2;
-        renderSteps();
-        renderBody();
-      }).catch(function(e) {
-        res.className = 'result show err';
-        res.textContent = '❌ ' + e.message;
-      }).then(function() {
-        btn.disabled = false; btn.textContent = 'Lanjut';
-      });
-    }
-
-    function doStep2() {
-      var email = (document.getElementById('wzEmail').value || '').trim();
-      var btn = document.getElementById('wzBtn2');
-      var res = document.getElementById('wzRes2');
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         res.className = 'result show err';
         res.textContent = '❌ Email tidak valid.';
@@ -230,13 +191,12 @@
       res.className = 'result show info';
       res.textContent = 'Mengirim magic link ke ' + email + '...';
       premiumApiCall('/api/premium/amprem', {
-        apikey: state.apikey,
         action: 'send-magiclink',
         email: email
       }).then(function(j) {
         if (!j.success) throw new Error(j.message || 'Gagal kirim magic link');
         state.email = email;
-        state.step = 3;
+        state.step = 2;
         renderSteps();
         renderBody();
       }).catch(function(e) {
@@ -247,10 +207,10 @@
       });
     }
 
-    function doStep3() {
+    function doStep2() {
       var raw = (document.getElementById('wzRawLink').value || '').trim();
-      var btn = document.getElementById('wzBtn3');
-      var res = document.getElementById('wzRes3');
+      var btn = document.getElementById('wzBtn2');
+      var res = document.getElementById('wzRes2');
       if (!raw || raw.length < 10) {
         res.className = 'result show err';
         res.textContent = '❌ Paste isi email dulu.';
@@ -262,7 +222,6 @@
 
       var idTokenGot = null;
       premiumApiCall('/api/premium/amprem', {
-        apikey: state.apikey,
         action: 'verify-account',
         email: state.email,
         rawLink: raw
@@ -272,26 +231,23 @@
         if (!idTokenGot) throw new Error('idToken tidak diterima dari server.');
         res.textContent = 'Mengaktifkan premium...';
         return premiumApiCall('/api/premium/amprem', {
-          apikey: state.apikey,
           action: 'apply-premium',
           email: state.email,
           idToken: idTokenGot
         });
       }).then(function(j2) {
         if (!j2.success) throw new Error(j2.message || 'Aktivasi gagal');
-        var remain = (j2._counter && j2._counter.remaining != null) ? j2._counter.remaining : '-';
         res.className = 'result show ok';
         res.innerHTML = [
-          '<div style="font-size:15px;font-weight:800;margin-bottom:8px">Premium Aktif!</div>',
+          '<div style="font-size:15px;font-weight:800;margin-bottom:8px">✅ Premium Aktif!</div>',
           '<div style="font-size:12px;line-height:1.8">',
-          '  Email: <b>' + esc(state.email) + '</b><br>',
-          '  Sisa API Key: <b>' + remain + '</b>',
+          '  Email: <b>' + esc(state.email) + '</b>',
           '</div>',
           '<button type="button" id="wzReset" style="margin-top:12px;padding:8px 14px;background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:8px;font-weight:700;cursor:pointer">Aktivasi Akun Lain</button>'
         ].join('');
         var resetBtn = document.getElementById('wzReset');
         if (resetBtn) resetBtn.onclick = function() {
-          state = { step: 1, apikey: '', email: '', idToken: '', credits: 0 };
+          state = { step: 1, email: '', idToken: '' };
           renderSteps();
           renderBody();
         };

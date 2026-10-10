@@ -1,9 +1,9 @@
 // POST /api/premium/amprem
-// Body: { apikey, action, email, rawLink?, idToken? }
-// Verify API key dari auth_users → cek credits >= 15 → proxy ke upstream → deduct 15.
+// Body: { action, email, rawLink?, idToken? }
+// Wajib login (session cookie). No API key, no credits.
+// Cooldown & VIP menyusul.
 
-import { verifyApiKey, deductCredits } from '../../_lib/gen-api-key.js';
-
+import { getMe } from '../chat/_lib.js';
 
 const UPSTREAM = 'https://anita-studio.netlify.app/.netlify/functions/amprem';
 
@@ -17,149 +17,93 @@ function json(data, status) {
   });
 }
 
-
 export async function onRequestPost({ request, env }) {
   const db = env.JAVIN_DB;
+  if (!db) return json({ success: false, message: 'DB nggak siap.' }, 503);
+
+  // ==== WAJIB LOGIN ====
+  const me = await getMe(request, db);
+  if (!me) {
+    return json({ success: false, message: 'Login dulu untuk pakai fitur ini.' }, 401);
+  }
+  if (me.banned) {
+    return json({ success: false, message: 'Akun kamu sedang dibatasi.' }, 403);
+  }
 
   let body;
   try {
     body = await request.json();
   } catch (e) {
-    return json({
-      success: false,
-      message: 'Body invalid.'
-    }, 400);
+    return json({ success: false, message: 'Body invalid.' }, 400);
   }
-
-  const apikey = String(body.apikey || '')
-    .trim()
-    .toUpperCase();
 
   const action = String(body.action || '').trim();
-
-  const allowed = [
-    'send-magiclink',
-    'verify-account',
-    'apply-premium'
-  ];
-
-  if (!allowed.includes(action)) {
-    return json({
-      success: false,
-      message: 'Action tidak dikenal.'
-    }, 400);
-  }
-
-  const v = await verifyApiKey(db, apikey);
-
-  if (!v.ok) {
-    return json({
-      success: false,
-      message: v.message
-    }, v.code);
-  }
-
   const email = String(body.email || '').trim();
+  const rawLink = String(body.rawLink || '').trim();
+  const idToken = String(body.idToken || '').trim();
 
-  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return json({
-      success: false,
-      message: 'Email tidak valid.'
-    }, 400);
+  const allowed = ['send-magiclink', 'verify-account', 'apply-premium'];
+  if (!allowed.includes(action)) {
+    return json({ success: false, message: 'Action tidak dikenal.' }, 400);
   }
 
-  if (action === 'verify-account') {
-    const rawLink = String(body.rawLink || '').trim();
-
-    if (!rawLink || rawLink.length < 10) {
-      return json({
-        success: false,
-        message: 'Magic link tidak valid.'
-      }, 400);
-    }
-
-    if (rawLink.length > 5000) {
-      return json({
-        success: false,
-        message: 'Magic link terlalu panjang.'
-      }, 400);
-    }
+  // Validasi per action
+  if (action === 'send-magiclink' && !email) {
+    return json({ success: false, message: 'Email wajib.' }, 400);
+  }
+  if (action === 'verify-account' && !rawLink) {
+    return json({ success: false, message: 'Raw link wajib.' }, 400);
+  }
+  if (action === 'apply-premium' && (!email || !idToken)) {
+    return json({ success: false, message: 'Email & ID token wajib.' }, 400);
   }
 
-  if (action === 'apply-premium') {
-    const idToken = String(body.idToken || '').trim();
-
-    if (!idToken || idToken.length < 10) {
-      return json({
-        success: false,
-        message: 'idToken tidak valid.'
-      }, 400);
-    }
-  }
+  const started = Date.now();
 
   try {
-    const payload = {
-      action,
-      email
-    };
+    const payload = { action };
+    if (email) payload.email = email;
+    if (rawLink) payload.rawLink = rawLink;
+    if (idToken) payload.idToken = idToken;
 
-    if (body.rawLink) {
-      payload.rawLink = String(body.rawLink).trim();
-    }
-
-    if (body.idToken) {
-      payload.idToken = String(body.idToken).trim();
-    }
-
-    const upstream = await fetch(UPSTREAM, {
+    const res = await fetch(UPSTREAM, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         'User-Agent': 'Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-        'Accept': 'application/json, text/plain, */*',
-        'Accept-Language': 'id-ID,id;q=0.9,en;q=0.8',
-        'Referer': 'https://anita-studio.netlify.app/',
-        'Origin': 'https://anita-studio.netlify.app'
+        'Origin': 'https://anita-studio.netlify.app',
+        'Referer': 'https://anita-studio.netlify.app/'
       },
-      body: JSON.stringify(payload),
-      redirect: 'follow'
+      body: JSON.stringify(payload)
     });
 
-    const text = await upstream.text();
+    const elapsed = Date.now() - started;
+    const text = await res.text();
 
     let data;
+    try { data = JSON.parse(text); } catch (e) { data = { raw: text.slice(0, 500) }; }
 
-    try {
-      data = JSON.parse(text);
-    } catch (e) {
-      data = {
+    if (!res.ok) {
+      return json({
         success: false,
-        message: 'Upstream response bukan JSON',
-        raw: text.slice(0, 500)
-      };
+        message: data.message || ('Upstream HTTP ' + res.status),
+        elapsed_ms: elapsed
+      }, 200);
     }
 
-    // Potong 15 API Key hanya kalau request sukses.
-    if (data && data.success === true) {
-      const deduct = await deductCredits(db, v.user.id, 15);
-      if (!deduct.ok) {
-        return json({
-          success: false,
-          message: deduct.message || 'API Key tidak cukup.'
-        }, 403);
-      }
-      data._counter = {
-        cost: 15,
-        remaining: deduct.credits,
-        status: 'active'
-      };
-    }
+    return json({
+      success: true,
+      ...data,
+      elapsed_ms: elapsed
+    });
 
-    return json(data, upstream.status);
   } catch (err) {
+    console.error('[AMPREM]', err.message);
     return json({
       success: false,
-      message: 'Gagal menghubungi server: ' + err.message
-    }, 502);
+      message: 'Gagal hubungi server.',
+      elapsed_ms: Date.now() - started
+    }, 500);
   }
 }
