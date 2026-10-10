@@ -394,8 +394,128 @@ export async function onRequestPost({ request, env }) {
   // ==== /maintenance ====
   if (cmd === '/maintenance') {
     const db = env.JAVIN_DB;
-    // args udah di-normalize
 
+    // ============ SUBCOMMAND: /maintenance fitur ============
+    if (args && args.startsWith('fitur')) {
+      const sub = args.slice(5).trim(); // setelah 'fitur'
+      const parts = sub.split(/\s+/).filter(Boolean);
+
+      // /maintenance fitur  → list status
+      // /maintenance fitur <key> on [alasan]
+      // /maintenance fitur <key> off
+
+      // Kalau kosong → tampil list
+      if (!parts.length) {
+        try {
+          const rows = await db.prepare(
+            'SELECT feature_key, maintenance, reason, started_at FROM feature_status ORDER BY feature_key'
+          ).all();
+
+          let h = '🔧 <b>FITUR MAINTENANCE</b>\n\n';
+          const list = rows.results || [];
+
+          if (!list.length) {
+            h += '<i>Belum ada fitur terdaftar.</i>';
+          } else {
+            list.forEach(r => {
+              const status = r.maintenance === 1 ? '🔧' : '✅';
+              const reason = r.maintenance === 1 && r.reason ? ' · <i>' + esc(r.reason) + '</i>' : '';
+              h += status + ' <code>' + esc(r.feature_key) + '</code>' + reason + '\n';
+            });
+          }
+
+          h += '\n<b>Cara pakai:</b>\n';
+          h += '<code>/maintenance fitur &lt;key&gt; on [alasan]</code>\n';
+          h += '<code>/maintenance fitur &lt;key&gt; off</code>\n\n';
+          h += '<b>Key tersedia:</b>\n';
+          h += '• <code>chat</code> — Chat semua user\n';
+          h += '• <code>endpoint</code> — Endpoint bot/AM/proxy';
+
+          await reply(env, chatId, h);
+        } catch (e) {
+          await reply(env, chatId, '❌ Error: ' + esc(e.message));
+        }
+        return new Response('ok');
+      }
+
+      const key = parts[0].toLowerCase();
+      const action = (parts[1] || '').toLowerCase();
+      const reason = parts.slice(2).join(' ') || '';
+
+      const validKeys = ['chat', 'endpoint'];
+      if (!validKeys.includes(key)) {
+        await reply(env, chatId,
+          '❌ Fitur <code>' + esc(key) + '</code> tidak dikenal.\n\n' +
+          'Yang tersedia: <code>' + validKeys.join(', ') + '</code>'
+        );
+        return new Response('ok');
+      }
+
+      if (action === 'on' || action === 'aktif') {
+        const finalReason = reason || 'Sedang dalam perbaikan';
+        try {
+          await db.prepare(
+            'INSERT INTO feature_status (feature_key, maintenance, reason, started_at, by_user) ' +
+            'VALUES (?, 1, ?, ?, ?) ' +
+            'ON CONFLICT(feature_key) DO UPDATE SET maintenance = 1, reason = excluded.reason, started_at = excluded.started_at, by_user = excluded.by_user'
+          ).bind(key, finalReason, Date.now(), String(chatId)).run();
+
+          // Auto broadcast pemberitahuan (300 kata, sopan)
+          let broadcastMsg = '';
+          try {
+            broadcastMsg = await generateMaintenanceNotice(env, key, finalReason);
+            await db.prepare(
+              'INSERT INTO announcements (title, message, type, active, created_at, expires_at) VALUES (?, ?, ?, 1, ?, NULL)'
+            ).bind(
+              'Pemberitahuan: Fitur ' + key + ' sedang dalam perbaikan',
+              broadcastMsg,
+              'maintenance',
+              Date.now()
+            ).run();
+          } catch (e) { console.error('[BROADCAST]', e.message); }
+
+          await reply(env, chatId,
+            '🔧 <b>FITUR MAINTENANCE AKTIF</b>\n\n' +
+            '🎯 Fitur: <code>' + esc(key) + '</code>\n' +
+            '📝 Alasan: ' + esc(finalReason) + '\n' +
+            '⏰ Sejak: ' + new Date().toISOString().replace('T', ' ').slice(0, 19) + '\n\n' +
+            'User akan lihat pesan maintenance saat akses fitur ini.\n' +
+            'IP admin tetap bisa akses.\n\n' +
+            (broadcastMsg ? '📢 <b>Pemberitahuan otomatis</b> sudah dikirim ke inbox user.\n\n' : '') +
+            'Matikan: <code>/maintenance fitur ' + key + ' off</code>'
+          );
+        } catch (e) {
+          await reply(env, chatId, '❌ Error: ' + esc(e.message));
+        }
+        return new Response('ok');
+      }
+
+      if (action === 'off' || action === 'mati') {
+        try {
+          await db.prepare(
+            'UPDATE feature_status SET maintenance = 0, reason = \'\' WHERE feature_key = ?'
+          ).bind(key).run();
+
+          await reply(env, chatId,
+            '✅ <b>FITUR NORMAL KEMBALI</b>\n\n' +
+            '🎯 Fitur: <code>' + esc(key) + '</code>\n' +
+            'User bisa akses lagi.'
+          );
+        } catch (e) {
+          await reply(env, chatId, '❌ Error: ' + esc(e.message));
+        }
+        return new Response('ok');
+      }
+
+      await reply(env, chatId,
+        '❓ Format:\n' +
+        '<code>/maintenance fitur &lt;key&gt; on [alasan]</code>\n' +
+        '<code>/maintenance fitur &lt;key&gt; off</code>'
+      );
+      return new Response('ok');
+    }
+
+    // ============ SUBCOMMAND EXISTING: on/off/status (mode global) ============
     if (!args || (args !== 'on' && args !== 'off' && args !== 'status')) {
       let st = '❓ tidak diketahui';
       try {
@@ -406,12 +526,16 @@ export async function onRequestPost({ request, env }) {
       } catch (e) {}
 
       await reply(env, chatId,
-        '🔧 <b>MODE MAINTENANCE</b>\n\n' +
+        '🔧 <b>MAINTENANCE MODE</b>\n\n' +
         'Status: ' + st + '\n\n' +
-        '<b>Command:</b>\n' +
-        '<code>/maintenance on</code> — Aktifkan\n' +
+        '<b>Global:</b>\n' +
+        '<code>/maintenance on</code> — Semua web maintenance\n' +
         '<code>/maintenance off</code> — Matikan\n' +
-        '<code>/maintenance status</code> — Cek status'
+        '<code>/maintenance status</code> — Cek status\n\n' +
+        '<b>Per fitur:</b>\n' +
+        '<code>/maintenance fitur</code> — List fitur\n' +
+        '<code>/maintenance fitur &lt;key&gt; on [alasan]</code>\n' +
+        '<code>/maintenance fitur &lt;key&gt; off</code>'
       );
       return new Response('ok');
     }
@@ -445,9 +569,31 @@ export async function onRequestPost({ request, env }) {
         await reply(env, chatId, '✅ <b>MAINTENANCE OFF</b>\n\nWebsite kembali normal.');
       }
     } catch (e) {
-      await reply(env, chatId, '❌ Gagal: ' + e.message);
+      await reply(env, chatId, '❌ Error: ' + esc(e.message));
     }
     return new Response('ok');
+  }
+
+  // ============ HELPER: GENERATE MAINTENANCE NOTICE (300 kata) ============
+  async function generateMaintenanceNotice(env, featureKey, reason) {
+    const featureName = featureKey === 'chat' ? 'Chat' : (featureKey === 'endpoint' ? 'Endpoint & Tools' : featureKey);
+
+    // ⚠️ Bisa diganti dengan call AI, tapi default template aja
+    return [
+      'Hai semuanya,',
+      '',
+      'Kami ingin menginformasikan bahwa fitur ' + featureName + ' di Javin Codex saat ini sedang dalam proses perbaikan. Ini adalah langkah yang kami ambil untuk memastikan kualitas layanan tetap terjaga, sekaligus mempersiapkan beberapa peningkatan yang akan datang. Kami mohon maaf atas ketidaknyamanan yang mungkin timbul dari situasi ini.',
+      '',
+      'Alasan perbaikan kali ini: ' + reason + '. Tim kami sedang bekerja secepat mungkin untuk menyelesaikan proses ini. Kami tidak ingin terburu-buru karena prioritas kami adalah hasil yang stabil dan aman untuk semua pengguna. Setiap detail sedang kami periksa dengan teliti, mulai dari sisi performa hingga keamanan data kamu.',
+      '',
+      'Selama proses ini berlangsung, kamu masih bisa mengakses fitur-fitur lain di Javin Codex seperti biasa. Kami sengaja memisahkan sistem per-fitur supaya gangguan pada satu bagian tidak menghambat aktivitas kamu secara keseluruhan. Jadi kalau kamu sedang mengerjakan sesuatu yang tidak berkaitan dengan fitur ini, kamu bisa lanjut tanpa khawatir.',
+      '',
+      'Kalau ada pertanyaan, keluhan, atau butuh bantuan terkait hal ini, jangan ragu buat hubungi kami lewat halaman Support. Kami bakal dengan senang hati membantu dan menjelaskan situasinya lebih detail kalau kamu butuh. Semua masukan dari kamu sangat berarti buat kami — baik itu kritik, saran, atau sekadar cerita pengalaman pakai Javin Codex.',
+      '',
+      'Terima kasih banyak atas pengertian dan kesabarannya. Kami akan segera kabari lagi begitu fitur ini kembali normal. Sampai jumpa di update berikutnya, dan seperti biasa — gaskeun eksplor fitur lainnya! 🔥',
+      '',
+      '— Tim Javin Codex'
+    ].join('\n');
   }
 
   // ==== /tambahlimit <user_id> <jumlah> ====

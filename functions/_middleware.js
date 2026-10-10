@@ -224,6 +224,60 @@ export async function onRequest(context) {
   }
   // ==== END CSRF PROTECTION ====
 
+  // ==== FEATURE MAINTENANCE CHECK ====
+  // Cek apakah fitur yang diakses sedang maintenance
+  if (context.env && context.env.JAVIN_DB) {
+    var __featPath = pathname;
+    var __featKey = null;
+
+    // Mapping path -> feature key
+    if (__featPath.startsWith('/api/chat/')) __featKey = 'chat';
+    else if (__featPath.startsWith('/api/proxy-ext')) __featKey = 'endpoint';
+    else if (__featPath.startsWith('/api/amfinder')) __featKey = 'endpoint';
+    else if (__featPath.startsWith('/api/amsearch')) __featKey = 'endpoint';
+    else if (__featPath.startsWith('/api/premium/')) __featKey = 'endpoint';
+
+    if (__featKey) {
+      // Cek admin bypass
+      var __featIP = request.headers.get('CF-Connecting-IP') ||
+                     (request.headers.get('x-forwarded-for') || '').split(',')[0].trim() ||
+                     'unknown';
+      var __featAdmins = String(context.env.ADMIN_IPS || '').split(',').map(s => s.trim()).filter(Boolean);
+      var __featIsAdmin = __featAdmins.includes(__featIP);
+
+      if (!__featIsAdmin) {
+        try {
+          var __featRow = await context.env.JAVIN_DB.prepare(
+            'SELECT maintenance, reason FROM feature_status WHERE feature_key = ?'
+          ).bind(__featKey).first();
+
+          if (__featRow && __featRow.maintenance === 1) {
+            var __featMsg = 'Fitur sedang dalam perbaikan.';
+            if (__featRow.reason) __featMsg += ' Alasan: ' + __featRow.reason;
+
+            return new Response(JSON.stringify({
+              ok: false,
+              maintenance: true,
+              feature: __featKey,
+              message: __featMsg,
+              reason: __featRow.reason || ''
+            }), {
+              status: 503,
+              headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+                'Retry-After': '300',
+                'Cache-Control': 'no-store'
+              }
+            });
+          }
+        } catch (e) {
+          console.error('[FEATURE-MAINT]', e.message);
+        }
+      }
+    }
+  }
+  // ==== END FEATURE MAINTENANCE ====
+
   // ==== LAYER 16: User-Agent filter ====
   if (pathname.startsWith('/api/')) {
     const badBots = /(sqlmap|nikto|nmap|masscan|nessus|acunetix|dirbuster|gobuster|hydra|zap|w3af)/i;
