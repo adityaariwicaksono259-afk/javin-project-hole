@@ -392,15 +392,21 @@ export async function onRequestPost({ request, env }) {
   }
 
   // ==== /maintenance ====
-  if (cmd === '/maintenance') {
+  if (cmd === '/maintenance' || cmd === '/maintenancefitur' || cmd === '/mfitur') {
     const db = env.JAVIN_DB;
 
     // ============ SUBCOMMAND: /maintenance fitur ============
-    if (args && args.startsWith('fitur')) {
+    // /maintenancefitur -> otomatis fitur mode, args dipakai langsung
+  if (cmd === '/maintenancefitur' || cmd === '/mfitur') {
+    args = 'fitur ' + (args || '').trim();
+    args = args.trim();
+  }
+
+  if (args && args.startsWith('fitur')) {
       const sub = args.slice(5).trim();
 
-      // ==== LIST (no arg) ====
-      if (!sub) {
+      // ==== LIST (no arg atau 'stats') ====
+      if (!sub || sub.toLowerCase() === 'stats') {
         try {
           const rows = await db.prepare(
             'SELECT feature_key, maintenance, reason, started_at FROM feature_status ORDER BY maintenance DESC, feature_key'
@@ -597,8 +603,9 @@ export async function onRequestPost({ request, env }) {
 
         for (const key of resolvedKeys) {
           try {
+            // Hapus row dari DB (biar list bersih)
             await db.prepare(
-              'UPDATE feature_status SET maintenance = 0, reason = \'\' WHERE feature_key = ?'
+              'DELETE FROM feature_status WHERE feature_key = ?'
             ).bind(key).run();
             success.push(key);
           } catch (e) {
